@@ -7,9 +7,5 @@ class Settings(BaseSettings):
     app_env: str = "dev"
     service_name: str = "reply-backend"
 
-    # Populated by the environment; kept here so future modules can import
-    # from a single place rather than reading os.environ directly.
-    reply_backend_base_url: str = "http://10.0.2.2:8000"
-
 
 settings = Settings()
