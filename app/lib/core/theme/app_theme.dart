@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
+import 'app_skin.dart';
 
 abstract final class AppTheme {
   static ThemeData get light {
@@ -36,7 +37,7 @@ abstract final class AppTheme {
         labelMedium: AppTextStyles.labelMedium,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.backgroundSurface,
+        backgroundColor: Colors.transparent,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
         centerTitle: true,
@@ -85,7 +86,7 @@ abstract final class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.backgroundSurface,
+        fillColor: AppSkin.inputFill,
         hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textHint),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -99,7 +100,24 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: Colors.white.withAlpha(150),
+        selectedColor: AppColors.primaryLight.withAlpha(100),
+        side: BorderSide(color: Colors.white.withAlpha(210)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        labelStyle: AppTextStyles.bodyMedium,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.textPrimary,
+        contentTextStyle: AppTextStyles.bodyMedium.copyWith(
+          color: Colors.white,
+        ),
       ),
     );
   }
