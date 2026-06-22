@@ -6,7 +6,24 @@ part of 'api_client.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$apiClientHash() => r'cdc65f44d0ec7d7c3a88a5d035707e0245b00546';
+String _$rawDioHash() => r'1675adf8959ad2e2df12a488afe32f8bf9f01645';
+
+/// See also [rawDio].
+@ProviderFor(rawDio)
+final rawDioProvider = Provider<Dio>.internal(
+  rawDio,
+  name: r'rawDioProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$rawDioHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef RawDioRef = ProviderRef<Dio>;
+String _$apiClientHash() => r'7a507a4bb28cf90cffb518d62dc887672f81442c';
 
 /// See also [apiClient].
 @ProviderFor(apiClient)

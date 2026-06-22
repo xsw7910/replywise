@@ -8,6 +8,8 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
+import '../auth/application/auth_controller.dart';
+import '../auth/auth_state.dart';
 import 'application/health_controller.dart';
 import 'data/health_repository.dart';
 
@@ -23,6 +25,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final healthState = ref.watch(healthControllerProvider);
+    final authState = ref.watch(authControllerProvider);
 
     return AppPage(
       title: 'Settings',
@@ -109,11 +112,92 @@ class SettingsScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
+          _AuthStatusCard(
+            authState: authState,
+            onRetry: () => ref.read(authControllerProvider.notifier).retry(),
+          ),
+          const SizedBox(height: 16),
           _BackendStatusCard(
             healthState: healthState,
             onRefresh: () =>
                 ref.read(healthControllerProvider.notifier).refresh(),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AuthStatusCard extends StatelessWidget {
+  const _AuthStatusCard({required this.authState, required this.onRetry});
+
+  final AuthState authState;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, color, label) = switch (authState.status) {
+      AuthStatus.authenticated => (
+        Icons.verified_user_outlined,
+        AppColors.success,
+        'Anonymous session ready',
+      ),
+      AuthStatus.authenticating => (
+        Icons.sync_rounded,
+        AppColors.primary,
+        'Connecting anonymous session…',
+      ),
+      AuthStatus.refreshing => (
+        Icons.sync_lock_outlined,
+        AppColors.primary,
+        'Refreshing secure session…',
+      ),
+      AuthStatus.tokenExpired => (
+        Icons.history_toggle_off_rounded,
+        AppColors.primary,
+        'Restoring anonymous session…',
+      ),
+      AuthStatus.failure => (
+        Icons.gpp_bad_outlined,
+        AppColors.error,
+        'Anonymous session unavailable',
+      ),
+      AuthStatus.unauthenticated => (
+        Icons.shield_outlined,
+        AppColors.textSecondary,
+        'Anonymous session not started',
+      ),
+    };
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Secure session', style: AppTextStyles.titleMedium),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Icon(icon, color: color, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  label,
+                  style: AppTextStyles.bodyMedium.copyWith(color: color),
+                ),
+              ),
+              if (authState.status == AuthStatus.failure)
+                TextButton.icon(
+                  onPressed: onRetry,
+                  icon: const Icon(Icons.refresh_rounded, size: 17),
+                  label: const Text('Retry'),
+                ),
+            ],
+          ),
+          if (authState.status == AuthStatus.failure &&
+              authState.errorMessage != null) ...[
+            const SizedBox(height: 6),
+            Text(authState.errorMessage!, style: AppTextStyles.bodyMedium),
+          ],
         ],
       ),
     );

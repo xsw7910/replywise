@@ -21,6 +21,10 @@ dependencies:
   # HTTP client
   dio: ^5.8.0
 
+  # Secure storage & identity
+  flutter_secure_storage: ^9.2.4
+  uuid: ^4.5.1
+
   # UI / icons
   cupertino_icons: ^1.0.8
 
