@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
+import '../../core/widgets/inline_error.dart';
 import '../auth/application/auth_controller.dart';
 import '../entitlement/credit_controller.dart';
 import '../entitlement/subscription_controller.dart';
@@ -63,7 +64,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       title: 'ReplyWise Premium',
       showBackButton: true,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
           const Icon(
             Icons.auto_awesome_rounded,
@@ -109,7 +111,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 const _Benefit(text: 'Free and credit balances stay preserved'),
                 const SizedBox(height: 18),
                 if (subscription.isLoading)
-                  const Center(child: CircularProgressIndicator())
+                  const _LoadingStatus(message: 'Loading subscription options…')
                 else
                   ElevatedButton(
                     onPressed: subscription.offer == null || subscription.isBusy
@@ -135,22 +137,17 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 ),
                 if (subscription.error != null) ...[
                   const SizedBox(height: 12),
-                  Text(
-                    subscription.error!,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.error,
-                    ),
+                  InlineError(
+                    message: subscription.error!,
+                    actionLabel: subscription.offer == null && appUserId != null
+                        ? 'Try again'
+                        : null,
+                    onAction: subscription.offer == null && appUserId != null
+                        ? () => ref
+                              .read(subscriptionControllerProvider.notifier)
+                              .load(appUserId)
+                        : null,
                   ),
-                  if (subscription.offer == null && appUserId != null)
-                    TextButton(
-                      onPressed: subscription.isBusy
-                          ? null
-                          : () => ref
-                                .read(subscriptionControllerProvider.notifier)
-                                .load(appUserId),
-                      child: const Text('Try again'),
-                    ),
                 ],
               ],
             ),
@@ -180,12 +177,23 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 ),
                 const SizedBox(height: 14),
                 if (credits.isLoading)
-                  const Center(child: CircularProgressIndicator())
+                  const _LoadingStatus(message: 'Loading credit packages…')
                 else if (credits.packages.isEmpty && credits.error == null)
-                  Text(
-                    'Credit packages unavailable in this build.',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.labelMedium,
+                  Column(
+                    children: [
+                      Text(
+                        'Credit packages are unavailable right now.',
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.labelMedium,
+                      ),
+                      if (appUserId != null)
+                        TextButton(
+                          onPressed: () => ref
+                              .read(creditControllerProvider.notifier)
+                              .loadPackages(appUserId),
+                          child: const Text('Refresh packages'),
+                        ),
+                    ],
                   )
                 else
                   ...credits.packages.map(
@@ -212,12 +220,14 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   ),
                 if (credits.error != null) ...[
                   const SizedBox(height: 8),
-                  Text(
-                    credits.error!,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.error,
-                    ),
+                  InlineError(
+                    message: credits.error!,
+                    actionLabel: appUserId == null ? null : 'Try again',
+                    onAction: appUserId == null
+                        ? null
+                        : () => ref
+                              .read(creditControllerProvider.notifier)
+                              .loadPackages(appUserId),
                   ),
                 ],
               ],
@@ -232,10 +242,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                       .restore(),
             child: subscription.isRestoring
                 ? const Text('Restoring…')
-                : const Text('Restore purchases'),
+                : const Text('Restore Premium subscription'),
           ),
           Text(
-            'Purchases are verified by ReplyWise before Premium access is enabled.',
+            'Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically.',
             textAlign: TextAlign.center,
             style: AppTextStyles.labelMedium,
           ),
@@ -243,6 +253,28 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       ),
     );
   }
+}
+
+class _LoadingStatus extends StatelessWidget {
+  const _LoadingStatus({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox.square(
+          dimension: 18,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+        const SizedBox(width: 10),
+        Flexible(child: Text(message, style: AppTextStyles.bodyMedium)),
+      ],
+    ),
+  );
 }
 
 class _Benefit extends StatelessWidget {

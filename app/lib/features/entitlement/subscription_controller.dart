@@ -121,7 +121,7 @@ class SubscriptionController extends Notifier<SubscriptionState> {
 
   String _message(Object error, String fallback) {
     if (error is SubscriptionException) return error.message;
-    if (error is ApiError) return error.message;
+    if (error is ApiError) return error.displayMessage(fallback: fallback);
     return fallback;
   }
 }

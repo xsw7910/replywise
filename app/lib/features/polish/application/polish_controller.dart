@@ -41,13 +41,14 @@ class PolishController extends _$PolishController {
     } on ApiError catch (error) {
       state = PolishState(
         result: state.result,
-        error: error.message,
-        errorCode: error.code,
+        error: error.displayMessage(fallback: 'Unable to polish this draft.'),
+        errorCode: error.code ?? 'NETWORK_ERROR',
       );
     } catch (_) {
       state = PolishState(
         result: state.result,
         error: 'Something went wrong. Please try again.',
+        errorCode: 'UNKNOWN_ERROR',
       );
     }
   }

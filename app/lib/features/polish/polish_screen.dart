@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
+import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
+import '../../core/widgets/usage_badge.dart';
 import 'application/polish_controller.dart';
 import 'domain/polish_models.dart';
 import '../entitlement/usage_controller.dart';
@@ -76,13 +77,13 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             style: AppTextStyles.headlineMedium,
           ),
           const SizedBox(height: 5),
-          Text(
-            usageState.usage.isPremium
-                ? 'Premium'
-                : usageState.usage.freeUsesLeft == null
-                ? 'Checking remaining uses…'
-                : '${usageState.usage.freeUsesLeft} free uses left · ${usageState.usage.paidCredits} credits',
-            style: AppTextStyles.labelMedium,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: UsageBadge(
+              state: usageState,
+              onRetry: () =>
+                  ref.read(usageControllerProvider.notifier).refresh(),
+            ),
           ),
           const SizedBox(height: 5),
           Text(
@@ -147,28 +148,42 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                     ),
                   )
                 : const Icon(Icons.auto_fix_high_rounded),
-            label: Text(polishState.isLoading ? 'Polishing…' : 'Polish Text'),
+            label: Text(polishState.isLoading ? 'Polishing…' : 'Polish draft'),
           ),
+          if (polishState.isLoading) ...[
+            const SizedBox(height: 10),
+            Text(
+              'Improving clarity while keeping your meaning…',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.labelMedium,
+            ),
+          ],
           if (polishState.error != null) ...[
             const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.error.withAlpha(18),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                polishState.error!,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.error,
-                ),
-              ),
+            InlineError(
+              message: polishState.error!,
+              actionLabel: polishState.errorCode == 'PAYWALL_REQUIRED'
+                  ? null
+                  : 'Try again',
+              onAction: polishState.errorCode == 'PAYWALL_REQUIRED'
+                  ? null
+                  : _polish,
             ),
             if (polishState.errorCode == 'PAYWALL_REQUIRED')
               TextButton(
                 onPressed: () => context.push(AppRoutes.paywall),
                 child: const Text('View plans'),
               ),
+          ],
+          if (!polishState.isLoading &&
+              polishState.error == null &&
+              polishState.result == null) ...[
+            const SizedBox(height: 12),
+            Text(
+              'Your polished draft will appear here.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.labelMedium,
+            ),
           ],
           if (polishState.result != null) ...[
             const SizedBox(height: 26),
@@ -196,14 +211,19 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             const SizedBox(height: 12),
             OutlinedButton.icon(
               onPressed: polishState.isLoading ? null : _polish,
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Regenerate'),
+              icon: polishState.isLoading
+                  ? const SizedBox.square(
+                      dimension: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.refresh_rounded),
+              label: const Text('Polish again'),
             ),
             if (!usageState.usage.isPremium)
               Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
-                  'Regenerating consumes 1 use.',
+                  'Polishing again creates a new result and uses 1 generation.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.labelMedium,
                 ),

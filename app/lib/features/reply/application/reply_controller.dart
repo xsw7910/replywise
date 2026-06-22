@@ -41,13 +41,14 @@ class ReplyController extends _$ReplyController {
     } on ApiError catch (error) {
       state = ReplyState(
         result: state.result,
-        error: error.message,
-        errorCode: error.code,
+        error: error.displayMessage(fallback: 'Unable to generate a reply.'),
+        errorCode: error.code ?? 'NETWORK_ERROR',
       );
     } catch (_) {
       state = ReplyState(
         result: state.result,
         error: 'Something went wrong. Please try again.',
+        errorCode: 'UNKNOWN_ERROR',
       );
     }
   }

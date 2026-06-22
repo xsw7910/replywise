@@ -152,10 +152,10 @@ void main() {
 
     // Scroll to reveal items below the Buy Credits card.
     await tester.scrollUntilVisible(
-      find.text('Restore purchases'),
+      find.text('Restore Premium subscription'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    expect(find.text('Restore purchases'), findsOneWidget);
+    expect(find.text('Restore Premium subscription'), findsOneWidget);
   });
 }

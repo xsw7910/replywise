@@ -13,9 +13,9 @@ class HealthResponse {
   final String service;
 
   factory HealthResponse.fromJson(Map<String, dynamic> json) => HealthResponse(
-        status: json['status'] as String,
-        service: json['service'] as String,
-      );
+    status: json['status'] as String,
+    service: json['service'] as String,
+  );
 }
 
 class HealthRepository {
@@ -27,13 +27,13 @@ class HealthRepository {
     try {
       final response = await _client.get<Map<String, dynamic>>('/health');
       return HealthResponse.fromJson(response.data!);
-    } on DioException catch (e) {
-      throw ApiError(
-        message: e.message ?? 'Network error',
-        statusCode: e.response?.statusCode,
+    } on DioException catch (error) {
+      throw ApiError.fromDio(
+        error,
+        fallback: 'Unable to reach the ReplyWise service.',
       );
-    } catch (e) {
-      throw ApiError(message: e.toString());
+    } catch (_) {
+      throw const ApiError(message: 'Unable to check service status.');
     }
   }
 }

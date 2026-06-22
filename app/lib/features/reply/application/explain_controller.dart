@@ -7,10 +7,11 @@ import '../domain/reply_models.dart';
 part 'explain_controller.g.dart';
 
 class ExplainState {
-  const ExplainState({this.isLoading = false, this.error});
+  const ExplainState({this.isLoading = false, this.error, this.errorCode});
 
   final bool isLoading;
   final String? error;
+  final String? errorCode;
 }
 
 @riverpod
@@ -42,10 +43,16 @@ class ExplainController extends _$ExplainController {
       state = const ExplainState();
       return result;
     } on ApiError catch (error) {
-      state = ExplainState(error: error.message);
+      state = ExplainState(
+        error: error.displayMessage(
+          fallback: 'Unable to explain this message.',
+        ),
+        errorCode: error.code ?? 'NETWORK_ERROR',
+      );
     } catch (_) {
       state = const ExplainState(
         error: 'Something went wrong. Please try again.',
+        errorCode: 'UNKNOWN_ERROR',
       );
     }
     return null;

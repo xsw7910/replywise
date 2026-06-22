@@ -8,8 +8,11 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
+import '../../core/widgets/inline_error.dart';
+import '../../core/widgets/usage_badge.dart';
 import '../auth/application/auth_controller.dart';
 import '../auth/auth_state.dart';
+import '../entitlement/usage_controller.dart';
 import 'application/health_controller.dart';
 import 'data/health_repository.dart';
 
@@ -26,6 +29,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final healthState = ref.watch(healthControllerProvider);
     final authState = ref.watch(authControllerProvider);
+    final usageState = ref.watch(usageControllerProvider);
 
     return AppPage(
       title: 'Settings',
@@ -55,20 +59,20 @@ class SettingsScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Free preview',
-                            style: AppTextStyles.titleMedium,
-                          ),
-                          Text(
-                            'Explore available plans',
-                            style: AppTextStyles.bodyMedium,
+                          Text('Your plan', style: AppTextStyles.titleMedium),
+                          const SizedBox(height: 6),
+                          UsageBadge(
+                            state: usageState,
+                            onRetry: () => ref
+                                .read(usageControllerProvider.notifier)
+                                .refresh(),
                           ),
                         ],
                       ),
                     ),
                     FilledButton.tonal(
                       onPressed: () => context.push(AppRoutes.paywall),
-                      child: const Text('View'),
+                      child: const Text('Plans'),
                     ),
                   ],
                 ),
@@ -283,7 +287,7 @@ class _BackendStatusCard extends StatelessWidget {
                 ),
               ],
             ),
-            error: (error, _) => Column(
+            error: (_, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const _StatusRow(
@@ -292,11 +296,11 @@ class _BackendStatusCard extends StatelessWidget {
                   title: 'Connection failed',
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  error.toString(),
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.error,
-                  ),
+                InlineError(
+                  message:
+                      'We couldn’t reach the service. Check your connection and try again.',
+                  actionLabel: 'Retry',
+                  onAction: onRefresh,
                 ),
               ],
             ),

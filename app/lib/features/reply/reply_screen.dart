@@ -4,13 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/guidance_library.dart';
+import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
+import '../../core/widgets/usage_badge.dart';
 import 'application/explain_controller.dart';
 import 'application/reply_controller.dart';
 import 'domain/reply_models.dart';
@@ -190,13 +191,13 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             style: AppTextStyles.headlineMedium,
           ),
           const SizedBox(height: 5),
-          Text(
-            usageState.usage.isPremium
-                ? 'Premium'
-                : usageState.usage.freeUsesLeft == null
-                ? 'Checking remaining uses…'
-                : '${usageState.usage.freeUsesLeft} free uses left · ${usageState.usage.paidCredits} credits',
-            style: AppTextStyles.labelMedium,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: UsageBadge(
+              state: usageState,
+              onRetry: () =>
+                  ref.read(usageControllerProvider.notifier).refresh(),
+            ),
           ),
           const SizedBox(height: 5),
           Text(
@@ -226,11 +227,19 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.lightbulb_outline_rounded, size: 18),
-                    label: const Text('Explain this message'),
+                    label: Text(
+                      explainState.isLoading
+                          ? 'Explaining…'
+                          : 'Explain this message',
+                    ),
                   ),
                 ),
                 if (explainState.error != null)
-                  _InlineError(message: explainState.error!),
+                  InlineError(
+                    message: explainState.error!,
+                    actionLabel: 'Try again',
+                    onAction: _explain,
+                  ),
               ],
             ),
           ),
@@ -335,14 +344,40 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
               replyState.isLoading ? 'Generating…' : 'Generate Reply',
             ),
           ),
+          if (replyState.isLoading) ...[
+            const SizedBox(height: 10),
+            Text(
+              'Creating a few natural options…',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.labelMedium,
+            ),
+          ],
           if (replyState.error != null) ...[
             const SizedBox(height: 12),
-            _InlineError(message: replyState.error!),
+            InlineError(
+              message: replyState.error!,
+              actionLabel: replyState.errorCode == 'PAYWALL_REQUIRED'
+                  ? null
+                  : 'Try again',
+              onAction: replyState.errorCode == 'PAYWALL_REQUIRED'
+                  ? null
+                  : _generate,
+            ),
             if (replyState.errorCode == 'PAYWALL_REQUIRED')
               TextButton(
                 onPressed: () => context.push(AppRoutes.paywall),
                 child: const Text('View plans'),
               ),
+          ],
+          if (!replyState.isLoading &&
+              replyState.error == null &&
+              replyState.result == null) ...[
+            const SizedBox(height: 12),
+            Text(
+              'Your reply options will appear here.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.labelMedium,
+            ),
           ],
           if (replyState.result != null) ...[
             const SizedBox(height: 26),
@@ -366,14 +401,19 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             const SizedBox(height: 12),
             OutlinedButton.icon(
               onPressed: replyState.isLoading ? null : _generate,
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Regenerate'),
+              icon: replyState.isLoading
+                  ? const SizedBox.square(
+                      dimension: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.refresh_rounded),
+              label: const Text('Regenerate replies'),
             ),
             if (!usageState.usage.isPremium)
               Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
-                  'Regenerating consumes 1 use.',
+                  'Regenerating creates new replies and uses 1 generation.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.labelMedium,
                 ),
@@ -402,28 +442,6 @@ class _ExplanationRow extends StatelessWidget {
           const SizedBox(height: 3),
           Text(text, style: AppTextStyles.bodyMedium),
         ],
-      ),
-    );
-  }
-}
-
-class _InlineError extends StatelessWidget {
-  const _InlineError({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.error.withAlpha(18),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        message,
-        style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
       ),
     );
   }

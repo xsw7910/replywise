@@ -110,7 +110,10 @@ void main() {
 
       final state = c.read(replyControllerProvider);
       expect(state.errorCode, 'PAYWALL_REQUIRED');
-      expect(state.error, 'No uses remaining.');
+      expect(
+        state.error,
+        'You have no generations left. Choose Premium or add credits to continue.',
+      );
       expect(state.isLoading, isFalse);
       expect(state.result, isNull);
     });
@@ -131,6 +134,27 @@ void main() {
       final state = c.read(replyControllerProvider);
       expect(state.errorCode, 'RATE_LIMITED');
       expect(state.isLoading, isFalse);
+    });
+
+    test('does not expose raw backend error messages', () async {
+      final c = _container(
+        replyRepo: _FakeReplyRepo(
+          error: const ApiError(
+            code: 'MODEL_UNAVAILABLE',
+            message: 'provider_timeout: upstream stack trace',
+            statusCode: 503,
+          ),
+        ),
+      );
+
+      await c.read(replyControllerProvider.notifier).generate(_request);
+
+      final state = c.read(replyControllerProvider);
+      expect(
+        state.error,
+        'The writing service is temporarily unavailable. Please try again.',
+      );
+      expect(state.error, isNot(contains('stack trace')));
     });
 
     test('preserves previous result when error occurs', () async {

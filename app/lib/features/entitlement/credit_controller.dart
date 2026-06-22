@@ -42,11 +42,12 @@ class CreditController extends Notifier<CreditState> {
     if (state.isLoading || state.packages.isNotEmpty) return;
     state = CreditState(isLoading: true);
     try {
-      await ref.read(revenueCatGatewayProvider).configure(
-        apiKey: _apiKey,
-        appUserId: appUserId,
-      );
-      final packages = await ref.read(revenueCatGatewayProvider).loadCreditPackages();
+      await ref
+          .read(revenueCatGatewayProvider)
+          .configure(apiKey: _apiKey, appUserId: appUserId);
+      final packages = await ref
+          .read(revenueCatGatewayProvider)
+          .loadCreditPackages();
       state = CreditState(packages: packages);
     } catch (error) {
       state = CreditState(error: _message(error));
@@ -58,10 +59,9 @@ class CreditController extends Notifier<CreditState> {
   Future<bool> purchase(String appUserId, CreditPackage package) async {
     state = CreditState(packages: state.packages, isPurchasing: true);
     try {
-      await ref.read(revenueCatGatewayProvider).configure(
-        apiKey: _apiKey,
-        appUserId: appUserId,
-      );
+      await ref
+          .read(revenueCatGatewayProvider)
+          .configure(apiKey: _apiKey, appUserId: appUserId);
       await ref.read(revenueCatGatewayProvider).purchaseCredit(package);
       await ref.read(creditRepositoryProvider).sync();
       await ref.read(usageControllerProvider.notifier).refresh();
@@ -79,7 +79,11 @@ class CreditController extends Notifier<CreditState> {
 
   String _message(Object error) {
     if (error is SubscriptionException) return error.message;
-    if (error is ApiError) return error.message;
+    if (error is ApiError) {
+      return error.displayMessage(
+        fallback: 'Unable to complete the credit purchase.',
+      );
+    }
     return 'Something went wrong. Please try again.';
   }
 
