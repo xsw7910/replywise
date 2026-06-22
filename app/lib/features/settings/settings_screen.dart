@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/config/app_config.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/glass_card.dart';
+import 'application/health_controller.dart';
+import 'data/health_repository.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final healthState = ref.watch(healthControllerProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
@@ -75,6 +80,117 @@ class SettingsScreen extends StatelessWidget {
                   label: 'Environment',
                   trailing: Text(AppConfig.env),
                   onTap: null,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          _BackendStatusCard(
+            healthState: healthState,
+            onRefresh: () =>
+                ref.read(healthControllerProvider.notifier).refresh(),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _BackendStatusCard extends StatelessWidget {
+  const _BackendStatusCard({
+    required this.healthState,
+    required this.onRefresh,
+  });
+
+  final AsyncValue<HealthResponse> healthState;
+  final VoidCallback onRefresh;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Developer', style: AppTextStyles.titleMedium),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Text('Backend Status', style: AppTextStyles.bodyLarge),
+              const Spacer(),
+              TextButton.icon(
+                onPressed: healthState.isLoading ? null : onRefresh,
+                icon: const Icon(Icons.refresh_rounded, size: 16),
+                label: const Text('Refresh'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          healthState.when(
+            loading: () => Row(
+              children: [
+                const SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                const SizedBox(width: 8),
+                Text('Loading...', style: AppTextStyles.bodyMedium),
+              ],
+            ),
+            data: (health) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      color: AppColors.success,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Connected',
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(color: AppColors.success),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text('status: ${health.status}',
+                    style: AppTextStyles.bodyMedium),
+                Text('service: ${health.service}',
+                    style: AppTextStyles.bodyMedium),
+              ],
+            ),
+            error: (error, _) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.error_rounded,
+                      color: AppColors.error,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Connection Failed',
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(color: AppColors.error),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  error.toString(),
+                  style: AppTextStyles.bodyMedium
+                      .copyWith(color: AppColors.error),
                 ),
               ],
             ),
