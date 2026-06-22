@@ -9,6 +9,8 @@ import 'package:replywise/features/auth/data/auth_repository.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/paywall/paywall_screen.dart';
 import 'package:replywise/features/reply/reply_screen.dart';
+import 'package:replywise/features/entitlement/subscription_repository.dart';
+import 'package:replywise/features/entitlement/entitlement_state.dart';
 
 // ── Auth fakes ─────────────────────────────────────────────────────────────
 // Overriding the underlying providers keeps tests network-free without
@@ -53,6 +55,39 @@ List<Override> get _authOverrides => [
   authRepositoryProvider.overrideWith((ref) => _FakeAuthRepo()),
 ];
 
+class _FakeSubscriptionRepo implements SubscriptionRepository {
+  @override
+  Future<SubscriptionOffer> load(String appUserId) async =>
+      const SubscriptionOffer(
+        packageIdentifier: r'$rc_monthly',
+        productIdentifier: 'reply_premium_monthly',
+        priceString: r'$4.99',
+      );
+
+  @override
+  Future<EntitlementState> purchase(
+    String appUserId,
+    SubscriptionOffer offer,
+  ) async => const EntitlementState(
+    isPremium: true,
+    freeUsesLimit: 5,
+    freeUsesUsed: 0,
+    freeUsesLeft: null,
+    paidCredits: 0,
+    upgradeRequired: false,
+  );
+
+  @override
+  Future<EntitlementState> restore(String appUserId) => purchase(
+    appUserId,
+    const SubscriptionOffer(
+      packageIdentifier: r'$rc_monthly',
+      productIdentifier: 'reply_premium_monthly',
+      priceString: r'$4.99',
+    ),
+  );
+}
+
 // ── Tests ──────────────────────────────────────────────────────────────────
 
 void main() {
@@ -96,22 +131,25 @@ void main() {
     expect(field.controller?.text, 'Be polite');
   });
 
-  testWidgets('paywall clearly remains a static two-path preview', (
+  testWidgets('paywall shows verified monthly subscription terms', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const MaterialApp(home: PaywallScreen()));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          ..._authOverrides,
+          subscriptionRepositoryProvider.overrideWithValue(
+            _FakeSubscriptionRepo(),
+          ),
+        ],
+        child: const MaterialApp(home: PaywallScreen()),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Start 3-day Free Trial'), findsOneWidget);
-    expect(find.text('Buy Credits'), findsOneWidget);
-    expect(find.textContaining('static preview'), findsOneWidget);
-
-    await tester.tap(find.text('Start 3-day Free Trial'));
-    await tester.pump();
-
-    expect(
-      find.text('Purchases are not available in this preview.'),
-      findsOneWidget,
-    );
+    expect(find.text('Restore purchases'), findsOneWidget);
+    expect(find.textContaining(r'$4.99/month'), findsOneWidget);
+    expect(find.text('Buy Credits'), findsNothing);
   });
 }

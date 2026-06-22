@@ -1,27 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
+import '../auth/application/auth_controller.dart';
+import '../entitlement/subscription_controller.dart';
 
-class PaywallScreen extends StatelessWidget {
+class PaywallScreen extends ConsumerStatefulWidget {
   const PaywallScreen({super.key});
 
-  void _showPreviewMessage(BuildContext context) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          content: Text('Purchases are not available in this preview.'),
-        ),
-      );
-  }
+  @override
+  ConsumerState<PaywallScreen> createState() => _PaywallScreenState();
+}
+
+class _PaywallScreenState extends ConsumerState<PaywallScreen> {
+  String? _scheduledUserId;
 
   @override
   Widget build(BuildContext context) {
+    final auth = ref.watch(authControllerProvider);
+    final subscription = ref.watch(subscriptionControllerProvider);
+    final appUserId = auth.appUserId;
+
+    if (appUserId != null &&
+        subscription.appUserId != appUserId &&
+        _scheduledUserId != appUserId) {
+      _scheduledUserId = appUserId;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref.read(subscriptionControllerProvider.notifier).load(appUserId);
+        }
+      });
+    }
+
+    ref.listen(subscriptionControllerProvider, (previous, next) {
+      if (next.message != null && next.message != previous?.message) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(content: Text(next.message!)));
+      }
+    });
+
+    final price = subscription.offer?.priceString ?? 'the displayed price';
     return AppPage(
-      title: 'Choose your plan',
+      title: 'ReplyWise Premium',
       showBackButton: true,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
@@ -39,7 +63,7 @@ class PaywallScreen extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'This is a static preview of the two planned ways to continue.',
+            'Unlimited Reply and Polish generations while Premium is active.',
             textAlign: TextAlign.center,
             style: AppTextStyles.bodyMedium,
           ),
@@ -57,70 +81,80 @@ class PaywallScreen extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'ReplyWise Premium',
+                        'Monthly Premium',
                         style: AppTextStyles.titleMedium,
                       ),
                     ),
-                    const _Badge(label: 'Best value'),
+                    const _Badge(label: '3 days free'),
                   ],
                 ),
                 const SizedBox(height: 16),
-                const _Benefit(text: 'Unlimited reply and polish previews'),
-                const _Benefit(text: 'Premium writing experience'),
-                const _Benefit(text: 'Cancel anytime'),
+                const _Benefit(text: 'Unlimited Reply generations'),
+                const _Benefit(text: 'Unlimited Polish generations'),
+                const _Benefit(text: 'Free and credit balances stay preserved'),
                 const SizedBox(height: 18),
-                ElevatedButton(
-                  onPressed: () => _showPreviewMessage(context),
-                  child: const Text('Start 3-day Free Trial'),
-                ),
+                if (subscription.isLoading)
+                  const Center(child: CircularProgressIndicator())
+                else
+                  ElevatedButton(
+                    onPressed: subscription.offer == null || subscription.isBusy
+                        ? null
+                        : () => ref
+                              .read(subscriptionControllerProvider.notifier)
+                              .purchase(),
+                    child: subscription.isPurchasing
+                        ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Start 3-day Free Trial'),
+                  ),
                 const SizedBox(height: 8),
                 Text(
-                  'Free for 3 days, then billed monthly at the price shown at checkout. Cancel anytime.',
+                  'Free for 3 days, then $price/month. Cancel anytime.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.labelMedium,
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          GlassCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Buy Credits', style: AppTextStyles.titleMedium),
-                const SizedBox(height: 4),
-                Text(
-                  'One-time packs for occasional use. No subscription.',
-                  style: AppTextStyles.bodyMedium,
-                ),
-                const SizedBox(height: 14),
-                for (final credits in const [10, 50, 100])
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: OutlinedButton(
-                      onPressed: () => _showPreviewMessage(context),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
-                        alignment: Alignment.centerLeft,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.bolt_rounded, size: 18),
-                          const SizedBox(width: 10),
-                          Text('$credits AI uses'),
-                          const Spacer(),
-                          const Text('Preview'),
-                        ],
-                      ),
+                if (subscription.error != null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    subscription.error!,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.error,
                     ),
                   ),
+                  if (subscription.offer == null && appUserId != null)
+                    TextButton(
+                      onPressed: subscription.isBusy
+                          ? null
+                          : () => ref
+                                .read(subscriptionControllerProvider.notifier)
+                                .load(appUserId),
+                      child: const Text('Try again'),
+                    ),
+                ],
               ],
             ),
           ),
           const SizedBox(height: 16),
           TextButton(
-            onPressed: () => _showPreviewMessage(context),
-            child: const Text('Restore purchases'),
+            onPressed: appUserId == null || subscription.isBusy
+                ? null
+                : () => ref
+                      .read(subscriptionControllerProvider.notifier)
+                      .restore(),
+            child: subscription.isRestoring
+                ? const Text('Restoring…')
+                : const Text('Restore purchases'),
+          ),
+          Text(
+            'Purchases are verified by ReplyWise before Premium access is enabled.',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.labelMedium,
           ),
         ],
       ),
@@ -130,45 +164,39 @@ class PaywallScreen extends StatelessWidget {
 
 class _Benefit extends StatelessWidget {
   const _Benefit({required this.text});
-
   final String text;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.check_circle_rounded,
-            color: AppColors.success,
-            size: 18,
-          ),
-          const SizedBox(width: 8),
-          Expanded(child: Text(text, style: AppTextStyles.bodyMedium)),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      children: [
+        const Icon(
+          Icons.check_circle_rounded,
+          color: AppColors.success,
+          size: 18,
+        ),
+        const SizedBox(width: 8),
+        Expanded(child: Text(text, style: AppTextStyles.bodyMedium)),
+      ],
+    ),
+  );
 }
 
 class _Badge extends StatelessWidget {
   const _Badge({required this.label});
-
   final String label;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withAlpha(24),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.labelMedium.copyWith(color: AppColors.primaryDark),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+    decoration: BoxDecoration(
+      color: AppColors.primary.withAlpha(24),
+      borderRadius: BorderRadius.circular(999),
+    ),
+    child: Text(
+      label,
+      style: AppTextStyles.labelMedium.copyWith(color: AppColors.primaryDark),
+    ),
+  );
 }

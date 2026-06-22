@@ -62,7 +62,12 @@ async def cleanup_expired(db: AsyncSession) -> None:
 
 
 async def begin_generation(
-    db: AsyncSession, user_id: int, endpoint: str, key: str, request_hash: str
+    db: AsyncSession,
+    user_id: int,
+    endpoint: str,
+    key: str,
+    request_hash: str,
+    is_premium: bool = False,
 ) -> tuple[str | None, dict | None]:
     await cleanup_expired(db)
 
@@ -79,25 +84,27 @@ async def begin_generation(
         await db.delete(existing)
         await db.commit()
 
-    # Atomic deduction: free first, then paid credits
+    # Premium still participates in idempotency and rate limiting, but not billing.
     await ensure_summary(db, user_id)
     now = datetime.now(timezone.utc)
-    free = await db.execute(
-        update(UsageSummary)
-        .where(UsageSummary.user_id == user_id, UsageSummary.free_uses_used < UsageSummary.free_uses_limit)
-        .values(free_uses_used=UsageSummary.free_uses_used + 1, updated_at=now)
-    )
-    source = "free" if free.rowcount == 1 else None
-    if source is None:
-        credit = await db.execute(
+    source = None
+    if not is_premium:
+        free = await db.execute(
             update(UsageSummary)
-            .where(UsageSummary.user_id == user_id, UsageSummary.paid_credits > 0)
-            .values(paid_credits=UsageSummary.paid_credits - 1, updated_at=now)
+            .where(UsageSummary.user_id == user_id, UsageSummary.free_uses_used < UsageSummary.free_uses_limit)
+            .values(free_uses_used=UsageSummary.free_uses_used + 1, updated_at=now)
         )
-        source = "credit" if credit.rowcount == 1 else None
-    if source is None:
-        await db.rollback()
-        raise ApiException("PAYWALL_REQUIRED", "No AI uses remaining.", 402)
+        source = "free" if free.rowcount == 1 else None
+        if source is None:
+            credit = await db.execute(
+                update(UsageSummary)
+                .where(UsageSummary.user_id == user_id, UsageSummary.paid_credits > 0)
+                .values(paid_credits=UsageSummary.paid_credits - 1, updated_at=now)
+            )
+            source = "credit" if credit.rowcount == 1 else None
+        if source is None:
+            await db.rollback()
+            raise ApiException("PAYWALL_REQUIRED", "No AI uses remaining.", 402)
 
     # Commit deduction + processing key in one transaction
     db.add(
@@ -143,10 +150,20 @@ async def begin_generation(
 
 
 async def finish_generation(
-    db: AsyncSession, user_id: int, endpoint: str, key: str, source: str, response: dict
+    db: AsyncSession,
+    user_id: int,
+    endpoint: str,
+    key: str,
+    source: str | None,
+    response: dict,
 ) -> dict:
     summary = await ensure_summary(db, user_id)
-    usage = {**summary_dict(summary), "creditsUsed": 1, "source": source}
+    is_premium = source is None
+    usage = {
+        **summary_dict(summary, is_premium=is_premium),
+        "creditsUsed": 0 if is_premium else 1,
+        "source": source,
+    }
     combined = {**response, "usage": usage}
     idem = await db.get(IdempotencyKey, key)
     idem.status = "succeeded"
@@ -154,7 +171,7 @@ async def finish_generation(
     db.add(UsageEvent(
         user_id=user_id,
         endpoint=endpoint,
-        credits_used=1,
+        credits_used=0 if is_premium else 1,
         source=source,
         prompt_version=f"{endpoint}_v1",
         success=True,
@@ -164,7 +181,12 @@ async def finish_generation(
 
 
 async def rollback_generation(
-    db: AsyncSession, user_id: int, endpoint: str, key: str, source: str, error_code: str
+    db: AsyncSession,
+    user_id: int,
+    endpoint: str,
+    key: str,
+    source: str | None,
+    error_code: str,
 ) -> None:
     if source == "free":
         await db.execute(
@@ -172,7 +194,7 @@ async def rollback_generation(
             .where(UsageSummary.user_id == user_id, UsageSummary.free_uses_used > 0)
             .values(free_uses_used=UsageSummary.free_uses_used - 1)
         )
-    else:
+    elif source == "credit":
         await db.execute(
             update(UsageSummary)
             .where(UsageSummary.user_id == user_id)

@@ -36,7 +36,7 @@ class UsageResponse(ApiModel):
     paid_credits: int
     upgrade_required: bool
     credits_used: int = 1
-    source: Literal["free", "credit"]
+    source: Literal["free", "credit"] | None
 
 
 class ReplyResponse(ApiModel):

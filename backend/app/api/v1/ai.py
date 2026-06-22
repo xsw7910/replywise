@@ -26,6 +26,7 @@ from app.services.usage_service import (
     finish_generation,
     rollback_generation,
 )
+from app.services.entitlement_service import is_user_premium
 
 router = APIRouter(prefix="/v1", tags=["ai"])
 
@@ -97,7 +98,14 @@ async def reply(
     if not idempotency_key:
         raise ApiException("VALIDATION_ERROR", "X-Idempotency-Key is required", 400)
     _, request_hash = canonicalize(body)
-    source, cached = await begin_generation(db, current_user.id, "reply", idempotency_key, request_hash)
+    source, cached = await begin_generation(
+        db,
+        current_user.id,
+        "reply",
+        idempotency_key,
+        request_hash,
+        is_premium=await is_user_premium(db, current_user.id),
+    )
     if cached is not None:
         return ReplyResponse.model_validate(cached)
     try:
@@ -129,7 +137,14 @@ async def polish(
     if not idempotency_key:
         raise ApiException("VALIDATION_ERROR", "X-Idempotency-Key is required", 400)
     _, request_hash = canonicalize(body)
-    source, cached = await begin_generation(db, current_user.id, "polish", idempotency_key, request_hash)
+    source, cached = await begin_generation(
+        db,
+        current_user.id,
+        "polish",
+        idempotency_key,
+        request_hash,
+        is_premium=await is_user_premium(db, current_user.id),
+    )
     if cached is not None:
         return PolishResponse.model_validate(cached)
     try:

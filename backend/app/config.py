@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     free_lifetime_limit: int = 5
     generation_rate_per_minute: int = 8
     idempotency_ttl_seconds: int = 86400
+    revenuecat_secret_api_key: str = ""
+    revenuecat_entitlement_id: str = "premium"
+    revenuecat_subscription_product_id: str = "reply_premium_monthly"
+    revenuecat_api_base_url: str = "https://api.revenuecat.com/v1"
 
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":
@@ -36,6 +40,8 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "SERVER_PEPPER must be set to a non-development value in production"
                 )
+            if not self.revenuecat_secret_api_key:
+                raise ValueError("REVENUECAT_SECRET_API_KEY must be set in production")
         return self
 
 

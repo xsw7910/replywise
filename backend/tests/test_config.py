@@ -37,5 +37,6 @@ def test_production_accepts_explicit_non_development_secrets() -> None:
         app_env="prod",
         jwt_secret="production-secret",
         server_pepper="production-pepper",
+        revenuecat_secret_api_key="production-revenuecat-secret",
     )
     assert config.app_env == "prod"

@@ -7,6 +7,7 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
 from app.services.usage_service import ensure_summary, summary_dict
+from app.services.entitlement_service import is_user_premium
 
 router = APIRouter(prefix="/v1", tags=["me"])
 
@@ -30,7 +31,10 @@ async def me(
     db: AsyncSession = Depends(get_db),
 ) -> MeResponse:
     summary = await ensure_summary(db, current_user.id)
-    d = summary_dict(summary, is_premium=False)
+    d = summary_dict(
+        summary,
+        is_premium=await is_user_premium(db, current_user.id),
+    )
     return MeResponse(
         user_id=current_user.id,
         app_user_id=current_user.app_user_id,
