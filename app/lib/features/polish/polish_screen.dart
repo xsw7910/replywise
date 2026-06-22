@@ -11,6 +11,7 @@ import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import 'application/polish_controller.dart';
 import 'domain/polish_models.dart';
+import '../entitlement/usage_controller.dart';
 
 class PolishScreen extends ConsumerStatefulWidget {
   const PolishScreen({super.key});
@@ -55,6 +56,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   @override
   Widget build(BuildContext context) {
     final polishState = ref.watch(polishControllerProvider);
+    final usageState = ref.watch(usageControllerProvider);
 
     return AppPage(
       title: 'Polish',
@@ -72,6 +74,15 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
           Text(
             'Make your English sound natural',
             style: AppTextStyles.headlineMedium,
+          ),
+          const SizedBox(height: 5),
+          Text(
+            usageState.usage.isPremium
+                ? 'Premium'
+                : usageState.usage.freeUsesLeft == null
+                ? 'Checking remaining uses…'
+                : '${usageState.usage.freeUsesLeft} free uses left · ${usageState.usage.paidCredits} credits',
+            style: AppTextStyles.labelMedium,
           ),
           const SizedBox(height: 5),
           Text(
@@ -153,6 +164,11 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                 ),
               ),
             ),
+            if (polishState.errorCode == 'PAYWALL_REQUIRED')
+              TextButton(
+                onPressed: () => context.push(AppRoutes.paywall),
+                child: const Text('View plans'),
+              ),
           ],
           if (polishState.result != null) ...[
             const SizedBox(height: 26),
@@ -177,6 +193,21 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                 ],
               ),
             ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: polishState.isLoading ? null : _polish,
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Regenerate'),
+            ),
+            if (!usageState.usage.isPremium)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  'Regenerating consumes 1 use.',
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.labelMedium,
+                ),
+              ),
           ],
         ],
       ),

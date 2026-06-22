@@ -3,15 +3,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/network/api_error.dart';
 import '../data/reply_repository.dart';
 import '../domain/reply_models.dart';
+import '../../entitlement/usage_controller.dart';
 
 part 'reply_controller.g.dart';
 
 class ReplyState {
-  const ReplyState({this.isLoading = false, this.result, this.error});
+  const ReplyState({
+    this.isLoading = false,
+    this.result,
+    this.error,
+    this.errorCode,
+  });
 
   final bool isLoading;
   final ReplyResult? result;
   final String? error;
+  final String? errorCode;
 }
 
 @riverpod
@@ -30,8 +37,13 @@ class ReplyController extends _$ReplyController {
     try {
       final result = await ref.read(replyRepositoryProvider).generate(request);
       state = ReplyState(result: result);
+      await ref.read(usageControllerProvider.notifier).refresh();
     } on ApiError catch (error) {
-      state = ReplyState(result: state.result, error: error.message);
+      state = ReplyState(
+        result: state.result,
+        error: error.message,
+        errorCode: error.code,
+      );
     } catch (_) {
       state = ReplyState(
         result: state.result,

@@ -1,12 +1,35 @@
-// Stub — subscription / paywall logic is deferred.
-// This file will hold the Riverpod entitlement state once implemented.
-
-enum EntitlementTier { free, pro }
-
 class EntitlementState {
-  const EntitlementState({this.tier = EntitlementTier.free});
+  const EntitlementState({
+    required this.isPremium,
+    required this.freeUsesLimit,
+    required this.freeUsesUsed,
+    required this.freeUsesLeft,
+    required this.paidCredits,
+    required this.upgradeRequired,
+  });
 
-  final EntitlementTier tier;
+  const EntitlementState.initial()
+    : isPremium = false,
+      freeUsesLimit = 5,
+      freeUsesUsed = 0,
+      freeUsesLeft = null,
+      paidCredits = 0,
+      upgradeRequired = false;
 
-  bool get isPro => tier == EntitlementTier.pro;
+  factory EntitlementState.fromJson(Map<String, dynamic> json) =>
+      EntitlementState(
+        isPremium: json['isPremium'] as bool? ?? false,
+        freeUsesLimit: json['freeUsesLimit'] as int? ?? 5,
+        freeUsesUsed: json['freeUsesUsed'] as int? ?? 0,
+        freeUsesLeft: json['freeUsesLeft'] as int?,
+        paidCredits: json['paidCredits'] as int? ?? 0,
+        upgradeRequired: json['upgradeRequired'] as bool? ?? false,
+      );
+
+  final bool isPremium;
+  final int freeUsesLimit;
+  final int freeUsesUsed;
+  final int? freeUsesLeft;
+  final int paidCredits;
+  final bool upgradeRequired;
 }

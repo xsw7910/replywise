@@ -14,6 +14,7 @@ import '../../core/widgets/labeled_text_field.dart';
 import 'application/explain_controller.dart';
 import 'application/reply_controller.dart';
 import 'domain/reply_models.dart';
+import '../entitlement/usage_controller.dart';
 
 class ReplyScreen extends ConsumerStatefulWidget {
   const ReplyScreen({super.key});
@@ -169,6 +170,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   Widget build(BuildContext context) {
     final replyState = ref.watch(replyControllerProvider);
     final explainState = ref.watch(explainControllerProvider);
+    final usageState = ref.watch(usageControllerProvider);
 
     return AppPage(
       title: 'Reply',
@@ -186,6 +188,15 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           Text(
             'Turn your intent into natural English',
             style: AppTextStyles.headlineMedium,
+          ),
+          const SizedBox(height: 5),
+          Text(
+            usageState.usage.isPremium
+                ? 'Premium'
+                : usageState.usage.freeUsesLeft == null
+                ? 'Checking remaining uses…'
+                : '${usageState.usage.freeUsesLeft} free uses left · ${usageState.usage.paidCredits} credits',
+            style: AppTextStyles.labelMedium,
           ),
           const SizedBox(height: 5),
           Text(
@@ -327,6 +338,11 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           if (replyState.error != null) ...[
             const SizedBox(height: 12),
             _InlineError(message: replyState.error!),
+            if (replyState.errorCode == 'PAYWALL_REQUIRED')
+              TextButton(
+                onPressed: () => context.push(AppRoutes.paywall),
+                child: const Text('View plans'),
+              ),
           ],
           if (replyState.result != null) ...[
             const SizedBox(height: 26),
@@ -353,6 +369,15 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Regenerate'),
             ),
+            if (!usageState.usage.isPremium)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  'Regenerating consumes 1 use.',
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.labelMedium,
+                ),
+              ),
           ],
         ],
       ),

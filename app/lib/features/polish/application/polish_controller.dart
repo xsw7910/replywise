@@ -3,15 +3,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/network/api_error.dart';
 import '../data/polish_repository.dart';
 import '../domain/polish_models.dart';
+import '../../entitlement/usage_controller.dart';
 
 part 'polish_controller.g.dart';
 
 class PolishState {
-  const PolishState({this.isLoading = false, this.result, this.error});
+  const PolishState({
+    this.isLoading = false,
+    this.result,
+    this.error,
+    this.errorCode,
+  });
 
   final bool isLoading;
   final PolishResult? result;
   final String? error;
+  final String? errorCode;
 }
 
 @riverpod
@@ -30,8 +37,13 @@ class PolishController extends _$PolishController {
     try {
       final result = await ref.read(polishRepositoryProvider).polish(request);
       state = PolishState(result: result);
+      await ref.read(usageControllerProvider.notifier).refresh();
     } on ApiError catch (error) {
-      state = PolishState(result: state.result, error: error.message);
+      state = PolishState(
+        result: state.result,
+        error: error.message,
+        errorCode: error.code,
+      );
     } catch (_) {
       state = PolishState(
         result: state.result,

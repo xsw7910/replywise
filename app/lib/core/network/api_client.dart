@@ -42,8 +42,8 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
   }) => _authedDio.get<T>(path, queryParameters: queryParameters);
 
-  Future<Response<T>> post<T>(String path, {dynamic data}) =>
-      _authedDio.post<T>(path, data: data);
+  Future<Response<T>> post<T>(String path, {dynamic data, Options? options}) =>
+      _authedDio.post<T>(path, data: data, options: options);
 }
 
 @Riverpod(keepAlive: true)
