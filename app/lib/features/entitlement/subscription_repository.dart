@@ -26,15 +26,33 @@ class SubscriptionException implements Exception {
   final bool cancelled;
 }
 
+class CreditPackage {
+  const CreditPackage({
+    required this.packageIdentifier,
+    required this.productIdentifier,
+    required this.credits,
+    required this.priceString,
+  });
+
+  final String packageIdentifier;
+  final String productIdentifier;
+  final int credits;
+  final String priceString;
+}
+
 abstract class RevenueCatGateway {
   Future<void> configure({required String apiKey, required String appUserId});
   Future<SubscriptionOffer> loadMonthlyOffer();
   Future<void> purchase(SubscriptionOffer offer);
   Future<void> restore();
+  Future<List<CreditPackage>> loadCreditPackages();
+  Future<void> purchaseCredit(CreditPackage package);
 }
 
 class SdkRevenueCatGateway implements RevenueCatGateway {
   String? _configuredAppUserId;
+  Future<void>? _initializationFuture;
+  Future<void>? _identityFuture;
   final Map<String, Package> _packages = {};
 
   @override
@@ -47,14 +65,50 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
         'Subscriptions are not configured for this build.',
       );
     }
-    if (_configuredAppUserId == appUserId) return;
-    if (_configuredAppUserId != null) {
-      await Purchases.logIn(appUserId);
-      _configuredAppUserId = appUserId;
+    if (_configuredAppUserId == appUserId && _identityFuture == null) return;
+
+    final initial = _initializationFuture;
+    if (initial != null) {
+      await initial;
+      await _logInSingleFlight(appUserId);
       return;
     }
+
+    // Store the future before awaiting it so subscription and credit package
+    // loaders share one Purchases.configure call for the app session.
+    final future = _configureOnce(apiKey, appUserId);
+    _initializationFuture = future;
+    await future;
+  }
+
+  Future<void> _configureOnce(String apiKey, String appUserId) async {
     final configuration = PurchasesConfiguration(apiKey)..appUserID = appUserId;
     await Purchases.configure(configuration);
+    _configuredAppUserId = appUserId;
+  }
+
+  Future<void> _logInSingleFlight(String appUserId) async {
+    while (true) {
+      final existing = _identityFuture;
+      if (existing != null) {
+        await existing;
+        continue;
+      }
+      if (_configuredAppUserId == appUserId) return;
+      final future = _logIn(appUserId);
+      _identityFuture = future;
+      try {
+        await future;
+      } finally {
+        if (identical(_identityFuture, future)) {
+          _identityFuture = null;
+        }
+      }
+    }
+  }
+
+  Future<void> _logIn(String appUserId) async {
+    await Purchases.logIn(appUserId);
     _configuredAppUserId = appUserId;
   }
 
@@ -101,6 +155,57 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
       await Purchases.restorePurchases();
     } on PlatformException {
       throw const SubscriptionException('Restore failed. Please try again.');
+    }
+  }
+
+  static const _creditsByProductId = {
+    'credits_10': 10,
+    'credits_50': 50,
+    'credits_100': 100,
+  };
+
+  @override
+  Future<List<CreditPackage>> loadCreditPackages() async {
+    final offerings = await Purchases.getOfferings();
+    final all = offerings.getOffering('default')?.availablePackages ?? [];
+    final result = <CreditPackage>[];
+    for (final package in all) {
+      final productId = package.storeProduct.identifier;
+      final credits = _creditsByProductId[productId];
+      if (credits == null) continue;
+      _packages[package.identifier] = package;
+      result.add(
+        CreditPackage(
+          packageIdentifier: package.identifier,
+          productIdentifier: productId,
+          credits: credits,
+          priceString: package.storeProduct.priceString,
+        ),
+      );
+    }
+    result.sort((a, b) => a.credits.compareTo(b.credits));
+    return result;
+  }
+
+  @override
+  Future<void> purchaseCredit(CreditPackage creditPackage) async {
+    final package = _packages[creditPackage.packageIdentifier];
+    if (package == null) {
+      throw const SubscriptionException(
+        'Reload credit packages and try again.',
+      );
+    }
+    try {
+      await Purchases.purchase(PurchaseParams.package(package));
+    } on PlatformException catch (error) {
+      final code = PurchasesErrorHelper.getErrorCode(error);
+      if (code == PurchasesErrorCode.purchaseCancelledError) {
+        throw const SubscriptionException(
+          'Purchase cancelled.',
+          cancelled: true,
+        );
+      }
+      throw const SubscriptionException('Purchase failed. Please try again.');
     }
   }
 }

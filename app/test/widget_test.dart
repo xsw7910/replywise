@@ -148,8 +148,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Start 3-day Free Trial'), findsOneWidget);
-    expect(find.text('Restore purchases'), findsOneWidget);
     expect(find.textContaining(r'$4.99/month'), findsOneWidget);
-    expect(find.text('Buy Credits'), findsNothing);
+
+    // Scroll to reveal items below the Buy Credits card.
+    await tester.scrollUntilVisible(
+      find.text('Restore purchases'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Restore purchases'), findsOneWidget);
   });
 }

@@ -9,9 +9,11 @@ from app.api.health import router as health_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.ai import router as ai_router
 from app.api.v1.me import router as me_router
+from app.api.v1.credits import router as credits_router
 from app.api.v1.entitlement import router as entitlement_router
 from app.config import settings
 from app.database import Base, engine
+import app.models.credit  # noqa: F401 — registers CreditPurchase with Base.metadata
 from app.errors import install_error_handlers
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(name)s  %(message)s")
@@ -43,6 +45,7 @@ def create_app() -> FastAPI:
     app.include_router(me_router)
     app.include_router(ai_router)
     app.include_router(entitlement_router)
+    app.include_router(credits_router)
     install_error_handlers(app)
     return app
 

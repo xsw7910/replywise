@@ -19,8 +19,14 @@ class VerifiedEntitlement:
     expires_at: datetime | None = None
 
 
+@dataclass(frozen=True)
+class ConsumableTransaction:
+    transaction_id: str
+    product_id: str
+
+
 class RevenueCatService:
-    async def verify(self, app_user_id: str) -> VerifiedEntitlement:
+    async def _fetch_subscriber_payload(self, app_user_id: str) -> dict:
         if not settings.revenuecat_secret_api_key:
             raise RevenueCatUnavailable("RevenueCat backend key is not configured")
 
@@ -44,6 +50,10 @@ class RevenueCatService:
 
         if not isinstance(payload, dict):
             raise RevenueCatUnavailable("RevenueCat returned an invalid response")
+        return payload
+
+    async def verify(self, app_user_id: str) -> VerifiedEntitlement:
+        payload = await self._fetch_subscriber_payload(app_user_id)
         entitlement_id = settings.revenuecat_entitlement_id
         subscriber = payload.get("subscriber")
         entitlements = subscriber.get("entitlements") if isinstance(subscriber, dict) else None
@@ -67,6 +77,27 @@ class RevenueCatService:
             product_identifier=product_identifier,
             expires_at=expires_at,
         )
+
+    async def fetch_consumable_transactions(
+        self, app_user_id: str
+    ) -> list[ConsumableTransaction]:
+        """Return all verified non-subscription (consumable) transactions for the user."""
+        payload = await self._fetch_subscriber_payload(app_user_id)
+        subscriber = payload.get("subscriber")
+        non_subs = subscriber.get("non_subscriptions") if isinstance(subscriber, dict) else None
+        if not isinstance(non_subs, dict):
+            return []
+        result: list[ConsumableTransaction] = []
+        for product_id, purchases in non_subs.items():
+            if not isinstance(purchases, list):
+                continue
+            for purchase in purchases:
+                if not isinstance(purchase, dict):
+                    continue
+                txn_id = purchase.get("id")
+                if txn_id and isinstance(txn_id, str):
+                    result.append(ConsumableTransaction(transaction_id=txn_id, product_id=product_id))
+        return result
 
 
 def _parse_datetime(value: object) -> datetime | None:

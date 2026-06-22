@@ -5,6 +5,7 @@ import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/application/auth_controller.dart';
 import 'features/auth/auth_state.dart';
+import 'features/entitlement/credit_controller.dart';
 import 'features/entitlement/usage_controller.dart';
 
 class ReplyWiseApp extends ConsumerWidget {
@@ -17,9 +18,10 @@ class ReplyWiseApp extends ConsumerWidget {
     ref.listen(authControllerProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated &&
           previous?.status != AuthStatus.authenticated) {
-        Future.microtask(
-          () => ref.read(usageControllerProvider.notifier).refresh(),
-        );
+        Future.microtask(() {
+          ref.read(usageControllerProvider.notifier).refresh();
+          ref.read(creditControllerProvider.notifier).syncCredits();
+        });
       }
     });
     final router = ref.watch(appRouterProvider);
