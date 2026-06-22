@@ -1,9 +1,9 @@
 param(
     [switch]$Clean,
-    [string]$ReplyBackendBaseUrl = "https://replace-with-production-backend.example",
-    [string]$ReplyEnv = "production",
-    [string]$RevenueCatAndroidApiKey = "REPLACE_WITH_REVENUECAT_ANDROID_API_KEY",
-    [string]$RevenueCatEntitlementId = "REPLACE_WITH_REVENUECAT_ENTITLEMENT_ID"
+    [Parameter(Mandatory)][string]$ReplyBackendBaseUrl,
+    [ValidateSet("prod")][string]$ReplyEnv = "prod",
+    [Parameter(Mandatory)][string]$RevenueCatAndroidApiKey,
+    [string]$RevenueCatEntitlementId = "premium"
 )
 
 Set-StrictMode -Version Latest
@@ -38,12 +38,15 @@ $AabPath = Join-Path $RepoRoot "app\build\app\outputs\bundle\release\app-release
 Write-Section "Release artifact"
 Write-Host $AabPath
 
-Write-Section "Manual release checklist"
-Write-Host "[ ] Verify dart-define production backend URL"
-Write-Host "[ ] Verify RevenueCat keys"
-Write-Host "[ ] Verify Google Play listing"
-Write-Host "[ ] Verify privacy policy and data safety"
-Write-Host "[ ] Verify internal testing track"
+Write-Section "Manual Google Play and RevenueCat checklist"
+Write-Host "[ ] Verify production /health over HTTPS"
+Write-Host "[ ] Verify package ID, version code, upload signing, and Play App Signing"
+Write-Host "[ ] Verify RevenueCat Android app and Google service credentials"
+Write-Host "[ ] Verify entitlement premium and offering default"
+Write-Host "[ ] Verify reply_premium_monthly, monthly base plan, and 3-day trial"
+Write-Host "[ ] Verify credits_10, credits_50, and credits_100 are active consumables"
+Write-Host "[ ] Verify store listing, screenshots, privacy policy, and Data Safety"
+Write-Host "[ ] Add internal testers and license-test accounts"
+Write-Host "[ ] Complete the end-to-end purchase matrix in docs/GOOGLE_PLAY_INTERNAL_TESTING.md"
 
 Write-Host "`nNo Google Play upload, commit, or git push was performed."
-
