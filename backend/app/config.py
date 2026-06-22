@@ -21,6 +21,9 @@ class Settings(BaseSettings):
 
     server_pepper: str = DEV_SERVER_PEPPER
 
+    ai_provider: str = "fake"
+    explain_daily_limit: int = 10
+
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":
         if self.app_env.lower() == "prod":

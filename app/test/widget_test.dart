@@ -78,7 +78,9 @@ void main() {
   testWidgets('guidance chip fills the Reply guidance field', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const MaterialApp(home: ReplyScreen()));
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: ReplyScreen())),
+    );
     await tester.pumpAndSettle();
 
     await tester.drag(find.byType(ListView), const Offset(0, -420));

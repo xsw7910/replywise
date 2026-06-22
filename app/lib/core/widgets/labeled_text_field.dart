@@ -12,6 +12,7 @@ class LabeledTextField extends StatefulWidget {
     this.helperText,
     this.maxLines = 4,
     this.minLines,
+    this.maxLength,
   });
 
   final String label;
@@ -20,6 +21,7 @@ class LabeledTextField extends StatefulWidget {
   final String? helperText;
   final int maxLines;
   final int? minLines;
+  final int? maxLength;
 
   @override
   State<LabeledTextField> createState() => _LabeledTextFieldState();
@@ -75,6 +77,7 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
             focusNode: _focusNode,
             minLines: widget.minLines ?? widget.maxLines,
             maxLines: widget.maxLines,
+            maxLength: widget.maxLength,
             decoration: InputDecoration(hintText: widget.hintText),
           ),
         ),

@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/labeled_text_field.dart';
-import '../../core/widgets/placeholder_result_card.dart';
+import 'application/polish_controller.dart';
+import 'domain/polish_models.dart';
 
-class PolishScreen extends StatefulWidget {
+class PolishScreen extends ConsumerStatefulWidget {
   const PolishScreen({super.key});
 
   @override
-  State<PolishScreen> createState() => _PolishScreenState();
+  ConsumerState<PolishScreen> createState() => _PolishScreenState();
 }
 
-class _PolishScreenState extends State<PolishScreen> {
+class _PolishScreenState extends ConsumerState<PolishScreen> {
   final _draftController = TextEditingController();
   final _customGuidanceController = TextEditingController();
   String _direction = 'Natural';
@@ -28,9 +32,6 @@ class _PolishScreenState extends State<PolishScreen> {
     'Custom',
   ];
 
-  static const _preview =
-      'I wanted to check in on the status of the report. Please let me know when you have a moment.';
-
   @override
   void dispose() {
     _draftController.dispose();
@@ -38,20 +39,23 @@ class _PolishScreenState extends State<PolishScreen> {
     super.dispose();
   }
 
-  void _showPlaceholder() {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Static preview only — polishing is not connected yet.',
-          ),
+  Future<void> _polish() => ref
+      .read(polishControllerProvider.notifier)
+      .polish(
+        PolishRequest(
+          draft: _draftController.text,
+          direction: _direction.toLowerCase(),
+          custom: _direction == 'Custom'
+              ? _customGuidanceController.text
+              : null,
+          guidanceLang: 'en',
         ),
       );
-  }
 
   @override
   Widget build(BuildContext context) {
+    final polishState = ref.watch(polishControllerProvider);
+
     return AppPage(
       title: 'Polish',
       actions: [
@@ -82,6 +86,7 @@ class _PolishScreenState extends State<PolishScreen> {
               hintText: 'Paste or type your English draft…',
               helperText: 'Your original meaning stays intact',
               maxLines: 7,
+              maxLength: 4000,
             ),
           ),
           const SizedBox(height: 14),
@@ -113,6 +118,7 @@ class _PolishScreenState extends State<PolishScreen> {
                     hintText: 'For example: warmer, but still professional',
                     helperText: 'Write in any language',
                     maxLines: 3,
+                    maxLength: 500,
                   ),
                 ],
               ],
@@ -120,34 +126,58 @@ class _PolishScreenState extends State<PolishScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: _showPlaceholder,
-            icon: const Icon(Icons.auto_fix_high_rounded),
-            label: const Text('Polish Text'),
+            onPressed: polishState.isLoading ? null : _polish,
+            icon: polishState.isLoading
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.auto_fix_high_rounded),
+            label: Text(polishState.isLoading ? 'Polishing…' : 'Polish Text'),
           ),
-          const SizedBox(height: 26),
-          Text('Polished preview', style: AppTextStyles.headlineMedium),
-          const SizedBox(height: 12),
-          const PlaceholderResultCard(
-            label: 'Natural & professional',
-            text: _preview,
-          ),
-          const SizedBox(height: 12),
-          GlassCard(
-            blur: 8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('What changed?', style: AppTextStyles.titleMedium),
-                const SizedBox(height: 6),
-                Text(
-                  'The wording is softer and more natural while preserving the original request.',
-                  style: AppTextStyles.bodyMedium,
+          if (polishState.error != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.error.withAlpha(18),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                polishState.error!,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.error,
                 ),
-                const SizedBox(height: 4),
-                Text('Static preview', style: AppTextStyles.labelMedium),
-              ],
+              ),
             ),
-          ),
+          ],
+          if (polishState.result != null) ...[
+            const SizedBox(height: 26),
+            Text('Polished result', style: AppTextStyles.headlineMedium),
+            const SizedBox(height: 12),
+            GeneratedResultCard(
+              label: _direction,
+              text: polishState.result!.polished,
+            ),
+            const SizedBox(height: 12),
+            GlassCard(
+              blur: 8,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('What changed?', style: AppTextStyles.titleMedium),
+                  const SizedBox(height: 6),
+                  Text(
+                    polishState.result!.changes,
+                    style: AppTextStyles.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

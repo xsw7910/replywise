@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/guidance_library.dart';
 import '../../core/widgets/labeled_text_field.dart';
-import '../../core/widgets/placeholder_result_card.dart';
+import 'application/explain_controller.dart';
+import 'application/reply_controller.dart';
+import 'domain/reply_models.dart';
 
-class ReplyScreen extends StatefulWidget {
+class ReplyScreen extends ConsumerStatefulWidget {
   const ReplyScreen({super.key});
 
   @override
-  State<ReplyScreen> createState() => _ReplyScreenState();
+  ConsumerState<ReplyScreen> createState() => _ReplyScreenState();
 }
 
-class _ReplyScreenState extends State<ReplyScreen> {
+class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   final _incomingController = TextEditingController();
   final _guidanceController = TextEditingController();
   final _customAudienceController = TextEditingController();
@@ -36,23 +41,6 @@ class _ReplyScreenState extends State<ReplyScreen> {
     'Dating',
   ];
 
-  static const _previews = [
-    (
-      label: 'Professional',
-      text:
-          'Thanks for the update. Next week works for me—could we confirm the new time by Wednesday?',
-    ),
-    (
-      label: 'Friendly',
-      text:
-          'No problem, next week works for me! Could we lock in the time by Wednesday?',
-    ),
-    (
-      label: 'Short',
-      text: 'Next week works. Could we confirm the time by Wednesday?',
-    ),
-  ];
-
   @override
   void dispose() {
     _incomingController.dispose();
@@ -69,49 +57,107 @@ class _ReplyScreenState extends State<ReplyScreen> {
     );
   }
 
-  void _showPlaceholder(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+  ReplyRequest _request() {
+    final mode = _audienceMode.toLowerCase();
+    return ReplyRequest(
+      incoming: _incomingController.text,
+      guidance: _guidanceController.text,
+      guidanceLang: 'en',
+      audience: ReplyAudience(
+        mode: mode,
+        preset: mode == 'preset' ? _audiencePreset.toLowerCase() : null,
+        custom: mode == 'custom' ? _customAudienceController.text : null,
+        formality: _formality.round(),
+      ),
+    );
   }
 
-  void _showExplainPreview() {
-    showModalBottomSheet<void>(
+  Future<void> _generate() =>
+      ref.read(replyControllerProvider.notifier).generate(_request());
+
+  Future<void> _explain() async {
+    final result = await ref
+        .read(explainControllerProvider.notifier)
+        .explain(text: _incomingController.text, explainLang: 'en');
+    if (!mounted || result == null) return;
+    await _showExplainResult(result);
+  }
+
+  Future<void> _showExplainResult(ExplainResult result) {
+    final copyText = [
+      'Meaning: ${result.meaning}',
+      'Tone: ${result.tone}',
+      'Hidden meaning: ${result.hiddenMeaning}',
+    ].join('\n\n');
+
+    return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Padding(
+      builder: (sheetContext) => SafeArea(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Explain message', style: AppTextStyles.headlineMedium),
-              const SizedBox(height: 4),
-              Text('Static preview', style: AppTextStyles.labelMedium),
-              const SizedBox(height: 18),
-              const _ExplanationRow(
-                label: 'Meaning',
-                text: 'They are asking whether the meeting can move.',
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Explain message',
+                      style: AppTextStyles.headlineMedium,
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Copy explanation',
+                    onPressed: () async {
+                      await Clipboard.setData(ClipboardData(text: copyText));
+                      if (!sheetContext.mounted) return;
+                      ScaffoldMessenger.of(
+                        sheetContext,
+                      ).showSnackBar(const SnackBar(content: Text('Copied')));
+                    },
+                    icon: const Icon(Icons.copy_rounded),
+                  ),
+                ],
               ),
-              const _ExplanationRow(
-                label: 'Tone',
-                text: 'Neutral, considerate, and open to coordination.',
-              ),
-              const _ExplanationRow(
+              const SizedBox(height: 14),
+              _ExplanationRow(label: 'Meaning', text: result.meaning),
+              _ExplanationRow(label: 'Tone', text: result.tone),
+              _ExplanationRow(
                 label: 'Hidden meaning',
-                text: 'They may need flexibility but still want a firm plan.',
+                text: result.hiddenMeaning.isEmpty
+                    ? 'No hidden meaning detected.'
+                    : result.hiddenMeaning,
               ),
-              Text('Suggested guidance', style: AppTextStyles.titleMedium),
+              Text('Suggested replies', style: AppTextStyles.titleMedium),
               const SizedBox(height: 8),
-              ActionChip(
-                label: const Text('Agree and ask to confirm by Wednesday'),
-                onPressed: () {
-                  Navigator.pop(context);
-                  _appendGuidance('Agree and ask to confirm by Wednesday');
-                },
-              ),
+              for (final suggestion in result.suggestedReplies)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: GlassCard(
+                    blur: 6,
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            suggestion,
+                            style: AppTextStyles.bodyMedium,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(sheetContext);
+                            _guidanceController.text = suggestion;
+                          },
+                          child: const Text('Use'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -121,6 +167,9 @@ class _ReplyScreenState extends State<ReplyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final replyState = ref.watch(replyControllerProvider);
+    final explainState = ref.watch(explainControllerProvider);
+
     return AppPage(
       title: 'Reply',
       actions: [
@@ -153,16 +202,24 @@ class _ReplyScreenState extends State<ReplyScreen> {
                   hintText: 'Paste the original message…',
                   helperText: 'English or any language',
                   maxLines: 5,
+                  maxLength: 4000,
                 ),
                 const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton.icon(
-                    onPressed: _showExplainPreview,
-                    icon: const Icon(Icons.lightbulb_outline_rounded, size: 18),
+                    onPressed: explainState.isLoading ? null : _explain,
+                    icon: explainState.isLoading
+                        ? const SizedBox.square(
+                            dimension: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.lightbulb_outline_rounded, size: 18),
                     label: const Text('Explain this message'),
                   ),
                 ),
+                if (explainState.error != null)
+                  _InlineError(message: explainState.error!),
               ],
             ),
           ),
@@ -178,6 +235,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                   hintText: 'For example: agree, but ask them to confirm soon…',
                   helperText: 'Write naturally in any language',
                   maxLines: 4,
+                  maxLength: 1000,
                 ),
                 const SizedBox(height: 14),
                 GuidanceLibrary(onSelected: _appendGuidance),
@@ -228,6 +286,7 @@ class _ReplyScreenState extends State<ReplyScreen> {
                     controller: _customAudienceController,
                     hintText: 'For example: my landlord',
                     maxLines: 1,
+                    maxLength: 500,
                   ),
                 ],
                 const SizedBox(height: 16),
@@ -251,42 +310,50 @@ class _ReplyScreenState extends State<ReplyScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () => _showPlaceholder(
-              'Static preview only — reply generation is not connected yet.',
+            onPressed: replyState.isLoading ? null : _generate,
+            icon: replyState.isLoading
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.auto_awesome_rounded),
+            label: Text(
+              replyState.isLoading ? 'Generating…' : 'Generate Reply',
             ),
-            icon: const Icon(Icons.auto_awesome_rounded),
-            label: const Text('Generate Reply'),
           ),
-          const SizedBox(height: 26),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Reply previews',
-                  style: AppTextStyles.headlineMedium,
-                ),
-              ),
-              const _PreviewBadge(),
-            ],
-          ),
-          const SizedBox(height: 12),
-          for (final preview in _previews) ...[
-            PlaceholderResultCard(label: preview.label, text: preview.text),
+          if (replyState.error != null) ...[
             const SizedBox(height: 12),
+            _InlineError(message: replyState.error!),
           ],
-          OutlinedButton.icon(
-            onPressed: () => _showPlaceholder(
-              'Static preview only — regenerate is not connected yet.',
+          if (replyState.result != null) ...[
+            const SizedBox(height: 26),
+            Text('Your replies', style: AppTextStyles.headlineMedium),
+            const SizedBox(height: 12),
+            for (final version in replyState.result!.versions) ...[
+              GeneratedResultCard(label: version.label, text: version.text),
+              const SizedBox(height: 12),
+            ],
+            GlassCard(
+              blur: 8,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Why this works', style: AppTextStyles.titleMedium),
+                  const SizedBox(height: 6),
+                  Text(replyState.result!.why, style: AppTextStyles.bodyMedium),
+                ],
+              ),
             ),
-            icon: const Icon(Icons.refresh_rounded),
-            label: const Text('Regenerate preview'),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Regenerate will use 1 AI use for non-premium users.',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.labelMedium,
-          ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: replyState.isLoading ? null : _generate,
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Regenerate'),
+            ),
+          ],
         ],
       ),
     );
@@ -315,20 +382,23 @@ class _ExplanationRow extends StatelessWidget {
   }
 }
 
-class _PreviewBadge extends StatelessWidget {
-  const _PreviewBadge();
+class _InlineError extends StatelessWidget {
+  const _InlineError({required this.message});
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.primary.withAlpha(24),
-        borderRadius: BorderRadius.circular(999),
+        color: AppColors.error.withAlpha(18),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        'Fake data',
-        style: AppTextStyles.labelMedium.copyWith(color: AppColors.primaryDark),
+        message,
+        style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
       ),
     );
   }
