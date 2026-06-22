@@ -28,9 +28,21 @@ class ReplyVersion(ApiModel):
     text: str
 
 
+class UsageResponse(ApiModel):
+    is_premium: bool
+    free_uses_limit: int
+    free_uses_used: int
+    free_uses_left: int | None
+    paid_credits: int
+    upgrade_required: bool
+    credits_used: int = 1
+    source: Literal["free", "credit"]
+
+
 class ReplyResponse(ApiModel):
     versions: list[ReplyVersion]
     why: str
+    usage: UsageResponse | None = None
 
 
 class PolishRequest(ApiModel):
@@ -43,6 +55,7 @@ class PolishRequest(ApiModel):
 class PolishResponse(ApiModel):
     polished: str
     changes: str
+    usage: UsageResponse | None = None
 
 
 class ExplainRequest(ApiModel):
@@ -55,4 +68,3 @@ class ExplainResponse(ApiModel):
     tone: str
     hidden_meaning: str
     suggested_replies: list[str] = Field(min_length=1, max_length=3)
-

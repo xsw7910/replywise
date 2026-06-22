@@ -1,6 +1,6 @@
 from datetime import datetime, time, timezone
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,7 +8,7 @@ from app.config import settings
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.errors import ApiException
-from app.models.explain_event import ExplainRequestEvent
+from app.models.usage import UsageEvent
 from app.models.user import User
 from app.schemas.ai import (
     ExplainRequest,
@@ -20,6 +20,12 @@ from app.schemas.ai import (
 )
 from app.services.ai_provider import FakeAIProvider
 from app.services.ai_service import AIService
+from app.services.usage_service import (
+    begin_generation,
+    canonicalize,
+    finish_generation,
+    rollback_generation,
+)
 
 router = APIRouter(prefix="/v1", tags=["ai"])
 
@@ -79,21 +85,37 @@ def _safety_gate(value: str, field: str) -> None:
 @router.post("/reply", response_model=ReplyResponse)
 async def reply(
     body: ReplyRequest,
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
     service: AIService = Depends(get_ai_service),
+    idempotency_key: str | None = Header(None, alias="X-Idempotency-Key"),
 ) -> ReplyResponse:
     body.incoming = _required(body.incoming, "incoming", 4000)
     body.guidance = _required(body.guidance, "guidance", 1000)
     body.audience.custom = _optional(body.audience.custom, "audience.custom", 500)
     body.output_lang = "en"
-    return await service.reply(body)
+    if not idempotency_key:
+        raise ApiException("VALIDATION_ERROR", "X-Idempotency-Key is required", 400)
+    _, request_hash = canonicalize(body)
+    source, cached = await begin_generation(db, current_user.id, "reply", idempotency_key, request_hash)
+    if cached is not None:
+        return ReplyResponse.model_validate(cached)
+    try:
+        result = await service.reply(body)
+    except ApiException as error:
+        await rollback_generation(db, current_user.id, "reply", idempotency_key, source, error.code)
+        raise
+    combined = await finish_generation(db, current_user.id, "reply", idempotency_key, source, result.model_dump(mode="json", by_alias=True))
+    return ReplyResponse.model_validate(combined)
 
 
 @router.post("/polish", response_model=PolishResponse)
 async def polish(
     body: PolishRequest,
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
     service: AIService = Depends(get_ai_service),
+    idempotency_key: str | None = Header(None, alias="X-Idempotency-Key"),
 ) -> PolishResponse:
     body.draft = _required(body.draft, "draft", 4000)
     body.custom = _optional(body.custom, "custom", 500)
@@ -104,7 +126,19 @@ async def polish(
             status_code=400,
             field="custom",
         )
-    return await service.polish(body)
+    if not idempotency_key:
+        raise ApiException("VALIDATION_ERROR", "X-Idempotency-Key is required", 400)
+    _, request_hash = canonicalize(body)
+    source, cached = await begin_generation(db, current_user.id, "polish", idempotency_key, request_hash)
+    if cached is not None:
+        return PolishResponse.model_validate(cached)
+    try:
+        result = await service.polish(body)
+    except ApiException as error:
+        await rollback_generation(db, current_user.id, "polish", idempotency_key, source, error.code)
+        raise
+    combined = await finish_generation(db, current_user.id, "polish", idempotency_key, source, result.model_dump(mode="json", by_alias=True))
+    return PolishResponse.model_validate(combined)
 
 
 @router.post("/explain", response_model=ExplainResponse)
@@ -117,9 +151,10 @@ async def explain(
     body.text = _required(body.text, "text", 4000)
     day_start = datetime.combine(datetime.now(timezone.utc).date(), time.min, timezone.utc)
     count = await db.scalar(
-        select(func.count(ExplainRequestEvent.id)).where(
-            ExplainRequestEvent.user_id == current_user.id,
-            ExplainRequestEvent.created_at >= day_start,
+        select(func.count(UsageEvent.id)).where(
+            UsageEvent.user_id == current_user.id,
+            UsageEvent.endpoint == "explain",
+            UsageEvent.created_at >= day_start,
         )
     )
     if (count or 0) >= settings.explain_daily_limit:
@@ -129,7 +164,12 @@ async def explain(
             status_code=429,
         )
 
-    db.add(ExplainRequestEvent(user_id=current_user.id))
-    await db.commit()
-    return await service.explain(body)
-
+    try:
+        result = await service.explain(body)
+        db.add(UsageEvent(user_id=current_user.id, endpoint="explain", credits_used=0, source="explain", prompt_version="explain_v1", success=True))
+        await db.commit()
+        return result
+    except ApiException as error:
+        db.add(UsageEvent(user_id=current_user.id, endpoint="explain", credits_used=0, source="explain", prompt_version="explain_v1", success=False, error_code=error.code))
+        await db.commit()
+        raise

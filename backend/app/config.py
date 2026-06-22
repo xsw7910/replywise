@@ -23,6 +23,9 @@ class Settings(BaseSettings):
 
     ai_provider: str = "fake"
     explain_daily_limit: int = 10
+    free_lifetime_limit: int = 5
+    generation_rate_per_minute: int = 8
+    idempotency_ttl_seconds: int = 86400
 
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":

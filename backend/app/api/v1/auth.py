@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.database import get_db
 from app.models.user import User
+from app.services.usage_service import ensure_summary
 from app.services.token_service import (
     create_access_token,
     create_refresh_token,
@@ -69,6 +70,7 @@ async def anonymous(
         db.add(user)
         await db.commit()
         await db.refresh(user)
+        await ensure_summary(db, user.id)
     else:
         user.device_hash = device_hash
         user.platform = body.platform

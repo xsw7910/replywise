@@ -19,7 +19,10 @@ def _token(client: TestClient, suffix: str) -> str:
 
 
 def _headers(client: TestClient, suffix: str) -> dict[str, str]:
-    return {"Authorization": f"Bearer {_token(client, suffix)}"}
+    return {
+        "Authorization": f"Bearer {_token(client, suffix)}",
+        "X-Idempotency-Key": f"ai-{suffix}",
+    }
 
 
 def _reply_payload() -> dict:
@@ -59,7 +62,7 @@ def test_reply_success_has_three_english_versions(client: TestClient) -> None:
     ]
     assert all(item["text"] for item in body["versions"])
     assert body["why"]
-    assert "usage" not in body
+    assert body["usage"]["freeUsesLeft"] == 4
 
 
 def test_polish_success_preserves_the_draft(client: TestClient) -> None:
@@ -73,8 +76,13 @@ def test_polish_success_preserves_the_draft(client: TestClient) -> None:
         headers=_headers(client, "polish-success"),
     )
     assert response.status_code == 200
-    assert response.json()["polished"] == "I wanted to check on the report."
-    assert response.json()["changes"]
+    body = response.json()
+    assert body["polished"] == "I wanted to check on the report."
+    assert body["changes"]
+    usage = body["usage"]
+    assert usage["freeUsesLeft"] == 4
+    assert usage["source"] == "free"
+    assert usage["creditsUsed"] == 1
 
 
 def test_explain_success_returns_all_sections(client: TestClient) -> None:
