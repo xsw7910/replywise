@@ -16,77 +16,165 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final usageState = ref.watch(usageControllerProvider);
+    final topInset = MediaQuery.paddingOf(context).top;
 
     return AppPage(
       title: 'Home',
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
+      showAppBar: false,
+      useSafeArea: false,
+      child: Stack(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Positioned.fill(
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(16, topInset + 88, 16, 32),
+              children: [
+                _ReplyHeroCard(onTap: () => context.go(AppRoutes.reply)),
+                const SizedBox(height: 20),
+                Text('Features', style: AppTextStyles.headlineMedium),
+                const SizedBox(height: 10),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.02,
                   children: [
-                    Text('Good to see you', style: AppTextStyles.bodyMedium),
-                    const SizedBox(height: 4),
-                    Text('ReplyWise', style: AppTextStyles.displayLarge),
+                    _FeatureCard(
+                      key: const Key('home-feature-reply'),
+                      icon: Icons.edit_note_rounded,
+                      title: 'Reply',
+                      subtitle: 'Generate natural English replies',
+                      onTap: () => context.go(AppRoutes.reply),
+                    ),
+                    _FeatureCard(
+                      key: const Key('home-feature-explain'),
+                      icon: Icons.psychology_alt_rounded,
+                      title: 'Explain',
+                      subtitle:
+                          'Understand meaning, tone, and suggested replies',
+                      onTap: () => context.go(AppRoutes.explain),
+                    ),
+                    _FeatureCard(
+                      key: const Key('home-feature-polish'),
+                      icon: Icons.auto_fix_high_rounded,
+                      title: 'Polish',
+                      subtitle: 'Make your English sound more natural',
+                      onTap: () => context.go(AppRoutes.polish),
+                    ),
+                    _FeatureCard(
+                      key: const Key('home-feature-guidance'),
+                      icon: Icons.menu_book_rounded,
+                      title: 'Guidance Library',
+                      subtitle: 'Save and reuse your guidance',
+                      onTap: () => context.push(AppRoutes.guidanceLibrary),
+                    ),
                   ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: _HomeNavigationBar(
+              topInset: topInset,
+              usageState: usageState,
+              onRetryUsage: () =>
+                  ref.read(usageControllerProvider.notifier).refresh(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeNavigationBar extends StatelessWidget {
+  const _HomeNavigationBar({
+    required this.topInset,
+    required this.usageState,
+    required this.onRetryUsage,
+  });
+
+  final double topInset;
+  final UsageViewState usageState;
+  final VoidCallback onRetryUsage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.navBarBackground,
+      elevation: 4,
+      shadowColor: AppColors.primary.withAlpha(30),
+      surfaceTintColor: Colors.transparent,
+      child: SizedBox(
+        height: topInset + 72,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, topInset, 16, 0),
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.primary, AppColors.primaryLight],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withAlpha(22),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.forum_rounded,
+                  color: Colors.white,
+                  size: 23,
                 ),
               ),
               const SizedBox(width: 12),
-              UsageBadge(
-                state: usageState,
-                onRetry: () =>
-                    ref.read(usageControllerProvider.notifier).refresh(),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'ReplyWise',
+                      style: AppTextStyles.headlineMedium.copyWith(
+                        fontSize: 21,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      'AI reply, polish, and explain',
+                      style: AppTextStyles.bodyMedium.copyWith(height: 1.25),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: UsageBadge(state: usageState, onRetry: onRetryUsage),
+                  ),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          _ReplyHeroCard(onTap: () => context.go(AppRoutes.reply)),
-          const SizedBox(height: 24),
-          Text('Features', style: AppTextStyles.headlineMedium),
-          const SizedBox(height: 12),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.92,
-            children: [
-              _FeatureCard(
-                key: const Key('home-feature-reply'),
-                icon: Icons.edit_note_rounded,
-                title: 'Reply',
-                subtitle: 'Generate natural English replies',
-                onTap: () => context.go(AppRoutes.reply),
-              ),
-              _FeatureCard(
-                key: const Key('home-feature-explain'),
-                icon: Icons.psychology_alt_rounded,
-                title: 'Explain',
-                subtitle: 'Understand meaning, tone, and suggested replies',
-                onTap: () => context.go(AppRoutes.explain),
-              ),
-              _FeatureCard(
-                key: const Key('home-feature-polish'),
-                icon: Icons.auto_fix_high_rounded,
-                title: 'Polish',
-                subtitle: 'Make your English sound more natural',
-                onTap: () => context.go(AppRoutes.polish),
-              ),
-              _FeatureCard(
-                key: const Key('home-feature-guidance'),
-                icon: Icons.menu_book_rounded,
-                title: 'Guidance Library',
-                subtitle: 'Save and reuse your guidance',
-                onTap: () => context.push(AppRoutes.guidanceLibrary),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -107,11 +195,11 @@ class _ReplyHeroCard extends StatelessWidget {
         child: InkWell(
           key: const Key('home-hero-reply-card'),
           onTap: onTap,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(22),
           child: Ink(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(22),
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -138,7 +226,7 @@ class _ReplyHeroCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
-                          vertical: 6,
+                          vertical: 5,
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white.withAlpha(50),
@@ -152,15 +240,15 @@ class _ReplyHeroCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 13),
                       Text(
                         'Generate Reply',
                         style: AppTextStyles.headlineMedium.copyWith(
                           color: Colors.white,
-                          fontSize: 26,
+                          fontSize: 25,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 7),
                       Text(
                         'Paste a message, add your guidance, and get natural English replies.',
                         style: AppTextStyles.bodyMedium.copyWith(
@@ -170,10 +258,10 @@ class _ReplyHeroCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 Container(
-                  width: 46,
-                  height: 46,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     color: Colors.white.withAlpha(55),
                     borderRadius: BorderRadius.circular(16),
@@ -216,7 +304,7 @@ class _FeatureCard extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(13),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -229,9 +317,9 @@ class _FeatureCard extends StatelessWidget {
                   ),
                   child: Icon(icon, color: AppColors.primaryDark, size: 22),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
                 Text(title, style: AppTextStyles.titleMedium),
-                const SizedBox(height: 6),
+                const SizedBox(height: 5),
                 Expanded(
                   child: Text(
                     subtitle,

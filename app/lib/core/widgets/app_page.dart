@@ -9,23 +9,29 @@ class AppPage extends StatelessWidget {
     required this.child,
     this.actions,
     this.showBackButton = false,
+    this.showAppBar = true,
+    this.useSafeArea = true,
   });
 
   final String title;
   final Widget child;
   final List<Widget>? actions;
   final bool showBackButton;
+  final bool showAppBar;
+  final bool useSafeArea;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text(title),
-        actions: actions,
-        automaticallyImplyLeading: showBackButton,
-        backgroundColor: Colors.white.withAlpha(175),
-      ),
+      appBar: showAppBar
+          ? AppBar(
+              title: Text(title),
+              actions: actions,
+              automaticallyImplyLeading: showBackButton,
+              backgroundColor: Colors.white.withAlpha(175),
+            )
+          : null,
       body: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -38,12 +44,20 @@ class AppPage extends StatelessWidget {
           children: [
             const Positioned(top: 90, right: -70, child: _Glow(size: 210)),
             const Positioned(top: 430, left: -85, child: _Glow(size: 180)),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: kToolbarHeight),
+            if (useSafeArea)
+              SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: showAppBar ? kToolbarHeight : 0,
+                  ),
+                  child: child,
+                ),
+              )
+            else
+              Padding(
+                padding: EdgeInsets.only(top: showAppBar ? kToolbarHeight : 0),
                 child: child,
               ),
-            ),
           ],
         ),
       ),
