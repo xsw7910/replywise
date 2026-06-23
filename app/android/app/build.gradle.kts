@@ -38,7 +38,7 @@ if (releaseTaskRequested && !releaseSigningAvailable) {
 }
 
 android {
-    namespace = "com.replywise.replywise"
+    namespace = "com.novaaistudio.replywise"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -48,7 +48,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.replywise.replywise"
+        applicationId = "com.novaaistudio.replywise"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

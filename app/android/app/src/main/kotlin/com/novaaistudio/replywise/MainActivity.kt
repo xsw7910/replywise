@@ -1,4 +1,4 @@
-package com.replywise.replywise
+package com.novaaistudio.replywise
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -130,6 +130,27 @@ def test_custom_polish_requires_custom_guidance(client: TestClient) -> None:
     assert response.json()["error"]["code"] == "VALIDATION_ERROR"
 
 
+def test_polish_custom_guidance_accepts_1000_chars(client: TestClient) -> None:
+    # A 1000-char guidance item saved in the library must be usable in Polish.
+    response = client.post(
+        "/v1/polish",
+        json={"draft": "Hello there", "direction": "custom", "custom": "x" * 1000},
+        headers=_headers(client, "custom-boundary-ok"),
+    )
+    assert response.status_code == 200
+
+
+def test_polish_custom_guidance_rejects_over_1000_chars(client: TestClient) -> None:
+    response = client.post(
+        "/v1/polish",
+        json={"draft": "Hello there", "direction": "custom", "custom": "x" * 1001},
+        headers=_headers(client, "custom-boundary-too-long"),
+    )
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "INPUT_TOO_LONG"
+    assert response.json()["error"]["field"] == "custom"
+
+
 class _FenceProvider:
     async def complete(self, system_prompt: str, payload: dict) -> str:
         return """```json

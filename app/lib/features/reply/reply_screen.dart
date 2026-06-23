@@ -3,12 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/input_limits.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
-import '../../core/widgets/guidance_library.dart';
+import '../guidance/application/pending_guidance_provider.dart';
+import '../guidance/domain/guidance_template.dart';
+import '../guidance/presentation/guidance_chip_row.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import '../../core/widgets/usage_badge.dart';
@@ -51,12 +54,25 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     super.dispose();
   }
 
-  void _appendGuidance(String value) {
+  void _appendGuidance(GuidanceTemplate template) {
     final current = _guidanceController.text.trim();
-    _guidanceController.text = current.isEmpty ? value : '$current · $value';
+    final content = template.content;
+    _guidanceController.text =
+        current.isEmpty ? content : '$current\n\n$content';
     _guidanceController.selection = TextSelection.collapsed(
       offset: _guidanceController.text.length,
     );
+  }
+
+  /// Applies a guidance template handed over from the standalone Guidance
+  /// Library ("Use in Reply"). Consumed exactly once.
+  void _consumePendingGuidance() {
+    if (ref.watch(pendingGuidanceProvider) == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final template = ref.read(pendingGuidanceProvider.notifier).take();
+      if (template != null) _appendGuidance(template);
+    });
   }
 
   ReplyRequest _request() {
@@ -172,6 +188,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     final replyState = ref.watch(replyControllerProvider);
     final explainState = ref.watch(explainControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
+    _consumePendingGuidance();
 
     return AppPage(
       title: 'Reply',
@@ -255,10 +272,10 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   hintText: 'For example: agree, but ask them to confirm soon…',
                   helperText: 'Write naturally in any language',
                   maxLines: 4,
-                  maxLength: 1000,
+                  maxLength: InputLimits.guidanceMaxLength,
                 ),
                 const SizedBox(height: 14),
-                GuidanceLibrary(onSelected: _appendGuidance),
+                GuidanceChipRow(onSelected: _appendGuidance),
               ],
             ),
           ),

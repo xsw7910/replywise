@@ -4,9 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:replywise/app.dart';
 import 'package:replywise/features/auth/data/auth_repository.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
+import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
 import 'package:replywise/features/paywall/paywall_screen.dart';
 import 'package:replywise/features/reply/reply_screen.dart';
 import 'package:replywise/features/entitlement/subscription_repository.dart';
@@ -88,14 +91,34 @@ class _FakeSubscriptionRepo implements SubscriptionRepository {
   );
 }
 
+// ── Guidance fake ──────────────────────────────────────────────────────────
+
+late SharedPreferences _prefs;
+
+Future<List<Override>> _guidanceOverrides() async => [
+      sharedPreferencesProvider.overrideWithValue(_prefs),
+      guidanceLibraryRepositoryProvider.overrideWith(
+        (ref) => GuidanceLibraryRepository(
+            ref.watch(sharedPreferencesProvider)),
+      ),
+    ];
+
 // ── Tests ──────────────────────────────────────────────────────────────────
 
 void main() {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    _prefs = await SharedPreferences.getInstance();
+  });
+
   testWidgets('app exposes Reply, Polish, and Settings navigation', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      ProviderScope(overrides: _authOverrides, child: const ReplyWiseApp()),
+      ProviderScope(
+        overrides: [..._authOverrides, ...await _guidanceOverrides()],
+        child: const ReplyWiseApp(),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -114,7 +137,10 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      const ProviderScope(child: MaterialApp(home: ReplyScreen())),
+      ProviderScope(
+        overrides: await _guidanceOverrides(),
+        child: const MaterialApp(home: ReplyScreen()),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -128,7 +154,8 @@ void main() {
       matching: find.byType(TextField),
     );
     final field = tester.widget<TextField>(guidanceField);
-    expect(field.controller?.text, 'Be polite');
+    // Chip now inserts the template content, not the title.
+    expect(field.controller?.text, 'Make the reply polite and respectful.');
   });
 
   testWidgets('paywall shows verified monthly subscription terms', (
@@ -138,6 +165,7 @@ void main() {
       ProviderScope(
         overrides: [
           ..._authOverrides,
+          ...await _guidanceOverrides(),
           subscriptionRepositoryProvider.overrideWithValue(
             _FakeSubscriptionRepo(),
           ),

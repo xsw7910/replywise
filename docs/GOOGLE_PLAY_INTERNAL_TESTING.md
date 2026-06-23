@@ -50,7 +50,7 @@ Expected artifact: `app/build/app/outputs/bundle/release/app-release.aab`.
 
 ## Google Play Console
 
-- [ ] Create/verify app for package `com.replywise.replywise`.
+- [ ] Create/verify app for package `com.novaaistudio.replywise`.
 - [ ] Enable Play App Signing and register the upload certificate.
 - [ ] Create the Internal testing release and add release notes.
 - [ ] Add internal testers and publish the tester opt-in link.
@@ -60,7 +60,7 @@ Expected artifact: `app/build/app/outputs/bundle/release/app-release.aab`.
 
 ## RevenueCat and products
 
-- [ ] RevenueCat Android app uses package `com.replywise.replywise`.
+- [ ] RevenueCat Android app uses package `com.novaaistudio.replywise`.
 - [ ] Google Play service credentials are connected and valid.
 - [ ] Entitlement `premium` exists.
 - [ ] Offering `default` is active.

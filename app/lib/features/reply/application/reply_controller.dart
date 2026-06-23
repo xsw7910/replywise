@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/constants/input_limits.dart';
 import '../../../core/network/api_error.dart';
 import '../data/reply_repository.dart';
 import '../domain/reply_models.dart';
@@ -61,8 +62,9 @@ class ReplyController extends _$ReplyController {
     if (incoming.length > 4000) {
       return 'The message must be 4000 characters or less.';
     }
-    if (guidance.length > 1000) {
-      return 'Guidance must be 1000 characters or less.';
+    if (guidance.length > InputLimits.guidanceMaxLength) {
+      return 'Guidance must be '
+          '${InputLimits.guidanceMaxLength} characters or less.';
     }
     if ((request.audience.custom?.length ?? 0) > 500) {
       return 'Custom audience must be 500 characters or less.';

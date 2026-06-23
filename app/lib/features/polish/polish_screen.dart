@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/input_limits.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
@@ -13,6 +14,9 @@ import '../../core/widgets/usage_badge.dart';
 import 'application/polish_controller.dart';
 import 'domain/polish_models.dart';
 import '../entitlement/usage_controller.dart';
+import '../guidance/application/pending_guidance_provider.dart';
+import '../guidance/domain/guidance_template.dart';
+import '../guidance/presentation/guidance_chip_row.dart';
 
 class PolishScreen extends ConsumerStatefulWidget {
   const PolishScreen({super.key});
@@ -41,6 +45,29 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     super.dispose();
   }
 
+  void _appendGuidance(GuidanceTemplate template) {
+    // Switch to Custom direction so the text is included in the request.
+    if (_direction != 'Custom') setState(() => _direction = 'Custom');
+    final current = _customGuidanceController.text.trim();
+    final content = template.content;
+    _customGuidanceController.text =
+        current.isEmpty ? content : '$current\n\n$content';
+    _customGuidanceController.selection = TextSelection.collapsed(
+      offset: _customGuidanceController.text.length,
+    );
+  }
+
+  /// Applies a guidance template handed over from the standalone Guidance
+  /// Library ("Use in Polish"). Consumed exactly once.
+  void _consumePendingGuidance() {
+    if (ref.watch(pendingGuidanceProvider) == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final template = ref.read(pendingGuidanceProvider.notifier).take();
+      if (template != null) _appendGuidance(template);
+    });
+  }
+
   Future<void> _polish() => ref
       .read(polishControllerProvider.notifier)
       .polish(
@@ -58,6 +85,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   Widget build(BuildContext context) {
     final polishState = ref.watch(polishControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
+    _consumePendingGuidance();
 
     return AppPage(
       title: 'Polish',
@@ -125,14 +153,17 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                 if (_direction == 'Custom') ...[
                   const SizedBox(height: 16),
                   LabeledTextField(
+                    key: const Key('polish-custom-guidance-field'),
                     label: 'Custom guidance',
                     controller: _customGuidanceController,
                     hintText: 'For example: warmer, but still professional',
                     helperText: 'Write in any language',
                     maxLines: 3,
-                    maxLength: 500,
+                    maxLength: InputLimits.guidanceMaxLength,
                   ),
                 ],
+                const SizedBox(height: 14),
+                GuidanceChipRow(onSelected: _appendGuidance),
               ],
             ),
           ),

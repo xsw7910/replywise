@@ -81,6 +81,17 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           _SettingsSection(
+            title: 'Guidance',
+            children: [
+              _SettingsTile(
+                icon: Icons.library_books_outlined,
+                label: 'Guidance Library',
+                onTap: () => context.push(AppRoutes.guidanceLibrary),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _SettingsSection(
             title: 'Language & input',
             children: [
               _SettingsTile(

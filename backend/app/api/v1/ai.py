@@ -126,7 +126,10 @@ async def polish(
     idempotency_key: str | None = Header(None, alias="X-Idempotency-Key"),
 ) -> PolishResponse:
     body.draft = _required(body.draft, "draft", 4000)
-    body.custom = _optional(body.custom, "custom", 500)
+    # Custom guidance is the same concept as Reply guidance, so it shares the
+    # 1000-character limit. Keeping these aligned means a Guidance Library item
+    # that is valid to save is also valid to use in Polish.
+    body.custom = _optional(body.custom, "custom", 1000)
     if body.direction == "custom" and not body.custom:
         raise ApiException(
             code="VALIDATION_ERROR",

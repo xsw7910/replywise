@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/constants/input_limits.dart';
 import '../../../core/network/api_error.dart';
 import '../data/polish_repository.dart';
 import '../domain/polish_models.dart';
@@ -63,8 +64,9 @@ class PolishController extends _$PolishController {
         (request.custom == null || request.custom!.trim().isEmpty)) {
       return 'Enter custom guidance.';
     }
-    if ((request.custom?.length ?? 0) > 500) {
-      return 'Custom guidance must be 500 characters or less.';
+    if ((request.custom?.length ?? 0) > InputLimits.guidanceMaxLength) {
+      return 'Custom guidance must be '
+          '${InputLimits.guidanceMaxLength} characters or less.';
     }
     return null;
   }
