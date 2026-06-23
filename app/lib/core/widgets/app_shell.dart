@@ -9,6 +9,7 @@ class AppShell extends StatelessWidget {
   final Widget child;
 
   static const _tabs = [
+    (route: AppRoutes.home, label: 'Home', icon: Icons.home_rounded),
     (route: AppRoutes.reply, label: 'Reply', icon: Icons.reply_rounded),
     (
       route: AppRoutes.explain,
@@ -29,7 +30,10 @@ class AppShell extends StatelessWidget {
 
   int _selectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
-    final idx = _tabs.indexWhere((t) => location.startsWith(t.route));
+    if (location == AppRoutes.home) return 0;
+    final idx = _tabs.indexWhere(
+      (t) => t.route != AppRoutes.home && location.startsWith(t.route),
+    );
     return idx < 0 ? 0 : idx;
   }
 

@@ -96,12 +96,11 @@ class _FakeSubscriptionRepo implements SubscriptionRepository {
 late SharedPreferences _prefs;
 
 Future<List<Override>> _guidanceOverrides() async => [
-      sharedPreferencesProvider.overrideWithValue(_prefs),
-      guidanceLibraryRepositoryProvider.overrideWith(
-        (ref) => GuidanceLibraryRepository(
-            ref.watch(sharedPreferencesProvider)),
-      ),
-    ];
+  sharedPreferencesProvider.overrideWithValue(_prefs),
+  guidanceLibraryRepositoryProvider.overrideWith(
+    (ref) => GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
+  ),
+];
 
 // ── Tests ──────────────────────────────────────────────────────────────────
 
@@ -111,9 +110,7 @@ void main() {
     _prefs = await SharedPreferences.getInstance();
   });
 
-  testWidgets('app exposes Reply, Explain, Polish, and Settings navigation', (
-    WidgetTester tester,
-  ) async {
+  Future<void> pumpReplyWiseApp(WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [..._authOverrides, ...await _guidanceOverrides()],
@@ -121,17 +118,81 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+  }
 
+  Future<void> tapHomeCard(WidgetTester tester, Key key) async {
+    final finder = find.byKey(key);
+    await tester.scrollUntilVisible(
+      finder,
+      220,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(finder);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('app defaults to Home and exposes main navigation', (
+    WidgetTester tester,
+  ) async {
+    await pumpReplyWiseApp(tester);
+
+    expect(find.text('ReplyWise'), findsOneWidget);
+    expect(find.text('Generate Reply'), findsOneWidget);
+    expect(find.text('Features'), findsOneWidget);
+    expect(find.text('Home'), findsAtLeastNWidgets(1));
     expect(find.text('Reply'), findsAtLeastNWidgets(1));
-    expect(find.text('Explain'), findsOneWidget);
-    expect(find.text('Polish'), findsOneWidget);
+    expect(find.text('Explain'), findsAtLeastNWidgets(1));
+    expect(find.text('Polish'), findsAtLeastNWidgets(1));
     expect(find.text('Settings'), findsOneWidget);
-    expect(find.text('Turn your intent into natural English'), findsOneWidget);
 
-    await tester.tap(find.text('Polish'));
+    await tester.tap(find.text('Polish').last);
     await tester.pumpAndSettle();
 
     expect(find.text('Make your English sound natural'), findsOneWidget);
+  });
+
+  testWidgets('Home hero card opens Reply page', (tester) async {
+    await pumpReplyWiseApp(tester);
+
+    await tester.tap(find.byKey(const Key('home-hero-reply-card')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Turn your intent into natural English'), findsOneWidget);
+  });
+
+  testWidgets('Home Reply feature card opens Reply page', (tester) async {
+    await pumpReplyWiseApp(tester);
+
+    await tapHomeCard(tester, const Key('home-feature-reply'));
+
+    expect(find.text('Turn your intent into natural English'), findsOneWidget);
+  });
+
+  testWidgets('Home Explain feature card opens Explain page', (tester) async {
+    await pumpReplyWiseApp(tester);
+
+    await tapHomeCard(tester, const Key('home-feature-explain'));
+
+    expect(find.text('Explain Message'), findsOneWidget);
+  });
+
+  testWidgets('Home Polish feature card opens Polish page', (tester) async {
+    await pumpReplyWiseApp(tester);
+
+    await tapHomeCard(tester, const Key('home-feature-polish'));
+
+    expect(find.text('Make your English sound natural'), findsOneWidget);
+  });
+
+  testWidgets('Home Guidance Library feature card opens library page', (
+    tester,
+  ) async {
+    await pumpReplyWiseApp(tester);
+
+    await tapHomeCard(tester, const Key('home-feature-guidance'));
+
+    expect(find.text('Built-in'), findsOneWidget);
   });
 
   testWidgets('guidance chip fills the Reply guidance field', (

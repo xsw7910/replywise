@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/guidance/domain/guidance_template.dart';
 import '../../features/guidance/presentation/guidance_edit_screen.dart';
 import '../../features/guidance/presentation/guidance_library_screen.dart';
+import '../../features/home/home_screen.dart';
 import '../../features/paywall/paywall_screen.dart';
 import '../../features/polish/polish_screen.dart';
 import '../../features/reply/explain_screen.dart';
@@ -14,6 +15,7 @@ import '../widgets/app_shell.dart';
 part 'app_router.g.dart';
 
 abstract final class AppRoutes {
+  static const String home = '/';
   static const String reply = '/reply';
   static const String explain = '/explain';
   static const String polish = '/polish';
@@ -26,7 +28,7 @@ abstract final class AppRoutes {
 @riverpod
 GoRouter appRouter(AppRouterRef ref) {
   return GoRouter(
-    initialLocation: AppRoutes.reply,
+    initialLocation: AppRoutes.home,
     debugLogDiagnostics: true,
     routes: [
       GoRoute(
@@ -51,6 +53,11 @@ GoRouter appRouter(AppRouterRef ref) {
       ShellRoute(
         builder: (context, state, child) => AppShell(child: child),
         routes: [
+          GoRoute(
+            path: AppRoutes.home,
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: HomeScreen()),
+          ),
           GoRoute(
             path: AppRoutes.reply,
             pageBuilder: (context, state) =>
