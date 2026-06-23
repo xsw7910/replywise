@@ -16,6 +16,7 @@ import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import '../../core/widgets/usage_badge.dart';
 import 'application/explain_controller.dart';
+import 'application/pending_reply_input_provider.dart';
 import 'application/reply_controller.dart';
 import 'domain/reply_models.dart';
 import '../entitlement/usage_controller.dart';
@@ -57,8 +58,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   void _appendGuidance(GuidanceTemplate template) {
     final current = _guidanceController.text.trim();
     final content = template.content;
-    _guidanceController.text =
-        current.isEmpty ? content : '$current\n\n$content';
+    _guidanceController.text = current.isEmpty
+        ? content
+        : '$current\n\n$content';
     _guidanceController.selection = TextSelection.collapsed(
       offset: _guidanceController.text.length,
     );
@@ -72,6 +74,21 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       if (!mounted) return;
       final template = ref.read(pendingGuidanceProvider.notifier).take();
       if (template != null) _appendGuidance(template);
+    });
+  }
+
+  /// Applies the original message handed over from the standalone Explain page.
+  /// The user explicitly chooses this flow by tapping "Generate Reply".
+  void _consumePendingReplyInput() {
+    if (ref.watch(pendingReplyInputProvider) == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final message = ref.read(pendingReplyInputProvider.notifier).take();
+      if (message == null) return;
+      _incomingController.text = message;
+      _incomingController.selection = TextSelection.collapsed(
+        offset: _incomingController.text.length,
+      );
     });
   }
 
@@ -189,6 +206,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     final explainState = ref.watch(explainControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
     _consumePendingGuidance();
+    _consumePendingReplyInput();
 
     return AppPage(
       title: 'Reply',
@@ -226,6 +244,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             child: Column(
               children: [
                 LabeledTextField(
+                  key: const Key('reply-incoming-field'),
                   label: 'Message you received',
                   controller: _incomingController,
                   hintText: 'Paste the original message…',

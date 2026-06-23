@@ -111,7 +111,7 @@ void main() {
     _prefs = await SharedPreferences.getInstance();
   });
 
-  testWidgets('app exposes Reply, Polish, and Settings navigation', (
+  testWidgets('app exposes Reply, Explain, Polish, and Settings navigation', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -123,6 +123,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Reply'), findsAtLeastNWidgets(1));
+    expect(find.text('Explain'), findsOneWidget);
     expect(find.text('Polish'), findsOneWidget);
     expect(find.text('Settings'), findsOneWidget);
     expect(find.text('Turn your intent into natural English'), findsOneWidget);

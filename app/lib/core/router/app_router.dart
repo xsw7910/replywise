@@ -6,6 +6,7 @@ import '../../features/guidance/presentation/guidance_edit_screen.dart';
 import '../../features/guidance/presentation/guidance_library_screen.dart';
 import '../../features/paywall/paywall_screen.dart';
 import '../../features/polish/polish_screen.dart';
+import '../../features/reply/explain_screen.dart';
 import '../../features/reply/reply_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../widgets/app_shell.dart';
@@ -14,6 +15,7 @@ part 'app_router.g.dart';
 
 abstract final class AppRoutes {
   static const String reply = '/reply';
+  static const String explain = '/explain';
   static const String polish = '/polish';
   static const String settings = '/settings';
   static const String paywall = '/paywall';
@@ -53,6 +55,11 @@ GoRouter appRouter(AppRouterRef ref) {
             path: AppRoutes.reply,
             pageBuilder: (context, state) =>
                 const NoTransitionPage(child: ReplyScreen()),
+          ),
+          GoRoute(
+            path: AppRoutes.explain,
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: ExplainScreen()),
           ),
           GoRoute(
             path: AppRoutes.polish,

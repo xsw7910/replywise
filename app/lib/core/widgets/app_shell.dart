@@ -10,8 +10,21 @@ class AppShell extends StatelessWidget {
 
   static const _tabs = [
     (route: AppRoutes.reply, label: 'Reply', icon: Icons.reply_rounded),
-    (route: AppRoutes.polish, label: 'Polish', icon: Icons.auto_fix_high_rounded),
-    (route: AppRoutes.settings, label: 'Settings', icon: Icons.settings_rounded),
+    (
+      route: AppRoutes.explain,
+      label: 'Explain',
+      icon: Icons.psychology_alt_rounded,
+    ),
+    (
+      route: AppRoutes.polish,
+      label: 'Polish',
+      icon: Icons.auto_fix_high_rounded,
+    ),
+    (
+      route: AppRoutes.settings,
+      label: 'Settings',
+      icon: Icons.settings_rounded,
+    ),
   ];
 
   int _selectedIndex(BuildContext context) {
@@ -31,10 +44,7 @@ class AppShell extends StatelessWidget {
         onDestinationSelected: (i) => context.go(_tabs[i].route),
         destinations: _tabs
             .map(
-              (t) => NavigationDestination(
-                icon: Icon(t.icon),
-                label: t.label,
-              ),
+              (t) => NavigationDestination(icon: Icon(t.icon), label: t.label),
             )
             .toList(),
       ),
