@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:replywise/core/constants/input_limits.dart';
 import 'package:replywise/core/network/api_client.dart';
 import 'package:replywise/core/network/api_error.dart';
 import 'package:replywise/core/router/app_router.dart';
@@ -125,6 +126,17 @@ void main() {
     expect(find.text('Message to understand'), findsOneWidget);
     expect(find.text('Explain this message'), findsOneWidget);
     expect(find.byKey(const Key('explain-message-field')), findsOneWidget);
+    expect(
+      tester
+          .widget<TextField>(
+            find.descendant(
+              of: find.byKey(const Key('explain-message-field')),
+              matching: find.byType(TextField),
+            ),
+          )
+          .maxLength,
+      InputLimits.explainMessageMaxLength,
+    );
   });
 
   testWidgets('empty input validates locally and does not call repository', (

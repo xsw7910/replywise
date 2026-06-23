@@ -5,6 +5,10 @@
 /// Guidance Library items. Keeping these aligned prevents a library item that is
 /// valid when created from failing validation when used in Reply or Polish.
 abstract final class InputLimits {
+  /// Max length for an incoming message sent to Explain.
+  /// Must match backend `/v1/explain` validation.
+  static const int explainMessageMaxLength = 4000;
+
   /// Max length for any guidance content (Reply guidance, Polish custom
   /// guidance, and Guidance Library item content). Must match the backend
   /// validation in `backend/app/api/v1/ai.py`.

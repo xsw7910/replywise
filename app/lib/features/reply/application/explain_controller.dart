@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/constants/input_limits.dart';
 import '../../../core/network/api_error.dart';
 import '../data/explain_repository.dart';
 import '../domain/reply_models.dart';
@@ -28,9 +29,11 @@ class ExplainController extends _$ExplainController {
       state = const ExplainState(error: 'Enter a message to explain.');
       return null;
     }
-    if (cleaned.length > 4000) {
-      state = const ExplainState(
-        error: 'The message must be 4000 characters or less.',
+    if (cleaned.length > InputLimits.explainMessageMaxLength) {
+      state = ExplainState(
+        error:
+            'The message must be '
+            '${InputLimits.explainMessageMaxLength} characters or less.',
       );
       return null;
     }

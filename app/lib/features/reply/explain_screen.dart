@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/input_limits.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -22,8 +23,6 @@ class ExplainScreen extends ConsumerStatefulWidget {
 }
 
 class _ExplainScreenState extends ConsumerState<ExplainScreen> {
-  static const _textLimit = 4000;
-
   final _messageController = TextEditingController();
   ExplainResult? _result;
 
@@ -37,8 +36,8 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
     final text = data?.text;
     if (text == null || text.isEmpty) return;
-    _messageController.text = text.length > _textLimit
-        ? text.substring(0, _textLimit)
+    _messageController.text = text.length > InputLimits.explainMessageMaxLength
+        ? text.substring(0, InputLimits.explainMessageMaxLength)
         : text;
     _messageController.selection = TextSelection.collapsed(
       offset: _messageController.text.length,
@@ -64,9 +63,9 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   void _continueToReply() {
     final original = _messageController.text.trim();
     if (original.isEmpty) {
-      ref
-          .read(explainControllerProvider.notifier)
-          .explain(text: original, explainLang: 'en');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter a message to explain first.')),
+      );
       return;
     }
     ref.read(pendingReplyInputProvider.notifier).set(original);
@@ -98,7 +97,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                   hintText: _ExplainText.inputHint,
                   helperText: _ExplainText.inputHelper,
                   maxLines: 7,
-                  maxLength: _textLimit,
+                  maxLength: InputLimits.explainMessageMaxLength,
                 ),
                 const SizedBox(height: 8),
                 Row(
