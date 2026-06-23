@@ -5,25 +5,39 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 
 class UsageBadge extends StatelessWidget {
-  const UsageBadge({required this.state, this.onRetry, super.key});
+  const UsageBadge({
+    required this.state,
+    this.onRetry,
+    this.compact = false,
+    super.key,
+  });
 
   final UsageViewState state;
   final VoidCallback? onRetry;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final usage = state.usage;
     final (icon, label) = usage.isPremium
-        ? (Icons.workspace_premium_rounded, 'Premium · Unlimited')
+        ? (
+            Icons.workspace_premium_rounded,
+            compact ? 'Premium' : 'Premium · Unlimited',
+          )
         : state.isLoading
-        ? (Icons.sync_rounded, 'Updating balance…')
+        ? (Icons.sync_rounded, compact ? 'Updating' : 'Updating balance…')
         : state.error != null
-        ? (Icons.cloud_off_outlined, 'Balance unavailable')
+        ? (Icons.cloud_off_outlined, compact ? 'Retry' : 'Balance unavailable')
         : usage.freeUsesLeft == null
-        ? (Icons.hourglass_empty_rounded, 'Checking balance…')
+        ? (
+            Icons.hourglass_empty_rounded,
+            compact ? 'Checking' : 'Checking balance…',
+          )
         : (
             Icons.bolt_rounded,
-            '${usage.freeUsesLeft} free · ${usage.paidCredits} credits',
+            compact
+                ? '${usage.freeUsesLeft} free'
+                : '${usage.freeUsesLeft} free · ${usage.paidCredits} credits',
           );
 
     return Semantics(

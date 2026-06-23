@@ -138,8 +138,7 @@ void main() {
     await pumpReplyWiseApp(tester);
 
     expect(find.text('ReplyWise'), findsOneWidget);
-    expect(find.text('Generate Reply'), findsOneWidget);
-    expect(find.text('Features'), findsOneWidget);
+    expect(find.text('Choose what you need'), findsOneWidget);
     expect(find.text('Home'), findsAtLeastNWidgets(1));
     expect(find.text('Reply'), findsAtLeastNWidgets(1));
     expect(find.text('Explain'), findsAtLeastNWidgets(1));
@@ -150,15 +149,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Make your English sound natural'), findsOneWidget);
-  });
-
-  testWidgets('Home hero card opens Reply page', (tester) async {
-    await pumpReplyWiseApp(tester);
-
-    await tester.tap(find.byKey(const Key('home-hero-reply-card')));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Turn your intent into natural English'), findsOneWidget);
   });
 
   testWidgets('Home Reply feature card opens Reply page', (tester) async {

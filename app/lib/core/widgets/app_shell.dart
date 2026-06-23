@@ -3,6 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../router/app_router.dart';
 
+const _navBlue = Color(0xFF3F73FF);
+const _navInactive = Color(0xFF9AA6B8);
+
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.child});
 
@@ -42,15 +45,110 @@ class AppShell extends StatelessWidget {
     final selectedIndex = _selectedIndex(context);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF7F9FD),
       body: child,
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: _SoftNavBar(
+        tabs: _tabs,
         selectedIndex: selectedIndex,
-        onDestinationSelected: (i) => context.go(_tabs[i].route),
-        destinations: _tabs
-            .map(
-              (t) => NavigationDestination(icon: Icon(t.icon), label: t.label),
-            )
-            .toList(),
+        onSelected: (i) => context.go(_tabs[i].route),
+      ),
+    );
+  }
+}
+
+typedef _TabData = ({String route, String label, IconData icon});
+
+class _SoftNavBar extends StatelessWidget {
+  const _SoftNavBar({
+    required this.tabs,
+    required this.selectedIndex,
+    required this.onSelected,
+  });
+
+  final List<_TabData> tabs;
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    // Full-width bar attached to the bottom edge, with a soft upward shadow
+    // to lift it off the content.
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x3349619A),
+            blurRadius: 28,
+            offset: Offset(0, -10),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          child: Row(
+            children: [
+              for (var i = 0; i < tabs.length; i++)
+                Expanded(
+                  child: _NavItem(
+                    data: tabs[i],
+                    selected: i == selectedIndex,
+                    onTap: () => onSelected(i),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  const _NavItem({
+    required this.data,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final _TabData data;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected ? _navBlue : _navInactive;
+
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: data.label,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(data.icon, color: color, size: 24),
+              const SizedBox(height: 4),
+              Text(
+                data.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  height: 1.1,
+                  color: color,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

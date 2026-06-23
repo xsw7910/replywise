@@ -3,19 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
-import '../../core/widgets/glass_card.dart';
-import '../../core/widgets/usage_badge.dart';
-import '../entitlement/usage_controller.dart';
+
+const _homeHorizontalPadding = 20.0;
+const _homeCardSpacing = 12.0;
+
+// Light blue / white palette with playful per-feature accents.
+const _ink = Color(0xFF1A2340);
+const _muted = Color(0xFF8A93A6);
+const _blue = Color(0xFF3F73FF);
+const _purple = Color(0xFF8C78F0);
+const _green = Color(0xFF2FC08A);
+const _orange = Color(0xFFF1A93F);
+const _chevron = Color(0xFFC2C9D6);
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final usageState = ref.watch(usageControllerProvider);
     final topInset = MediaQuery.paddingOf(context).top;
 
     return AppPage(
@@ -24,65 +31,54 @@ class HomeScreen extends ConsumerWidget {
       useSafeArea: false,
       child: Stack(
         children: [
+          const Positioned.fill(child: _HomeBackground()),
           Positioned.fill(
             child: ListView(
-              padding: EdgeInsets.fromLTRB(16, topInset + 88, 16, 32),
+              padding: EdgeInsets.fromLTRB(
+                _homeHorizontalPadding,
+                topInset + 18,
+                _homeHorizontalPadding,
+                32,
+              ),
               children: [
-                _ReplyHeroCard(onTap: () => context.go(AppRoutes.reply)),
-                const SizedBox(height: 20),
-                Text('Features', style: AppTextStyles.headlineMedium),
-                const SizedBox(height: 10),
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.02,
-                  children: [
-                    _FeatureCard(
-                      key: const Key('home-feature-reply'),
-                      icon: Icons.edit_note_rounded,
-                      title: 'Reply',
-                      subtitle: 'Generate natural English replies',
-                      onTap: () => context.go(AppRoutes.reply),
-                    ),
-                    _FeatureCard(
-                      key: const Key('home-feature-explain'),
-                      icon: Icons.psychology_alt_rounded,
-                      title: 'Explain',
-                      subtitle:
-                          'Understand meaning, tone, and suggested replies',
-                      onTap: () => context.go(AppRoutes.explain),
-                    ),
-                    _FeatureCard(
-                      key: const Key('home-feature-polish'),
-                      icon: Icons.auto_fix_high_rounded,
-                      title: 'Polish',
-                      subtitle: 'Make your English sound more natural',
-                      onTap: () => context.go(AppRoutes.polish),
-                    ),
-                    _FeatureCard(
-                      key: const Key('home-feature-guidance'),
-                      icon: Icons.menu_book_rounded,
-                      title: 'Guidance Library',
-                      subtitle: 'Save and reuse your guidance',
-                      onTap: () => context.push(AppRoutes.guidanceLibrary),
-                    ),
-                  ],
+                _HomeHeader(onUpgrade: () => context.push(AppRoutes.paywall)),
+                const SizedBox(height: 22),
+                _FeatureTile(
+                  key: const Key('home-feature-reply'),
+                  icon: Icons.chat_bubble_rounded,
+                  accent: _blue,
+                  title: 'Reply',
+                  subtitle: 'Generate natural English replies.',
+                  onTap: () => context.go(AppRoutes.reply),
+                ),
+                const SizedBox(height: _homeCardSpacing),
+                _FeatureTile(
+                  key: const Key('home-feature-polish'),
+                  icon: Icons.auto_fix_high_rounded,
+                  accent: _purple,
+                  title: 'Polish',
+                  subtitle: 'Make your English sound more natural.',
+                  onTap: () => context.go(AppRoutes.polish),
+                ),
+                const SizedBox(height: _homeCardSpacing),
+                _FeatureTile(
+                  key: const Key('home-feature-explain'),
+                  icon: Icons.forum_rounded,
+                  accent: _green,
+                  title: 'Explain',
+                  subtitle: 'Understand the meaning and tone.',
+                  onTap: () => context.go(AppRoutes.explain),
+                ),
+                const SizedBox(height: _homeCardSpacing),
+                _FeatureTile(
+                  key: const Key('home-feature-guidance'),
+                  icon: Icons.menu_book_rounded,
+                  accent: _orange,
+                  title: 'Guidance Library',
+                  subtitle: 'Save and reuse your guidance.',
+                  onTap: () => context.push(AppRoutes.guidanceLibrary),
                 ),
               ],
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: _HomeNavigationBar(
-              topInset: topInset,
-              usageState: usageState,
-              onRetryUsage: () =>
-                  ref.read(usageControllerProvider.notifier).refresh(),
             ),
           ),
         ],
@@ -91,97 +87,77 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-class _HomeNavigationBar extends StatelessWidget {
-  const _HomeNavigationBar({
-    required this.topInset,
-    required this.usageState,
-    required this.onRetryUsage,
-  });
-
-  final double topInset;
-  final UsageViewState usageState;
-  final VoidCallback onRetryUsage;
+class _HomeBackground extends StatelessWidget {
+  const _HomeBackground();
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.navBarBackground,
-      elevation: 4,
-      shadowColor: AppColors.primary.withAlpha(30),
-      surfaceTintColor: Colors.transparent,
-      child: SizedBox(
-        height: topInset + 72,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(16, topInset, 16, 0),
-          child: Row(
+    return const ColoredBox(color: Color(0xFFF7F9FD));
+  }
+}
+
+class _HomeHeader extends StatelessWidget {
+  const _HomeHeader({required this.onUpgrade});
+
+  final VoidCallback onUpgrade;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF5C8BFF), _blue],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: _blue.withAlpha(85),
+                blurRadius: 14,
+                offset: const Offset(0, 7),
+              ),
+            ],
+          ),
+          child: const Icon(Icons.forum_rounded, color: Colors.white, size: 24),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [AppColors.primary, AppColors.primaryLight],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withAlpha(22),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.forum_rounded,
-                  color: Colors.white,
-                  size: 23,
+              Text(
+                'ReplyWise',
+                style: AppTextStyles.displayLarge.copyWith(
+                  color: _ink,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'ReplyWise',
-                      style: AppTextStyles.headlineMedium.copyWith(
-                        fontSize: 21,
-                        height: 1.1,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      'AI reply, polish, and explain',
-                      style: AppTextStyles.bodyMedium.copyWith(height: 1.25),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: UsageBadge(state: usageState, onRetry: onRetryUsage),
-                  ),
+              const SizedBox(height: 4),
+              Text(
+                'Choose what you need',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: _muted,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
         ),
-      ),
+        const SizedBox(width: 12),
+        _CrownBadge(onTap: onUpgrade),
+      ],
     );
   }
 }
 
-class _ReplyHeroCard extends StatelessWidget {
-  const _ReplyHeroCard({required this.onTap});
+class _CrownBadge extends StatelessWidget {
+  const _CrownBadge({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -189,89 +165,34 @@ class _ReplyHeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: 'Generate Reply',
+      label: 'Upgrade to premium',
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          key: const Key('home-hero-reply-card'),
           onTap: onTap,
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(14),
           child: Ink(
-            padding: const EdgeInsets.all(18),
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(14),
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF4A90D9),
-                  Color(0xFF6EB6F4),
-                  Color(0xFF8AD6F6),
-                ],
+                colors: [Color(0xFFFFD66B), _orange],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withAlpha(38),
-                  blurRadius: 24,
-                  offset: const Offset(0, 12),
+                  color: _orange.withAlpha(90),
+                  blurRadius: 14,
+                  offset: const Offset(0, 7),
                 ),
               ],
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withAlpha(50),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          'Most used',
-                          style: AppTextStyles.labelMedium.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 13),
-                      Text(
-                        'Generate Reply',
-                        style: AppTextStyles.headlineMedium.copyWith(
-                          color: Colors.white,
-                          fontSize: 25,
-                        ),
-                      ),
-                      const SizedBox(height: 7),
-                      Text(
-                        'Paste a message, add your guidance, and get natural English replies.',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: Colors.white.withAlpha(230),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(55),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward_rounded,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: Colors.white,
+              size: 24,
             ),
           ),
         ),
@@ -280,55 +201,112 @@ class _ReplyHeroCard extends StatelessWidget {
   }
 }
 
-class _FeatureCard extends StatelessWidget {
-  const _FeatureCard({
+class _FeatureTile extends StatelessWidget {
+  const _FeatureTile({
     super.key,
     required this.icon,
+    required this.accent,
     required this.title,
     required this.subtitle,
     required this.onTap,
   });
 
   final IconData icon;
+  final Color accent;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      padding: EdgeInsets.zero,
+    const radius = 20.0;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF49619A).withAlpha(60),
+            blurRadius: 28,
+            offset: const Offset(0, 14),
+          ),
+          BoxShadow(
+            color: const Color(0xFF49619A).withAlpha(30),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(13),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withAlpha(22),
-                    borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(radius),
+          child: Ink(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(radius),
+              border: Border.all(color: const Color(0xFFD3DCEC), width: 1.4),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [accent, Color.lerp(accent, Colors.white, 0.28)!],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: accent.withAlpha(80),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 26),
                   ),
-                  child: Icon(icon, color: AppColors.primaryDark, size: 22),
-                ),
-                const SizedBox(height: 12),
-                Text(title, style: AppTextStyles.titleMedium),
-                const SizedBox(height: 5),
-                Expanded(
-                  child: Text(
-                    subtitle,
-                    style: AppTextStyles.bodyMedium,
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          title,
+                          style: AppTextStyles.titleMedium.copyWith(
+                            color: accent,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          subtitle,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: _muted,
+                            height: 1.25,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: _chevron,
+                    size: 24,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -336,3 +314,4 @@ class _FeatureCard extends StatelessWidget {
     );
   }
 }
+
