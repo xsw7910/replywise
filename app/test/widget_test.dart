@@ -193,6 +193,12 @@ void main() {
 
     await tester.tap(find.text('Settings').last);
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Developer Testing'),
+      220,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
 
     expect(find.text('Developer Testing'), findsOneWidget);
     expect(find.text('Reset free usage'), findsOneWidget);

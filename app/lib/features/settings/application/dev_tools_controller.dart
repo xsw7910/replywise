@@ -37,10 +37,8 @@ class DevToolsController extends Notifier<DevToolsState> {
     isPremium ? 'Premium simulation enabled.' : 'Premium simulation disabled.',
   );
 
-  Future<void> refreshAccountState() => _run(
-    () async {},
-    'Account state refreshed.',
-  );
+  Future<void> refreshAccountState() =>
+      _run(() async {}, 'Account state refreshed.');
 
   Future<void> _run(Future<void> Function() action, String message) async {
     if (state.isLoading) return;
@@ -63,6 +61,4 @@ class DevToolsController extends Notifier<DevToolsState> {
 }
 
 final devToolsControllerProvider =
-    NotifierProvider<DevToolsController, DevToolsState>(
-      DevToolsController.new,
-    );
+    NotifierProvider<DevToolsController, DevToolsState>(DevToolsController.new);

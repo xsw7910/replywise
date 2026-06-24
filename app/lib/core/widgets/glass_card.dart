@@ -41,14 +41,17 @@ class GlassCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              color: fillColor ?? Colors.white,
-              borderRadius: BorderRadius.circular(borderRadius),
-              border: Border.all(color: AppColors.cardBorder, width: 1.4),
+          child: Material(
+            color: fillColor ?? Colors.white,
+            borderRadius: BorderRadius.circular(borderRadius),
+            child: Container(
+              padding: padding,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(borderRadius),
+                border: Border.all(color: AppColors.cardBorder, width: 1.4),
+              ),
+              child: child,
             ),
-            child: child,
           ),
         ),
       ),

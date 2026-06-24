@@ -69,7 +69,7 @@ def test_add_credits_works_and_validates_amount(client: TestClient, monkeypatch)
     assert client.get("/v1/me", headers=auth).json()["paidCredits"] == 10
 
     invalid = client.post("/v1/dev/add-credits", json={"amount": 1001}, headers=auth)
-    assert invalid.status_code == 422
+    assert invalid.status_code == 400
 
 
 def test_set_premium_works(client: TestClient, monkeypatch) -> None:

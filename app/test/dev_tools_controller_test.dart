@@ -73,26 +73,29 @@ ProviderContainer _container({
 }
 
 void main() {
-  test('dev tools controller calls actions and refreshes account state', () async {
-    final devTools = _FakeDevToolsClient();
-    final usageRepo = _FakeUsageRepo();
-    final c = _container(devTools: devTools, usageRepo: usageRepo);
-    final controller = c.read(devToolsControllerProvider.notifier);
+  test(
+    'dev tools controller calls actions and refreshes account state',
+    () async {
+      final devTools = _FakeDevToolsClient();
+      final usageRepo = _FakeUsageRepo();
+      final c = _container(devTools: devTools, usageRepo: usageRepo);
+      final controller = c.read(devToolsControllerProvider.notifier);
 
-    await controller.resetUsage();
-    await controller.addCredits(10);
-    await controller.addCredits(50);
-    await controller.setPremium(true);
-    await controller.setPremium(false);
-    await controller.refreshAccountState();
+      await controller.resetUsage();
+      await controller.addCredits(10);
+      await controller.addCredits(50);
+      await controller.setPremium(true);
+      await controller.setPremium(false);
+      await controller.refreshAccountState();
 
-    expect(devTools.calls, [
-      'reset',
-      'add:10',
-      'add:50',
-      'premium:true',
-      'premium:false',
-    ]);
-    expect(usageRepo.fetchCount, 6);
-  });
+      expect(devTools.calls, [
+        'reset',
+        'add:10',
+        'add:50',
+        'premium:true',
+        'premium:false',
+      ]);
+      expect(usageRepo.fetchCount, 6);
+    },
+  );
 }

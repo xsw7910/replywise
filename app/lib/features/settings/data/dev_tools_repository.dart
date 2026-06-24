@@ -15,17 +15,20 @@ class DevToolsRepository implements DevToolsClient {
 
   final ApiClient _client;
 
+  @override
   Future<void> resetUsage({int? freeUsesUsed, int? paidCredits}) async {
-    await _post('/v1/dev/reset-usage', {
-      if (freeUsesUsed != null) 'freeUsesUsed': freeUsesUsed,
-      if (paidCredits != null) 'paidCredits': paidCredits,
-    });
+    final data = <String, dynamic>{};
+    if (freeUsesUsed != null) data['freeUsesUsed'] = freeUsesUsed;
+    if (paidCredits != null) data['paidCredits'] = paidCredits;
+    await _post('/v1/dev/reset-usage', data);
   }
 
+  @override
   Future<void> addCredits(int amount) async {
     await _post('/v1/dev/add-credits', {'amount': amount});
   }
 
+  @override
   Future<void> setPremium(bool isPremium) async {
     await _post('/v1/dev/set-premium', {'isPremium': isPremium});
   }
@@ -34,10 +37,7 @@ class DevToolsRepository implements DevToolsClient {
     try {
       await _client.post<Map<String, dynamic>>(path, data: data);
     } on DioException catch (error) {
-      throw ApiError.fromDio(
-        error,
-        fallback: 'Developer test action failed.',
-      );
+      throw ApiError.fromDio(error, fallback: 'Developer test action failed.');
     }
   }
 }
