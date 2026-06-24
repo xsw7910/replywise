@@ -4,14 +4,42 @@ ReplyWise supports dev/test-only local testing for Reply, Explain, Polish, and a
 
 ## Backend
 
-Start the backend in a dev or test environment with both local testing flags enabled:
+Use the helper scripts from the repo root. They handle venv creation, dependency install, and env vars automatically.
+
+**Normal dev backend** (real AI calls, dev tools off):
 
 ```powershell
-$env:APP_ENV = "dev"
-$env:MOCK_AI_ENABLED = "true"
-$env:DEV_TOOLS_ENABLED = "true"
-cd backend
-uvicorn app.main:app --reload
+.\scripts\run-backend-dev.ps1
+```
+
+**Mock backend** (fake AI, dev tools on):
+
+```powershell
+.\scripts\run-backend-mock.ps1
+```
+
+**Mock backend and reset DB:**
+
+```powershell
+.\scripts\run-backend-mock.ps1 -ResetDb
+```
+
+**Mock backend with premium simulated:**
+
+```powershell
+.\scripts\run-backend-mock.ps1 -MockPremium
+```
+
+**Mock backend with paid credits pre-loaded:**
+
+```powershell
+.\scripts\run-backend-mock.ps1 -MockPaidCredits 50
+```
+
+Parameters can be combined:
+
+```powershell
+.\scripts\run-backend-mock.ps1 -ResetDb -MockPremium -MockPaidCredits 50
 ```
 
 `MOCK_AI_ENABLED=true` selects deterministic fake AI responses for:
@@ -34,7 +62,7 @@ flutter run `
   --dart-define=DEV_TOOLS_ENABLED=true
 ```
 
-Use `http://10.0.2.2:8000` for the Android emulator. Use your machine LAN IP for a physical device.
+Use `http://10.0.2.2:8000` for the Android emulator. Use your machine's LAN IP for a physical device.
 
 ## What To Test
 
