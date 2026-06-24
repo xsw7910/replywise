@@ -40,3 +40,36 @@ def test_production_accepts_explicit_non_development_secrets() -> None:
         revenuecat_secret_api_key="production-revenuecat-secret",
     )
     assert config.app_env == "prod"
+
+
+@pytest.mark.parametrize("field", ["mock_ai_enabled", "dev_tools_enabled"])
+def test_production_rejects_local_testing_flags(field: str) -> None:
+    kwargs = {
+        "_env_file": None,
+        "app_env": "prod",
+        "jwt_secret": "production-secret",
+        "server_pepper": "production-pepper",
+        "revenuecat_secret_api_key": "production-revenuecat-secret",
+        field: True,
+    }
+    with pytest.raises(ValidationError):
+        Settings(**kwargs)
+
+
+def test_reply_env_controls_production_guard() -> None:
+    with pytest.raises(ValidationError):
+        Settings(
+            _env_file=None,
+            app_env="dev",
+            reply_env="prod",
+            jwt_secret="production-secret",
+            server_pepper="production-pepper",
+            revenuecat_secret_api_key="production-revenuecat-secret",
+            mock_ai_enabled=True,
+        )
+
+
+@pytest.mark.parametrize("field", ["mock_ai_enabled", "dev_tools_enabled"])
+def test_local_testing_flags_are_allowed_in_test(field: str) -> None:
+    config = Settings(_env_file=None, app_env="test", **{field: True})
+    assert getattr(config, field) is True

@@ -13,6 +13,7 @@ import '../../core/widgets/usage_badge.dart';
 import '../auth/application/auth_controller.dart';
 import '../auth/auth_state.dart';
 import '../entitlement/usage_controller.dart';
+import 'application/dev_tools_controller.dart';
 import 'application/health_controller.dart';
 import 'data/health_repository.dart';
 
@@ -30,6 +31,17 @@ class SettingsScreen extends ConsumerWidget {
     final healthState = ref.watch(healthControllerProvider);
     final authState = ref.watch(authControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
+    final showDevTools = ref.watch(devToolsPanelVisibleProvider);
+    final devToolsState = ref.watch(devToolsControllerProvider);
+
+    ref.listen(devToolsControllerProvider, (previous, next) {
+      final message = next.message;
+      final error = next.error;
+      if (message == null && error == null) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message ?? error!)));
+    });
 
     return AppPage(
       title: 'Settings',
@@ -126,6 +138,10 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
+          if (showDevTools) ...[
+            const SizedBox(height: 16),
+            _DeveloperTestingCard(isBusy: devToolsState.isLoading),
+          ],
           const SizedBox(height: 16),
           _AuthStatusCard(
             authState: authState,
@@ -136,6 +152,63 @@ class SettingsScreen extends ConsumerWidget {
             healthState: healthState,
             onRefresh: () =>
                 ref.read(healthControllerProvider.notifier).refresh(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DeveloperTestingCard extends ConsumerWidget {
+  const _DeveloperTestingCard({required this.isBusy});
+
+  final bool isBusy;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(devToolsControllerProvider.notifier);
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Developer Testing', style: AppTextStyles.titleMedium),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.tonalIcon(
+                onPressed: isBusy ? null : controller.resetUsage,
+                icon: const Icon(Icons.restart_alt_rounded),
+                label: const Text('Reset free usage'),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: isBusy ? null : () => controller.addCredits(10),
+                icon: const Icon(Icons.add_circle_outline_rounded),
+                label: const Text('Add 10 credits'),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: isBusy ? null : () => controller.addCredits(50),
+                icon: const Icon(Icons.add_circle_outline_rounded),
+                label: const Text('Add 50 credits'),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: isBusy ? null : () => controller.setPremium(true),
+                icon: const Icon(Icons.workspace_premium_rounded),
+                label: const Text('Simulate Premium On'),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: isBusy ? null : () => controller.setPremium(false),
+                icon: const Icon(Icons.workspace_premium_outlined),
+                label: const Text('Simulate Premium Off'),
+              ),
+              OutlinedButton.icon(
+                onPressed: isBusy ? null : controller.refreshAccountState,
+                icon: const Icon(Icons.refresh_rounded),
+                label: const Text('Refresh account state'),
+              ),
+            ],
           ),
         ],
       ),

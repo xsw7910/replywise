@@ -29,6 +29,11 @@ class AppConfig {
     defaultValue: 'dev',
   );
 
+  static const bool devToolsEnabled = bool.fromEnvironment(
+    'DEV_TOOLS_ENABLED',
+    defaultValue: false,
+  );
+
   static bool get isDev => env == 'dev';
   static bool get isProd => env == 'prod';
 }

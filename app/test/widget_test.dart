@@ -12,6 +12,7 @@ import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
 import 'package:replywise/features/paywall/paywall_screen.dart';
 import 'package:replywise/features/reply/reply_screen.dart';
+import 'package:replywise/features/settings/application/dev_tools_controller.dart';
 import 'package:replywise/features/entitlement/subscription_repository.dart';
 import 'package:replywise/features/entitlement/entitlement_state.dart';
 
@@ -183,6 +184,42 @@ void main() {
     await tapHomeCard(tester, const Key('home-feature-guidance'));
 
     expect(find.text('Built-in'), findsOneWidget);
+  });
+
+  testWidgets('Developer Testing panel is visible in dev Settings', (
+    tester,
+  ) async {
+    await pumpReplyWiseApp(tester);
+
+    await tester.tap(find.text('Settings').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Developer Testing'), findsOneWidget);
+    expect(find.text('Reset free usage'), findsOneWidget);
+    expect(find.text('Add 10 credits'), findsOneWidget);
+    expect(find.text('Simulate Premium On'), findsOneWidget);
+  });
+
+  testWidgets('Developer Testing panel can be hidden for production', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          ..._authOverrides,
+          ...await _guidanceOverrides(),
+          devToolsPanelVisibleProvider.overrideWithValue(false),
+        ],
+        child: const ReplyWiseApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Settings').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Developer Testing'), findsNothing);
+    expect(find.text('Reset free usage'), findsNothing);
   });
 
   testWidgets('guidance chip fills the Reply guidance field', (

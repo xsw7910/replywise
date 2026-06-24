@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 
@@ -92,7 +93,7 @@ class _HomeBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(color: Color(0xFFF7F9FD));
+    return const ColoredBox(color: AppColors.backgroundBase);
   }
 }
 
@@ -225,15 +226,15 @@ class _FeatureTile extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
         boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF49619A).withAlpha(60),
+          const BoxShadow(
+            color: AppColors.cardShadow,
             blurRadius: 28,
-            offset: const Offset(0, 14),
+            offset: Offset(0, 14),
           ),
-          BoxShadow(
-            color: const Color(0xFF49619A).withAlpha(30),
+          const BoxShadow(
+            color: AppColors.cardSoftShadow,
             blurRadius: 6,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -246,7 +247,7 @@ class _FeatureTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(radius),
-              border: Border.all(color: const Color(0xFFD3DCEC), width: 1.4),
+              border: Border.all(color: AppColors.cardBorder, width: 1.4),
             ),
             child: Padding(
               padding: const EdgeInsets.all(14),
@@ -260,7 +261,10 @@ class _FeatureTile extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [accent, Color.lerp(accent, Colors.white, 0.28)!],
+                        colors: [
+                          accent,
+                          Color.lerp(accent, Colors.white, 0.28)!,
+                        ],
                       ),
                       boxShadow: [
                         BoxShadow(
@@ -314,4 +318,3 @@ class _FeatureTile extends StatelessWidget {
     );
   }
 }
-

@@ -18,7 +18,7 @@ from app.schemas.ai import (
     ReplyRequest,
     ReplyResponse,
 )
-from app.services.ai_provider import FakeAIProvider
+from app.services.ai_provider import FakeAIProvider, LocalMockAIProvider
 from app.services.ai_service import AIService
 from app.services.usage_service import (
     begin_generation,
@@ -34,6 +34,8 @@ _ai_service = AIService(FakeAIProvider())
 
 
 def get_ai_service() -> AIService:
+    if settings.mock_ai_enabled:
+        return AIService(LocalMockAIProvider())
     return _ai_service
 
 

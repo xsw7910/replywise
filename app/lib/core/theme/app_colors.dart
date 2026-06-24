@@ -8,8 +8,11 @@ abstract final class AppColors {
   static const Color primaryDark = Color(0xFF2265A8);
 
   // Backgrounds — near-white with a blue tint
-  static const Color backgroundBase = Color(0xFFF0F6FF);
+  static const Color backgroundBase = Color(0xFFF7F9FD);
   static const Color backgroundSurface = Color(0xFFFFFFFF);
+  static const Color cardBorder = Color(0xFFD3DCEC);
+  static const Color cardShadow = Color(0x3C49619A);
+  static const Color cardSoftShadow = Color(0x1E49619A);
 
   // Glass layer (semi-transparent white for glassmorphism cards)
   static const Color glassFill = Color(0xCCFFFFFF); // 80 % white

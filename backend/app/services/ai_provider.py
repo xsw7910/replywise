@@ -48,3 +48,7 @@ class FakeAIProvider:
             }
         )
 
+
+class LocalMockAIProvider(FakeAIProvider):
+    """Explicit provider selected by MOCK_AI_ENABLED for local emulator testing."""
+

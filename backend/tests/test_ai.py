@@ -4,6 +4,7 @@ from app.api.v1.ai import get_ai_service
 from app.config import settings
 from app.main import app
 from app.services.ai_service import AIService
+import app.api.v1.ai as ai_module
 
 
 def _token(client: TestClient, suffix: str) -> str:
@@ -170,6 +171,43 @@ class _MalformedProvider:
 class _UnavailableProvider:
     async def complete(self, system_prompt: str, payload: dict) -> str:
         raise TimeoutError("provider timeout")
+
+
+class _ExplodingProvider:
+    async def complete(self, system_prompt: str, payload: dict) -> str:
+        raise AssertionError("external provider should not be called")
+
+
+def test_mock_ai_enabled_uses_local_fake_provider(client: TestClient, monkeypatch) -> None:
+    monkeypatch.setattr(settings, "mock_ai_enabled", True)
+    monkeypatch.setattr(ai_module, "_ai_service", AIService(_ExplodingProvider()))
+
+    response = client.post(
+        "/v1/reply",
+        json=_reply_payload(),
+        headers=_headers(client, "mock-ai-reply"),
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert [item["label"] for item in body["versions"]] == [
+        "Professional",
+        "Friendly",
+        "Short",
+    ]
+    assert body["usage"]["source"] == "free"
+
+
+def test_mock_ai_enabled_keeps_validation_active(
+    client: TestClient, monkeypatch
+) -> None:
+    monkeypatch.setattr(settings, "mock_ai_enabled", True)
+    response = client.post(
+        "/v1/reply",
+        json={**_reply_payload(), "guidance": " "},
+        headers=_headers(client, "mock-ai-validation"),
+    )
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "VALIDATION_ERROR"
 
 
 def test_json_fence_is_stripped(client: TestClient) -> None:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_skin.dart';
+import '../theme/app_colors.dart';
 
 class AppPage extends StatelessWidget {
   const AppPage({
@@ -32,18 +32,10 @@ class AppPage extends StatelessWidget {
               backgroundColor: Colors.white.withAlpha(175),
             )
           : null,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: AppSkin.backgroundGradient,
-          ),
-        ),
+      body: ColoredBox(
+        color: AppColors.backgroundBase,
         child: Stack(
           children: [
-            const Positioned(top: 90, right: -70, child: _Glow(size: 210)),
-            const Positioned(top: 430, left: -85, child: _Glow(size: 180)),
             if (useSafeArea)
               SafeArea(
                 child: Padding(
@@ -59,26 +51,6 @@ class AppPage extends StatelessWidget {
                 child: child,
               ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Glow extends StatelessWidget {
-  const _Glow({required this.size});
-
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppSkin.blueGlow,
         ),
       ),
     );

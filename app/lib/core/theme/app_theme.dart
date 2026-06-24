@@ -69,7 +69,7 @@ abstract final class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: AppColors.primaryLight.withAlpha(60)),
+          side: const BorderSide(color: AppColors.cardBorder, width: 1.4),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(

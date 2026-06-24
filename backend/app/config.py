@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     app_env: str = "dev"
+    reply_env: str | None = None
     service_name: str = "reply-backend"
 
     database_url: str = "sqlite+aiosqlite:///./replywise.db"
@@ -22,6 +23,8 @@ class Settings(BaseSettings):
     server_pepper: str = DEV_SERVER_PEPPER
 
     ai_provider: str = "fake"
+    mock_ai_enabled: bool = False
+    dev_tools_enabled: bool = False
     explain_daily_limit: int = 10
     free_lifetime_limit: int = 5
     generation_rate_per_minute: int = 8
@@ -31,9 +34,21 @@ class Settings(BaseSettings):
     revenuecat_subscription_product_id: str = "reply_premium_monthly"
     revenuecat_api_base_url: str = "https://api.revenuecat.com/v1"
 
+    @property
+    def runtime_env(self) -> str:
+        return (self.reply_env or self.app_env).lower()
+
+    @property
+    def is_dev_or_test(self) -> bool:
+        return self.runtime_env in {"dev", "test"}
+
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":
-        if self.app_env.lower() == "prod":
+        if self.runtime_env == "prod":
+            if self.mock_ai_enabled:
+                raise ValueError("MOCK_AI_ENABLED must never be true in production")
+            if self.dev_tools_enabled:
+                raise ValueError("DEV_TOOLS_ENABLED must never be true in production")
             if not self.jwt_secret or self.jwt_secret == DEV_JWT_SECRET:
                 raise ValueError("JWT_SECRET must be set to a non-development value in production")
             if not self.server_pepper or self.server_pepper == DEV_SERVER_PEPPER:
@@ -42,6 +57,11 @@ class Settings(BaseSettings):
                 )
             if not self.revenuecat_secret_api_key:
                 raise ValueError("REVENUECAT_SECRET_API_KEY must be set in production")
+        elif not self.is_dev_or_test:
+            if self.mock_ai_enabled:
+                raise ValueError("MOCK_AI_ENABLED is only allowed in dev/test environments")
+            if self.dev_tools_enabled:
+                raise ValueError("DEV_TOOLS_ENABLED is only allowed in dev/test environments")
         return self
 
 

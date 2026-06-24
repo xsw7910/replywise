@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.models.subscription import SubscriptionCache
 from app.services.revenuecat_service import RevenueCatService, VerifiedEntitlement
 
@@ -13,6 +14,9 @@ def _utc(value: datetime) -> datetime:
 def cache_is_premium(cache: SubscriptionCache | None) -> bool:
     if cache is None or not cache.is_premium:
         return False
+    if cache.product_identifier == "dev_premium_override":
+        if not settings.dev_tools_enabled or not settings.is_dev_or_test:
+            return False
     return cache.expires_at is None or _utc(cache.expires_at) > datetime.now(timezone.utc)
 
 
