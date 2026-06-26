@@ -149,7 +149,7 @@ void main() {
     await tester.tap(find.text('Polish').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Make your English sound natural'), findsOneWidget);
+    expect(find.text('Make your English sound more natural.'), findsOneWidget);
   });
 
   testWidgets('Home Reply feature card opens Reply page', (tester) async {
@@ -157,7 +157,7 @@ void main() {
 
     await tapHomeCard(tester, const Key('home-feature-reply'));
 
-    expect(find.text('Turn your intent into natural English'), findsOneWidget);
+    expect(find.text('Generate natural English replies.'), findsOneWidget);
   });
 
   testWidgets('Home Explain feature card opens Explain page', (tester) async {
@@ -165,7 +165,7 @@ void main() {
 
     await tapHomeCard(tester, const Key('home-feature-explain'));
 
-    expect(find.text('Explain Message'), findsOneWidget);
+    expect(find.text('Understand the meaning and tone.'), findsOneWidget);
   });
 
   testWidgets('Home Polish feature card opens Polish page', (tester) async {
@@ -173,7 +173,7 @@ void main() {
 
     await tapHomeCard(tester, const Key('home-feature-polish'));
 
-    expect(find.text('Make your English sound natural'), findsOneWidget);
+    expect(find.text('Make your English sound more natural.'), findsOneWidget);
   });
 
   testWidgets('Home Guidance Library feature card opens library page', (

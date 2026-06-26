@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/input_limits.dart';
 import '../../core/router/app_router.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/feature_page_header.dart';
 import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
@@ -17,6 +19,8 @@ import '../entitlement/usage_controller.dart';
 import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_chip_row.dart';
+
+const _kColor = AppColors.polishColor;
 
 class PolishScreen extends ConsumerStatefulWidget {
   const PolishScreen({super.key});
@@ -89,6 +93,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
 
     return AppPage(
       title: 'Polish',
+      accentColor: _kColor,
       actions: [
         IconButton(
           tooltip: 'Plans',
@@ -100,11 +105,13 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          Text(
-            'Make your English sound natural',
-            style: AppTextStyles.headlineMedium,
+          const FeaturePageHeader(
+            icon: Icons.auto_fix_high_rounded,
+            title: 'Polish',
+            subtitle: 'Make your English sound more natural.',
+            color: _kColor,
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,
             child: UsageBadge(
@@ -113,12 +120,8 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                   ref.read(usageControllerProvider.notifier).refresh(),
             ),
           ),
-          const SizedBox(height: 5),
-          Text(
-            'Keep your meaning while improving clarity, grammar, and tone.',
-            style: AppTextStyles.bodyMedium,
-          ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
+          const StepLabel(step: 1, label: 'Paste your draft', color: _kColor),
           GlassCard(
             child: LabeledTextField(
               label: 'Your draft',
@@ -130,12 +133,11 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             ),
           ),
           const SizedBox(height: 14),
+          const StepLabel(step: 2, label: 'How should it sound?', color: _kColor),
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('How should it sound?', style: AppTextStyles.titleMedium),
-                const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -144,6 +146,8 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                         (direction) => ChoiceChip(
                           label: Text(direction),
                           selected: direction == _direction,
+                          selectedColor: _kColor.withAlpha(35),
+                          checkmarkColor: _kColor,
                           onSelected: (_) =>
                               setState(() => _direction = direction),
                         ),
@@ -169,6 +173,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(backgroundColor: _kColor),
             onPressed: polishState.isLoading ? null : _polish,
             icon: polishState.isLoading
                 ? const SizedBox.square(
@@ -241,6 +246,10 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             ),
             const SizedBox(height: 12),
             OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: _kColor,
+                side: const BorderSide(color: _kColor),
+              ),
               onPressed: polishState.isLoading ? null : _polish,
               icon: polishState.isLoading
                   ? const SizedBox.square(

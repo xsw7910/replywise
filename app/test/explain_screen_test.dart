@@ -122,7 +122,7 @@ void main() {
     _useTallView(tester);
     await _pumpExplain(tester, _FakeExplainRepository());
 
-    expect(find.text('Explain Message'), findsOneWidget);
+    expect(find.text('Understand the meaning and tone.'), findsOneWidget);
     expect(find.text('Message to understand'), findsOneWidget);
     expect(find.text('Explain this message'), findsOneWidget);
     expect(find.byKey(const Key('explain-message-field')), findsOneWidget);
@@ -262,7 +262,7 @@ void main() {
     await tester.tap(find.byKey(const Key('explain-continue-reply-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Turn your intent into natural English'), findsOneWidget);
+    expect(find.text('Generate natural English replies.'), findsOneWidget);
     expect(
       _textOf(tester, const Key('reply-incoming-field')),
       'Original message from Explain.',

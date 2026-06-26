@@ -10,13 +10,8 @@ import '../../core/widgets/app_page.dart';
 const _homeHorizontalPadding = 20.0;
 const _homeCardSpacing = 12.0;
 
-// Light blue / white palette with playful per-feature accents.
 const _ink = Color(0xFF1A2340);
 const _muted = Color(0xFF8A93A6);
-const _blue = Color(0xFF3F73FF);
-const _purple = Color(0xFF8C78F0);
-const _green = Color(0xFF2FC08A);
-const _orange = Color(0xFFF1A93F);
 const _chevron = Color(0xFFC2C9D6);
 
 class HomeScreen extends ConsumerWidget {
@@ -47,7 +42,7 @@ class HomeScreen extends ConsumerWidget {
                 _FeatureTile(
                   key: const Key('home-feature-reply'),
                   icon: Icons.chat_bubble_rounded,
-                  accent: _blue,
+                  accent: AppColors.replyColor,
                   title: 'Reply',
                   subtitle: 'Generate natural English replies.',
                   onTap: () => context.go(AppRoutes.reply),
@@ -56,7 +51,7 @@ class HomeScreen extends ConsumerWidget {
                 _FeatureTile(
                   key: const Key('home-feature-polish'),
                   icon: Icons.auto_fix_high_rounded,
-                  accent: _purple,
+                  accent: AppColors.polishColor,
                   title: 'Polish',
                   subtitle: 'Make your English sound more natural.',
                   onTap: () => context.go(AppRoutes.polish),
@@ -65,7 +60,7 @@ class HomeScreen extends ConsumerWidget {
                 _FeatureTile(
                   key: const Key('home-feature-explain'),
                   icon: Icons.forum_rounded,
-                  accent: _green,
+                  accent: AppColors.explainColor,
                   title: 'Explain',
                   subtitle: 'Understand the meaning and tone.',
                   onTap: () => context.go(AppRoutes.explain),
@@ -74,7 +69,7 @@ class HomeScreen extends ConsumerWidget {
                 _FeatureTile(
                   key: const Key('home-feature-guidance'),
                   icon: Icons.menu_book_rounded,
-                  accent: _orange,
+                  accent: AppColors.guidanceColor,
                   title: 'Guidance Library',
                   subtitle: 'Save and reuse your guidance.',
                   onTap: () => context.push(AppRoutes.guidanceLibrary),
@@ -114,11 +109,11 @@ class _HomeHeader extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF5C8BFF), _blue],
+              colors: [Color(0xFF5C8BFF), AppColors.replyColor],
             ),
             boxShadow: [
               BoxShadow(
-                color: _blue.withAlpha(85),
+                color: AppColors.replyColor.withAlpha(85),
                 blurRadius: 14,
                 offset: const Offset(0, 7),
               ),
@@ -180,11 +175,11 @@ class _CrownBadge extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFFFFD66B), _orange],
+                colors: [Color(0xFFFFD66B), AppColors.guidanceColor],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: _orange.withAlpha(90),
+                  color: AppColors.guidanceColor.withAlpha(90),
                   blurRadius: 14,
                   offset: const Offset(0, 7),
                 ),

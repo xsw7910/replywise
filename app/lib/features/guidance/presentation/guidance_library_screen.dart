@@ -6,10 +6,14 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_page.dart';
+import '../../../core/widgets/feature_page_header.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../application/guidance_library_controller.dart';
 import '../application/pending_guidance_provider.dart';
 import '../domain/guidance_template.dart';
+
+const _kColor = AppColors.guidanceColor;
+const _kColorDark = Color(0xFFB86E00);
 
 class GuidanceLibraryScreen extends ConsumerWidget {
   const GuidanceLibraryScreen({super.key});
@@ -33,6 +37,7 @@ class GuidanceLibraryScreen extends ConsumerWidget {
 
     return AppPage(
       title: 'Guidance Library',
+      accentColor: _kColor,
       showBackButton: true,
       actions: [
         IconButton(
@@ -42,7 +47,9 @@ class GuidanceLibraryScreen extends ConsumerWidget {
         ),
       ],
       child: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(color: _kColor),
+            )
           : _Body(state: state),
     );
   }
@@ -63,8 +70,15 @@ class _Body extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
       children: [
+        const FeaturePageHeader(
+          icon: Icons.menu_book_rounded,
+          title: 'Guidance Library',
+          subtitle: 'Save and reuse your guidance.',
+          color: _kColor,
+        ),
+        const SizedBox(height: 20),
         if (state.favorites.isNotEmpty) ...[
-          _SectionLabel('Favorites', Icons.star_rounded, AppColors.primary),
+          _SectionLabel('Favorites', Icons.star_rounded, _kColor),
           const SizedBox(height: 8),
           ...state.favorites.map((t) => _GuidanceCard(template: t)),
           const SizedBox(height: 20),
@@ -89,6 +103,10 @@ class _Body extends StatelessWidget {
           ...customs.map((t) => _GuidanceCard(template: t)),
         const SizedBox(height: 16),
         OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: _kColor,
+            side: const BorderSide(color: _kColor),
+          ),
           onPressed: () => context.push(AppRoutes.guidanceEdit),
           icon: const Icon(Icons.add_rounded),
           label: const Text('New Guidance'),
@@ -141,13 +159,13 @@ class _GuidanceCard extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withAlpha(20),
+                    color: _kColor.withAlpha(20),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     template.category.label,
                     style: AppTextStyles.labelMedium
-                        .copyWith(color: AppColors.primaryDark),
+                        .copyWith(color: _kColorDark),
                   ),
                 ),
               ],
@@ -170,7 +188,7 @@ class _GuidanceCard extends ConsumerWidget {
                         ? Icons.star_rounded
                         : Icons.star_outline_rounded,
                     color: template.isFavorite
-                        ? AppColors.primary
+                        ? _kColor
                         : AppColors.textHint,
                   ),
                   onPressed: () => controller.toggleFavorite(template.id),
@@ -211,7 +229,7 @@ class _GuidanceCard extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Use “${template.title}”',
+                child: Text('Use "${template.title}"',
                     style: AppTextStyles.titleMedium),
               ),
             ),

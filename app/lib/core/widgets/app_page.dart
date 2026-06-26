@@ -11,6 +11,7 @@ class AppPage extends StatelessWidget {
     this.showBackButton = false,
     this.showAppBar = true,
     this.useSafeArea = true,
+    this.accentColor,
   });
 
   final String title;
@@ -19,17 +20,26 @@ class AppPage extends StatelessWidget {
   final bool showBackButton;
   final bool showAppBar;
   final bool useSafeArea;
+  final Color? accentColor;
 
   @override
   Widget build(BuildContext context) {
+    final titleStyle = accentColor != null
+        ? (Theme.of(context).appBarTheme.titleTextStyle ?? const TextStyle())
+            .copyWith(color: accentColor, fontWeight: FontWeight.w700)
+        : null;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: showAppBar
           ? AppBar(
-              title: Text(title),
+              title: Text(title, style: titleStyle),
               actions: actions,
               automaticallyImplyLeading: showBackButton,
               backgroundColor: Colors.white.withAlpha(175),
+              iconTheme: accentColor != null
+                  ? IconThemeData(color: accentColor)
+                  : null,
             )
           : null,
       body: ColoredBox(

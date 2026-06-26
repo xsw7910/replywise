@@ -23,6 +23,12 @@ abstract final class AppColors {
   static const Color textSecondary = Color(0xFF6B7A99);
   static const Color textHint = Color(0xFFADB8CC);
 
+  // Feature accent colors — matched to Home page feature tiles.
+  static const Color replyColor    = Color(0xFF3F73FF);
+  static const Color polishColor   = Color(0xFF8C78F0);
+  static const Color explainColor  = Color(0xFF2FC08A);
+  static const Color guidanceColor = Color(0xFFF1A93F);
+
   // Accents / semantic
   static const Color accent = Color(0xFF3ECFCF);
   static const Color error = Color(0xFFE05252);

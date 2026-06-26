@@ -8,12 +8,15 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/feature_page_header.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import 'application/explain_controller.dart';
 import 'application/pending_reply_input_provider.dart';
 import 'domain/reply_models.dart';
+
+const _kColor = AppColors.explainColor;
 
 class ExplainScreen extends ConsumerStatefulWidget {
   const ExplainScreen({super.key});
@@ -78,14 +81,19 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
 
     return AppPage(
       title: _ExplainText.navTitle,
+      accentColor: _kColor,
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          Text(_ExplainText.title, style: AppTextStyles.headlineMedium),
-          const SizedBox(height: 6),
-          Text(_ExplainText.subtitle, style: AppTextStyles.bodyMedium),
-          const SizedBox(height: 18),
+          const FeaturePageHeader(
+            icon: Icons.forum_rounded,
+            title: 'Explain',
+            subtitle: 'Understand the meaning and tone.',
+            color: _kColor,
+          ),
+          const SizedBox(height: 16),
+          const StepLabel(step: 1, label: 'Paste the message', color: _kColor),
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,6 +128,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             key: const Key('explain-submit-button'),
+            style: ElevatedButton.styleFrom(backgroundColor: _kColor),
             onPressed: state.isLoading ? null : _explain,
             icon: state.isLoading
                 ? const SizedBox.square(
@@ -310,6 +319,7 @@ class _ContinueCard extends StatelessWidget {
           const SizedBox(height: 10),
           ElevatedButton.icon(
             key: const Key('explain-continue-reply-button'),
+            style: ElevatedButton.styleFrom(backgroundColor: _kColor),
             onPressed: onPressed,
             icon: const Icon(Icons.reply_rounded),
             label: const Text(_ExplainText.replyCtaButton),
@@ -342,13 +352,10 @@ class _IconBadge extends StatelessWidget {
 
 abstract final class _ExplainText {
   static const navTitle = 'Explain';
-  static const title = 'Explain Message';
-  static const subtitle =
-      'Understand the meaning, tone, and suggested replies.';
   static const inputLabel = 'Message to understand';
   static const inputHelper = 'Paste the English message you received';
   static const inputHint =
-      'Sounds good in principle, but let’s circle back after Q3 — bandwidth is tight right now.';
+      "Sounds good in principle, but let's circle back after Q3 — bandwidth is tight right now.";
   static const paste = 'Paste';
   static const explainButton = 'Explain this message';
   static const explaining = 'Explaining...';
@@ -359,7 +366,7 @@ abstract final class _ExplainText {
   static const copy = 'Copy';
   static const copied = 'Copied';
   static const rateLimited =
-      'You’ve reached the explain limit for now. Please try again later.';
+      "You’ve reached the explain limit for now. Please try again later.";
   static const replyCtaTitle =
       'Want a reply that better matches your intention?';
   static const replyCtaButton = 'Generate Reply';

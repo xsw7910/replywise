@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/input_limits.dart';
 import '../../core/router/app_router.dart';
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/feature_page_header.dart';
 import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../guidance/application/pending_guidance_provider.dart';
@@ -20,6 +22,8 @@ import 'application/pending_reply_input_provider.dart';
 import 'application/reply_controller.dart';
 import 'domain/reply_models.dart';
 import '../entitlement/usage_controller.dart';
+
+const _kColor = AppColors.replyColor;
 
 class ReplyScreen extends ConsumerStatefulWidget {
   const ReplyScreen({super.key});
@@ -210,6 +214,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
 
     return AppPage(
       title: 'Reply',
+      accentColor: _kColor,
       actions: [
         IconButton(
           tooltip: 'Plans',
@@ -221,11 +226,13 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          Text(
-            'Turn your intent into natural English',
-            style: AppTextStyles.headlineMedium,
+          const FeaturePageHeader(
+            icon: Icons.chat_bubble_rounded,
+            title: 'Reply',
+            subtitle: 'Generate natural English replies.',
+            color: _kColor,
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,
             child: UsageBadge(
@@ -234,12 +241,8 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   ref.read(usageControllerProvider.notifier).refresh(),
             ),
           ),
-          const SizedBox(height: 5),
-          Text(
-            'Paste what you received, then describe how you want to respond.',
-            style: AppTextStyles.bodyMedium,
-          ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
+          const StepLabel(step: 1, label: 'Paste the message you received', color: _kColor),
           GlassCard(
             child: Column(
               children: [
@@ -280,6 +283,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             ),
           ),
           const SizedBox(height: 14),
+          const StepLabel(step: 2, label: 'Your guidance', color: _kColor),
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,6 +303,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             ),
           ),
           const SizedBox(height: 14),
+          const StepLabel(step: 3, label: 'Reply settings', color: _kColor),
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,6 +333,8 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                           (item) => ChoiceChip(
                             label: Text(item),
                             selected: _audiencePreset == item,
+                            selectedColor: _kColor.withAlpha(35),
+                            checkmarkColor: _kColor,
                             onSelected: (_) =>
                                 setState(() => _audiencePreset = item),
                           ),
@@ -351,6 +358,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                     Text('Casual', style: AppTextStyles.labelMedium),
                     Expanded(
                       child: Slider(
+                        activeColor: _kColor,
                         value: _formality,
                         min: 0,
                         max: 100,
@@ -366,6 +374,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(backgroundColor: _kColor),
             onPressed: replyState.isLoading ? null : _generate,
             icon: replyState.isLoading
                 ? const SizedBox.square(
@@ -436,6 +445,10 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             ),
             const SizedBox(height: 12),
             OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: _kColor,
+                side: const BorderSide(color: _kColor),
+              ),
               onPressed: replyState.isLoading ? null : _generate,
               icon: replyState.isLoading
                   ? const SizedBox.square(
