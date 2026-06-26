@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import '../router/app_router.dart';
 
-const _navBlue = Color(0xFF3F73FF);
 const _navInactive = Color(0xFF9AA6B8);
 
 class AppShell extends StatelessWidget {
@@ -12,23 +11,11 @@ class AppShell extends StatelessWidget {
   final Widget child;
 
   static const _tabs = [
-    (route: AppRoutes.home, label: 'Home', icon: Icons.home_rounded),
-    (route: AppRoutes.reply, label: 'Reply', icon: Icons.reply_rounded),
-    (
-      route: AppRoutes.explain,
-      label: 'Explain',
-      icon: Icons.psychology_alt_rounded,
-    ),
-    (
-      route: AppRoutes.polish,
-      label: 'Polish',
-      icon: Icons.auto_fix_high_rounded,
-    ),
-    (
-      route: AppRoutes.settings,
-      label: 'Settings',
-      icon: Icons.settings_rounded,
-    ),
+    (route: AppRoutes.home,     label: 'Home',     icon: Icons.home_rounded,           color: Color(0xFF3F73FF)),
+    (route: AppRoutes.reply,    label: 'Reply',    icon: Icons.reply_rounded,           color: Color(0xFF3F73FF)),
+    (route: AppRoutes.explain,  label: 'Explain',  icon: Icons.psychology_alt_rounded,  color: Color(0xFF00B8A9)),
+    (route: AppRoutes.polish,   label: 'Polish',   icon: Icons.auto_fix_high_rounded,   color: Color(0xFF845EF7)),
+    (route: AppRoutes.settings, label: 'Settings', icon: Icons.settings_rounded,        color: Color(0xFF5C7CFA)),
   ];
 
   int _selectedIndex(BuildContext context) {
@@ -56,7 +43,7 @@ class AppShell extends StatelessWidget {
   }
 }
 
-typedef _TabData = ({String route, String label, IconData icon});
+typedef _TabData = ({String route, String label, IconData icon, Color color});
 
 class _SoftNavBar extends StatelessWidget {
   const _SoftNavBar({
@@ -119,7 +106,7 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? _navBlue : _navInactive;
+    final color = selected ? data.color : _navInactive;
 
     return Semantics(
       button: true,
@@ -140,7 +127,7 @@ class _NavItem extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 12,
                   height: 1.1,
                   color: color,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,

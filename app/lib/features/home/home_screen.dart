@@ -10,7 +10,6 @@ import '../../core/widgets/app_page.dart';
 const _homeHorizontalPadding = 20.0;
 const _homeCardSpacing = 12.0;
 
-const _ink = Color(0xFF1A2340);
 const _muted = Color(0xFF8A93A6);
 const _chevron = Color(0xFFC2C9D6);
 
@@ -25,175 +24,125 @@ class HomeScreen extends ConsumerWidget {
       title: 'Home',
       showAppBar: false,
       useSafeArea: false,
-      child: Stack(
-        children: [
-          const Positioned.fill(child: _HomeBackground()),
-          Positioned.fill(
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(
-                _homeHorizontalPadding,
-                topInset + 18,
-                _homeHorizontalPadding,
-                32,
+      child: ColoredBox(
+        color: AppColors.backgroundBase,
+        child: Column(
+          children: [
+            _HomeNavBar(topInset: topInset),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  _homeHorizontalPadding,
+                  16,
+                  _homeHorizontalPadding,
+                  32,
+                ),
+                children: [
+                  _HeroCard(onTap: () => context.go(AppRoutes.reply)),
+                  const SizedBox(height: 20),
+                  _FeatureTile(
+                    key: const Key('home-feature-reply'),
+                    imagePath: 'assets/icons/reply.png',
+                    accent: AppColors.replyColor,
+                    title: 'Reply',
+                    subtitle: 'Generate natural English replies.',
+                    onTap: () => context.go(AppRoutes.reply),
+                  ),
+                  const SizedBox(height: _homeCardSpacing),
+                  _FeatureTile(
+                    key: const Key('home-feature-polish'),
+                    imagePath: 'assets/icons/polish.png',
+                    accent: AppColors.polishColor,
+                    title: 'Polish',
+                    subtitle: 'Make your English sound more natural.',
+                    onTap: () => context.go(AppRoutes.polish),
+                  ),
+                  const SizedBox(height: _homeCardSpacing),
+                  _FeatureTile(
+                    key: const Key('home-feature-explain'),
+                    imagePath: 'assets/icons/explain.png',
+                    accent: AppColors.explainColor,
+                    title: 'Explain',
+                    subtitle: 'Understand the meaning and tone.',
+                    onTap: () => context.go(AppRoutes.explain),
+                  ),
+                  const SizedBox(height: _homeCardSpacing),
+                  _FeatureTile(
+                    key: const Key('home-feature-guidance'),
+                    imagePath: 'assets/icons/guidance.png',
+                    accent: AppColors.guidanceColor,
+                    title: 'Guidance Library',
+                    subtitle: 'Save and reuse your guidance.',
+                    onTap: () => context.push(AppRoutes.guidanceLibrary),
+                  ),
+                ],
               ),
-              children: [
-                _HomeHeader(onUpgrade: () => context.push(AppRoutes.paywall)),
-                const SizedBox(height: 20),
-                _HeroCard(onTap: () => context.go(AppRoutes.reply)),
-                const SizedBox(height: 20),
-                _FeatureTile(
-                  key: const Key('home-feature-reply'),
-                  imagePath: 'assets/icons/reply.png',
-                  accent: AppColors.replyColor,
-                  title: 'Reply',
-                  subtitle: 'Generate natural English replies.',
-                  onTap: () => context.go(AppRoutes.reply),
-                ),
-                const SizedBox(height: _homeCardSpacing),
-                _FeatureTile(
-                  key: const Key('home-feature-polish'),
-                  imagePath: 'assets/icons/polish.png',
-                  accent: AppColors.polishColor,
-                  title: 'Polish',
-                  subtitle: 'Make your English sound more natural.',
-                  onTap: () => context.go(AppRoutes.polish),
-                ),
-                const SizedBox(height: _homeCardSpacing),
-                _FeatureTile(
-                  key: const Key('home-feature-explain'),
-                  imagePath: 'assets/icons/explain.png',
-                  accent: AppColors.explainColor,
-                  title: 'Explain',
-                  subtitle: 'Understand the meaning and tone.',
-                  onTap: () => context.go(AppRoutes.explain),
-                ),
-                const SizedBox(height: _homeCardSpacing),
-                _FeatureTile(
-                  key: const Key('home-feature-guidance'),
-                  imagePath: 'assets/icons/guidance.png',
-                  accent: AppColors.guidanceColor,
-                  title: 'Guidance Library',
-                  subtitle: 'Save and reuse your guidance.',
-                  onTap: () => context.push(AppRoutes.guidanceLibrary),
-                ),
-              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class _HomeBackground extends StatelessWidget {
-  const _HomeBackground();
+class _HomeNavBar extends StatelessWidget {
+  const _HomeNavBar({required this.topInset});
+
+  final double topInset;
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(color: AppColors.backgroundBase);
-  }
-}
-
-class _HomeHeader extends StatelessWidget {
-  const _HomeHeader({required this.onUpgrade});
-
-  final VoidCallback onUpgrade;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF5C8BFF), AppColors.replyColor],
+    return Container(
+      color: AppColors.backgroundBase,
+      padding: EdgeInsets.fromLTRB(
+        _homeHorizontalPadding,
+        topInset + 10,
+        _homeHorizontalPadding,
+        10,
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              'assets/icons/app_icon.png',
+              width: 34,
+              height: 34,
+              fit: BoxFit.cover,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.replyColor.withAlpha(85),
-                blurRadius: 14,
-                offset: const Offset(0, 7),
-              ),
-            ],
           ),
-          child: const Icon(Icons.forum_rounded, color: Colors.white, size: 24),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
+          const SizedBox(width: 10),
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'ReplyWise',
-                style: AppTextStyles.displayLarge.copyWith(
-                  color: _ink,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Color(0xFF3D6FFF), Color(0xFF00C2CB)],
+                ).createShader(bounds),
+                child: Text(
+                  'ReplyWise',
+                  style: AppTextStyles.displayLarge.copyWith(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                    height: 1.1,
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
               Text(
-                'Choose what you need',
+                'Your AI reply assistant',
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: _muted,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
+                  height: 1.2,
                 ),
               ),
             ],
           ),
-        ),
-        const SizedBox(width: 12),
-        _CrownBadge(onTap: onUpgrade),
-      ],
-    );
-  }
-}
-
-class _CrownBadge extends StatelessWidget {
-  const _CrownBadge({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: 'Upgrade to premium',
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
-          child: Ink(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFFFFD66B), AppColors.guidanceColor],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.guidanceColor.withAlpha(90),
-                  blurRadius: 14,
-                  offset: const Offset(0, 7),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.workspace_premium_rounded,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-        ),
+        ],
       ),
     );
   }
@@ -207,8 +156,6 @@ class _HeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const radius = 24.0;
-    const blue = Color(0xFF3D6FFF);
-    const teal = Color(0xFF00C2CB);
 
     return Container(
       decoration: BoxDecoration(
@@ -239,62 +186,71 @@ class _HeroCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-            // Get started button
-            Positioned(
-              left: 52,
-              bottom: 20,
-              child: GestureDetector(
-                onTap: onTap,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                    vertical: 11,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40),
-                    gradient: const LinearGradient(
-                      colors: [blue, teal],
+              // Get started button
+              Positioned(
+                left: 34,
+                bottom: 14,
+                child: GestureDetector(
+                  onTap: onTap,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 11,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: blue.withAlpha(90),
-                        blurRadius: 14,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Get started',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 7,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xA6D9EEFF),
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Text(
+                            'Get started',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: const Color(0xFF5276D9),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: const BoxDecoration(
-                          color: Colors.white24,
-                          shape: BoxShape.circle,
+                        const SizedBox(width: 2),
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: const Color(0x78FFFFFF),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: const Color(0xA6FFFFFF),
+                              width: 1,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x266B8FBF),
+                                blurRadius: 10,
+                                offset: Offset(0, 4),
+                                spreadRadius: -2,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Color(0xFF5276D9),
+                            size: 19,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.arrow_forward_rounded,
-                          color: Colors.white,
-                          size: 14,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );
@@ -321,19 +277,20 @@ class _FeatureTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const radius = 20.0;
+    const radius = 28.0;
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
-        boxShadow: [
-          const BoxShadow(
-            color: AppColors.cardShadow,
-            blurRadius: 28,
-            offset: Offset(0, 14),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x3049619A),
+            blurRadius: 24,
+            offset: Offset(0, 11),
+            spreadRadius: -6,
           ),
-          const BoxShadow(
-            color: AppColors.cardSoftShadow,
+          BoxShadow(
+            color: Color(0x1849619A),
             blurRadius: 6,
             offset: Offset(0, 2),
           ),
@@ -346,16 +303,32 @@ class _FeatureTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           child: Ink(
             decoration: BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.circular(radius),
-              border: Border.all(color: AppColors.cardBorder, width: 1.4),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.lerp(Colors.white, accent, 0.025)!,
+                  Color.lerp(Colors.white, accent, 0.095)!,
+                ],
+              ),
+              border: Border.all(color: const Color(0xE6FFFFFF), width: 1.4),
             ),
             child: Padding(
               padding: const EdgeInsets.all(14),
               child: Row(
                 children: [
                   imagePath != null
-                      ? Image.asset(imagePath!, width: 52, height: 52)
+                      ? SizedBox.square(
+                          dimension: 52,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(17),
+                            child: Transform.scale(
+                              scale: 1.08,
+                              child: Image.asset(imagePath!, fit: BoxFit.cover),
+                            ),
+                          ),
+                        )
                       : Container(
                           width: 52,
                           height: 52,
