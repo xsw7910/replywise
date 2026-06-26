@@ -8,13 +8,15 @@ import '../theme/app_text_styles.dart';
 class FeaturePageHeader extends StatelessWidget {
   const FeaturePageHeader({
     super.key,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.title,
     required this.subtitle,
     required this.color,
-  });
+  }) : assert(icon != null || imagePath != null);
 
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final String title;
   final String subtitle;
   final Color color;
@@ -23,26 +25,28 @@ class FeaturePageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [color, Color.lerp(color, Colors.white, 0.28)!],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: color.withAlpha(70),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
+        imagePath != null
+            ? Image.asset(imagePath!, width: 44, height: 44)
+            : Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [color, Color.lerp(color, Colors.white, 0.28)!],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withAlpha(70),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Icon(icon, color: Colors.white, size: 28),
               ),
-            ],
-          ),
-          child: Icon(icon, color: Colors.white, size: 28),
-        ),
         const SizedBox(width: 14),
         Expanded(
           child: Column(

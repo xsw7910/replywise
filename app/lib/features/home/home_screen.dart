@@ -38,10 +38,12 @@ class HomeScreen extends ConsumerWidget {
               ),
               children: [
                 _HomeHeader(onUpgrade: () => context.push(AppRoutes.paywall)),
-                const SizedBox(height: 22),
+                const SizedBox(height: 20),
+                _HeroCard(onTap: () => context.go(AppRoutes.reply)),
+                const SizedBox(height: 20),
                 _FeatureTile(
                   key: const Key('home-feature-reply'),
-                  icon: Icons.chat_bubble_rounded,
+                  imagePath: 'assets/icons/reply.png',
                   accent: AppColors.replyColor,
                   title: 'Reply',
                   subtitle: 'Generate natural English replies.',
@@ -50,7 +52,7 @@ class HomeScreen extends ConsumerWidget {
                 const SizedBox(height: _homeCardSpacing),
                 _FeatureTile(
                   key: const Key('home-feature-polish'),
-                  icon: Icons.auto_fix_high_rounded,
+                  imagePath: 'assets/icons/polish.png',
                   accent: AppColors.polishColor,
                   title: 'Polish',
                   subtitle: 'Make your English sound more natural.',
@@ -59,7 +61,7 @@ class HomeScreen extends ConsumerWidget {
                 const SizedBox(height: _homeCardSpacing),
                 _FeatureTile(
                   key: const Key('home-feature-explain'),
-                  icon: Icons.forum_rounded,
+                  imagePath: 'assets/icons/explain.png',
                   accent: AppColors.explainColor,
                   title: 'Explain',
                   subtitle: 'Understand the meaning and tone.',
@@ -68,7 +70,7 @@ class HomeScreen extends ConsumerWidget {
                 const SizedBox(height: _homeCardSpacing),
                 _FeatureTile(
                   key: const Key('home-feature-guidance'),
-                  icon: Icons.menu_book_rounded,
+                  imagePath: 'assets/icons/guidance.png',
                   accent: AppColors.guidanceColor,
                   title: 'Guidance Library',
                   subtitle: 'Save and reuse your guidance.',
@@ -197,17 +199,121 @@ class _CrownBadge extends StatelessWidget {
   }
 }
 
+class _HeroCard extends StatelessWidget {
+  const _HeroCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    const radius = 24.0;
+    const blue = Color(0xFF3D6FFF);
+    const teal = Color(0xFF00C2CB);
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.cardShadow,
+            blurRadius: 32,
+            offset: Offset(0, 16),
+          ),
+          BoxShadow(
+            color: AppColors.cardSoftShadow,
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: AspectRatio(
+          aspectRatio: 2.0,
+          child: Stack(
+            children: [
+              // Background image
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/image/hero_card.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            // Get started button
+            Positioned(
+              left: 52,
+              bottom: 20,
+              child: GestureDetector(
+                onTap: onTap,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 11,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    gradient: const LinearGradient(
+                      colors: [blue, teal],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: blue.withAlpha(90),
+                        blurRadius: 14,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Get started',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: const BoxDecoration(
+                          color: Colors.white24,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        ),
+      ),
+    );
+  }
+}
+
 class _FeatureTile extends StatelessWidget {
   const _FeatureTile({
     super.key,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.accent,
     required this.title,
     required this.subtitle,
     required this.onTap,
-  });
+  }) : assert(icon != null || imagePath != null);
 
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final Color accent;
   final String title;
   final String subtitle;
@@ -248,29 +354,31 @@ class _FeatureTile extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               child: Row(
                 children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          accent,
-                          Color.lerp(accent, Colors.white, 0.28)!,
-                        ],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: accent.withAlpha(80),
-                          blurRadius: 12,
-                          offset: const Offset(0, 6),
+                  imagePath != null
+                      ? Image.asset(imagePath!, width: 52, height: 52)
+                      : Container(
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                accent,
+                                Color.lerp(accent, Colors.white, 0.28)!,
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accent.withAlpha(80),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Icon(icon, color: Colors.white, size: 26),
                         ),
-                      ],
-                    ),
-                    child: Icon(icon, color: Colors.white, size: 26),
-                  ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(

@@ -71,7 +71,7 @@ class _Body extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
       children: [
         const FeaturePageHeader(
-          icon: Icons.menu_book_rounded,
+          imagePath: 'assets/icons/guidance.png',
           title: 'Guidance Library',
           subtitle: 'Save and reuse your guidance.',
           color: _kColor,

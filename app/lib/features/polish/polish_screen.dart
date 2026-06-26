@@ -106,7 +106,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
           const FeaturePageHeader(
-            icon: Icons.auto_fix_high_rounded,
+            imagePath: 'assets/icons/polish.png',
             title: 'Polish',
             subtitle: 'Make your English sound more natural.',
             color: _kColor,

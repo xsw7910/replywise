@@ -227,7 +227,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
           const FeaturePageHeader(
-            icon: Icons.chat_bubble_rounded,
+            imagePath: 'assets/icons/reply.png',
             title: 'Reply',
             subtitle: 'Generate natural English replies.',
             color: _kColor,

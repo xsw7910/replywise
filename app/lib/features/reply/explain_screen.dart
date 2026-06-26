@@ -87,7 +87,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
           const FeaturePageHeader(
-            icon: Icons.forum_rounded,
+            imagePath: 'assets/icons/explain.png',
             title: 'Explain',
             subtitle: 'Understand the meaning and tone.',
             color: _kColor,
