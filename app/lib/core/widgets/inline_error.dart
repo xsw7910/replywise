@@ -32,7 +32,7 @@ class InlineError extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
+              style: AppTextStyles.helper.copyWith(color: AppColors.error),
             ),
           ),
           if (actionLabel != null && onAction != null)

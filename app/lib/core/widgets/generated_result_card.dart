@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../theme/app_colors.dart';
 import '../theme/app_feature_theme.dart';
 import '../theme/app_text_styles.dart';
 import 'glass_card.dart';
@@ -28,7 +27,7 @@ class GeneratedResultCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(label, style: AppTextStyles.titleMedium)),
+              Expanded(child: Text(label, style: AppTextStyles.cardTitle)),
               IconButton.filledTonal(
                 tooltip: 'Copy result',
                 style: feature == null
@@ -49,12 +48,7 @@ class GeneratedResultCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            text,
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.textPrimary,
-            ),
-          ),
+          Text(text, style: AppTextStyles.body),
         ],
       ),
     );

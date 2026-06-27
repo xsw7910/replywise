@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class AppPage extends StatelessWidget {
   const AppPage({
@@ -51,7 +52,7 @@ class AppPage extends StatelessWidget {
                       subtitle: subtitle,
                       imagePath: headerImagePath,
                       icon: headerIcon,
-                      color: accentColor ?? AppColors.primary,
+                      color: accentColor ?? AppColors.primaryBlue,
                     )
                   : Text(title, style: titleStyle),
               actions: actions,
@@ -72,10 +73,7 @@ class AppPage extends StatelessWidget {
                 ? Image.asset(backgroundImagePath!, fit: BoxFit.cover)
                 : const ColoredBox(color: AppColors.backgroundBase),
           ),
-          if (useSafeArea)
-            SafeArea(top: !showAppBar, child: child)
-          else
-            child,
+          if (useSafeArea) SafeArea(top: !showAppBar, child: child) else child,
         ],
       ),
     );
@@ -126,7 +124,7 @@ class _FeatureNavigationTitle extends StatelessWidget {
                 title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                style: AppTextStyles.cardTitle.copyWith(
                   color: color,
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
@@ -138,7 +136,7 @@ class _FeatureNavigationTitle extends StatelessWidget {
                   subtitle!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: AppTextStyles.helper.copyWith(
                     color: AppColors.textSecondary,
                     fontSize: 11,
                     height: 1.1,

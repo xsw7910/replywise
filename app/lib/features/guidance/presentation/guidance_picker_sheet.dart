@@ -31,8 +31,10 @@ class GuidancePickerSheet extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 6, 20, 10),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Choose guidance',
-                    style: AppTextStyles.headlineMedium),
+                child: Text(
+                  'Choose guidance',
+                  style: AppTextStyles.sectionTitle,
+                ),
               ),
             ),
             const Divider(height: 1),
@@ -44,28 +46,47 @@ class GuidancePickerSheet extends ConsumerWidget {
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                       children: [
                         if (state.favorites.isNotEmpty) ...[
-                          _SectionHeader('Favorites',
-                              Icons.star_rounded, AppColors.primary),
-                          ...state.favorites.map((t) => _PickerTile(
-                              template: t, onSelected: onSelected)),
+                          _SectionHeader(
+                            'Favorites',
+                            Icons.star_rounded,
+                            AppColors.primaryBlue,
+                          ),
+                          ...state.favorites.map(
+                            (t) => _PickerTile(
+                              template: t,
+                              onSelected: onSelected,
+                            ),
+                          ),
                           const SizedBox(height: 8),
                         ],
-                        _SectionHeader('Built-in',
-                            Icons.library_books_outlined,
-                            AppColors.textSecondary),
+                        _SectionHeader(
+                          'Built-in',
+                          Icons.library_books_outlined,
+                          AppColors.textSecondary,
+                        ),
                         ...state.builtInTemplates
                             .where((t) => !t.isFavorite)
-                            .map((t) =>
-                                _PickerTile(template: t, onSelected: onSelected)),
+                            .map(
+                              (t) => _PickerTile(
+                                template: t,
+                                onSelected: onSelected,
+                              ),
+                            ),
                         if (state.customTemplates.isNotEmpty) ...[
                           const SizedBox(height: 8),
-                          _SectionHeader('My Guidance',
-                              Icons.edit_note_rounded,
-                              AppColors.textSecondary),
+                          _SectionHeader(
+                            'My Guidance',
+                            Icons.edit_note_rounded,
+                            AppColors.textSecondary,
+                          ),
                           ...state.customTemplates
                               .where((t) => !t.isFavorite)
-                              .map((t) => _PickerTile(
-                                  template: t, onSelected: onSelected)),
+                              .map(
+                                (t) => _PickerTile(
+                                  template: t,
+                                  onSelected: onSelected,
+                                ),
+                              ),
                         ],
                       ],
                     ),
@@ -104,16 +125,15 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 4),
-        child: Row(
-          children: [
-            Icon(icon, size: 15, color: color),
-            const SizedBox(width: 6),
-            Text(label,
-                style: AppTextStyles.labelMedium.copyWith(color: color)),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.only(top: 8, bottom: 4),
+    child: Row(
+      children: [
+        Icon(icon, size: 15, color: color),
+        const SizedBox(width: 6),
+        Text(label, style: AppTextStyles.badge.copyWith(color: color)),
+      ],
+    ),
+  );
 }
 
 class _PickerTile extends StatelessWidget {
@@ -124,25 +144,25 @@ class _PickerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-        title: Text(template.title, style: AppTextStyles.bodyLarge),
-        subtitle: Text(
-          template.content,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: AppTextStyles.bodyMedium,
-        ),
-        trailing: FilledButton.tonal(
-          onPressed: () {
-            Navigator.pop(context);
-            onSelected(template);
-          },
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: const Text('Use'),
-        ),
-      );
+    contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+    title: Text(template.title, style: AppTextStyles.cardTitle),
+    subtitle: Text(
+      template.content,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: AppTextStyles.helper,
+    ),
+    trailing: FilledButton.tonal(
+      onPressed: () {
+        Navigator.pop(context);
+        onSelected(template);
+      },
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: const Text('Use'),
+    ),
+  );
 }

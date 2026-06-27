@@ -69,20 +69,20 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         children: [
           const Icon(
             Icons.auto_awesome_rounded,
-            color: AppColors.primary,
+            color: AppColors.primaryBlue,
             size: 42,
           ),
           const SizedBox(height: 12),
           Text(
             'Write with confidence',
             textAlign: TextAlign.center,
-            style: AppTextStyles.headlineMedium,
+            style: AppTextStyles.sectionTitle,
           ),
           const SizedBox(height: 6),
           Text(
             'Unlimited Reply and Polish generations while Premium is active.',
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMedium,
+            style: AppTextStyles.body,
           ),
           const SizedBox(height: 24),
           GlassCard(
@@ -93,13 +93,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   children: [
                     const Icon(
                       Icons.workspace_premium_rounded,
-                      color: AppColors.primary,
+                      color: AppColors.primaryBlue,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         'Monthly Premium',
-                        style: AppTextStyles.titleMedium,
+                        style: AppTextStyles.cardTitle,
                       ),
                     ),
                     const _Badge(label: '3 days free'),
@@ -133,7 +133,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 Text(
                   'Free for 3 days, then $price/month. Cancel anytime.',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.labelMedium,
+                  style: AppTextStyles.helper,
                 ),
                 if (subscription.error != null) ...[
                   const SizedBox(height: 12),
@@ -160,12 +160,15 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.toll_rounded, color: AppColors.primary),
+                    const Icon(
+                      Icons.toll_rounded,
+                      color: AppColors.primaryBlue,
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
                         'Top-up Credits',
-                        style: AppTextStyles.titleMedium,
+                        style: AppTextStyles.cardTitle,
                       ),
                     ),
                   ],
@@ -173,7 +176,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 const SizedBox(height: 6),
                 Text(
                   'Each credit covers one Reply or Polish. Credits never expire.',
-                  style: AppTextStyles.bodyMedium,
+                  style: AppTextStyles.body,
                 ),
                 const SizedBox(height: 14),
                 if (credits.isLoading)
@@ -184,7 +187,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                       Text(
                         'Credit packages are unavailable right now.',
                         textAlign: TextAlign.center,
-                        style: AppTextStyles.labelMedium,
+                        style: AppTextStyles.helper,
                       ),
                       if (appUserId != null)
                         TextButton(
@@ -247,7 +250,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           Text(
             'Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically.',
             textAlign: TextAlign.center,
-            style: AppTextStyles.labelMedium,
+            style: AppTextStyles.helper,
           ),
         ],
       ),
@@ -271,7 +274,7 @@ class _LoadingStatus extends StatelessWidget {
           child: CircularProgressIndicator(strokeWidth: 2),
         ),
         const SizedBox(width: 10),
-        Flexible(child: Text(message, style: AppTextStyles.bodyMedium)),
+        Flexible(child: Text(message, style: AppTextStyles.helper)),
       ],
     ),
   );
@@ -292,7 +295,7 @@ class _Benefit extends StatelessWidget {
           size: 18,
         ),
         const SizedBox(width: 8),
-        Expanded(child: Text(text, style: AppTextStyles.bodyMedium)),
+        Expanded(child: Text(text, style: AppTextStyles.body)),
       ],
     ),
   );
@@ -306,12 +309,12 @@ class _Badge extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
     decoration: BoxDecoration(
-      color: AppColors.primary.withAlpha(24),
+      color: AppColors.primaryBlue.withAlpha(24),
       borderRadius: BorderRadius.circular(999),
     ),
     child: Text(
       label,
-      style: AppTextStyles.labelMedium.copyWith(color: AppColors.primaryDark),
+      style: AppTextStyles.badge.copyWith(color: AppColors.primaryBlue),
     ),
   );
 }

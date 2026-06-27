@@ -259,13 +259,13 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
               Text(
                 'Couldn’t explain this message',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.titleMedium,
+                style: AppTextStyles.cardTitle,
               ),
               const SizedBox(height: 8),
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium,
+                style: AppTextStyles.body,
               ),
               const SizedBox(height: 18),
               Row(
@@ -321,7 +321,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   Expanded(
                     child: Text(
                       'Explain message',
-                      style: AppTextStyles.headlineMedium,
+                      style: AppTextStyles.sectionTitle,
                     ),
                   ),
                   IconButton(
@@ -346,7 +346,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                     ? 'No hidden meaning detected.'
                     : result.hiddenMeaning,
               ),
-              Text('Suggested replies', style: AppTextStyles.titleMedium),
+              Text('Suggested replies', style: AppTextStyles.cardTitle),
               const SizedBox(height: 8),
               for (final suggestion in result.suggestedReplies)
                 Padding(
@@ -358,10 +358,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text(
-                            suggestion,
-                            style: AppTextStyles.bodyMedium,
-                          ),
+                          child: Text(suggestion, style: AppTextStyles.body),
                         ),
                         TextButton(
                           onPressed: () {
@@ -501,7 +498,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                         shape: BoxShape.circle,
                         boxShadow: const [
                           BoxShadow(
-                            color: Color(0x246B8FBF),
+                            color: AppColors.softBlueShadow,
                             blurRadius: 10,
                             offset: Offset(0, 4),
                           ),
@@ -526,8 +523,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                                   'Guidance',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: AppTextStyles.titleMedium.copyWith(
-                                    color: AppColors.textPrimary,
+                                  style: AppTextStyles.cardTitle.copyWith(
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -543,7 +539,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                                 : 'Optional tone or key points',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.bodyMedium.copyWith(
+                            style: AppTextStyles.helper.copyWith(
                               color: AppColors.textSecondary,
                             ),
                           ),
@@ -559,8 +555,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                       _PillAction(
                         icon: Icons.add_rounded,
                         label: 'Add guidance',
-                        onTap: () =>
-                            setState(() => _guidanceExpanded = true),
+                        onTap: () => setState(() => _guidanceExpanded = true),
                       ),
                       const SizedBox(width: 10),
                       _PillAction(
@@ -664,7 +659,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             Text(
               'Creating a few natural options…',
               textAlign: TextAlign.center,
-              style: AppTextStyles.labelMedium,
+              style: AppTextStyles.helper,
             ),
           ],
           if (replyState.error != null) ...[
@@ -691,12 +686,12 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             Text(
               'Your reply options will appear here.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.labelMedium,
+              style: AppTextStyles.helper,
             ),
           ],
           if (replyState.result != null) ...[
             const SizedBox(height: 26),
-            Text('Your replies', style: AppTextStyles.headlineMedium),
+            Text('Your replies', style: AppTextStyles.sectionTitle),
             const SizedBox(height: 12),
             for (final version in replyState.result!.versions) ...[
               GeneratedResultCard(
@@ -712,9 +707,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Why this works', style: AppTextStyles.titleMedium),
+                  Text('Why this works', style: AppTextStyles.cardTitle),
                   const SizedBox(height: 6),
-                  Text(replyState.result!.why, style: AppTextStyles.bodyMedium),
+                  Text(replyState.result!.why, style: AppTextStyles.body),
                 ],
               ),
             ),
@@ -739,7 +734,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                 child: Text(
                   'Regenerating creates new replies and uses 1 generation.',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.labelMedium,
+                  style: AppTextStyles.helper,
                 ),
               ),
           ],
@@ -752,11 +747,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
 /// Icon-circle + title (+ optional subtitle / trailing action) used as the
 /// header for the Message and Reply guidance cards.
 class _CardHeader extends StatelessWidget {
-  const _CardHeader({
-    required this.icon,
-    required this.title,
-    this.subtitle,
-  });
+  const _CardHeader({required this.icon, required this.title, this.subtitle});
 
   final IconData icon;
   final String title;
@@ -774,7 +765,7 @@ class _CardHeader extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: const [
               BoxShadow(
-                color: Color(0x246B8FBF),
+                color: AppColors.softBlueShadow,
                 blurRadius: 10,
                 offset: Offset(0, 4),
               ),
@@ -790,8 +781,7 @@ class _CardHeader extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: AppTextStyles.titleMedium.copyWith(
-                  color: AppColors.textPrimary,
+                style: AppTextStyles.cardTitle.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -799,7 +789,7 @@ class _CardHeader extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   subtitle!,
-                  style: AppTextStyles.bodyMedium.copyWith(
+                  style: AppTextStyles.helper.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -826,7 +816,7 @@ class _OptionalBadge extends StatelessWidget {
       ),
       child: Text(
         'Optional',
-        style: AppTextStyles.labelMedium.copyWith(
+        style: AppTextStyles.badge.copyWith(
           color: _kColor,
           fontWeight: FontWeight.w600,
           fontSize: 11,
@@ -857,9 +847,7 @@ class _PillAction extends StatelessWidget {
         backgroundColor: Colors.white.withAlpha(150),
         visualDensity: VisualDensity.compact,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       icon: Icon(icon, size: 18),
       label: Text(label),
@@ -890,7 +878,7 @@ class _QuickGuidanceChips extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quick guidance', style: AppTextStyles.labelMedium),
+        Text('Quick guidance', style: AppTextStyles.badge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -899,7 +887,7 @@ class _QuickGuidanceChips extends StatelessWidget {
             for (final (label, id) in _chips)
               ActionChip(
                 backgroundColor: _feature.selectedChipColor,
-                side: const BorderSide(color: Color(0xCCFFFFFF)),
+                side: const BorderSide(color: AppColors.glassEdgeStrong),
                 avatar: const Icon(Icons.add_rounded, size: 15, color: _kColor),
                 label: Text(label, style: const TextStyle(color: _kColor)),
                 onPressed: () => onAppend(
@@ -958,7 +946,7 @@ class _MoreOptionsSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withAlpha(125),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0x14143A66)),
+        border: Border.all(color: AppColors.softOutline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -979,17 +967,16 @@ class _MoreOptionsSection extends StatelessWidget {
                       children: [
                         Text(
                           'More options',
-                          style: AppTextStyles.titleMedium.copyWith(
+                          style: AppTextStyles.cardTitle.copyWith(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
                           ),
                         ),
                         if (!expanded) ...[
                           const SizedBox(height: 2),
                           Text(
                             summary,
-                            style: AppTextStyles.labelMedium.copyWith(
+                            style: AppTextStyles.helper.copyWith(
                               color: AppColors.textSecondary,
                             ),
                           ),
@@ -1081,7 +1068,7 @@ class _OptionGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.labelMedium),
+        Text(label, style: AppTextStyles.badge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -1122,9 +1109,9 @@ class _ExplanationRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: AppTextStyles.titleMedium),
+          Text(label, style: AppTextStyles.cardTitle),
           const SizedBox(height: 3),
-          Text(text, style: AppTextStyles.bodyMedium),
+          Text(text, style: AppTextStyles.body),
         ],
       ),
     );

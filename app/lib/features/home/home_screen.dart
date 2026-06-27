@@ -11,7 +11,6 @@ import '../../core/widgets/app_page.dart';
 const _homeHorizontalPadding = 20.0;
 const _homeCardSpacing = 12.0;
 
-const _muted = AppColors.textSecondary;
 const _chevron = AppColors.textDisabled;
 
 class HomeScreen extends ConsumerWidget {
@@ -123,7 +122,7 @@ class _HomeNavBar extends StatelessWidget {
                 ).createShader(bounds),
                 child: Text(
                   'ReplyWise',
-                  style: AppTextStyles.displayLarge.copyWith(
+                  style: AppTextStyles.pageTitle.copyWith(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
@@ -134,8 +133,8 @@ class _HomeNavBar extends StatelessWidget {
               ),
               Text(
                 'Your AI reply assistant',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: _muted,
+                style: AppTextStyles.helper.copyWith(
+                  color: AppColors.textSecondary,
                   fontWeight: FontWeight.w500,
                   fontSize: 11,
                   height: 1.2,
@@ -203,7 +202,7 @@ class _HeroCard extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(
-                        color: const Color(0xCCFFFFFF),
+                        color: AppColors.glassEdgeStrong,
                         width: 1,
                       ),
                       boxShadow: const [
@@ -235,7 +234,7 @@ class _HeroCard extends StatelessWidget {
                       children: [
                         Text(
                           'Get started',
-                          style: AppTextStyles.bodyMedium.copyWith(
+                          style: AppTextStyles.button.copyWith(
                             color: AppColors.primaryBlue,
                             fontWeight: FontWeight.w700,
                             fontSize: 16,
@@ -253,7 +252,7 @@ class _HeroCard extends StatelessWidget {
                             ),
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: const Color(0x1A000000),
+                              color: AppColors.softNeutralShadow,
                               width: 1,
                             ),
                             boxShadow: const [
@@ -378,7 +377,7 @@ class _FeatureTile extends StatelessWidget {
                           children: [
                             Text(
                               title,
-                              style: AppTextStyles.titleMedium.copyWith(
+                              style: AppTextStyles.cardTitle.copyWith(
                                 color: accent,
                                 fontSize: 17,
                                 fontWeight: FontWeight.w700,
@@ -387,8 +386,8 @@ class _FeatureTile extends StatelessWidget {
                             const SizedBox(height: 3),
                             Text(
                               subtitle,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: _muted,
+                              style: AppTextStyles.body.copyWith(
+                                color: AppColors.textSecondary,
                                 height: 1.25,
                               ),
                               maxLines: 2,

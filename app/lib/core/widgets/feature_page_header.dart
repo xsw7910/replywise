@@ -54,7 +54,7 @@ class FeaturePageHeader extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: AppTextStyles.titleMedium.copyWith(
+                style: AppTextStyles.cardTitle.copyWith(
                   color: color,
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
@@ -63,7 +63,7 @@ class FeaturePageHeader extends StatelessWidget {
               const SizedBox(height: 3),
               Text(
                 subtitle,
-                style: AppTextStyles.bodyMedium.copyWith(
+                style: AppTextStyles.helper.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -111,7 +111,7 @@ class StepLabel extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             label,
-            style: AppTextStyles.labelMedium.copyWith(
+            style: AppTextStyles.badge.copyWith(
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),

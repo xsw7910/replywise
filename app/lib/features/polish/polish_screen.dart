@@ -206,7 +206,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             Text(
               'Improving clarity while keeping your meaning…',
               textAlign: TextAlign.center,
-              style: AppTextStyles.labelMedium,
+              style: AppTextStyles.helper,
             ),
           ],
           if (polishState.error != null) ...[
@@ -233,12 +233,12 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             Text(
               'Your polished draft will appear here.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.labelMedium,
+              style: AppTextStyles.helper,
             ),
           ],
           if (polishState.result != null) ...[
             const SizedBox(height: 26),
-            Text('Polished result', style: AppTextStyles.headlineMedium),
+            Text('Polished result', style: AppTextStyles.sectionTitle),
             const SizedBox(height: 12),
             GeneratedResultCard(
               label: _direction,
@@ -252,12 +252,9 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('What changed?', style: AppTextStyles.titleMedium),
+                  Text('What changed?', style: AppTextStyles.cardTitle),
                   const SizedBox(height: 6),
-                  Text(
-                    polishState.result!.changes,
-                    style: AppTextStyles.bodyMedium,
-                  ),
+                  Text(polishState.result!.changes, style: AppTextStyles.body),
                 ],
               ),
             ),
@@ -282,7 +279,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                 child: Text(
                   'Polishing again creates a new result and uses 1 generation.',
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.labelMedium,
+                  style: AppTextStyles.helper,
                 ),
               ),
           ],

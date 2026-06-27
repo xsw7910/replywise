@@ -29,6 +29,7 @@ class ReplyWiseApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'ReplyWise',
       theme: AppTheme.light,
+      themeAnimationDuration: Duration.zero,
       routerConfig: router,
       debugShowCheckedModeBanner: false,
     );

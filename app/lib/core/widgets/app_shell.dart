@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../router/app_router.dart';
+import '../theme/app_text_styles.dart';
 import '../theme/app_colors.dart';
 
 const _navInactive = AppColors.navBarUnselected;
@@ -12,11 +13,36 @@ class AppShell extends StatelessWidget {
   final Widget child;
 
   static const _tabs = [
-    (route: AppRoutes.home,     label: 'Home',     icon: Icons.home_rounded,           color: AppColors.primaryBlue),
-    (route: AppRoutes.reply,    label: 'Reply',    icon: Icons.reply_rounded,           color: AppColors.replyColor),
-    (route: AppRoutes.explain,  label: 'Explain',  icon: Icons.psychology_alt_rounded,  color: AppColors.explainColor),
-    (route: AppRoutes.polish,   label: 'Polish',   icon: Icons.auto_fix_high_rounded,   color: AppColors.polishColor),
-    (route: AppRoutes.settings, label: 'Settings', icon: Icons.settings_rounded,        color: AppColors.primaryBlue),
+    (
+      route: AppRoutes.home,
+      label: 'Home',
+      icon: Icons.home_rounded,
+      color: AppColors.primaryBlue,
+    ),
+    (
+      route: AppRoutes.reply,
+      label: 'Reply',
+      icon: Icons.reply_rounded,
+      color: AppColors.replyColor,
+    ),
+    (
+      route: AppRoutes.explain,
+      label: 'Explain',
+      icon: Icons.psychology_alt_rounded,
+      color: AppColors.explainColor,
+    ),
+    (
+      route: AppRoutes.polish,
+      label: 'Polish',
+      icon: Icons.auto_fix_high_rounded,
+      color: AppColors.polishColor,
+    ),
+    (
+      route: AppRoutes.settings,
+      label: 'Settings',
+      icon: Icons.settings_rounded,
+      color: AppColors.primaryBlue,
+    ),
   ];
 
   int _selectedIndex(BuildContext context) {
@@ -127,9 +153,7 @@ class _NavItem extends StatelessWidget {
                 data.label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 1.1,
+                style: AppTextStyles.navLabel.copyWith(
                   color: color,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 ),

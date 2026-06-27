@@ -118,7 +118,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                     const Spacer(),
                     Text(
                       'Explain is free; limits may apply.',
-                      style: AppTextStyles.labelMedium,
+                      style: AppTextStyles.helper,
                     ),
                   ],
                 ),
@@ -158,9 +158,9 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
           if (state.isLoading) ...[
             const SizedBox(height: 14),
             Text(
-              'Reading between the lines...',
+              'Reading between the lines…',
               textAlign: TextAlign.center,
-              style: AppTextStyles.labelMedium,
+              style: AppTextStyles.helper,
             ),
           ],
           if (_result == null && !state.isLoading && state.error == null) ...[
@@ -168,7 +168,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
             Text(
               'Your explanation will appear here.',
               textAlign: TextAlign.center,
-              style: AppTextStyles.labelMedium,
+              style: AppTextStyles.helper,
             ),
           ],
           if (_result != null) ...[
@@ -198,13 +198,13 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
             const SizedBox(height: 18),
             Text(
               _ExplainText.suggestedReplies,
-              style: AppTextStyles.headlineMedium,
+              style: AppTextStyles.sectionTitle,
             ),
             const SizedBox(height: 10),
             if (_result!.suggestedReplies.isEmpty)
               Text(
                 'No suggested replies returned.',
-                style: AppTextStyles.bodyMedium,
+                style: AppTextStyles.helper,
               )
             else
               for (final suggestion in _result!.suggestedReplies) ...[
@@ -263,9 +263,9 @@ class _ResultSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTextStyles.titleMedium),
+                Text(title, style: AppTextStyles.cardTitle),
                 const SizedBox(height: 6),
-                Text(text, style: AppTextStyles.bodyLarge),
+                Text(text, style: AppTextStyles.body),
               ],
             ),
           ),
@@ -295,7 +295,7 @@ class _SuggestionCard extends StatelessWidget {
             color: _kColor,
           ),
           const SizedBox(width: 12),
-          Expanded(child: Text(suggestion, style: AppTextStyles.bodyLarge)),
+          Expanded(child: Text(suggestion, style: AppTextStyles.body)),
           IconButton(
             tooltip: _ExplainText.copy,
             style: IconButton.styleFrom(
@@ -323,7 +323,7 @@ class _ContinueCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(_ExplainText.replyCtaTitle, style: AppTextStyles.titleMedium),
+          Text(_ExplainText.replyCtaTitle, style: AppTextStyles.cardTitle),
           const SizedBox(height: 10),
           ElevatedButton.icon(
             key: const Key('explain-continue-reply-button'),
@@ -368,7 +368,7 @@ abstract final class _ExplainText {
       "Sounds good in principle, but let's circle back after Q3 — bandwidth is tight right now.";
   static const paste = 'Paste';
   static const explainButton = 'Explain this message';
-  static const explaining = 'Explaining...';
+  static const explaining = 'Explaining…';
   static const meaning = 'Meaning';
   static const tone = 'Tone';
   static const hiddenMeaning = 'Hidden Meaning';

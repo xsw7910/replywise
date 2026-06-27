@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_feature_theme.dart';
+import '../../../core/theme/app_colors.dart';
 import '../application/guidance_library_controller.dart';
 import '../domain/guidance_template.dart';
 import 'guidance_picker_sheet.dart';
@@ -29,7 +30,7 @@ class GuidanceChipRow extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quick guidance', style: AppTextStyles.labelMedium),
+        Text('Quick guidance', style: AppTextStyles.badge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -38,7 +39,7 @@ class GuidanceChipRow extends ConsumerWidget {
             ...quick.map(
               (t) => ActionChip(
                 backgroundColor: feature?.selectedChipColor,
-                side: const BorderSide(color: Color(0xCCFFFFFF)),
+                side: const BorderSide(color: AppColors.glassEdgeStrong),
                 avatar: t.isFavorite
                     ? Icon(
                         Icons.star_rounded,
@@ -59,7 +60,7 @@ class GuidanceChipRow extends ConsumerWidget {
             ),
             ActionChip(
               backgroundColor: feature?.selectedChipColor,
-              side: const BorderSide(color: Color(0xCCFFFFFF)),
+              side: const BorderSide(color: AppColors.glassEdgeStrong),
               avatar: Icon(
                 Icons.library_books_outlined,
                 size: 15,

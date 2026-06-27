@@ -57,16 +57,16 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final accent = widget.feature?.accentColor ?? AppColors.primary;
+    final accent = widget.feature?.accentColor ?? AppColors.primaryBlue;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.showHeader) ...[
-          Text(widget.label, style: AppTextStyles.titleMedium),
+          Text(widget.label, style: AppTextStyles.cardTitle),
           if (widget.helperText != null) ...[
             const SizedBox(height: 3),
-            Text(widget.helperText!, style: AppTextStyles.bodyMedium),
+            Text(widget.helperText!, style: AppTextStyles.helper),
           ],
           const SizedBox(height: 10),
         ],

@@ -137,7 +137,7 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
                   const SizedBox(height: 4),
                   Text(
                     _titleError!,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: AppTextStyles.helper.copyWith(
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),
@@ -156,13 +156,13 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
                   const SizedBox(height: 4),
                   Text(
                     _contentError!,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: AppTextStyles.helper.copyWith(
                       color: Theme.of(context).colorScheme.error,
                     ),
                   ),
                 ],
                 const SizedBox(height: 16),
-                Text('Category', style: AppTextStyles.titleMedium),
+                Text('Category', style: AppTextStyles.cardTitle),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,

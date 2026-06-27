@@ -45,19 +45,19 @@ class UsageBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
-          color: AppColors.primary.withAlpha(18),
+          color: AppColors.primaryBlue.withAlpha(18),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 16, color: AppColors.primaryDark),
+            Icon(icon, size: 16, color: AppColors.primaryBlue),
             const SizedBox(width: 6),
             Flexible(
               child: Text(
                 label,
-                style: AppTextStyles.labelMedium.copyWith(
-                  color: AppColors.primaryDark,
+                style: AppTextStyles.badge.copyWith(
+                  color: AppColors.primaryBlue,
                 ),
               ),
             ),
@@ -71,7 +71,7 @@ class UsageBadge extends StatelessWidget {
                   child: Icon(
                     Icons.refresh_rounded,
                     size: 16,
-                    color: AppColors.primaryDark,
+                    color: AppColors.primaryBlue,
                   ),
                 ),
               ),

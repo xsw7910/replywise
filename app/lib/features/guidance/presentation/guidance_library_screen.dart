@@ -13,7 +13,6 @@ import '../application/pending_guidance_provider.dart';
 import '../domain/guidance_template.dart';
 
 const _kColor = AppColors.guidanceColor;
-const _kColorDark = Color(0xFFB86E00);
 const _feature = AppFeature.guidance;
 
 class GuidanceLibraryScreen extends ConsumerWidget {
@@ -97,7 +96,7 @@ class _Body extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
               'Create your own guidance to reuse it later.',
-              style: AppTextStyles.bodyMedium,
+              style: AppTextStyles.body,
             ),
           )
         else
@@ -128,7 +127,7 @@ class _SectionLabel extends StatelessWidget {
     children: [
       Icon(icon, size: 15, color: color),
       const SizedBox(width: 6),
-      Text(label, style: AppTextStyles.labelMedium.copyWith(color: color)),
+      Text(label, style: AppTextStyles.badge.copyWith(color: color)),
     ],
   );
 }
@@ -153,7 +152,7 @@ class _GuidanceCard extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(template.title, style: AppTextStyles.bodyLarge),
+                  child: Text(template.title, style: AppTextStyles.cardTitle),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -166,8 +165,8 @@ class _GuidanceCard extends ConsumerWidget {
                   ),
                   child: Text(
                     template.category.label,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: _kColorDark,
+                    style: AppTextStyles.badge.copyWith(
+                      color: AppColors.guidanceDark,
                     ),
                   ),
                 ),
@@ -178,7 +177,7 @@ class _GuidanceCard extends ConsumerWidget {
               template.content,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.bodyMedium,
+              style: AppTextStyles.body,
             ),
             Row(
               children: [
@@ -237,7 +236,7 @@ class _GuidanceCard extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Use "${template.title}"',
-                  style: AppTextStyles.titleMedium,
+                  style: AppTextStyles.cardTitle,
                 ),
               ),
             ),

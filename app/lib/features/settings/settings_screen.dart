@@ -58,12 +58,12 @@ class SettingsScreen extends ConsumerWidget {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withAlpha(24),
+                        color: AppColors.primaryBlue.withAlpha(24),
                         borderRadius: BorderRadius.circular(13),
                       ),
                       child: const Icon(
                         Icons.auto_awesome_rounded,
-                        color: AppColors.primary,
+                        color: AppColors.primaryBlue,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -71,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Your plan', style: AppTextStyles.titleMedium),
+                          Text('Your plan', style: AppTextStyles.cardTitle),
                           const SizedBox(height: 6),
                           UsageBadge(
                             state: usageState,
@@ -172,7 +172,7 @@ class _DeveloperTestingCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Developer Testing', style: AppTextStyles.titleMedium),
+          Text('Developer Testing', style: AppTextStyles.cardTitle),
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
@@ -232,17 +232,17 @@ class _AuthStatusCard extends StatelessWidget {
       ),
       AuthStatus.authenticating => (
         Icons.sync_rounded,
-        AppColors.primary,
+        AppColors.primaryBlue,
         'Connecting anonymous session…',
       ),
       AuthStatus.refreshing => (
         Icons.sync_lock_outlined,
-        AppColors.primary,
+        AppColors.primaryBlue,
         'Refreshing secure session…',
       ),
       AuthStatus.tokenExpired => (
         Icons.history_toggle_off_rounded,
-        AppColors.primary,
+        AppColors.primaryBlue,
         'Restoring anonymous session…',
       ),
       AuthStatus.failure => (
@@ -261,7 +261,7 @@ class _AuthStatusCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Secure session', style: AppTextStyles.titleMedium),
+          Text('Secure session', style: AppTextStyles.cardTitle),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -270,7 +270,7 @@ class _AuthStatusCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: AppTextStyles.bodyMedium.copyWith(color: color),
+                  style: AppTextStyles.helper.copyWith(color: color),
                 ),
               ),
               if (authState.status == AuthStatus.failure)
@@ -284,7 +284,7 @@ class _AuthStatusCard extends StatelessWidget {
           if (authState.status == AuthStatus.failure &&
               authState.errorMessage != null) ...[
             const SizedBox(height: 6),
-            Text(authState.errorMessage!, style: AppTextStyles.bodyMedium),
+            Text(authState.errorMessage!, style: AppTextStyles.helper),
           ],
         ],
       ),
@@ -304,7 +304,7 @@ class _SettingsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: AppTextStyles.titleMedium),
+          Text(title, style: AppTextStyles.cardTitle),
           const SizedBox(height: 8),
           ...children,
         ],
@@ -334,10 +334,10 @@ class _BackendStatusCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Developer', style: AppTextStyles.titleMedium),
+                    Text('Developer', style: AppTextStyles.cardTitle),
                     Text(
                       'Local backend connection',
-                      style: AppTextStyles.bodyMedium,
+                      style: AppTextStyles.helper,
                     ),
                   ],
                 ),
@@ -353,7 +353,7 @@ class _BackendStatusCard extends StatelessWidget {
           healthState.when(
             loading: () => const _StatusRow(
               icon: Icons.sync_rounded,
-              color: AppColors.primary,
+              color: AppColors.primaryBlue,
               title: 'Checking backend…',
             ),
             data: (health) => Column(
@@ -367,7 +367,7 @@ class _BackendStatusCard extends StatelessWidget {
                 const SizedBox(height: 5),
                 Text(
                   '${health.service} · ${health.status}',
-                  style: AppTextStyles.bodyMedium,
+                  style: AppTextStyles.helper,
                 ),
               ],
             ),
@@ -412,7 +412,7 @@ class _StatusRow extends StatelessWidget {
       children: [
         Icon(icon, color: color, size: 18),
         const SizedBox(width: 8),
-        Text(title, style: AppTextStyles.bodyMedium.copyWith(color: color)),
+        Text(title, style: AppTextStyles.helper.copyWith(color: color)),
       ],
     );
   }
@@ -433,12 +433,28 @@ class _SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final enabled = onTap != null;
+    final color = enabled ? AppColors.primaryBlue : AppColors.textDisabled;
+
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: AppColors.primary, size: 22),
-      title: Text(label, style: AppTextStyles.bodyLarge),
+      enabled: enabled,
+      leading: Icon(icon, color: color, size: 22),
+      title: Text(
+        label,
+        style: AppTextStyles.body.copyWith(
+          color: enabled ? AppColors.textSecondary : AppColors.textDisabled,
+        ),
+      ),
       trailing: trailing != null
-          ? DefaultTextStyle(style: AppTextStyles.bodyMedium, child: trailing!)
+          ? DefaultTextStyle(
+              style: AppTextStyles.helper.copyWith(
+                color: enabled
+                    ? AppColors.textSecondary
+                    : AppColors.textDisabled,
+              ),
+              child: trailing!,
+            )
           : onTap != null
           ? const Icon(Icons.chevron_right_rounded, color: AppColors.textHint)
           : null,
