@@ -546,6 +546,22 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                         ],
                       ),
                     ),
+                    IconButton(
+                      tooltip: _guidanceExpanded
+                          ? 'Collapse guidance'
+                          : 'Expand guidance',
+                      onPressed: () => setState(
+                        () => _guidanceExpanded = !_guidanceExpanded,
+                      ),
+                      icon: AnimatedRotation(
+                        turns: _guidanceExpanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 180),
+                        child: const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: _kColor,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 if (!_guidanceExpanded) ...[
@@ -609,12 +625,12 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 14),
+                  _QuickGuidanceChips(onAppend: _appendGuidanceText),
                 ],
               ],
             ),
           ),
-          const SizedBox(height: 16),
-          _QuickGuidanceChips(onAppend: _appendGuidanceText),
           const SizedBox(height: 18),
           _MoreOptionsSection(
             expanded: _moreOptionsExpanded,
