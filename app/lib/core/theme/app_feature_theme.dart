@@ -12,6 +12,13 @@ extension AppFeatureTheme on AppFeature {
     AppFeature.guidance => AppColors.guidanceColor,
   };
 
+  String get backgroundImage => switch (this) {
+    AppFeature.reply => 'assets/image/reply_background.png',
+    AppFeature.polish => 'assets/image/polish_background.png',
+    AppFeature.explain => 'assets/image/explain_background.png',
+    AppFeature.guidance => 'assets/image/guidance_background.png',
+  };
+
   Color get lightTintColor => switch (this) {
     AppFeature.reply => const Color(0xFFEAF4FF),
     AppFeature.polish => const Color(0xFFF3EFFF),
@@ -34,8 +41,10 @@ extension AppFeatureTheme on AppFeature {
   BoxDecoration glassCardDecoration({
     double borderRadius = 28,
     double tintStrength = 1,
+    Color? tintColor,
   }) {
     final strength = tintStrength.clamp(0.0, 1.0);
+    final tint = tintColor ?? lightTintColor;
 
     return BoxDecoration(
       borderRadius: BorderRadius.circular(borderRadius),
@@ -43,8 +52,8 @@ extension AppFeatureTheme on AppFeature {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          Color.lerp(Colors.white, lightTintColor, 0.35 * strength)!,
-          Color.lerp(Colors.white, lightTintColor, strength)!,
+          Color.lerp(Colors.white, tint, 0.35 * strength)!,
+          Color.lerp(Colors.white, tint, strength)!,
         ],
       ),
       border: Border.all(color: const Color(0xE0FFFFFF), width: 1.2),

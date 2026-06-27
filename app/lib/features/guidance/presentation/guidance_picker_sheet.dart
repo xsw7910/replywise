@@ -28,21 +28,11 @@ class GuidancePickerSheet extends ConsumerWidget {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 12, 0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text('Guidance Library',
-                        style: AppTextStyles.headlineMedium),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      context.push(AppRoutes.guidanceLibrary);
-                    },
-                    child: const Text('Manage'),
-                  ),
-                ],
+              padding: const EdgeInsets.fromLTRB(20, 6, 20, 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text('Choose guidance',
+                    style: AppTextStyles.headlineMedium),
               ),
             ),
             const Divider(height: 1),
@@ -79,6 +69,24 @@ class GuidancePickerSheet extends ConsumerWidget {
                         ],
                       ],
                     ),
+            ),
+            const Divider(height: 1),
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      context.push(AppRoutes.guidanceLibrary);
+                    },
+                    icon: const Icon(Icons.menu_book_rounded, size: 18),
+                    label: const Text('Manage Library'),
+                  ),
+                ),
+              ),
             ),
           ],
         );

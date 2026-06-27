@@ -15,6 +15,9 @@ class LabeledTextField extends StatefulWidget {
     this.minLines,
     this.maxLength,
     this.feature,
+    this.showHeader = true,
+    this.showCounter = true,
+    this.fieldActions,
   });
 
   final String label;
@@ -25,6 +28,9 @@ class LabeledTextField extends StatefulWidget {
   final int? minLines;
   final int? maxLength;
   final AppFeature? feature;
+  final bool showHeader;
+  final bool showCounter;
+  final Widget? fieldActions;
 
   @override
   State<LabeledTextField> createState() => _LabeledTextFieldState();
@@ -56,12 +62,14 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.label, style: AppTextStyles.titleMedium),
-        if (widget.helperText != null) ...[
-          const SizedBox(height: 3),
-          Text(widget.helperText!, style: AppTextStyles.bodyMedium),
+        if (widget.showHeader) ...[
+          Text(widget.label, style: AppTextStyles.titleMedium),
+          if (widget.helperText != null) ...[
+            const SizedBox(height: 3),
+            Text(widget.helperText!, style: AppTextStyles.bodyMedium),
+          ],
+          const SizedBox(height: 10),
         ],
-        const SizedBox(height: 10),
         AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           decoration: BoxDecoration(
@@ -77,21 +85,40 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
                   ]
                 : null,
           ),
-          child: TextField(
-            controller: widget.controller,
-            focusNode: _focusNode,
-            minLines: widget.minLines ?? widget.maxLines,
-            maxLines: widget.maxLines,
-            maxLength: widget.maxLength,
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              focusedBorder: widget.feature == null
-                  ? null
-                  : OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: accent, width: 2),
-                    ),
-            ),
+          child: Stack(
+            children: [
+              TextField(
+                controller: widget.controller,
+                focusNode: _focusNode,
+                minLines: widget.minLines ?? widget.maxLines,
+                maxLines: widget.maxLines,
+                maxLength: widget.maxLength,
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  counterText: widget.showCounter ? null : '',
+                  contentPadding: widget.fieldActions == null
+                      ? null
+                      : EdgeInsets.fromLTRB(
+                          16,
+                          14,
+                          16,
+                          widget.showCounter ? 72 : 54,
+                        ),
+                  focusedBorder: widget.feature == null
+                      ? null
+                      : OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: accent, width: 2),
+                        ),
+                ),
+              ),
+              if (widget.fieldActions != null)
+                Positioned(
+                  right: 8,
+                  bottom: widget.showCounter ? 28 : 8,
+                  child: widget.fieldActions!,
+                ),
+            ],
           ),
         ),
       ],

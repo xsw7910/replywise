@@ -15,6 +15,7 @@ class AppPage extends StatelessWidget {
     this.headerImagePath,
     this.headerIcon,
     this.subtitle,
+    this.backgroundImagePath,
   });
 
   final String title;
@@ -27,6 +28,7 @@ class AppPage extends StatelessWidget {
   final String? headerImagePath;
   final IconData? headerIcon;
   final String? subtitle;
+  final String? backgroundImagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -63,16 +65,18 @@ class AppPage extends StatelessWidget {
                   : null,
             )
           : null,
-      body: ColoredBox(
-        color: AppColors.backgroundBase,
-        child: Stack(
-          children: [
-            if (useSafeArea)
-              SafeArea(top: !showAppBar, child: child)
-            else
-              child,
-          ],
-        ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: backgroundImagePath != null
+                ? Image.asset(backgroundImagePath!, fit: BoxFit.cover)
+                : const ColoredBox(color: AppColors.backgroundBase),
+          ),
+          if (useSafeArea)
+            SafeArea(top: !showAppBar, child: child)
+          else
+            child,
+        ],
       ),
     );
   }

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../router/app_router.dart';
+import '../theme/app_colors.dart';
 
-const _navInactive = Color(0xFF9AA6B8);
+const _navInactive = AppColors.navBarUnselected;
 
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.child});
@@ -11,11 +12,11 @@ class AppShell extends StatelessWidget {
   final Widget child;
 
   static const _tabs = [
-    (route: AppRoutes.home,     label: 'Home',     icon: Icons.home_rounded,           color: Color(0xFF3F73FF)),
-    (route: AppRoutes.reply,    label: 'Reply',    icon: Icons.reply_rounded,           color: Color(0xFF3F73FF)),
-    (route: AppRoutes.explain,  label: 'Explain',  icon: Icons.psychology_alt_rounded,  color: Color(0xFF00B8A9)),
-    (route: AppRoutes.polish,   label: 'Polish',   icon: Icons.auto_fix_high_rounded,   color: Color(0xFF845EF7)),
-    (route: AppRoutes.settings, label: 'Settings', icon: Icons.settings_rounded,        color: Color(0xFF5C7CFA)),
+    (route: AppRoutes.home,     label: 'Home',     icon: Icons.home_rounded,           color: AppColors.primaryBlue),
+    (route: AppRoutes.reply,    label: 'Reply',    icon: Icons.reply_rounded,           color: AppColors.replyColor),
+    (route: AppRoutes.explain,  label: 'Explain',  icon: Icons.psychology_alt_rounded,  color: AppColors.explainColor),
+    (route: AppRoutes.polish,   label: 'Polish',   icon: Icons.auto_fix_high_rounded,   color: AppColors.polishColor),
+    (route: AppRoutes.settings, label: 'Settings', icon: Icons.settings_rounded,        color: AppColors.primaryBlue),
   ];
 
   int _selectedIndex(BuildContext context) {
@@ -32,7 +33,7 @@ class AppShell extends StatelessWidget {
     final selectedIndex = _selectedIndex(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F9FD),
+      backgroundColor: AppColors.backgroundBase,
       body: child,
       bottomNavigationBar: _SoftNavBar(
         tabs: _tabs,

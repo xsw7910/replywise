@@ -58,6 +58,10 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
+      // Guidance is collapsed by default; reveal the field first.
+      await tester.tap(find.text('Add guidance'));
+      await tester.pump();
+
       await tester.enterText(
           _editableIn(const Key('reply-guidance-field')), 'My own note');
       await tester.pump();

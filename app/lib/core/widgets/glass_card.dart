@@ -14,6 +14,7 @@ class GlassCard extends StatelessWidget {
     this.fillColor,
     this.feature,
     this.tintStrength = 1,
+    this.tintColor,
   });
 
   final Widget child;
@@ -23,52 +24,65 @@ class GlassCard extends StatelessWidget {
   final Color? fillColor;
   final AppFeature? feature;
   final double tintStrength;
+  final Color? tintColor;
 
   @override
   Widget build(BuildContext context) {
-    final radius = borderRadius ?? (feature == null ? 20 : 28);
+    final f = feature;
+    final radius = borderRadius ?? (f == null ? 20 : 28);
 
-    return Container(
-      decoration:
-          feature?.glassCardDecoration(
-            borderRadius: radius,
-            tintStrength: tintStrength,
-          ) ??
-          BoxDecoration(
-            borderRadius: BorderRadius.circular(radius),
-            boxShadow: const [
-              BoxShadow(
-                color: AppColors.cardShadow,
-                blurRadius: 28,
-                offset: Offset(0, 14),
+    // Feature cards use the themed background image as their fill, keeping the
+    // soft border + shadow so they stay distinct from the page background.
+    if (f != null) {
+      return Container(
+        decoration: f.glassCardDecoration(
+          borderRadius: radius,
+          tintStrength: tintStrength,
+          tintColor: tintColor,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(radius),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(f.backgroundImage, fit: BoxFit.cover),
               ),
-              BoxShadow(
-                color: AppColors.cardSoftShadow,
-                blurRadius: 6,
-                offset: Offset(0, 2),
-              ),
+              Padding(padding: padding, child: child),
             ],
           ),
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.cardShadow,
+            blurRadius: 28,
+            offset: Offset(0, 14),
+          ),
+          BoxShadow(
+            color: AppColors.cardSoftShadow,
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
           child: Material(
-            color: feature == null
-                ? fillColor ?? Colors.white
-                : Colors.transparent,
+            color: fillColor ?? Colors.white,
             borderRadius: BorderRadius.circular(radius),
             child: Container(
               padding: padding,
-              decoration: feature == null
-                  ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(radius),
-                      border: Border.all(
-                        color: AppColors.cardBorder,
-                        width: 1.4,
-                      ),
-                    )
-                  : null,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(radius),
+                border: Border.all(color: AppColors.cardBorder, width: 1.4),
+              ),
               child: child,
             ),
           ),

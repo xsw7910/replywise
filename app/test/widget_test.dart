@@ -139,7 +139,7 @@ void main() {
     await pumpReplyWiseApp(tester);
 
     expect(find.text('ReplyWise'), findsOneWidget);
-    expect(find.text('Choose what you need'), findsOneWidget);
+    expect(find.text('Your AI reply assistant'), findsOneWidget);
     expect(find.text('Home'), findsAtLeastNWidgets(1));
     expect(find.text('Reply'), findsAtLeastNWidgets(1));
     expect(find.text('Explain'), findsAtLeastNWidgets(1));
