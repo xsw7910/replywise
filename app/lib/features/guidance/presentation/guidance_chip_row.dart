@@ -40,17 +40,11 @@ class GuidanceChipRow extends ConsumerWidget {
               (t) => ActionChip(
                 backgroundColor: feature?.selectedChipColor,
                 side: const BorderSide(color: AppColors.glassEdgeStrong),
-                avatar: t.isFavorite
-                    ? Icon(
-                        Icons.star_rounded,
-                        size: 15,
-                        color: feature?.accentColor,
-                      )
-                    : Icon(
-                        Icons.add_rounded,
-                        size: 15,
-                        color: feature?.accentColor,
-                      ),
+                avatar: Icon(
+                  _templateIcon(t),
+                  size: 15,
+                  color: feature?.accentColor,
+                ),
                 label: Text(
                   t.title,
                   style: TextStyle(color: feature?.accentColor),
@@ -85,5 +79,19 @@ class GuidanceChipRow extends ConsumerWidget {
       showDragHandle: true,
       builder: (_) => GuidancePickerSheet(onSelected: onSelected),
     );
+  }
+
+  IconData _templateIcon(GuidanceTemplate template) {
+    return switch (template.id) {
+      'builtin_be_polite' => Icons.sentiment_satisfied_alt_rounded,
+      'builtin_keep_short' => Icons.short_text_rounded,
+      'builtin_professional' => Icons.business_center_outlined,
+      'builtin_friendly' => Icons.waving_hand_outlined,
+      'builtin_decline' => Icons.do_not_disturb_alt_outlined,
+      'builtin_thanks' => Icons.volunteer_activism_outlined,
+      'builtin_more_time' => Icons.schedule_rounded,
+      'builtin_confident' => Icons.shield_outlined,
+      _ => Icons.add_rounded,
+    };
   }
 }

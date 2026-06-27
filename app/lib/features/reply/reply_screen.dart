@@ -958,12 +958,11 @@ class _MoreOptionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha(125),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.softOutline),
-      ),
+    return GlassCard(
+      feature: _feature,
+      tintStrength: 0.65,
+      tintColor: const Color(0xFFE8F2FF),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -974,8 +973,20 @@ class _MoreOptionsSection extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
               child: Row(
                 children: [
-                  const Icon(Icons.tune_rounded, size: 18, color: _kColor),
-                  const SizedBox(width: 10),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: _feature.iconBackgroundColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.tune_rounded,
+                      size: 21,
+                      color: _kColor,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -988,15 +999,15 @@ class _MoreOptionsSection extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        if (!expanded) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            summary,
-                            style: AppTextStyles.helper.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
+                        const SizedBox(height: 2),
+                        Text(
+                          expanded ? 'Fine-tune your reply' : summary,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.helper.copyWith(
+                            color: AppColors.textSecondary,
                           ),
-                        ],
+                        ),
                       ],
                     ),
                   ),
@@ -1010,23 +1021,26 @@ class _MoreOptionsSection extends StatelessWidget {
               ),
             ),
           ),
-          if (expanded)
+          if (expanded) ...[
+            const Divider(height: 1, color: AppColors.cardBorder),
             Padding(
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _OptionGroup(
                     label: 'Tone',
                     groupIcon: Icons.record_voice_over_outlined,
+                    accentColor: AppColors.replyColor,
                     options: tones,
                     selected: tone,
                     onSelected: onTone,
                   ),
-                  const SizedBox(height: 12),
+                  const _OptionDivider(),
                   _OptionGroup(
                     label: 'Audience',
                     groupIcon: Icons.groups_outlined,
+                    accentColor: AppColors.explainColor,
                     options: audiences,
                     selected: audience,
                     onSelected: onAudience,
@@ -1044,18 +1058,20 @@ class _MoreOptionsSection extends StatelessWidget {
                       maxLength: 500,
                     ),
                   ],
-                  const SizedBox(height: 12),
+                  const _OptionDivider(),
                   _OptionGroup(
                     label: 'Length',
                     groupIcon: Icons.format_size_rounded,
+                    accentColor: AppColors.polishColor,
                     options: lengths,
                     selected: length,
                     onSelected: onLength,
                   ),
-                  const SizedBox(height: 12),
+                  const _OptionDivider(),
                   _OptionGroup(
                     label: 'Channel',
                     groupIcon: Icons.send_outlined,
+                    accentColor: AppColors.replyColor,
                     options: channels,
                     selected: channel,
                     onSelected: onChannel,
@@ -1063,6 +1079,7 @@ class _MoreOptionsSection extends StatelessWidget {
                 ],
               ),
             ),
+          ],
         ],
       ),
     );
@@ -1074,6 +1091,7 @@ class _OptionGroup extends StatelessWidget {
   const _OptionGroup({
     required this.label,
     required this.groupIcon,
+    required this.accentColor,
     required this.options,
     required this.selected,
     required this.onSelected,
@@ -1081,6 +1099,7 @@ class _OptionGroup extends StatelessWidget {
 
   final String label;
   final IconData groupIcon;
+  final Color accentColor;
   final List<String> options;
   final String selected;
   final ValueChanged<String> onSelected;
@@ -1093,9 +1112,9 @@ class _OptionGroup extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(groupIcon, size: 15, color: _kColor),
+            Icon(groupIcon, size: 17, color: accentColor),
             const SizedBox(width: 5),
-            Text(label, style: AppTextStyles.badge),
+            Text(label, style: AppTextStyles.cardTitle.copyWith(fontSize: 15)),
           ],
         ),
         const SizedBox(height: 8),
@@ -1105,22 +1124,30 @@ class _OptionGroup extends StatelessWidget {
           children: [
             for (final option in options)
               ChoiceChip(
+                backgroundColor: Colors.white.withAlpha(110),
                 avatar: Icon(
                   _optionIcon(option),
                   size: 16,
-                  color: option == selected ? _kColor : AppColors.textSecondary,
+                  color: option == selected
+                      ? accentColor
+                      : AppColors.textSecondary,
                 ),
                 label: Text(
                   option,
                   style: TextStyle(
                     color: option == selected
-                        ? _kColor
+                        ? accentColor
                         : AppColors.textSecondary,
                   ),
                 ),
                 selected: option == selected,
-                selectedColor: _feature.selectedChipColor,
-                checkmarkColor: _kColor,
+                selectedColor: Color.lerp(Colors.white, accentColor, 0.14),
+                showCheckmark: false,
+                side: BorderSide(
+                  color: option == selected
+                      ? accentColor.withAlpha(65)
+                      : AppColors.cardBorder.withAlpha(150),
+                ),
                 onSelected: (_) => onSelected(option),
               ),
           ],
@@ -1158,6 +1185,18 @@ class _OptionGroup extends StatelessWidget {
         _ => Icons.chat_bubble_outline_rounded,
       },
     };
+  }
+}
+
+class _OptionDivider extends StatelessWidget {
+  const _OptionDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 14),
+      child: Divider(height: 1, color: AppColors.cardBorder),
+    );
   }
 }
 
