@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/input_limits.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/feature_page_header.dart';
@@ -24,6 +25,7 @@ import 'domain/reply_models.dart';
 import '../entitlement/usage_controller.dart';
 
 const _kColor = AppColors.replyColor;
+const _feature = AppFeature.reply;
 
 class ReplyScreen extends ConsumerStatefulWidget {
   const ReplyScreen({super.key});
@@ -176,6 +178,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: GlassCard(
+                    feature: _feature,
                     blur: 6,
                     padding: const EdgeInsets.all(12),
                     child: Row(
@@ -214,6 +217,8 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
 
     return AppPage(
       title: 'Reply',
+      subtitle: 'Generate natural English replies.',
+      headerImagePath: 'assets/icons/reply.png',
       accentColor: _kColor,
       actions: [
         IconButton(
@@ -226,13 +231,6 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          const FeaturePageHeader(
-            imagePath: 'assets/icons/reply.png',
-            title: 'Reply',
-            subtitle: 'Generate natural English replies.',
-            color: _kColor,
-          ),
-          const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,
             child: UsageBadge(
@@ -242,13 +240,19 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          const StepLabel(step: 1, label: 'Paste the message you received', color: _kColor),
+          const StepLabel(
+            step: 1,
+            label: 'Paste the message you received',
+            color: _kColor,
+          ),
           GlassCard(
+            feature: _feature,
             child: Column(
               children: [
                 LabeledTextField(
                   key: const Key('reply-incoming-field'),
                   label: 'Message you received',
+                  feature: _feature,
                   controller: _incomingController,
                   hintText: 'Paste the original message…',
                   helperText: 'English or any language',
@@ -259,6 +263,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton.icon(
+                    style: TextButton.styleFrom(foregroundColor: _kColor),
                     onPressed: explainState.isLoading ? null : _explain,
                     icon: explainState.isLoading
                         ? const SizedBox.square(
@@ -285,12 +290,15 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           const SizedBox(height: 14),
           const StepLabel(step: 2, label: 'Your guidance', color: _kColor),
           GlassCard(
+            feature: _feature,
+            tintStrength: 0.72,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 LabeledTextField(
                   key: const Key('reply-guidance-field'),
                   label: 'Your guidance',
+                  feature: _feature,
                   controller: _guidanceController,
                   hintText: 'For example: agree, but ask them to confirm soon…',
                   helperText: 'Write naturally in any language',
@@ -298,13 +306,14 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   maxLength: InputLimits.guidanceMaxLength,
                 ),
                 const SizedBox(height: 14),
-                GuidanceChipRow(onSelected: _appendGuidance),
+                GuidanceChipRow(feature: _feature, onSelected: _appendGuidance),
               ],
             ),
           ),
           const SizedBox(height: 14),
           const StepLabel(step: 3, label: 'Reply settings', color: _kColor),
           GlassCard(
+            feature: _feature,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -314,6 +323,19 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                 ),
                 const SizedBox(height: 10),
                 SegmentedButton<String>(
+                  style: ButtonStyle(
+                    foregroundColor: WidgetStateProperty.resolveWith(
+                      (states) => states.contains(WidgetState.selected)
+                          ? _kColor
+                          : AppColors.textSecondary,
+                    ),
+                    backgroundColor: WidgetStateProperty.resolveWith(
+                      (states) => states.contains(WidgetState.selected)
+                          ? _feature.selectedChipColor
+                          : Colors.white.withAlpha(130),
+                    ),
+                  ),
+                  selectedIcon: const Icon(Icons.check_rounded, color: _kColor),
                   segments: _audienceModes
                       .map(
                         (mode) => ButtonSegment(value: mode, label: Text(mode)),
@@ -333,7 +355,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                           (item) => ChoiceChip(
                             label: Text(item),
                             selected: _audiencePreset == item,
-                            selectedColor: _kColor.withAlpha(35),
+                            selectedColor: _feature.selectedChipColor,
                             checkmarkColor: _kColor,
                             onSelected: (_) =>
                                 setState(() => _audiencePreset = item),
@@ -346,6 +368,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   const SizedBox(height: 12),
                   LabeledTextField(
                     label: 'Describe the relationship',
+                    feature: _feature,
                     controller: _customAudienceController,
                     hintText: 'For example: my landlord',
                     maxLines: 1,
@@ -374,7 +397,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(backgroundColor: _kColor),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _feature.primaryButtonColor,
+            ),
             onPressed: replyState.isLoading ? null : _generate,
             icon: replyState.isLoading
                 ? const SizedBox.square(
@@ -429,10 +454,15 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             Text('Your replies', style: AppTextStyles.headlineMedium),
             const SizedBox(height: 12),
             for (final version in replyState.result!.versions) ...[
-              GeneratedResultCard(label: version.label, text: version.text),
+              GeneratedResultCard(
+                label: version.label,
+                text: version.text,
+                feature: _feature,
+              ),
               const SizedBox(height: 12),
             ],
             GlassCard(
+              feature: _feature,
               blur: 8,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/input_limits.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/feature_page_header.dart';
@@ -21,6 +22,7 @@ import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_chip_row.dart';
 
 const _kColor = AppColors.polishColor;
+const _feature = AppFeature.polish;
 
 class PolishScreen extends ConsumerStatefulWidget {
   const PolishScreen({super.key});
@@ -54,8 +56,9 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     if (_direction != 'Custom') setState(() => _direction = 'Custom');
     final current = _customGuidanceController.text.trim();
     final content = template.content;
-    _customGuidanceController.text =
-        current.isEmpty ? content : '$current\n\n$content';
+    _customGuidanceController.text = current.isEmpty
+        ? content
+        : '$current\n\n$content';
     _customGuidanceController.selection = TextSelection.collapsed(
       offset: _customGuidanceController.text.length,
     );
@@ -93,6 +96,8 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
 
     return AppPage(
       title: 'Polish',
+      subtitle: 'Make your English sound more natural.',
+      headerImagePath: 'assets/icons/polish.png',
       accentColor: _kColor,
       actions: [
         IconButton(
@@ -105,13 +110,6 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          const FeaturePageHeader(
-            imagePath: 'assets/icons/polish.png',
-            title: 'Polish',
-            subtitle: 'Make your English sound more natural.',
-            color: _kColor,
-          ),
-          const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerLeft,
             child: UsageBadge(
@@ -123,8 +121,10 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
           const SizedBox(height: 16),
           const StepLabel(step: 1, label: 'Paste your draft', color: _kColor),
           GlassCard(
+            feature: _feature,
             child: LabeledTextField(
               label: 'Your draft',
+              feature: _feature,
               controller: _draftController,
               hintText: 'Paste or type your English draft…',
               helperText: 'Your original meaning stays intact',
@@ -133,8 +133,13 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             ),
           ),
           const SizedBox(height: 14),
-          const StepLabel(step: 2, label: 'How should it sound?', color: _kColor),
+          const StepLabel(
+            step: 2,
+            label: 'How should it sound?',
+            color: _kColor,
+          ),
           GlassCard(
+            feature: _feature,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -144,9 +149,16 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                   children: _directions
                       .map(
                         (direction) => ChoiceChip(
-                          label: Text(direction),
+                          label: Text(
+                            direction,
+                            style: TextStyle(
+                              color: direction == _direction
+                                  ? _kColor
+                                  : AppColors.textSecondary,
+                            ),
+                          ),
                           selected: direction == _direction,
-                          selectedColor: _kColor.withAlpha(35),
+                          selectedColor: _feature.selectedChipColor,
                           checkmarkColor: _kColor,
                           onSelected: (_) =>
                               setState(() => _direction = direction),
@@ -159,6 +171,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                   LabeledTextField(
                     key: const Key('polish-custom-guidance-field'),
                     label: 'Custom guidance',
+                    feature: _feature,
                     controller: _customGuidanceController,
                     hintText: 'For example: warmer, but still professional',
                     helperText: 'Write in any language',
@@ -167,13 +180,15 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                   ),
                 ],
                 const SizedBox(height: 14),
-                GuidanceChipRow(onSelected: _appendGuidance),
+                GuidanceChipRow(feature: _feature, onSelected: _appendGuidance),
               ],
             ),
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(backgroundColor: _kColor),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _feature.primaryButtonColor,
+            ),
             onPressed: polishState.isLoading ? null : _polish,
             icon: polishState.isLoading
                 ? const SizedBox.square(
@@ -228,9 +243,11 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             GeneratedResultCard(
               label: _direction,
               text: polishState.result!.polished,
+              feature: _feature,
             ),
             const SizedBox(height: 12),
             GlassCard(
+              feature: _feature,
               blur: 8,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_feature_theme.dart';
 import '../theme/app_text_styles.dart';
 
 class LabeledTextField extends StatefulWidget {
@@ -13,6 +14,7 @@ class LabeledTextField extends StatefulWidget {
     this.maxLines = 4,
     this.minLines,
     this.maxLength,
+    this.feature,
   });
 
   final String label;
@@ -22,6 +24,7 @@ class LabeledTextField extends StatefulWidget {
   final int maxLines;
   final int? minLines;
   final int? maxLength;
+  final AppFeature? feature;
 
   @override
   State<LabeledTextField> createState() => _LabeledTextFieldState();
@@ -48,6 +51,8 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final accent = widget.feature?.accentColor ?? AppColors.primary;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -65,7 +70,7 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
             boxShadow: _focusNode.hasFocus
                 ? [
                     BoxShadow(
-                      color: AppColors.primary.withAlpha(30),
+                      color: accent.withAlpha(30),
                       blurRadius: 18,
                       offset: const Offset(0, 6),
                     ),
@@ -78,7 +83,15 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
             minLines: widget.minLines ?? widget.maxLines,
             maxLines: widget.maxLines,
             maxLength: widget.maxLength,
-            decoration: InputDecoration(hintText: widget.hintText),
+            decoration: InputDecoration(
+              hintText: widget.hintText,
+              focusedBorder: widget.feature == null
+                  ? null
+                  : OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: accent, width: 2),
+                    ),
+            ),
           ),
         ),
       ],

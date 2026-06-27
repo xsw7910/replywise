@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/input_limits.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/feature_page_header.dart';
@@ -17,6 +18,7 @@ import 'application/pending_reply_input_provider.dart';
 import 'domain/reply_models.dart';
 
 const _kColor = AppColors.explainColor;
+const _feature = AppFeature.explain;
 
 class ExplainScreen extends ConsumerStatefulWidget {
   const ExplainScreen({super.key});
@@ -81,26 +83,23 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
 
     return AppPage(
       title: _ExplainText.navTitle,
+      subtitle: 'Understand the meaning and tone.',
+      headerImagePath: 'assets/icons/explain.png',
       accentColor: _kColor,
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          const FeaturePageHeader(
-            imagePath: 'assets/icons/explain.png',
-            title: 'Explain',
-            subtitle: 'Understand the meaning and tone.',
-            color: _kColor,
-          ),
-          const SizedBox(height: 16),
           const StepLabel(step: 1, label: 'Paste the message', color: _kColor),
           GlassCard(
+            feature: _feature,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 LabeledTextField(
                   key: const Key('explain-message-field'),
                   label: _ExplainText.inputLabel,
+                  feature: _feature,
                   controller: _messageController,
                   hintText: _ExplainText.inputHint,
                   helperText: _ExplainText.inputHelper,
@@ -111,6 +110,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                 Row(
                   children: [
                     TextButton.icon(
+                      style: TextButton.styleFrom(foregroundColor: _kColor),
                       onPressed: state.isLoading ? null : _pasteMessage,
                       icon: const Icon(Icons.content_paste_rounded, size: 18),
                       label: const Text(_ExplainText.paste),
@@ -128,7 +128,9 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             key: const Key('explain-submit-button'),
-            style: ElevatedButton.styleFrom(backgroundColor: _kColor),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _feature.primaryButtonColor,
+            ),
             onPressed: state.isLoading ? null : _explain,
             icon: state.isLoading
                 ? const SizedBox.square(
@@ -175,14 +177,14 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
               icon: Icons.article_outlined,
               title: _ExplainText.meaning,
               text: _result!.meaning,
-              color: AppColors.primary,
+              color: _kColor,
             ),
             const SizedBox(height: 12),
             _ResultSection(
               icon: Icons.record_voice_over_outlined,
               title: _ExplainText.tone,
               text: _result!.tone,
-              color: AppColors.accent,
+              color: _kColor,
             ),
             const SizedBox(height: 12),
             _ResultSection(
@@ -191,7 +193,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
               text: _result!.hiddenMeaning.trim().isEmpty
                   ? 'No hidden meaning detected.'
                   : _result!.hiddenMeaning,
-              color: const Color(0xFF8A6FE8),
+              color: _kColor,
             ),
             const SizedBox(height: 18),
             Text(
@@ -250,6 +252,7 @@ class _ResultSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
+      feature: _feature,
       blur: 8,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,6 +284,7 @@ class _SuggestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
+      feature: _feature,
       blur: 8,
       padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
       child: Row(
@@ -288,12 +292,16 @@ class _SuggestionCard extends StatelessWidget {
         children: [
           const _IconBadge(
             icon: Icons.chat_bubble_outline_rounded,
-            color: AppColors.success,
+            color: _kColor,
           ),
           const SizedBox(width: 12),
           Expanded(child: Text(suggestion, style: AppTextStyles.bodyLarge)),
           IconButton(
             tooltip: _ExplainText.copy,
+            style: IconButton.styleFrom(
+              foregroundColor: _kColor,
+              backgroundColor: _feature.iconBackgroundColor,
+            ),
             onPressed: onCopy,
             icon: const Icon(Icons.copy_rounded),
           ),
@@ -311,7 +319,7 @@ class _ContinueCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      fillColor: Colors.white.withAlpha(225),
+      feature: _feature,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -319,7 +327,9 @@ class _ContinueCard extends StatelessWidget {
           const SizedBox(height: 10),
           ElevatedButton.icon(
             key: const Key('explain-continue-reply-button'),
-            style: ElevatedButton.styleFrom(backgroundColor: _kColor),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _feature.primaryButtonColor,
+            ),
             onPressed: onPressed,
             icon: const Icon(Icons.reply_rounded),
             label: const Text(_ExplainText.replyCtaButton),

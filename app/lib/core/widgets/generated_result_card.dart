@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/app_colors.dart';
-import '../theme/app_skin.dart';
+import '../theme/app_feature_theme.dart';
 import '../theme/app_text_styles.dart';
 import 'glass_card.dart';
 
@@ -11,15 +11,17 @@ class GeneratedResultCard extends StatelessWidget {
     super.key,
     required this.label,
     required this.text,
+    this.feature,
   });
 
   final String label;
   final String text;
+  final AppFeature? feature;
 
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      fillColor: AppSkin.resultFill,
+      feature: feature,
       blur: 8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,6 +31,12 @@ class GeneratedResultCard extends StatelessWidget {
               Expanded(child: Text(label, style: AppTextStyles.titleMedium)),
               IconButton.filledTonal(
                 tooltip: 'Copy result',
+                style: feature == null
+                    ? null
+                    : IconButton.styleFrom(
+                        foregroundColor: feature!.accentColor,
+                        backgroundColor: feature!.iconBackgroundColor,
+                      ),
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: text));
                   if (!context.mounted) return;

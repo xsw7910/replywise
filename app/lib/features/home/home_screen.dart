@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 
@@ -43,7 +44,7 @@ class HomeScreen extends ConsumerWidget {
                   _FeatureTile(
                     key: const Key('home-feature-reply'),
                     imagePath: 'assets/icons/reply.png',
-                    accent: AppColors.replyColor,
+                    feature: AppFeature.reply,
                     title: 'Reply',
                     subtitle: 'Generate natural English replies.',
                     onTap: () => context.go(AppRoutes.reply),
@@ -52,7 +53,7 @@ class HomeScreen extends ConsumerWidget {
                   _FeatureTile(
                     key: const Key('home-feature-polish'),
                     imagePath: 'assets/icons/polish.png',
-                    accent: AppColors.polishColor,
+                    feature: AppFeature.polish,
                     title: 'Polish',
                     subtitle: 'Make your English sound more natural.',
                     onTap: () => context.go(AppRoutes.polish),
@@ -61,7 +62,7 @@ class HomeScreen extends ConsumerWidget {
                   _FeatureTile(
                     key: const Key('home-feature-explain'),
                     imagePath: 'assets/icons/explain.png',
-                    accent: AppColors.explainColor,
+                    feature: AppFeature.explain,
                     title: 'Explain',
                     subtitle: 'Understand the meaning and tone.',
                     onTap: () => context.go(AppRoutes.explain),
@@ -70,7 +71,7 @@ class HomeScreen extends ConsumerWidget {
                   _FeatureTile(
                     key: const Key('home-feature-guidance'),
                     imagePath: 'assets/icons/guidance.png',
-                    accent: AppColors.guidanceColor,
+                    feature: AppFeature.guidance,
                     title: 'Guidance Library',
                     subtitle: 'Save and reuse your guidance.',
                     onTap: () => context.push(AppRoutes.guidanceLibrary),
@@ -262,7 +263,7 @@ class _FeatureTile extends StatelessWidget {
     super.key,
     this.icon,
     this.imagePath,
-    required this.accent,
+    required this.feature,
     required this.title,
     required this.subtitle,
     required this.onTap,
@@ -270,7 +271,7 @@ class _FeatureTile extends StatelessWidget {
 
   final IconData? icon;
   final String? imagePath;
-  final Color accent;
+  final AppFeature feature;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
@@ -278,24 +279,10 @@ class _FeatureTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const radius = 28.0;
+    final accent = feature.accentColor;
 
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(radius),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x3049619A),
-            blurRadius: 24,
-            offset: Offset(0, 11),
-            spreadRadius: -6,
-          ),
-          BoxShadow(
-            color: Color(0x1849619A),
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: feature.glassCardDecoration(borderRadius: radius),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -304,15 +291,6 @@ class _FeatureTile extends StatelessWidget {
           child: Ink(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(radius),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color.lerp(Colors.white, accent, 0.025)!,
-                  Color.lerp(Colors.white, accent, 0.095)!,
-                ],
-              ),
-              border: Border.all(color: const Color(0xE6FFFFFF), width: 1.4),
             ),
             child: Padding(
               padding: const EdgeInsets.all(14),
