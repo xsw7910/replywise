@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,7 +9,6 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
-import '../../core/widgets/feature_page_header.dart';
 import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
@@ -75,6 +75,16 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     });
   }
 
+  Future<void> _pasteDraft() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    final text = data?.text;
+    if (text == null || text.isEmpty) return;
+    _draftController.text = text.length > 4000 ? text.substring(0, 4000) : text;
+    _draftController.selection = TextSelection.collapsed(
+      offset: _draftController.text.length,
+    );
+  }
+
   Future<void> _polish() => ref
       .read(polishControllerProvider.notifier)
       .polish(
@@ -92,6 +102,10 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   Widget build(BuildContext context) {
     final polishState = ref.watch(polishControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
+    final showUsageBadge =
+        usageState.usage.isPremium ||
+        usageState.error != null ||
+        usageState.usage.freeUsesLeft != null;
     _consumePendingGuidance();
 
     return AppPage(
@@ -110,34 +124,50 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: UsageBadge(
-              state: usageState,
-              onRetry: () =>
-                  ref.read(usageControllerProvider.notifier).refresh(),
+          if (showUsageBadge) ...[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: UsageBadge(
+                state: usageState,
+                onRetry: () =>
+                    ref.read(usageControllerProvider.notifier).refresh(),
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          const StepLabel(step: 1, label: 'Paste your draft', color: _kColor),
+            const SizedBox(height: 16),
+          ],
           GlassCard(
             feature: _feature,
             child: LabeledTextField(
               label: 'Your draft',
               feature: _feature,
+              showCounter: false,
               controller: _draftController,
               hintText: 'Paste or type your English draft…',
               helperText: 'Your original meaning stays intact',
               maxLines: 7,
               maxLength: 4000,
+              fieldActions: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: 'Paste',
+                    visualDensity: VisualDensity.compact,
+                    color: _kColor,
+                    onPressed: _pasteDraft,
+                    icon: const Icon(Icons.content_paste_rounded, size: 20),
+                  ),
+                  IconButton(
+                    tooltip: 'Clear',
+                    visualDensity: VisualDensity.compact,
+                    color: _kColor,
+                    onPressed: _draftController.clear,
+                    icon: const Icon(Icons.close_rounded, size: 21),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 14),
-          const StepLabel(
-            step: 2,
-            label: 'How should it sound?',
-            color: _kColor,
-          ),
           GlassCard(
             feature: _feature,
             child: Column(
@@ -149,6 +179,13 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                   children: _directions
                       .map(
                         (direction) => ChoiceChip(
+                          avatar: Icon(
+                            _directionIcon(direction),
+                            size: 16,
+                            color: direction == _direction
+                                ? _kColor
+                                : AppColors.textSecondary,
+                          ),
                           label: Text(
                             direction,
                             style: TextStyle(
@@ -286,5 +323,15 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
         ],
       ),
     );
+  }
+
+  IconData _directionIcon(String direction) {
+    return switch (direction) {
+      'Natural' => Icons.spa_outlined,
+      'Professional' => Icons.business_center_outlined,
+      'Friendly' => Icons.sentiment_satisfied_alt_rounded,
+      'Concise' => Icons.short_text_rounded,
+      _ => Icons.tune_rounded,
+    };
   }
 }

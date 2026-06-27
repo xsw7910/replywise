@@ -879,14 +879,14 @@ class _QuickGuidanceChips extends StatelessWidget {
 
   final ValueChanged<String> onAppend;
 
-  // (chip label, built-in template id)
-  static const _chips = <(String, String)>[
-    ('Be polite', 'builtin_be_polite'),
-    ('Keep it short', 'builtin_keep_short'),
-    ('Professional', 'builtin_professional'),
-    ('Friendly', 'builtin_friendly'),
-    ('Decline politely', 'builtin_decline'),
-    ('Say thank you', 'builtin_thanks'),
+  // (chip label, built-in template id, icon)
+  static const _chips = <(String, String, IconData)>[
+    ('Be polite', 'builtin_be_polite', Icons.sentiment_satisfied_alt_rounded),
+    ('Keep it short', 'builtin_keep_short', Icons.short_text_rounded),
+    ('Professional', 'builtin_professional', Icons.business_center_outlined),
+    ('Friendly', 'builtin_friendly', Icons.waving_hand_outlined),
+    ('Decline politely', 'builtin_decline', Icons.do_not_disturb_alt_outlined),
+    ('Say thank you', 'builtin_thanks', Icons.volunteer_activism_outlined),
   ];
 
   @override
@@ -900,11 +900,11 @@ class _QuickGuidanceChips extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (final (label, id) in _chips)
+            for (final (label, id, icon) in _chips)
               ActionChip(
                 backgroundColor: _feature.selectedChipColor,
                 side: const BorderSide(color: AppColors.glassEdgeStrong),
-                avatar: const Icon(Icons.add_rounded, size: 15, color: _kColor),
+                avatar: Icon(icon, size: 15, color: _kColor),
                 label: Text(label, style: const TextStyle(color: _kColor)),
                 onPressed: () => onAppend(
                   kBuiltInTemplates.firstWhere((t) => t.id == id).content,
@@ -1018,6 +1018,7 @@ class _MoreOptionsSection extends StatelessWidget {
                 children: [
                   _OptionGroup(
                     label: 'Tone',
+                    groupIcon: Icons.record_voice_over_outlined,
                     options: tones,
                     selected: tone,
                     onSelected: onTone,
@@ -1025,6 +1026,7 @@ class _MoreOptionsSection extends StatelessWidget {
                   const SizedBox(height: 12),
                   _OptionGroup(
                     label: 'Audience',
+                    groupIcon: Icons.groups_outlined,
                     options: audiences,
                     selected: audience,
                     onSelected: onAudience,
@@ -1045,6 +1047,7 @@ class _MoreOptionsSection extends StatelessWidget {
                   const SizedBox(height: 12),
                   _OptionGroup(
                     label: 'Length',
+                    groupIcon: Icons.format_size_rounded,
                     options: lengths,
                     selected: length,
                     onSelected: onLength,
@@ -1052,6 +1055,7 @@ class _MoreOptionsSection extends StatelessWidget {
                   const SizedBox(height: 12),
                   _OptionGroup(
                     label: 'Channel',
+                    groupIcon: Icons.send_outlined,
                     options: channels,
                     selected: channel,
                     onSelected: onChannel,
@@ -1069,12 +1073,14 @@ class _MoreOptionsSection extends StatelessWidget {
 class _OptionGroup extends StatelessWidget {
   const _OptionGroup({
     required this.label,
+    required this.groupIcon,
     required this.options,
     required this.selected,
     required this.onSelected,
   });
 
   final String label;
+  final IconData groupIcon;
   final List<String> options;
   final String selected;
   final ValueChanged<String> onSelected;
@@ -1084,7 +1090,14 @@ class _OptionGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.badge),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(groupIcon, size: 15, color: _kColor),
+            const SizedBox(width: 5),
+            Text(label, style: AppTextStyles.badge),
+          ],
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -1092,6 +1105,11 @@ class _OptionGroup extends StatelessWidget {
           children: [
             for (final option in options)
               ChoiceChip(
+                avatar: Icon(
+                  _optionIcon(option),
+                  size: 16,
+                  color: option == selected ? _kColor : AppColors.textSecondary,
+                ),
                 label: Text(
                   option,
                   style: TextStyle(
@@ -1109,6 +1127,37 @@ class _OptionGroup extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  IconData _optionIcon(String option) {
+    return switch (label) {
+      'Tone' => switch (option) {
+        'Auto' => Icons.auto_awesome_rounded,
+        'Natural' => Icons.spa_outlined,
+        'Professional' => Icons.business_center_outlined,
+        'Friendly' => Icons.sentiment_satisfied_alt_rounded,
+        _ => Icons.tune_rounded,
+      },
+      'Audience' => switch (option) {
+        'Auto' => Icons.auto_awesome_rounded,
+        'Friend' => Icons.person_outline_rounded,
+        'Customer' => Icons.storefront_outlined,
+        'Coworker' => Icons.groups_outlined,
+        'Manager' => Icons.supervisor_account_outlined,
+        _ => Icons.person_search_outlined,
+      },
+      'Length' => switch (option) {
+        'Short' => Icons.short_text_rounded,
+        'Medium' => Icons.subject_rounded,
+        _ => Icons.notes_rounded,
+      },
+      _ => switch (option) {
+        'Auto' => Icons.devices_rounded,
+        'Text' => Icons.sms_outlined,
+        'Email' => Icons.email_outlined,
+        _ => Icons.chat_bubble_outline_rounded,
+      },
+    };
   }
 }
 

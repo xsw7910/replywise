@@ -9,7 +9,6 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
-import '../../core/widgets/feature_page_header.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
@@ -90,39 +89,37 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          const StepLabel(step: 1, label: 'Paste the message', color: _kColor),
           GlassCard(
             feature: _feature,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LabeledTextField(
-                  key: const Key('explain-message-field'),
-                  label: _ExplainText.inputLabel,
-                  feature: _feature,
-                  controller: _messageController,
-                  hintText: _ExplainText.inputHint,
-                  helperText: _ExplainText.inputHelper,
-                  maxLines: 7,
-                  maxLength: InputLimits.explainMessageMaxLength,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    TextButton.icon(
-                      style: TextButton.styleFrom(foregroundColor: _kColor),
-                      onPressed: state.isLoading ? null : _pasteMessage,
-                      icon: const Icon(Icons.content_paste_rounded, size: 18),
-                      label: const Text(_ExplainText.paste),
-                    ),
-                    const Spacer(),
-                    Text(
-                      'Explain is free; limits may apply.',
-                      style: AppTextStyles.helper,
-                    ),
-                  ],
-                ),
-              ],
+            child: LabeledTextField(
+              key: const Key('explain-message-field'),
+              label: _ExplainText.inputLabel,
+              feature: _feature,
+              showCounter: false,
+              controller: _messageController,
+              hintText: _ExplainText.inputHint,
+              helperText: _ExplainText.inputHelper,
+              maxLines: 7,
+              maxLength: InputLimits.explainMessageMaxLength,
+              fieldActions: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: _ExplainText.paste,
+                    visualDensity: VisualDensity.compact,
+                    color: _kColor,
+                    onPressed: state.isLoading ? null : _pasteMessage,
+                    icon: const Icon(Icons.content_paste_rounded, size: 20),
+                  ),
+                  IconButton(
+                    tooltip: 'Clear',
+                    visualDensity: VisualDensity.compact,
+                    color: _kColor,
+                    onPressed: _messageController.clear,
+                    icon: const Icon(Icons.close_rounded, size: 21),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
