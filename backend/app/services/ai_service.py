@@ -57,13 +57,21 @@ class AIService:
                     status_code=503,
                 ) from error
             try:
-                parsed = json.loads(_strip_json_fence(raw))
+                stripped = _strip_json_fence(raw)
+                try:
+                    parsed = json.loads(stripped)
+                except json.JSONDecodeError:
+                    # Model wrapped JSON in prose despite instructions; extract it.
+                    parsed = json.loads(_extract_json_object(stripped))
                 result = response_type.model_validate(parsed)
                 _validate_response_shape(result)
                 return result
             except (json.JSONDecodeError, ValidationError, ValueError):
                 if attempt == 0:
-                    prompt = f"{system_prompt}\nReturn valid JSON only."
+                    prompt = (
+                        f"{system_prompt}\n"
+                        "Return valid JSON only. Do not add any prose, markdown, or explanation."
+                    )
 
         raise ApiException(
             code="MODEL_PARSE_ERROR",
@@ -73,6 +81,7 @@ class AIService:
 
 
 def _strip_json_fence(value: str) -> str:
+    """Remove a leading/trailing markdown code fence if present."""
     stripped = value.strip()
     if stripped.startswith("```"):
         lines = stripped.splitlines()
@@ -82,6 +91,43 @@ def _strip_json_fence(value: str) -> str:
             lines = lines[:-1]
         stripped = "\n".join(lines).strip()
     return stripped
+
+
+def _extract_json_object(text: str) -> str:
+    """Find and return the first balanced {...} block in *text*.
+
+    Handles models that add prose before or after the JSON object despite
+    instructions to return JSON only. Uses a character walk so nested objects
+    and string literals containing braces are handled correctly.
+
+    Raises ValueError when no complete object is found.
+    """
+    start = text.find("{")
+    if start == -1:
+        raise ValueError("No JSON object found in provider response")
+    depth = 0
+    in_string = False
+    escape_next = False
+    for i in range(start, len(text)):
+        ch = text[i]
+        if escape_next:
+            escape_next = False
+            continue
+        if ch == "\\" and in_string:
+            escape_next = True
+            continue
+        if ch == '"':
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : i + 1]
+    raise ValueError("No complete JSON object found in provider response")
 
 
 def _validate_response_shape(result) -> None:

@@ -1,10 +1,13 @@
+import json
+
+import pytest
 from fastapi.testclient import TestClient
 
 from app.api.v1.ai import get_ai_service
 from app.config import settings
 from app.main import app
 from app.services.ai_provider import AIProviderError, FakeAIProvider, OpenAIProvider
-from app.services.ai_service import AIService
+from app.services.ai_service import AIService, _extract_json_object, _strip_json_fence
 import app.api.v1.ai as ai_module
 
 
@@ -321,3 +324,141 @@ def test_explain_daily_limit_is_independent_from_billing(
     assert first.status_code == 200
     assert second.status_code == 429
     assert second.json()["error"]["code"] == "RATE_LIMITED"
+
+
+# ── Parser unit tests ─────────────────────────────────────────────────────────
+
+
+def test_strip_json_fence_removes_json_language_tag() -> None:
+    fenced = '```json\n{"key":"value"}\n```'
+    assert _strip_json_fence(fenced) == '{"key":"value"}'
+
+
+def test_strip_json_fence_removes_plain_fence() -> None:
+    fenced = '```\n{"key":"value"}\n```'
+    assert _strip_json_fence(fenced) == '{"key":"value"}'
+
+
+def test_strip_json_fence_passes_through_clean_json() -> None:
+    clean = '{"key":"value"}'
+    assert _strip_json_fence(clean) == clean
+
+
+def test_extract_json_object_finds_object_in_leading_prose() -> None:
+    prose = 'Here is the result: {"polished":"Hello.","changes":"Fixed."} That is all.'
+    assert json.loads(_extract_json_object(prose)) == {
+        "polished": "Hello.",
+        "changes": "Fixed.",
+    }
+
+
+def test_extract_json_object_handles_nested_objects() -> None:
+    text = 'Sure! {"versions":[{"label":"Professional","text":"Hi."}],"why":"Good."}'
+    parsed = json.loads(_extract_json_object(text))
+    assert parsed["versions"][0]["label"] == "Professional"
+
+
+def test_extract_json_object_handles_braces_inside_strings() -> None:
+    text = 'Here: {"meaning":"Use {curly} braces carefully.","tone":"Casual."}'
+    parsed = json.loads(_extract_json_object(text))
+    assert "{curly}" in parsed["meaning"]
+
+
+def test_extract_json_object_raises_on_no_object() -> None:
+    with pytest.raises(ValueError, match="No JSON object found"):
+        _extract_json_object("no json here")
+
+
+def test_extract_json_object_raises_on_unclosed_object() -> None:
+    with pytest.raises(ValueError, match="No complete JSON object found"):
+        _extract_json_object('{"unclosed": "object"')
+
+
+# ── Integration tests for new parsing paths ───────────────────────────────────
+
+
+class _ProseWrappedProvider:
+    """Simulates a model that wraps its JSON in prose despite instructions."""
+
+    async def complete(self, system_prompt: str, payload: dict) -> str:
+        body = json.dumps({"polished": "Hello there.", "changes": "Improved punctuation."})
+        return f"Sure! Here is the polished version:\n\n{body}\n\nLet me know if you need anything else."
+
+
+class _ExplicitSchemaProvider:
+    """Returns the exact JSON schema that OpenAI produces when given the new explicit prompts."""
+
+    async def complete(self, system_prompt: str, payload: dict) -> str:
+        task = payload.get("task")
+        if task == "reply":
+            return json.dumps({
+                "versions": [
+                    {"label": "Professional", "text": "Thank you for reaching out. I would be happy to assist."},
+                    {"label": "Friendly", "text": "Hey, thanks for getting in touch! Happy to help."},
+                    {"label": "Short", "text": "Thanks — sounds good!"},
+                ],
+                "why": "These replies are natural and match the requested tone.",
+            })
+        if task == "polish":
+            return json.dumps({
+                "polished": payload["draft"].strip(),
+                "changes": "Minor grammar and flow improvements.",
+            })
+        return json.dumps({
+            "meaning": "The sender is requesting a meeting reschedule.",
+            "tone": "Polite and professional.",
+            "hiddenMeaning": "",
+            "suggestedReplies": ["Sure, Friday works.", "Let me check my calendar."],
+        })
+
+
+def test_json_embedded_in_prose_is_extracted(client: TestClient) -> None:
+    app.dependency_overrides[get_ai_service] = lambda: AIService(_ProseWrappedProvider())
+    try:
+        response = client.post(
+            "/v1/polish",
+            json={"draft": "Hello", "direction": "natural"},
+            headers=_headers(client, "prose-wrapped"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert response.json()["polished"] == "Hello there."
+
+
+def test_openai_schema_compliant_response_parses_reply(client: TestClient) -> None:
+    app.dependency_overrides[get_ai_service] = lambda: AIService(_ExplicitSchemaProvider())
+    try:
+        response = client.post(
+            "/v1/reply",
+            json=_reply_payload(),
+            headers=_headers(client, "explicit-schema-reply"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert [v["label"] for v in body["versions"]] == ["Professional", "Friendly", "Short"]
+    assert all(v["text"] for v in body["versions"])
+    assert body["why"]
+
+
+def test_openai_schema_compliant_response_parses_explain(client: TestClient) -> None:
+    app.dependency_overrides[get_ai_service] = lambda: AIService(_ExplicitSchemaProvider())
+    try:
+        response = client.post(
+            "/v1/explain",
+            json={"text": "Can we reschedule?", "explainLang": "en"},
+            headers=_headers(client, "explicit-schema-explain"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["meaning"]
+    assert body["tone"]
+    assert "hiddenMeaning" in body
+    assert 1 <= len(body["suggestedReplies"]) <= 3
