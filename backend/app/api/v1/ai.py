@@ -107,7 +107,7 @@ async def reply(
     idempotency_key: str | None = Header(None, alias="X-Idempotency-Key"),
 ) -> ReplyResponse:
     body.incoming = _required(body.incoming, "incoming", 4000)
-    body.guidance = _required(body.guidance, "guidance", 1000)
+    body.guidance = _optional(body.guidance, "guidance", 1000) or ""
     body.audience.custom = _optional(body.audience.custom, "audience.custom", 500)
     body.output_lang = "en"
     if not idempotency_key:

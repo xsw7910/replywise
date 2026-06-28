@@ -219,7 +219,7 @@ def test_mock_ai_enabled_keeps_validation_active(
     monkeypatch.setattr(settings, "mock_ai_enabled", True)
     response = client.post(
         "/v1/reply",
-        json={**_reply_payload(), "guidance": " "},
+        json={**_reply_payload(), "incoming": " "},
         headers=_headers(client, "mock-ai-validation"),
     )
     assert response.status_code == 400
@@ -311,6 +311,38 @@ def test_fake_provider_used_when_no_api_key(monkeypatch) -> None:
     monkeypatch.setattr(settings, "openai_api_key", "")
     svc = ai_module._make_default_service()
     assert isinstance(svc.provider, FakeAIProvider)
+
+
+def test_reply_accepts_empty_guidance(client: TestClient) -> None:
+    response = client.post(
+        "/v1/reply",
+        json={**_reply_payload(), "guidance": ""},
+        headers=_headers(client, "empty-guidance"),
+    )
+    assert response.status_code == 200
+    assert len(response.json()["versions"]) == 3
+
+
+def test_reply_accepts_missing_guidance(client: TestClient) -> None:
+    payload = {k: v for k, v in _reply_payload().items() if k != "guidance"}
+    response = client.post(
+        "/v1/reply",
+        json=payload,
+        headers=_headers(client, "missing-guidance"),
+    )
+    assert response.status_code == 200
+    assert len(response.json()["versions"]) == 3
+
+
+def test_reply_still_rejects_oversized_guidance(client: TestClient) -> None:
+    response = client.post(
+        "/v1/reply",
+        json={**_reply_payload(), "guidance": "x" * 1001},
+        headers=_headers(client, "oversized-guidance"),
+    )
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "INPUT_TOO_LONG"
+    assert response.json()["error"]["field"] == "guidance"
 
 
 def test_explain_daily_limit_is_independent_from_billing(

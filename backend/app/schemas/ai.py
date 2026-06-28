@@ -17,7 +17,7 @@ class AudienceRequest(ApiModel):
 
 class ReplyRequest(ApiModel):
     incoming: str
-    guidance: str
+    guidance: str = ""
     guidance_lang: str = "en"
     output_lang: str = "en"
     audience: AudienceRequest = Field(default_factory=AudienceRequest)
