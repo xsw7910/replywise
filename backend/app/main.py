@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.api.health import router as health_router
@@ -23,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    logger.info("ReplyWise backend starting — env=%s", settings.app_env)
+    logger.info("ReplyWise backend starting — env=%s", settings.runtime_env)
     async with engine.begin() as conn:
         if "sqlite" in settings.database_url:
             await conn.execute(text("PRAGMA journal_mode=WAL"))
@@ -38,8 +39,15 @@ def create_app() -> FastAPI:
         title="ReplyWise API",
         version="0.1.0",
         lifespan=lifespan,
-        docs_url="/docs" if settings.app_env != "prod" else None,
+        docs_url="/docs" if settings.runtime_env != "prod" else None,
         redoc_url=None,
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
     app.include_router(health_router)
     app.include_router(auth_router)

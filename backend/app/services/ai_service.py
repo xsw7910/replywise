@@ -12,7 +12,7 @@ from app.schemas.ai import (
     ReplyRequest,
     ReplyResponse,
 )
-from app.services.ai_provider import AIProvider
+from app.services.ai_provider import AIProvider, AIProviderError
 
 
 class AIService:
@@ -40,6 +40,14 @@ class AIService:
         for attempt in range(2):
             try:
                 raw = await self.provider.complete(prompt, payload)
+            except AIProviderError as error:
+                if error.retryable and attempt == 0:
+                    continue
+                raise ApiException(
+                    code=error.code,
+                    message=error.message,
+                    status_code=error.status_code,
+                ) from error
             except Exception as error:
                 if attempt == 0:
                     continue

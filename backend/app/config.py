@@ -1,4 +1,4 @@
-from pydantic import model_validator
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     free_lifetime_limit: int = 5
     generation_rate_per_minute: int = 8
     idempotency_ttl_seconds: int = 86400
+    openai_api_key: str = ""
+    openai_model: str = "gpt-4o-mini"
+    openai_timeout_seconds: int = Field(default=30, ge=1, le=120)
+    allowed_origins: str = "*"
+
     revenuecat_secret_api_key: str = ""
     revenuecat_entitlement_id: str = "premium"
     revenuecat_subscription_product_id: str = "reply_premium_monthly"
@@ -41,6 +46,13 @@ class Settings(BaseSettings):
     @property
     def is_dev_or_test(self) -> bool:
         return self.runtime_env in {"dev", "test"}
+
+    @property
+    def cors_origins(self) -> list[str]:
+        value = self.allowed_origins.strip()
+        if not value or value == "*":
+            return ["*"]
+        return [origin.strip() for origin in value.split(",") if origin.strip()]
 
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":
@@ -57,6 +69,8 @@ class Settings(BaseSettings):
                 )
             if not self.revenuecat_secret_api_key:
                 raise ValueError("REVENUECAT_SECRET_API_KEY must be set in production")
+            if not self.openai_api_key:
+                raise ValueError("OPENAI_API_KEY must be set in production")
         elif not self.is_dev_or_test:
             if self.mock_ai_enabled:
                 raise ValueError("MOCK_AI_ENABLED is only allowed in dev/test environments")

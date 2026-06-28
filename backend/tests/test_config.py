@@ -38,6 +38,7 @@ def test_production_accepts_explicit_non_development_secrets() -> None:
         jwt_secret="production-secret",
         server_pepper="production-pepper",
         revenuecat_secret_api_key="production-revenuecat-secret",
+        openai_api_key="sk-prod-key",
     )
     assert config.app_env == "prod"
 
@@ -50,10 +51,35 @@ def test_production_rejects_local_testing_flags(field: str) -> None:
         "jwt_secret": "production-secret",
         "server_pepper": "production-pepper",
         "revenuecat_secret_api_key": "production-revenuecat-secret",
+        "openai_api_key": "sk-prod-key",
         field: True,
     }
     with pytest.raises(ValidationError):
         Settings(**kwargs)
+
+
+def test_production_rejects_missing_openai_api_key() -> None:
+    with pytest.raises(ValidationError):
+        Settings(
+            _env_file=None,
+            app_env="prod",
+            jwt_secret="production-secret",
+            server_pepper="production-pepper",
+            revenuecat_secret_api_key="prod-rc-key",
+            openai_api_key="",
+        )
+
+
+def test_production_accepts_all_required_secrets() -> None:
+    config = Settings(
+        _env_file=None,
+        app_env="prod",
+        jwt_secret="production-secret",
+        server_pepper="production-pepper",
+        revenuecat_secret_api_key="prod-rc-key",
+        openai_api_key="sk-prod-key",
+    )
+    assert config.app_env == "prod"
 
 
 def test_reply_env_controls_production_guard() -> None:
@@ -73,3 +99,22 @@ def test_reply_env_controls_production_guard() -> None:
 def test_local_testing_flags_are_allowed_in_test(field: str) -> None:
     config = Settings(_env_file=None, app_env="test", **{field: True})
     assert getattr(config, field) is True
+
+
+def test_openai_timeout_and_cors_origins_are_configurable() -> None:
+    config = Settings(
+        _env_file=None,
+        app_env="dev",
+        openai_timeout_seconds=45,
+        allowed_origins="https://one.example, https://two.example",
+    )
+    assert config.openai_timeout_seconds == 45
+    assert config.cors_origins == [
+        "https://one.example",
+        "https://two.example",
+    ]
+
+
+def test_wildcard_cors_origin_is_preserved() -> None:
+    config = Settings(_env_file=None, app_env="dev", allowed_origins="*")
+    assert config.cors_origins == ["*"]

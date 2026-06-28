@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from app.api.v1.ai import get_ai_service
 from app.config import settings
 from app.main import app
+from app.services.ai_provider import AIProviderError, FakeAIProvider, OpenAIProvider
 from app.services.ai_service import AIService
 import app.api.v1.ai as ai_module
 
@@ -178,6 +179,18 @@ class _ExplodingProvider:
         raise AssertionError("external provider should not be called")
 
 
+class _SanitizedProviderFailure:
+    async def complete(self, system_prompt: str, payload: dict) -> str:
+        try:
+            raise RuntimeError("raw-provider-detail sk-secret-value")
+        except RuntimeError as error:
+            raise AIProviderError(
+                "MODEL_CONFIGURATION_ERROR",
+                "The AI service is temporarily unavailable.",
+                503,
+            ) from error
+
+
 def test_mock_ai_enabled_uses_local_fake_provider(client: TestClient, monkeypatch) -> None:
     monkeypatch.setattr(settings, "mock_ai_enabled", True)
     monkeypatch.setattr(ai_module, "_ai_service", AIService(_ExplodingProvider()))
@@ -259,6 +272,42 @@ def test_provider_failure_returns_consistent_unavailable_error(
 
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "MODEL_UNAVAILABLE"
+
+
+def test_provider_error_does_not_expose_raw_provider_details(
+    client: TestClient,
+) -> None:
+    app.dependency_overrides[get_ai_service] = lambda: AIService(
+        _SanitizedProviderFailure()
+    )
+    try:
+        response = client.post(
+            "/v1/reply",
+            json=_reply_payload(),
+            headers=_headers(client, "sanitized-provider-error"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 503
+    body = response.json()
+    assert body["error"]["code"] == "MODEL_CONFIGURATION_ERROR"
+    assert body["error"]["message"] == "The AI service is temporarily unavailable."
+    assert "raw-provider-detail" not in response.text
+    assert "sk-secret-value" not in response.text
+
+
+def test_openai_provider_selected_when_api_key_set(monkeypatch) -> None:
+    monkeypatch.setattr(settings, "openai_api_key", "sk-fake-key")
+    monkeypatch.setattr(settings, "openai_model", "gpt-4o-mini")
+    svc = ai_module._make_default_service()
+    assert isinstance(svc.provider, OpenAIProvider)
+
+
+def test_fake_provider_used_when_no_api_key(monkeypatch) -> None:
+    monkeypatch.setattr(settings, "openai_api_key", "")
+    svc = ai_module._make_default_service()
+    assert isinstance(svc.provider, FakeAIProvider)
 
 
 def test_explain_daily_limit_is_independent_from_billing(

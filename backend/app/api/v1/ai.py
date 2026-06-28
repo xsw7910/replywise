@@ -18,7 +18,7 @@ from app.schemas.ai import (
     ReplyRequest,
     ReplyResponse,
 )
-from app.services.ai_provider import FakeAIProvider, LocalMockAIProvider
+from app.services.ai_provider import FakeAIProvider, LocalMockAIProvider, OpenAIProvider
 from app.services.ai_service import AIService
 from app.services.usage_service import (
     begin_generation,
@@ -30,7 +30,20 @@ from app.services.entitlement_service import is_user_premium
 
 router = APIRouter(prefix="/v1", tags=["ai"])
 
-_ai_service = AIService(FakeAIProvider())
+
+def _make_default_service() -> AIService:
+    if settings.openai_api_key:
+        return AIService(
+            OpenAIProvider(
+                settings.openai_api_key,
+                settings.openai_model,
+                settings.openai_timeout_seconds,
+            )
+        )
+    return AIService(FakeAIProvider())
+
+
+_ai_service = _make_default_service()
 
 
 def get_ai_service() -> AIService:
