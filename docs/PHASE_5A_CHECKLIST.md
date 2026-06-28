@@ -4,7 +4,7 @@ Source of truth: `docs/ReplyWise_development_plan.md`
 
 ## Phase goal
 
-Complete the monthly premium subscription path, including a Google Play 3-day free trial, backend verification, restore, and correct premium consumption behavior.
+Complete the annual premium subscription path, including a Google Play 3-day free trial, backend verification, restore, and correct premium consumption behavior.
 
 ## Allowed scope
 
@@ -19,8 +19,8 @@ Complete the monthly premium subscription path, including a Google Play 3-day fr
 ## Required Flutter work
 
 - Configure RevenueCat with the Android public SDK key and the stable existing `appUserId`.
-- Load offering `default`; purchase monthly package and restore purchases.
-- Paywall primary CTA says “Start 3-day Free Trial” and clearly states “Free for 3 days, then [price]/month. Cancel anytime.”
+- Load offering `default`; purchase annual package and restore purchases.
+- Paywall primary CTA says “Start 3-day Free Trial” and clearly states “Free for 3 days, then [price]/year. Cancel anytime.”
 - Purchase/restore success calls authenticated `/v1/entitlement/sync`, then refreshes `/v1/me`.
 - Client RevenueCat state may update UI immediately, but backend `/v1/me` remains authoritative for generation access.
 - Handle empty offerings, configuration failure, purchase cancellation, sync failure, and restore failure without granting access locally.
@@ -35,8 +35,8 @@ Complete the monthly premium subscription path, including a Google Play 3-day fr
 
 ## Required files and external configuration
 
-- Google Play product `reply_premium_monthly`, monthly base plan, and 3-day trial offer.
-- RevenueCat project/Android app, entitlement `premium`, offering `default`, and monthly package attached to the entitlement.
+- Google Play product `premium_yearly`, yearly base plan (identifier: `yearly`), and 3-day trial offer.
+- RevenueCat project/Android app, entitlement `premium`, offering `default`, and annual package (`$rc_annual`) attached to the entitlement.
 - Flutter subscription repository/controller/paywall integration.
 - Backend RevenueCat verifier, entitlement route/service, subscription cache persistence, config, and tests.
 

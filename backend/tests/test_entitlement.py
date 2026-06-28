@@ -62,7 +62,7 @@ def test_sync_is_token_bound_and_returns_premium_usage(client: TestClient) -> No
         VerifiedEntitlement(
             is_premium=True,
             entitlement_id="premium",
-            product_identifier="reply_premium_monthly",
+            product_identifier="premium_yearly:yearly",
             expires_at=datetime.now(timezone.utc) + timedelta(days=3),
         )
     )
@@ -95,7 +95,7 @@ def test_premium_reply_and_polish_do_not_change_balances(client: TestClient) -> 
                     user_id=user_id,
                     entitlement_id="premium",
                     is_premium=True,
-                    product_identifier="reply_premium_monthly",
+                    product_identifier="premium_yearly:yearly",
                     expires_at=datetime.now(timezone.utc) + timedelta(days=1),
                 )
             )

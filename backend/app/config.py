@@ -36,7 +36,7 @@ class Settings(BaseSettings):
 
     revenuecat_secret_api_key: str = ""
     revenuecat_entitlement_id: str = "premium"
-    revenuecat_subscription_product_id: str = "reply_premium_monthly"
+    revenuecat_subscription_product_id: str = "premium_yearly:yearly"
     revenuecat_api_base_url: str = "https://api.revenuecat.com/v1"
 
     @property

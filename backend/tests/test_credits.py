@@ -113,7 +113,7 @@ def test_credits_sync_grants_even_while_premium(client: TestClient) -> None:
                 user_id=user_id,
                 entitlement_id="premium",
                 is_premium=True,
-                product_identifier="reply_premium_monthly",
+                product_identifier="premium_yearly:yearly",
                 expires_at=datetime.now(timezone.utc) + timedelta(days=3),
             ))
             await db.commit()

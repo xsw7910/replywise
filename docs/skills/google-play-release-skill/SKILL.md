@@ -15,8 +15,8 @@ Prevent invalid, insecure, or misleading internal-test releases.
 3. Release must use a stable upload key or Play App Signing workflow, never the debug signing key.
 4. Cleartext HTTP may be enabled in the debug manifest only. Main/release manifests must not enable it globally.
 5. Every Play upload increments the version code.
-6. Product IDs must match exactly: `reply_premium_monthly`, `credits_10`, `credits_50`, `credits_100`; entitlement `premium`; offering `default`.
-7. Trial disclosure states the free period, subsequent monthly price, and cancellation terms.
+6. Product IDs must match exactly: `premium_yearly` (base plan `yearly`), `credits_10`, `credits_50`, `credits_100`; entitlement `premium`; offering `default`; package `$rc_annual`.
+7. Trial disclosure states the free period, subsequent annual price, and cancellation terms.
 8. Store listing, Privacy Policy, and Data Safety must describe actual behavior only.
 9. Internal and license testers verify free usage, subscription/trial/restore, credits, expiry, and duplicate-sync behavior from the Play-delivered build.
 10. Release helpers build and report artifacts only; they never upload, commit, or push.

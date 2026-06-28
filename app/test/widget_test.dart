@@ -63,9 +63,10 @@ class _FakeSubscriptionRepo implements SubscriptionRepository {
   @override
   Future<SubscriptionOffer> load(String appUserId) async =>
       const SubscriptionOffer(
-        packageIdentifier: r'$rc_monthly',
-        productIdentifier: 'reply_premium_monthly',
+        packageIdentifier: r'$rc_annual',
+        productIdentifier: 'premium_yearly:yearly',
         priceString: r'$4.99',
+        hasTrial: true,
       );
 
   @override
@@ -85,9 +86,10 @@ class _FakeSubscriptionRepo implements SubscriptionRepository {
   Future<EntitlementState> restore(String appUserId) => purchase(
     appUserId,
     const SubscriptionOffer(
-      packageIdentifier: r'$rc_monthly',
-      productIdentifier: 'reply_premium_monthly',
+      packageIdentifier: r'$rc_annual',
+      productIdentifier: 'premium_yearly:yearly',
       priceString: r'$4.99',
+      hasTrial: true,
     ),
   );
 }
@@ -261,7 +263,7 @@ void main() {
     expect(field.controller?.text, 'Make the reply polite and respectful.');
   });
 
-  testWidgets('paywall shows verified monthly subscription terms', (
+  testWidgets('paywall shows verified annual subscription terms', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -279,7 +281,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Start 3-day Free Trial'), findsOneWidget);
-    expect(find.textContaining(r'$4.99/month'), findsOneWidget);
+    expect(find.textContaining(r'$4.99/year'), findsOneWidget);
 
     // Scroll to reveal items below the Buy Credits card.
     await tester.scrollUntilVisible(

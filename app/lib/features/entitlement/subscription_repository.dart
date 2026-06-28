@@ -13,11 +13,13 @@ class SubscriptionOffer {
     required this.packageIdentifier,
     required this.productIdentifier,
     required this.priceString,
+    this.hasTrial = false,
   });
 
   final String packageIdentifier;
   final String productIdentifier;
   final String priceString;
+  final bool hasTrial;
 }
 
 class SubscriptionException implements Exception {
@@ -42,7 +44,7 @@ class CreditPackage {
 
 abstract class RevenueCatGateway {
   Future<void> configure({required String apiKey, required String appUserId});
-  Future<SubscriptionOffer> loadMonthlyOffer();
+  Future<SubscriptionOffer> loadAnnualOffer();
   Future<void> purchase(SubscriptionOffer offer);
   Future<void> restore();
   Future<List<CreditPackage>> loadCreditPackages();
@@ -113,12 +115,14 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
   }
 
   @override
-  Future<SubscriptionOffer> loadMonthlyOffer() async {
+  Future<SubscriptionOffer> loadAnnualOffer() async {
     final offerings = await Purchases.getOfferings();
-    final package = offerings.getOffering('default')?.monthly;
+    final offering = offerings.getOffering('default');
+    final package =
+        offering?.getPackage(r'$rc_annual') ?? offering?.annual;
     if (package == null) {
       throw const SubscriptionException(
-        'The monthly subscription is currently unavailable.',
+        'The annual subscription is currently unavailable.',
       );
     }
     _packages[package.identifier] = package;
@@ -126,6 +130,7 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
       packageIdentifier: package.identifier,
       productIdentifier: package.storeProduct.identifier,
       priceString: package.storeProduct.priceString,
+      hasTrial: package.storeProduct.introductoryPrice != null,
     );
   }
 
@@ -230,7 +235,7 @@ class RevenueCatSubscriptionRepository implements SubscriptionRepository {
   @override
   Future<SubscriptionOffer> load(String appUserId) async {
     await _configure(appUserId);
-    return _gateway.loadMonthlyOffer();
+    return _gateway.loadAnnualOffer();
   }
 
   @override

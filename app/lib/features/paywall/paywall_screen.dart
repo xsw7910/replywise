@@ -98,11 +98,12 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Monthly Premium',
+                        'ReplyWise Premium',
                         style: AppTextStyles.cardTitle,
                       ),
                     ),
-                    const _Badge(label: '3 days free'),
+                    if (subscription.offer?.hasTrial == true)
+                      const _Badge(label: '3 days free'),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -127,11 +128,17 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text('Start 3-day Free Trial'),
+                        : Text(
+                            subscription.offer?.hasTrial == true
+                                ? 'Start 3-day Free Trial'
+                                : 'Start Yearly Plan',
+                          ),
                   ),
                 const SizedBox(height: 8),
                 Text(
-                  'Free for 3 days, then $price/month. Cancel anytime.',
+                  subscription.offer?.hasTrial == true
+                      ? 'Free for 3 days, then $price/year. Cancel anytime.'
+                      : '$price/year. Cancel anytime.',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.helper,
                 ),
@@ -216,7 +223,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                                 ),
                               )
                             : Text(
-                                '${pkg.credits} credits — ${pkg.priceString}',
+                                'Buy ${pkg.credits} Credits — ${pkg.priceString}',
                               ),
                       ),
                     ),

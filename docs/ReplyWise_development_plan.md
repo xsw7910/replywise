@@ -355,8 +355,8 @@ RevenueCat 配置：
 
 - Entitlement：`premium`
 - Offering：`default`
-- Package：monthly subscription
-- Product ID 示例：`reply_premium_monthly`
+- Package：annual subscription (`$rc_annual`)
+- Product ID：`premium_yearly`（RevenueCat product identifier: `premium_yearly:yearly`，base plan: `yearly`）
 - **免费试用：在 Google Play 该订阅的 base plan 上配置 3 天 free trial offer**（不是在代码里写），RevenueCat 自动识别。
 
 免费试用的关键事实（务必理解，避免做错）：
@@ -402,7 +402,7 @@ Paywall 提供**两条付费路径**（用户二选一）：
 Paywall 必须支持：
 
 - 加载 offerings（订阅 package + 三个 credit consumable package）
-- 购买订阅 monthly package（首次自动进入 3 天试用）
+- 购买订阅 annual package（首次自动进入 3 天试用）
 - 购买 credit 包（consumable，可重复买）
 - Restore purchases（恢复订阅；credit 是消耗型，不可"恢复"，但已入账的余额在后端，换设备登录同 appUserId 即可读回）
 - 订阅购买成功 → 调 `/v1/entitlement/sync` 刷新；credit 购买成功 → 调 `/v1/credits/sync` 入账并刷新 `/v1/me`
@@ -1543,7 +1543,7 @@ MAX_OUTPUT_TOKENS_EXPLAIN=250
 1. 创建 App。
 2. 上传一个 internal testing AAB。
 3. 创建 subscription product：
- - Product ID：`reply_premium_monthly`，Base plan：monthly
+ - Product ID：`premium_yearly`，Base plan：`yearly`
  - 在该 base plan 上添加 **free trial offer：3 天**（首次订阅者可享，平台限每账号每订阅一次）
 4. 创建三个**一次性内购（in-app product / consumable）**：
  - `credits_10`、`credits_50`、`credits_100`
@@ -1673,9 +1673,9 @@ Android internal test：
 5. 第 6 次点击生成，出现 paywall（含订阅与 credit 两条路径）。
 6. 买 credit 小包（10）→ 免费用尽后能继续生成，paidCredits 递减。
 7. 重复触发 credit sync，验证不重复入账（幂等）。
-8. 购买 monthly subscription → 进入 3 天免费试用，premium active、不再 blocked。
+8. 购买 annual subscription → 进入 3 天免费试用，premium active、不再 blocked。
 9. 试用期内取消订阅 → 到期后 sync，状态回到 free/credit。
-10. paywall 文案明确显示"3 天免费、之后按月收费、可取消"。
+10. paywall 文案明确显示"3 天免费、之后按年收费、可取消"。
 11. 卸载重装，premium restore 正常；同 appUserId 登录能读回 paidCredits 余额。
 12. 取消订阅 / 过期后，后端状态能回到 free。
 
@@ -1828,7 +1828,7 @@ Android internal test：
 
 任务：
 
-- Google Play subscription（`reply_premium_monthly`）+ base plan 配 3 天 free trial。
+- Google Play subscription（`premium_yearly`，base plan `yearly`）+ 配 3 天 free trial。
 - RevenueCat project：entitlement `premium` + offering 含订阅 package。
 - Flutter purchases_flutter：paywall 订阅路径，主 CTA "Start 3-day Free Trial"。
 - 订阅 purchase / restore → `/v1/entitlement/sync`。

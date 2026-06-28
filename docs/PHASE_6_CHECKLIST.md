@@ -41,7 +41,7 @@ Produce and distribute a correctly configured Android App Bundle through Google 
 
 - Flutter uses only public RevenueCat SDK key; backend secrets remain server-side.
 - Store copy must not claim automatic reading/sending, background clipboard monitoring, or unimplemented overlays.
-- Trial text must show free period, subsequent monthly price, and cancellation terms.
+- Trial text must show free period, subsequent annual price, and cancellation terms.
 
 ## Acceptance criteria
 

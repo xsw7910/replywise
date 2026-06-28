@@ -21,9 +21,10 @@ ApiClient _dummyClient() => ApiClient(
 );
 
 const _offer = SubscriptionOffer(
-  packageIdentifier: r'$rc_monthly',
-  productIdentifier: 'reply_premium_monthly',
+  packageIdentifier: r'$rc_annual',
+  productIdentifier: 'premium_yearly:yearly',
   priceString: r'$4.99',
+  hasTrial: true,
 );
 
 const _premium = EntitlementState(

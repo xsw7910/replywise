@@ -64,7 +64,7 @@ Expected artifact: `app/build/app/outputs/bundle/release/app-release.aab`.
 - [ ] Google Play service credentials are connected and valid.
 - [ ] Entitlement `premium` exists.
 - [ ] Offering `default` is active.
-- [ ] Subscription `reply_premium_monthly` has an active monthly base plan.
+- [ ] Subscription `premium_yearly` has an active yearly base plan (identifier: `yearly`).
 - [ ] The subscription has a 3-day free-trial offer available to eligible testers.
 - [ ] `credits_10`, `credits_50`, and `credits_100` are active repeatable consumables.
 - [ ] All four products are attached to the expected RevenueCat offering/packages.
@@ -95,7 +95,7 @@ Expected artifact: `app/build/app/outputs/bundle/release/app-release.aab`.
 - [ ] Fresh install creates anonymous identity and reaches production `/health` over HTTPS.
 - [ ] Reply, Polish, and Explain work through the production backend.
 - [ ] Exactly five free Reply/Polish generations succeed; the sixth opens the paywall.
-- [ ] Trial terms show three free days, monthly price, and cancellation language before purchase.
+- [ ] Trial terms show three free days, annual price, and cancellation language before purchase.
 - [ ] Trial purchase activates Premium after backend entitlement sync.
 - [ ] Premium generations consume neither free uses nor paid credits.
 - [ ] Restore purchases works after reinstall/relaunch with the stable app user identity.
