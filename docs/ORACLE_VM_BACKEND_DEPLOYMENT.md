@@ -350,6 +350,35 @@ scp -i <SSH_KEY_PATH> ubuntu@<VM_HOST>:/home/ubuntu/apps/replywise/backend/reply
 
 ## 10. Safe update
 
+### Automated redeploy (recommended after initial setup)
+
+After pushing code to GitHub, run from your Windows workstation:
+
+```powershell
+.\scripts\redeploy-backend-oracle.ps1
+```
+
+The script pulls the latest code, installs dependencies, restarts the service, and verifies the public health endpoint. It fails fast if any step fails.
+
+Default parameters match the production VM. Override when needed:
+
+| Parameter | Default |
+|-----------|---------|
+| `-HostName` | `170.9.43.177` |
+| `-User` | `ubuntu` |
+| `-SshKey` | `C:\sandbox\APP\ssh-key-oracle_vm.key` |
+| `-Branch` | `main` |
+
+Example with explicit values:
+
+```powershell
+.\scripts\redeploy-backend-oracle.ps1 -Branch main -HostName 170.9.43.177
+```
+
+### Manual update
+
+If you need to run steps individually or the script is unavailable:
+
 ```bash
 cd /home/ubuntu/apps/replywise
 git status --short

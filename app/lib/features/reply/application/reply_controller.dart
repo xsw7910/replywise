@@ -58,7 +58,6 @@ class ReplyController extends _$ReplyController {
     final incoming = request.incoming.trim();
     final guidance = request.guidance.trim();
     if (incoming.isEmpty) return 'Enter the message you received.';
-    if (guidance.isEmpty) return 'Describe how you want to reply.';
     if (incoming.length > 4000) {
       return 'The message must be 4000 characters or less.';
     }
