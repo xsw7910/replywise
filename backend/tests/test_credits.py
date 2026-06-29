@@ -1,10 +1,12 @@
 import asyncio
 from datetime import datetime, timedelta, timezone
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 
 from app.api.v1.credits import get_revenuecat_service
+from app.config import settings
 from app.database import AsyncSessionLocal
 from app.main import app
 from app.models.credit import CreditPurchase
@@ -179,6 +181,110 @@ def test_duplicate_sync_race_grants_transaction_exactly_once(
             ) or 0
 
     assert asyncio.run(purchase_count()) == 1
+
+
+@pytest.mark.parametrize(
+    "store_id,expected",
+    [("credits_10", 10), ("credits_50", 50), ("credits_100", 100)],
+)
+def test_default_store_ids_grant_expected_credits(
+    client: TestClient, monkeypatch, store_id: str, expected: int
+) -> None:
+    """With an empty env map, the in-code store defaults still apply."""
+    monkeypatch.setattr(settings, "revenuecat_credit_product_map", "")
+    auth, _, _ = _auth(client, f"default-{store_id}")
+    fake = _FakeRevenueCat([ConsumableTransaction(f"txn-{store_id}", store_id)])
+    resp = _sync(client, auth, fake)
+    assert resp.status_code == 200
+    assert resp.json()["grantedThisSync"] == expected
+    assert resp.json()["paidCredits"] == expected
+
+
+def test_env_mapped_internal_product_ids_grant_credits(
+    client: TestClient, monkeypatch
+) -> None:
+    """RevenueCat internal product ids (prod...) granted per the env map for
+    the 10, 50 and 100 credit tiers."""
+    monkeypatch.setattr(
+        settings,
+        "revenuecat_credit_product_map",
+        "prod733d52bcdd:10,prodInternal50:50,prodInternal100:100",
+    )
+    auth, _, _ = _auth(client, "internal-mapped")
+    fake = _FakeRevenueCat([
+        ConsumableTransaction("txn-i10", "prod733d52bcdd"),
+        ConsumableTransaction("txn-i50", "prodInternal50"),
+        ConsumableTransaction("txn-i100", "prodInternal100"),
+    ])
+    resp = _sync(client, auth, fake)
+    assert resp.status_code == 200
+    assert resp.json()["grantedThisSync"] == 160
+    assert resp.json()["paidCredits"] == 160
+
+
+def test_env_map_overrides_default_for_same_product_id(
+    client: TestClient, monkeypatch
+) -> None:
+    """Env entries win over in-code defaults for the same product id."""
+    monkeypatch.setattr(settings, "revenuecat_credit_product_map", "credits_10:25")
+    auth, _, _ = _auth(client, "override")
+    fake = _FakeRevenueCat([ConsumableTransaction("txn-override", "credits_10")])
+    resp = _sync(client, auth, fake)
+    assert resp.status_code == 200
+    assert resp.json()["grantedThisSync"] == 25
+
+
+def test_internal_product_id_grants_credits_and_persists_row(
+    client: TestClient, monkeypatch
+) -> None:
+    """Production case: a RevenueCat API v2 internal product id (prod733d52bcdd),
+    configured via the env map, grants 10 credits and is persisted idempotently
+    in credit_purchases."""
+    monkeypatch.setattr(
+        settings, "revenuecat_credit_product_map", "prod733d52bcdd:10"
+    )
+    auth, user_id, _ = _auth(client, "internal-product")
+    txn_id = "otpGps4ee034de5613a329844dc1bd066ffa9f"
+    fake = _FakeRevenueCat([ConsumableTransaction(txn_id, "prod733d52bcdd")])
+
+    resp = _sync(client, auth, fake)
+    assert resp.status_code == 200
+    assert resp.json()["grantedThisSync"] == 10
+    assert resp.json()["paidCredits"] == 10
+
+    async def fetch_row() -> CreditPurchase | None:
+        async with AsyncSessionLocal() as db:
+            return await db.get(CreditPurchase, txn_id)
+
+    row = asyncio.run(fetch_row())
+    assert row is not None
+    assert row.user_id == user_id
+    assert row.product_id == "prod733d52bcdd"
+    assert row.credits_granted == 10
+
+    # Idempotent: re-syncing the same transaction grants nothing more.
+    resp2 = _sync(client, auth, fake)
+    assert resp2.status_code == 200
+    assert resp2.json()["grantedThisSync"] == 0
+    assert resp2.json()["paidCredits"] == 10
+
+    async def count_rows() -> int:
+        async with AsyncSessionLocal() as db:
+            return await db.scalar(
+                select(func.count(CreditPurchase.transaction_id)).where(
+                    CreditPurchase.transaction_id == txn_id
+                )
+            ) or 0
+
+    assert asyncio.run(count_rows()) == 1
+
+
+def test_empty_purchases_grant_nothing(client: TestClient) -> None:
+    auth, _, _ = _auth(client, "empty-purchases")
+    resp = _sync(client, auth, _FakeRevenueCat([]))
+    assert resp.status_code == 200
+    assert resp.json()["grantedThisSync"] == 0
+    assert resp.json()["paidCredits"] == 0
 
 
 def test_credits_sync_unavailability_returns_503(client: TestClient) -> None:

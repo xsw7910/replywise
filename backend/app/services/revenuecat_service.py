@@ -35,7 +35,23 @@ class RevenueCatService:
     (entitlement_service, credit_service, API routes) need no changes.
     """
 
-    _NON_SUBSCRIPTION_TYPE = "non_subscription"
+    # A v2 purchase item is currently owned (granting access) when these match.
+    # The purchases endpoint reports state via status/ownership — not a
+    # non_subscription "type" — so acceptance keys on these instead.
+    _OWNED_STATUS = "owned"
+    _PURCHASED_OWNERSHIP = "purchased"
+
+    @classmethod
+    def _is_owned_purchase(cls, item: dict) -> bool:
+        if item.get("object") != "purchase":
+            return False
+        if item.get("status") != cls._OWNED_STATUS:
+            return False
+        # ownership may be absent on some store payloads; treat missing as the
+        # owner's own purchase. Only an explicit non-"purchased" value (e.g.
+        # "family_shared") is rejected.
+        ownership = item.get("ownership")
+        return ownership is None or ownership == cls._PURCHASED_OWNERSHIP
 
     # ── Config helpers ────────────────────────────────────────────────────────
 
@@ -156,11 +172,19 @@ class RevenueCatService:
     async def fetch_consumable_transactions(
         self, app_user_id: str
     ) -> list[ConsumableTransaction]:
-        """Return all verified non-subscription (consumable) transactions for the user.
+        """Return all currently-owned purchase transactions for the user.
 
         Calls GET /v2/projects/{project_id}/customers/{app_user_id}/purchases
         and follows next_page pagination until exhausted.
-        Only items with type='non_subscription' are included.
+
+        Each item is accepted when it is an owned purchase: object='purchase',
+        status='owned', and ownership missing or equal to 'purchased'. The
+        idempotent transaction_id is item['id'] (falling back to
+        item['store_purchase_identifier'] when id is absent). The product_id may
+        be a store identifier (e.g. 'credits_10') or a RevenueCat internal
+        product id (e.g. 'prod733d52bcdd'); mapping product ids to credit
+        grants — and ignoring non-credit products such as subscriptions — is the
+        caller's job.
         """
         key, project_id = self._require_config()
         headers = self._headers(key)
@@ -176,9 +200,11 @@ class RevenueCatService:
             for item in items:
                 if not isinstance(item, dict):
                     continue
-                if item.get("type") != self._NON_SUBSCRIPTION_TYPE:
+                if not self._is_owned_purchase(item):
                     continue
-                txn_id = item.get("id")
+                # Prefer the RevenueCat purchase id; fall back to the store
+                # purchase identifier when id is absent.
+                txn_id = item.get("id") or item.get("store_purchase_identifier")
                 product_id = item.get("product_id")
                 if (
                     txn_id

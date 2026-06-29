@@ -92,22 +92,33 @@ def _purchases_payload(items: list, next_page: str | None = None) -> dict:
     }
 
 
-def _non_sub(txn_id: str, product_id: str) -> dict:
+def _owned_purchase(txn_id: str, product_id: str) -> dict:
+    """A v2 purchase item that is currently owned (entitled).
+
+    Mirrors the real API v2 shape: state is carried by status/ownership and
+    there is no non_subscription "type" field.
+    """
     return {
         "object": "purchase",
         "id": txn_id,
         "product_id": product_id,
-        "type": "non_subscription",
+        "status": "owned",
+        "ownership": "purchased",
         "store": "play_store",
+        "store_purchase_identifier": "GPA.0000-0000-0000-00000",
     }
 
 
-def _sub_purchase(txn_id: str, product_id: str) -> dict:
+def _unowned_purchase(
+    txn_id: str, product_id: str, status: str = "expired"
+) -> dict:
+    """A v2 purchase item that is not currently owned (e.g. expired/refunded)."""
     return {
         "object": "purchase",
         "id": txn_id,
         "product_id": product_id,
-        "type": "subscription",
+        "status": status,
+        "ownership": "purchased",
     }
 
 
@@ -172,8 +183,23 @@ def test_verify_empty_active_entitlements_returns_is_premium_false() -> None:
 
 # ── fetch_consumable_transactions() tests ────────────────────────────────────
 
+def test_fetch_internal_product_id_owned_purchase_is_returned() -> None:
+    """Real production shape: owned purchase with a RevenueCat internal product id."""
+    payload = _purchases_payload([
+        _owned_purchase("otpGps4ee034de5613a329844dc1bd066ffa9f", "prod733d52bcdd")
+    ])
+    with _patch_http(_rc_response(200, payload)):
+        result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
+
+    assert result == [
+        ConsumableTransaction(
+            "otpGps4ee034de5613a329844dc1bd066ffa9f", "prod733d52bcdd"
+        )
+    ]
+
+
 def test_fetch_credits_10_returns_one_transaction() -> None:
-    payload = _purchases_payload([_non_sub("txn-a", "credits_10")])
+    payload = _purchases_payload([_owned_purchase("txn-a", "credits_10")])
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
@@ -182,8 +208,8 @@ def test_fetch_credits_10_returns_one_transaction() -> None:
 
 def test_fetch_credits_50_and_credits_10_returns_both() -> None:
     payload = _purchases_payload([
-        _non_sub("txn-a", "credits_50"),
-        _non_sub("txn-b", "credits_10"),
+        _owned_purchase("txn-a", "credits_50"),
+        _owned_purchase("txn-b", "credits_10"),
     ])
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
@@ -195,10 +221,10 @@ def test_fetch_credits_50_and_credits_10_returns_both() -> None:
     assert product_ids == {"credits_50", "credits_10"}
 
 
-def test_fetch_subscription_type_is_excluded() -> None:
+def test_fetch_non_owned_status_is_excluded() -> None:
     payload = _purchases_payload([
-        _non_sub("txn-a", "credits_10"),
-        _sub_purchase("txn-sub", "premium_yearly"),
+        _owned_purchase("txn-a", "credits_10"),
+        _unowned_purchase("txn-expired", "credits_10", status="expired"),
     ])
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
@@ -207,9 +233,46 @@ def test_fetch_subscription_type_is_excluded() -> None:
     assert result[0].transaction_id == "txn-a"
 
 
+def test_fetch_non_purchased_ownership_is_excluded() -> None:
+    family_shared = _owned_purchase("txn-shared", "credits_10")
+    family_shared["ownership"] = "family_shared"
+    payload = _purchases_payload([family_shared])
+    with _patch_http(_rc_response(200, payload)):
+        result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
+
+    assert result == []
+
+
+def test_fetch_missing_ownership_is_accepted() -> None:
+    item = _owned_purchase("txn-a", "credits_10")
+    del item["ownership"]
+    payload = _purchases_payload([item])
+    with _patch_http(_rc_response(200, payload)):
+        result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
+
+    assert result == [ConsumableTransaction("txn-a", "credits_10")]
+
+
+def test_fetch_falls_back_to_store_purchase_identifier_when_id_missing() -> None:
+    item = {
+        "object": "purchase",
+        "product_id": "credits_10",
+        "status": "owned",
+        "ownership": "purchased",
+        "store_purchase_identifier": "GPA.1234-5678-9012-34567",
+    }
+    payload = _purchases_payload([item])
+    with _patch_http(_rc_response(200, payload)):
+        result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
+
+    assert result == [
+        ConsumableTransaction("GPA.1234-5678-9012-34567", "credits_10")
+    ]
+
+
 def test_fetch_unknown_product_id_is_returned_raw() -> None:
     """Service returns unknown IDs; credit_service is responsible for filtering them."""
-    payload = _purchases_payload([_non_sub("txn-x", "credits_999")])
+    payload = _purchases_payload([_owned_purchase("txn-x", "credits_999")])
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
@@ -218,10 +281,10 @@ def test_fetch_unknown_product_id_is_returned_raw() -> None:
 
 def test_fetch_follows_next_page_pagination() -> None:
     page1 = _purchases_payload(
-        [_non_sub("txn-a", "credits_10")],
+        [_owned_purchase("txn-a", "credits_10")],
         next_page="https://api.revenuecat.com/v2/projects/proj_test/customers/user-1/purchases?after=txn-a",
     )
-    page2 = _purchases_payload([_non_sub("txn-b", "credits_50")])
+    page2 = _purchases_payload([_owned_purchase("txn-b", "credits_50")])
     with _patch_http(_rc_response(200, page1), _rc_response(200, page2)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 

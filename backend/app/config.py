@@ -1,9 +1,59 @@
+import logging
+
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+logger = logging.getLogger(__name__)
 
 
 DEV_JWT_SECRET = "dev-jwt-secret-please-change-in-production-use-long-random-string"
 DEV_SERVER_PEPPER = "dev-pepper-please-change-in-production"
+
+
+def parse_credit_product_map(raw: str, *, strict: bool) -> dict[str, int]:
+    """Parse REVENUECAT_CREDIT_PRODUCT_MAP into a {product_id: credits} dict.
+
+    Format: ``product_id:credits,product_id:credits`` (e.g.
+    ``credits_10:10,prod733d52bcdd:10``). Empty entries are ignored and
+    whitespace is trimmed. Credits must be positive integers.
+
+    When *strict* is True (production) a malformed entry raises ValueError so
+    startup fails loudly; otherwise the entry is skipped with a warning. Product
+    ids are not secrets, so the offending entry is safe to log.
+    """
+    result: dict[str, int] = {}
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+
+        product_id, separator, credits_text = entry.partition(":")
+        product_id = product_id.strip()
+        credits_text = credits_text.strip()
+
+        error: str | None = None
+        if not separator or not product_id or not credits_text:
+            error = "expected 'product_id:credits'"
+        else:
+            try:
+                credits = int(credits_text)
+            except ValueError:
+                error = "credits is not an integer"
+            else:
+                if credits <= 0:
+                    error = "credits must be a positive integer"
+
+        if error is not None:
+            message = (
+                f"Invalid REVENUECAT_CREDIT_PRODUCT_MAP entry {entry!r}: {error}"
+            )
+            if strict:
+                raise ValueError(message)
+            logger.warning("%s — skipping", message)
+            continue
+
+        result[product_id] = credits
+    return result
 
 
 class Settings(BaseSettings):
@@ -39,10 +89,22 @@ class Settings(BaseSettings):
     revenuecat_entitlement_id: str = "premium"
     revenuecat_subscription_product_id: str = "premium_yearly:yearly"
     revenuecat_api_base_url: str = "https://api.revenuecat.com/v2"
+    # Optional product_id:credits overrides. RevenueCat API v2 purchases report
+    # internal product ids (e.g. "prod733d52bcdd"); map them here per environment
+    # instead of hardcoding them. Merged on top of the in-code store defaults.
+    revenuecat_credit_product_map: str = ""
 
     @property
     def runtime_env(self) -> str:
         return (self.reply_env or self.app_env).lower()
+
+    @property
+    def credit_product_map(self) -> dict[str, int]:
+        """Parsed REVENUECAT_CREDIT_PRODUCT_MAP overrides (env-configured)."""
+        return parse_credit_product_map(
+            self.revenuecat_credit_product_map,
+            strict=(self.runtime_env == "prod"),
+        )
 
     @property
     def is_dev_or_test(self) -> bool:
@@ -79,6 +141,11 @@ class Settings(BaseSettings):
                 raise ValueError("MOCK_AI_ENABLED is only allowed in dev/test environments")
             if self.dev_tools_enabled:
                 raise ValueError("DEV_TOOLS_ENABLED is only allowed in dev/test environments")
+
+        # Validate the credit product map at startup. In production a malformed
+        # entry raises here (failing fast); elsewhere malformed entries are
+        # skipped with a warning.
+        _ = self.credit_product_map
         return self
 
 
