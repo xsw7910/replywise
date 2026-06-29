@@ -12,11 +12,20 @@ extension AppFeatureTheme on AppFeature {
     AppFeature.guidance => AppColors.guidanceColor,
   };
 
+  /// Texture used as the fill of feature [GlassCard]s and home feature cards.
   String get backgroundImage => switch (this) {
     AppFeature.reply => 'assets/image/reply_background.png',
     AppFeature.polish => 'assets/image/polish_background.png',
     AppFeature.explain => 'assets/image/explain_background.png',
     AppFeature.guidance => 'assets/image/guidance_background.png',
+  };
+
+  /// Full-page background shown behind the content of each feature page.
+  String get pageBackgroundImage => switch (this) {
+    AppFeature.reply => 'assets/image/reply_page_backgroud.png',
+    AppFeature.polish => 'assets/image/polish_page_backgroud.png',
+    AppFeature.explain => 'assets/image/explain_page_backgroud.png',
+    AppFeature.guidance => 'assets/image/guidance_page_backgroud.png',
   };
 
   Color get lightTintColor => switch (this) {

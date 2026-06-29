@@ -395,6 +395,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       subtitle: 'Generate natural English replies.',
       headerImagePath: 'assets/icons/reply.png',
       accentColor: _kColor,
+      backgroundImagePath: _feature.pageBackgroundImage,
       actions: [
         IconButton(
           tooltip: 'Plans',

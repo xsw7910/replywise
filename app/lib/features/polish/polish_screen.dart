@@ -113,6 +113,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
       subtitle: 'Make your English sound more natural.',
       headerImagePath: 'assets/icons/polish.png',
       accentColor: _kColor,
+      backgroundImagePath: _feature.pageBackgroundImage,
       actions: [
         IconButton(
           tooltip: 'Plans',

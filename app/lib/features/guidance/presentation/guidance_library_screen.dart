@@ -40,6 +40,7 @@ class GuidanceLibraryScreen extends ConsumerWidget {
       subtitle: 'Save and reuse your guidance.',
       headerImagePath: 'assets/icons/guidance.png',
       accentColor: _kColor,
+      backgroundImagePath: _feature.pageBackgroundImage,
       showBackButton: true,
       actions: [
         IconButton(

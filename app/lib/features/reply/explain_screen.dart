@@ -85,6 +85,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
       subtitle: 'Understand the meaning and tone.',
       headerImagePath: 'assets/icons/explain.png',
       accentColor: _kColor,
+      backgroundImagePath: _feature.pageBackgroundImage,
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),

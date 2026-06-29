@@ -2,7 +2,7 @@ name: replywise
 description: "ReplyWise — AI-powered reply and polish assistant."
 publish_to: 'none'
 
-version: 1.0.0+9
+version: 1.0.0+10
 
 environment:
   sdk: ^3.12.1
@@ -53,6 +53,10 @@ flutter:
     - assets/image/polish_background.png
     - assets/image/explain_background.png
     - assets/image/guidance_background.png
+    - assets/image/reply_page_backgroud.png
+    - assets/image/polish_page_backgroud.png
+    - assets/image/explain_page_backgroud.png
+    - assets/image/guidance_page_backgroud.png
     - assets/icons/app_icon.png
 
 flutter_launcher_icons:
