@@ -56,6 +56,7 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
   Future<void>? _initializationFuture;
   Future<void>? _identityFuture;
   final Map<String, Package> _packages = {};
+  final Map<String, StoreProduct> _creditProducts = {};
 
   @override
   Future<void> configure({
@@ -171,20 +172,22 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
 
   @override
   Future<List<CreditPackage>> loadCreditPackages() async {
-    final offerings = await Purchases.getOfferings();
-    final all = offerings.getOffering('default')?.availablePackages ?? [];
+    final productIds = _creditsByProductId.keys.toList();
+    final storeProducts = await Purchases.getProducts(
+      productIds,
+      productCategory: ProductCategory.nonSubscription,
+    );
     final result = <CreditPackage>[];
-    for (final package in all) {
-      final productId = package.storeProduct.identifier;
-      final credits = _creditsByProductId[productId];
+    for (final product in storeProducts) {
+      final credits = _creditsByProductId[product.identifier];
       if (credits == null) continue;
-      _packages[package.identifier] = package;
+      _creditProducts[product.identifier] = product;
       result.add(
         CreditPackage(
-          packageIdentifier: package.identifier,
-          productIdentifier: productId,
+          packageIdentifier: product.identifier,
+          productIdentifier: product.identifier,
           credits: credits,
-          priceString: package.storeProduct.priceString,
+          priceString: product.priceString,
         ),
       );
     }
@@ -194,14 +197,14 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
 
   @override
   Future<void> purchaseCredit(CreditPackage creditPackage) async {
-    final package = _packages[creditPackage.packageIdentifier];
-    if (package == null) {
+    final storeProduct = _creditProducts[creditPackage.productIdentifier];
+    if (storeProduct == null) {
       throw const SubscriptionException(
         'Reload credit packages and try again.',
       );
     }
     try {
-      await Purchases.purchase(PurchaseParams.package(package));
+      await Purchases.purchase(PurchaseParams.storeProduct(storeProduct));
     } on PlatformException catch (error) {
       final code = PurchasesErrorHelper.getErrorCode(error);
       if (code == PurchasesErrorCode.purchaseCancelledError) {
