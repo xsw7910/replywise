@@ -9,7 +9,7 @@ from app.errors import ApiException
 from app.models.user import User
 from app.services.credit_service import sync_credits
 from app.services.revenuecat_service import RevenueCatService, RevenueCatUnavailable
-from app.services.usage_service import ensure_summary, summary_dict
+from app.services.usage_service import ensure_device_usage, ensure_summary, summary_view
 
 router = APIRouter(prefix="/v1/credits", tags=["credits"])
 
@@ -47,10 +47,11 @@ async def credits_sync(
             503,
         ) from error
 
+    device = await ensure_device_usage(db, current_user.device_hash)
     summary = await ensure_summary(db, current_user.id)
     from app.services.entitlement_service import is_user_premium
     is_premium = await is_user_premium(db, current_user.id)
-    d = summary_dict(summary, is_premium=is_premium)
+    d = summary_view(device, summary, is_premium=is_premium)
     return CreditSyncResponse(
         is_premium=d["isPremium"],
         free_uses_limit=d["freeUsesLimit"],

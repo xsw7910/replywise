@@ -18,6 +18,25 @@ class UsageSummary(Base):
     )
 
 
+class DeviceUsage(Base):
+    """Device-scoped free-use allowance.
+
+    The free quota is keyed by device_hash (not user_id) so that anonymous
+    reinstalls — which mint a new app_user_id and therefore a new user row —
+    keep sharing the same lifetime free allowance for the same physical device.
+    Paid credits and premium entitlements remain per-user.
+    """
+
+    __tablename__ = "device_usage"
+
+    device_hash: Mapped[str] = mapped_column(String, primary_key=True)
+    free_uses_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=5)
+    free_uses_used: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+
 class UsageEvent(Base):
     __tablename__ = "usage_events"
     __table_args__ = (Index("ix_usage_user_endpoint_time", "user_id", "endpoint", "created_at"),)

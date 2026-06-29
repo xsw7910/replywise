@@ -12,7 +12,7 @@ from app.errors import ApiException
 from app.models.subscription import SubscriptionCache
 from app.models.usage import UsageSummary
 from app.models.user import User
-from app.services.usage_service import ensure_summary
+from app.services.usage_service import ensure_device_usage, ensure_summary
 
 router = APIRouter(prefix="/v1/dev", tags=["dev"])
 
@@ -60,10 +60,18 @@ async def reset_usage(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> DevActionResponse:
+    now = datetime.now(timezone.utc)
+    # Free usage is device-scoped; credits remain per-user.
+    device = await ensure_device_usage(db, current_user.device_hash)
+    device.free_uses_used = (
+        0 if body is None or body.free_uses_used is None else body.free_uses_used
+    )
+    device.updated_at = now
     summary = await ensure_summary(db, current_user.id)
-    summary.free_uses_used = 0 if body is None or body.free_uses_used is None else body.free_uses_used
-    summary.paid_credits = 0 if body is None or body.paid_credits is None else body.paid_credits
-    summary.updated_at = datetime.now(timezone.utc)
+    summary.paid_credits = (
+        0 if body is None or body.paid_credits is None else body.paid_credits
+    )
+    summary.updated_at = now
     await db.commit()
     return DevActionResponse(ok=True)
 

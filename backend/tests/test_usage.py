@@ -10,9 +10,23 @@ from app.api.v1.ai import get_ai_service
 from app.config import settings
 from app.database import AsyncSessionLocal
 from app.main import app
-from app.models.usage import IdempotencyKey, UsageSummary
+from app.models.subscription import SubscriptionCache
+from app.models.usage import DeviceUsage, IdempotencyKey, UsageSummary
 from app.models.user import User
 from app.services.ai_service import AIService
+
+
+def _auth_device(client: TestClient, app_user_id: str, device_id: str) -> tuple[dict[str, str], int]:
+    """Authenticate with an explicit app_user_id and device_id pair.
+
+    Unlike _auth(), this lets a test pin two different app_user_ids to the same
+    device_id to simulate an anonymous reinstall.
+    """
+    response = client.post('/v1/auth/anonymous', json={
+        'appUserId': app_user_id, 'deviceId': device_id, 'platform': 'android'
+    })
+    body = response.json()
+    return {'Authorization': f"Bearer {body['accessToken']}"}, body['me']['userId']
 
 
 def _auth(client: TestClient, suffix: str) -> tuple[dict[str, str], int]:
@@ -50,9 +64,12 @@ def test_paid_credits_are_used_after_free_allowance(client: TestClient) -> None:
     auth, user_id = _auth(client, 'credits')
 
     async def seed() -> None:
+        # Free usage is device-scoped; exhaust the device allowance.
         async with AsyncSessionLocal() as db:
+            user = await db.get(User, user_id)
+            device = await db.get(DeviceUsage, user.device_hash)
+            device.free_uses_used = device.free_uses_limit
             summary = await db.get(UsageSummary, user_id)
-            summary.free_uses_used = summary.free_uses_limit
             summary.paid_credits = 2
             await db.commit()
     asyncio.run(seed())
@@ -179,6 +196,95 @@ def test_concurrent_no_overdraw(client: TestClient) -> None:
     assert me['freeUsesUsed'] == success_count, (
         f"freeUsesUsed={me['freeUsesUsed']} does not match success_count={success_count}"
     )
+
+
+def test_free_quota_shared_by_device_across_reinstall(client: TestClient) -> None:
+    """Free uses are limited per device_hash, so an anonymous reinstall — a new
+    app_user_id on the same device — does not refill the free allowance, while a
+    genuinely different device still gets its own fresh allowance."""
+    device_x = 'shared-device-x'
+
+    # User A on device X exhausts all 5 free uses.
+    auth_a, _ = _auth_device(client, 'reinstall-user-a', device_x)
+    for index in range(5):
+        response = _reply(client, auth_a, f'a-{index}')
+        assert response.status_code == 200
+        assert response.json()['usage']['freeUsesLeft'] == 4 - index
+
+    # Reinstall: User B is a brand-new app_user_id on the SAME device X.
+    auth_b, user_id_b = _auth_device(client, 'reinstall-user-b', device_x)
+    assert user_id_b  # B is a distinct user row
+
+    # B inherits the device's exhausted allowance: 0 free uses remaining.
+    me_b = client.get('/v1/me', headers=auth_b).json()
+    assert me_b['freeUsesUsed'] == 5
+    assert me_b['freeUsesLeft'] == 0
+    assert me_b['upgradeRequired'] is True
+
+    # B is blocked by the paywall when attempting another free request.
+    blocked = _reply(client, auth_b, 'b-blocked')
+    assert blocked.status_code == 402
+    assert blocked.json()['error']['code'] == 'PAYWALL_REQUIRED'
+
+    # User C on a DIFFERENT device Y still gets a fresh 5 free uses.
+    auth_c, _ = _auth_device(client, 'reinstall-user-c', 'different-device-y')
+    me_c = client.get('/v1/me', headers=auth_c).json()
+    assert me_c['freeUsesUsed'] == 0
+    assert me_c['freeUsesLeft'] == 5
+    first_c = _reply(client, auth_c, 'c-0')
+    assert first_c.status_code == 200
+    assert first_c.json()['usage']['freeUsesLeft'] == 4
+
+
+def test_premium_user_bypasses_exhausted_device_quota(client: TestClient) -> None:
+    """A premium user on a device whose shared free quota is already exhausted
+    still generates normally (premium is per-user, not gated by the device)."""
+    device = 'premium-shared-device'
+    auth_a, _ = _auth_device(client, 'premium-share-a', device)
+    for index in range(5):
+        assert _reply(client, auth_a, f'pa-{index}').status_code == 200
+
+    auth_b, user_id_b = _auth_device(client, 'premium-share-b', device)
+
+    async def make_premium() -> None:
+        async with AsyncSessionLocal() as db:
+            db.add(SubscriptionCache(
+                user_id=user_id_b,
+                entitlement_id='premium',
+                is_premium=True,
+                product_identifier='premium_yearly:yearly',
+                expires_at=datetime.now(timezone.utc) + timedelta(days=3),
+            ))
+            await db.commit()
+    asyncio.run(make_premium())
+
+    response = _reply(client, auth_b, 'pb-0')
+    assert response.status_code == 200
+    assert response.json()['usage']['isPremium'] is True
+    assert response.json()['usage']['source'] is None  # premium is not billed
+
+
+def test_credit_user_on_exhausted_device_consumes_credit(client: TestClient) -> None:
+    """A user with paid credits on a device whose shared free quota is exhausted
+    spends a credit instead of being blocked (credits are per-user)."""
+    device = 'credit-shared-device'
+    auth_a, _ = _auth_device(client, 'credit-share-a', device)
+    for index in range(5):
+        assert _reply(client, auth_a, f'ca-{index}').status_code == 200
+
+    auth_b, user_id_b = _auth_device(client, 'credit-share-b', device)
+
+    async def grant_credits() -> None:
+        async with AsyncSessionLocal() as db:
+            summary = await db.get(UsageSummary, user_id_b)
+            summary.paid_credits = 3
+            await db.commit()
+    asyncio.run(grant_credits())
+
+    response = _reply(client, auth_b, 'cb-0')
+    assert response.status_code == 200
+    assert response.json()['usage']['source'] == 'credit'
+    assert response.json()['usage']['paidCredits'] == 2
 
 
 def test_concurrent_rate_limit(client: TestClient, monkeypatch) -> None:

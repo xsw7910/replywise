@@ -9,7 +9,8 @@ from app.database import AsyncSessionLocal
 from app.main import app
 from app.models.credit import CreditPurchase
 from app.models.subscription import SubscriptionCache
-from app.models.usage import UsageSummary
+from app.models.usage import DeviceUsage, UsageSummary
+from app.models.user import User
 from app.services.revenuecat_service import (
     ConsumableTransaction,
     RevenueCatService,
@@ -132,9 +133,11 @@ def test_credits_consumed_after_free_exhausted(client: TestClient) -> None:
     auth, user_id, _ = _auth(client, "consume-credits")
 
     async def seed() -> None:
+        # Free usage is device-scoped; exhaust the device allowance.
         async with AsyncSessionLocal() as db:
-            summary = await db.get(UsageSummary, user_id)
-            summary.free_uses_used = summary.free_uses_limit
+            user = await db.get(User, user_id)
+            device = await db.get(DeviceUsage, user.device_hash)
+            device.free_uses_used = device.free_uses_limit
             await db.commit()
 
     asyncio.run(seed())

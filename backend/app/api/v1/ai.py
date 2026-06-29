@@ -116,6 +116,7 @@ async def reply(
     source, cached = await begin_generation(
         db,
         current_user.id,
+        current_user.device_hash,
         "reply",
         idempotency_key,
         request_hash,
@@ -126,9 +127,9 @@ async def reply(
     try:
         result = await service.reply(body)
     except ApiException as error:
-        await rollback_generation(db, current_user.id, "reply", idempotency_key, source, error.code)
+        await rollback_generation(db, current_user.id, current_user.device_hash, "reply", idempotency_key, source, error.code)
         raise
-    combined = await finish_generation(db, current_user.id, "reply", idempotency_key, source, result.model_dump(mode="json", by_alias=True))
+    combined = await finish_generation(db, current_user.id, current_user.device_hash, "reply", idempotency_key, source, result.model_dump(mode="json", by_alias=True))
     return ReplyResponse.model_validate(combined)
 
 
@@ -158,6 +159,7 @@ async def polish(
     source, cached = await begin_generation(
         db,
         current_user.id,
+        current_user.device_hash,
         "polish",
         idempotency_key,
         request_hash,
@@ -168,9 +170,9 @@ async def polish(
     try:
         result = await service.polish(body)
     except ApiException as error:
-        await rollback_generation(db, current_user.id, "polish", idempotency_key, source, error.code)
+        await rollback_generation(db, current_user.id, current_user.device_hash, "polish", idempotency_key, source, error.code)
         raise
-    combined = await finish_generation(db, current_user.id, "polish", idempotency_key, source, result.model_dump(mode="json", by_alias=True))
+    combined = await finish_generation(db, current_user.id, current_user.device_hash, "polish", idempotency_key, source, result.model_dump(mode="json", by_alias=True))
     return PolishResponse.model_validate(combined)
 
 

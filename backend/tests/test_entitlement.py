@@ -7,7 +7,8 @@ from app.api.v1.entitlement import get_revenuecat_service
 from app.database import AsyncSessionLocal
 from app.main import app
 from app.models.subscription import SubscriptionCache
-from app.models.usage import UsageSummary
+from app.models.usage import DeviceUsage, UsageSummary
+from app.models.user import User
 from app.services.revenuecat_service import (
     RevenueCatService,
     RevenueCatUnavailable,
@@ -87,8 +88,10 @@ def test_premium_reply_and_polish_do_not_change_balances(client: TestClient) -> 
 
     async def seed() -> None:
         async with AsyncSessionLocal() as db:
+            user = await db.get(User, user_id)
+            device = await db.get(DeviceUsage, user.device_hash)
+            device.free_uses_used = 2
             summary = await db.get(UsageSummary, user_id)
-            summary.free_uses_used = 2
             summary.paid_credits = 7
             db.add(
                 SubscriptionCache(

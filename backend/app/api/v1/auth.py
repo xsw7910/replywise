@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.database import get_db
 from app.models.user import User
-from app.services.usage_service import ensure_summary
+from app.services.usage_service import ensure_device_usage, ensure_summary
 from app.services.token_service import (
     create_access_token,
     create_refresh_token,
@@ -76,6 +76,11 @@ async def anonymous(
         user.platform = body.platform
         user.last_seen_at = datetime.now(timezone.utc)
         await db.commit()
+
+    # Free usage is shared per device. Ensuring the row here means a reinstall
+    # that mints a new app_user_id immediately inherits the device's remaining
+    # free allowance instead of getting a fresh one.
+    await ensure_device_usage(db, device_hash)
 
     access_token = create_access_token(
         user.id, user.app_user_id, user.device_hash, user.token_version

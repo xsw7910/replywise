@@ -8,7 +8,8 @@ from sqlalchemy.exc import IntegrityError
 
 from app.config import settings
 from app.errors import ApiException
-from app.models.usage import IdempotencyKey, UsageEvent, UsageSummary
+from app.models.usage import DeviceUsage, IdempotencyKey, UsageEvent, UsageSummary
+from app.models.user import User
 
 
 def canonicalize(model) -> tuple[str, str]:
@@ -44,16 +45,71 @@ async def ensure_summary(db: AsyncSession, user_id: int) -> UsageSummary:
     return summary
 
 
-def summary_dict(summary: UsageSummary, is_premium: bool = False) -> dict:
-    left = None if is_premium else max(0, summary.free_uses_limit - summary.free_uses_used)
+async def ensure_device_usage(db: AsyncSession, device_hash: str) -> DeviceUsage:
+    """Get-or-create the device-scoped free-use row for *device_hash*.
+
+    On first creation the consumed count is seeded from the largest
+    free_uses_used among existing users that share this device. This carries
+    a partially-consumed allowance across the move to device-scoped tracking
+    (and across anonymous reinstalls), so the lifetime free quota is never
+    reset by minting a new app_user_id. For a brand-new device the seed is 0.
+    """
+    device = await db.get(DeviceUsage, device_hash)
+    if device is not None:
+        return device
+
+    seeded_used = await db.scalar(
+        select(func.max(UsageSummary.free_uses_used))
+        .join(User, User.id == UsageSummary.user_id)
+        .where(User.device_hash == device_hash)
+    )
+    limit = settings.free_lifetime_limit
+    device = DeviceUsage(
+        device_hash=device_hash,
+        free_uses_limit=limit,
+        free_uses_used=min(seeded_used or 0, limit),
+    )
+    db.add(device)
+    try:
+        await db.commit()
+    except IntegrityError:
+        # Concurrent creation: adopt the row the other request committed.
+        await db.rollback()
+        device = await db.get(DeviceUsage, device_hash)
+        if device is None:
+            raise
+        return device
+    await db.refresh(device)
+    return device
+
+
+def usage_dict(
+    free_uses_limit: int,
+    free_uses_used: int,
+    paid_credits: int,
+    is_premium: bool = False,
+) -> dict:
+    left = None if is_premium else max(0, free_uses_limit - free_uses_used)
     return {
         "isPremium": is_premium,
-        "freeUsesLimit": summary.free_uses_limit,
-        "freeUsesUsed": summary.free_uses_used,
+        "freeUsesLimit": free_uses_limit,
+        "freeUsesUsed": free_uses_used,
         "freeUsesLeft": left,
-        "paidCredits": summary.paid_credits,
-        "upgradeRequired": not is_premium and left == 0 and summary.paid_credits == 0,
+        "paidCredits": paid_credits,
+        "upgradeRequired": not is_premium and left == 0 and paid_credits == 0,
     }
+
+
+def summary_view(
+    device: DeviceUsage, summary: UsageSummary, is_premium: bool = False
+) -> dict:
+    """Combine device-scoped free usage with per-user paid credits."""
+    return usage_dict(
+        device.free_uses_limit,
+        device.free_uses_used,
+        summary.paid_credits,
+        is_premium=is_premium,
+    )
 
 
 async def cleanup_expired(db: AsyncSession) -> None:
@@ -64,6 +120,7 @@ async def cleanup_expired(db: AsyncSession) -> None:
 async def begin_generation(
     db: AsyncSession,
     user_id: int,
+    device_hash: str,
     endpoint: str,
     key: str,
     request_hash: str,
@@ -89,10 +146,15 @@ async def begin_generation(
     now = datetime.now(timezone.utc)
     source = None
     if not is_premium:
+        # Free allowance is shared by all users on the same device.
+        await ensure_device_usage(db, device_hash)
         free = await db.execute(
-            update(UsageSummary)
-            .where(UsageSummary.user_id == user_id, UsageSummary.free_uses_used < UsageSummary.free_uses_limit)
-            .values(free_uses_used=UsageSummary.free_uses_used + 1, updated_at=now)
+            update(DeviceUsage)
+            .where(
+                DeviceUsage.device_hash == device_hash,
+                DeviceUsage.free_uses_used < DeviceUsage.free_uses_limit,
+            )
+            .values(free_uses_used=DeviceUsage.free_uses_used + 1, updated_at=now)
         )
         source = "free" if free.rowcount == 1 else None
         if source is None:
@@ -143,7 +205,7 @@ async def begin_generation(
         )
     )
     if (rate_count or 0) > settings.generation_rate_per_minute:
-        await rollback_generation(db, user_id, endpoint, key, source, "RATE_LIMITED")
+        await rollback_generation(db, user_id, device_hash, endpoint, key, source, "RATE_LIMITED")
         raise ApiException("RATE_LIMITED", "Too many requests. Please try again shortly.", 429)
 
     return source, None
@@ -152,15 +214,17 @@ async def begin_generation(
 async def finish_generation(
     db: AsyncSession,
     user_id: int,
+    device_hash: str,
     endpoint: str,
     key: str,
     source: str | None,
     response: dict,
 ) -> dict:
+    device = await ensure_device_usage(db, device_hash)
     summary = await ensure_summary(db, user_id)
     is_premium = source is None
     usage = {
-        **summary_dict(summary, is_premium=is_premium),
+        **summary_view(device, summary, is_premium=is_premium),
         "creditsUsed": 0 if is_premium else 1,
         "source": source,
     }
@@ -183,6 +247,7 @@ async def finish_generation(
 async def rollback_generation(
     db: AsyncSession,
     user_id: int,
+    device_hash: str,
     endpoint: str,
     key: str,
     source: str | None,
@@ -190,9 +255,9 @@ async def rollback_generation(
 ) -> None:
     if source == "free":
         await db.execute(
-            update(UsageSummary)
-            .where(UsageSummary.user_id == user_id, UsageSummary.free_uses_used > 0)
-            .values(free_uses_used=UsageSummary.free_uses_used - 1)
+            update(DeviceUsage)
+            .where(DeviceUsage.device_hash == device_hash, DeviceUsage.free_uses_used > 0)
+            .values(free_uses_used=DeviceUsage.free_uses_used - 1)
         )
     elif source == "credit":
         await db.execute(

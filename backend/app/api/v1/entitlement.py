@@ -9,7 +9,7 @@ from app.errors import ApiException
 from app.models.user import User
 from app.services.entitlement_service import sync_entitlement
 from app.services.revenuecat_service import RevenueCatService, RevenueCatUnavailable
-from app.services.usage_service import ensure_summary, summary_dict
+from app.services.usage_service import ensure_device_usage, ensure_summary, summary_view
 
 router = APIRouter(prefix="/v1/entitlement", tags=["entitlement"])
 
@@ -46,7 +46,8 @@ async def entitlement_sync(
             503,
         ) from error
 
+    device = await ensure_device_usage(db, current_user.device_hash)
     summary = await ensure_summary(db, current_user.id)
     return EntitlementSyncResponse.model_validate(
-        summary_dict(summary, is_premium=is_premium)
+        summary_view(device, summary, is_premium=is_premium)
     )
