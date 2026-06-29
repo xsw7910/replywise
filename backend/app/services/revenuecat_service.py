@@ -108,7 +108,10 @@ class RevenueCatService:
         """Check whether *app_user_id* has an active premium entitlement.
 
         Calls GET /v2/projects/{project_id}/customers/{app_user_id}.
-        Active entitlements are returned in customer.entitlements.items[].
+        Active entitlements are returned in customer.active_entitlements.items[].
+        Each active entitlement item carries an entitlement_id and an
+        expires_at (Unix ms, or null for a non-expiring/lifetime entitlement);
+        it may not carry a product_id.
         """
         key, project_id = self._require_config()
         payload = await self._get_json(
@@ -117,7 +120,7 @@ class RevenueCatService:
         )
 
         entitlement_id = settings.revenuecat_entitlement_id
-        entitlements_block = payload.get("entitlements") or {}
+        entitlements_block = payload.get("active_entitlements") or {}
         items: list = (
             entitlements_block.get("items", [])
             if isinstance(entitlements_block, dict)
@@ -137,19 +140,16 @@ class RevenueCatService:
 
         try:
             expires_at = _parse_datetime(entitlement.get("expires_at"))
-        except ValueError as error:
+        except (ValueError, OverflowError, OSError) as error:
             raise RevenueCatUnavailable("RevenueCat returned an invalid expiry") from error
 
-        product_identifier = entitlement.get("product_id")
-        is_active = (
-            product_identifier == settings.revenuecat_subscription_product_id
-            and expires_at is not None
-            and expires_at > datetime.now(timezone.utc)
-        )
+        # Items under active_entitlements are already filtered to active by
+        # RevenueCat. A null expires_at means a non-expiring entitlement.
+        is_active = expires_at is None or expires_at > datetime.now(timezone.utc)
         return VerifiedEntitlement(
             is_premium=is_active,
             entitlement_id=entitlement_id,
-            product_identifier=product_identifier,
+            product_identifier=entitlement.get("product_id"),
             expires_at=expires_at,
         )
 
@@ -198,7 +198,17 @@ class RevenueCatService:
 
 
 def _parse_datetime(value: object) -> datetime | None:
-    if not isinstance(value, str) or not value:
+    if value is None:
         return None
-    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+    if isinstance(value, int | float):
+        timestamp = float(value)
+        if timestamp > 10_000_000_000:
+            timestamp = timestamp / 1000
+        return datetime.fromtimestamp(timestamp, tz=timezone.utc)
+
+    if isinstance(value, str) and value:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+
+    return None

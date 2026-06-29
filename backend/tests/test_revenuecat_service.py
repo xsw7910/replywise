@@ -51,19 +51,32 @@ def _patch_http(*responses):
     return patch("httpx.AsyncClient", return_value=mock_client)
 
 
-def _future_iso(days: int = 30) -> str:
-    return (datetime.now(timezone.utc) + timedelta(days=days)).isoformat()
+def _future_ms(days: int = 30) -> int:
+    return int((datetime.now(timezone.utc) + timedelta(days=days)).timestamp() * 1000)
 
 
-def _past_iso(days: int = 1) -> str:
-    return (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+def _past_ms(days: int = 1) -> int:
+    return int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp() * 1000)
+
+
+def _active_entitlement(entitlement_id: str, expires_at: object) -> dict:
+    """Build a v2 customer.active_entitlement item.
+
+    Active entitlement items carry entitlement_id and expires_at
+    (Unix ms, or null for non-expiring); they need not carry product_id.
+    """
+    return {
+        "object": "customer.active_entitlement",
+        "entitlement_id": entitlement_id,
+        "expires_at": expires_at,
+    }
 
 
 def _customer_payload(entitlement_items: list) -> dict:
     return {
         "object": "customer",
         "id": "user-1",
-        "entitlements": {
+        "active_entitlements": {
             "object": "list",
             "items": entitlement_items,
             "next_page": None,
@@ -106,40 +119,19 @@ def _rc_config(monkeypatch):
 
 # ── verify() tests ────────────────────────────────────────────────────────────
 
-def test_verify_active_premium_returns_is_premium_true() -> None:
-    payload = _customer_payload([
-        {
-            "entitlement_id": "premium",
-            "product_id": "premium_yearly:yearly",
-            "expires_at": _future_iso(30),
-        }
-    ])
+def test_verify_active_premium_future_ms_returns_is_premium_true() -> None:
+    payload = _customer_payload([_active_entitlement("premium", _future_ms(30))])
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().verify("user-1"))
 
     assert result.is_premium is True
     assert result.entitlement_id == "premium"
-    assert result.product_identifier == "premium_yearly:yearly"
+    assert result.expires_at is not None
+    assert result.expires_at > datetime.now(timezone.utc)
 
 
-def test_verify_no_premium_entitlement_returns_is_premium_false() -> None:
-    payload = _customer_payload([])
-    with _patch_http(_rc_response(200, payload)):
-        result = asyncio.run(RevenueCatService().verify("user-1"))
-
-    assert result.is_premium is False
-    assert result.entitlement_id == "premium"
-    assert result.product_identifier is None
-
-
-def test_verify_expired_entitlement_returns_is_premium_false() -> None:
-    payload = _customer_payload([
-        {
-            "entitlement_id": "premium",
-            "product_id": "premium_yearly:yearly",
-            "expires_at": _past_iso(1),
-        }
-    ])
+def test_verify_expired_premium_ms_returns_is_premium_false() -> None:
+    payload = _customer_payload([_active_entitlement("premium", _past_ms(1))])
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().verify("user-1"))
 
@@ -148,18 +140,34 @@ def test_verify_expired_entitlement_returns_is_premium_false() -> None:
     assert result.expires_at < datetime.now(timezone.utc)
 
 
-def test_verify_wrong_product_identifier_returns_is_premium_false() -> None:
-    payload = _customer_payload([
-        {
-            "entitlement_id": "premium",
-            "product_id": "some_other_product",
-            "expires_at": _future_iso(30),
-        }
-    ])
+def test_verify_null_expires_at_returns_is_premium_true() -> None:
+    payload = _customer_payload([_active_entitlement("premium", None)])
+    with _patch_http(_rc_response(200, payload)):
+        result = asyncio.run(RevenueCatService().verify("user-1"))
+
+    assert result.is_premium is True
+    assert result.expires_at is None
+
+
+def test_verify_non_matching_entitlement_id_returns_is_premium_false() -> None:
+    payload = _customer_payload(
+        [_active_entitlement("some_other_entitlement", _future_ms(30))]
+    )
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().verify("user-1"))
 
     assert result.is_premium is False
+    assert result.product_identifier is None
+
+
+def test_verify_empty_active_entitlements_returns_is_premium_false() -> None:
+    payload = _customer_payload([])
+    with _patch_http(_rc_response(200, payload)):
+        result = asyncio.run(RevenueCatService().verify("user-1"))
+
+    assert result.is_premium is False
+    assert result.entitlement_id == "premium"
+    assert result.product_identifier is None
 
 
 # ── fetch_consumable_transactions() tests ────────────────────────────────────
@@ -271,3 +279,37 @@ def test_verify_missing_project_id_raises_revenuecat_unavailable(monkeypatch) ->
     monkeypatch.setattr(settings, "revenuecat_project_id", "")
     with pytest.raises(RevenueCatUnavailable, match="project"):
         asyncio.run(RevenueCatService().verify("user-1"))
+
+
+# ── _parse_datetime tests ─────────────────────────────────────────────────────
+
+def test_parse_datetime_returns_none_for_none() -> None:
+    from app.services.revenuecat_service import _parse_datetime
+
+    assert _parse_datetime(None) is None
+
+
+def test_parse_datetime_handles_millisecond_timestamp() -> None:
+    from app.services.revenuecat_service import _parse_datetime
+
+    result = _parse_datetime(1782758313873)
+    assert result is not None
+    assert result.tzinfo is not None
+    assert abs(result.timestamp() - 1782758313.873) < 1
+
+
+def test_parse_datetime_handles_second_timestamp() -> None:
+    from app.services.revenuecat_service import _parse_datetime
+
+    result = _parse_datetime(1782758313)
+    assert result is not None
+    assert result.tzinfo is not None
+    assert abs(result.timestamp() - 1782758313) < 1
+
+
+def test_parse_datetime_handles_iso_string() -> None:
+    from app.services.revenuecat_service import _parse_datetime
+
+    result = _parse_datetime("2026-06-29T12:00:00Z")
+    assert result is not None
+    assert result.tzinfo is not None
