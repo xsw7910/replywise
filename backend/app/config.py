@@ -35,9 +35,10 @@ class Settings(BaseSettings):
     allowed_origins: str = "*"
 
     revenuecat_secret_api_key: str = ""
+    revenuecat_project_id: str = ""
     revenuecat_entitlement_id: str = "premium"
     revenuecat_subscription_product_id: str = "premium_yearly:yearly"
-    revenuecat_api_base_url: str = "https://api.revenuecat.com/v1"
+    revenuecat_api_base_url: str = "https://api.revenuecat.com/v2"
 
     @property
     def runtime_env(self) -> str:
@@ -69,6 +70,8 @@ class Settings(BaseSettings):
                 )
             if not self.revenuecat_secret_api_key:
                 raise ValueError("REVENUECAT_SECRET_API_KEY must be set in production")
+            if not self.revenuecat_project_id:
+                raise ValueError("REVENUECAT_PROJECT_ID must be set in production")
             if not self.openai_api_key:
                 raise ValueError("OPENAI_API_KEY must be set in production")
         elif not self.is_dev_or_test:

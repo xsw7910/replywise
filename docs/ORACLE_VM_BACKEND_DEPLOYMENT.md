@@ -116,7 +116,10 @@ OPENAI_API_KEY=<set-directly-on-the-VM>
 OPENAI_MODEL=gpt-4o-mini
 OPENAI_TIMEOUT_SECONDS=30
 
-REVENUECAT_SECRET_API_KEY=<RevenueCat-secret-server-key>
+# v2 API — must use a v2-compatible secret key (not a v1 key)
+# REVENUECAT_PROJECT_ID: RevenueCat dashboard → Project Settings → Project ID
+REVENUECAT_SECRET_API_KEY=<RevenueCat-v2-compatible-secret-key>
+REVENUECAT_PROJECT_ID=<proj_xxxxxxxxxxxxxxxx>
 REVENUECAT_ENTITLEMENT_ID=premium
 REVENUECAT_SUBSCRIPTION_PRODUCT_ID=premium_yearly:yearly
 
@@ -439,6 +442,8 @@ Do not restore an older database unless schema/data compatibility requires it an
 - Caddy has a valid certificate and public `/health` succeeds.
 - Production `.env` contains unique JWT/pepper values and VM-only OpenAI/RevenueCat secrets.
 - Existing RevenueCat entitlement and product identifiers are verified unchanged.
+- `REVENUECAT_SECRET_API_KEY` is a **v2-compatible** key (v1 keys return HTTP 403 on v2 endpoints).
+- `REVENUECAT_PROJECT_ID` is set to the project ID from the RevenueCat dashboard → Project Settings.
 - Reply, Polish, Explain, entitlement sync, and credits sync pass against production.
 - Service restart preserves auth, usage, entitlement cache, credits, and idempotency records.
 - A database backup is copied off the VM and restore steps are tested.
