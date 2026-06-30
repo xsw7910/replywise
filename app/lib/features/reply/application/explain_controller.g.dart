@@ -6,7 +6,7 @@ part of 'explain_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$explainControllerHash() => r'83a7222f3a6b8a0dce4e29b079e4d310aec6006b';
+String _$explainControllerHash() => r'979d747b2c295ea023c55d1979d3a7c609ac1652';
 
 /// See also [ExplainController].
 @ProviderFor(ExplainController)

@@ -6,7 +6,7 @@ part of 'reply_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$replyControllerHash() => r'298c8e078884c34c2c4a08be9ab67796ccd0cfe5';
+String _$replyControllerHash() => r'034a8d3ead0e67c6119ecf7ee6b3050eaa062402';
 
 /// See also [ReplyController].
 @ProviderFor(ReplyController)

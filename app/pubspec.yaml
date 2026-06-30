@@ -2,7 +2,7 @@ name: replywise
 description: "ReplyWise — AI-powered reply and polish assistant."
 publish_to: 'none'
 
-version: 1.0.0+10
+version: 1.0.0+11
 
 environment:
   sdk: ^3.12.1
@@ -25,6 +25,8 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   uuid: ^4.5.1
   purchases_flutter: ^10.3.0
+  android_id: ^0.5.1
+  crypto: ^3.0.7
 
   # UI / icons
   cupertino_icons: ^1.0.8

@@ -6,7 +6,7 @@ part of 'polish_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$polishControllerHash() => r'213624d43d699918e0354af50f807eb5bc8c50ce';
+String _$polishControllerHash() => r'6619c93ebad212d842d98093d9d0e65b7f72e8df';
 
 /// See also [PolishController].
 @ProviderFor(PolishController)

@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/network/api_error.dart';
 import '../auth_state.dart';
 import '../data/auth_repository.dart';
+import '../data/device_identity.dart';
 import '../data/token_storage.dart';
 
 part 'auth_controller.g.dart';
@@ -177,12 +178,6 @@ class AuthController extends _$AuthController {
     return id;
   }
 
-  Future<String> _ensureDeviceId(TokenStorage storage) async {
-    var id = await storage.getDeviceId();
-    if (id == null) {
-      id = const Uuid().v4();
-      await storage.saveDeviceId(id);
-    }
-    return id;
-  }
+  Future<String> _ensureDeviceId(TokenStorage storage) =>
+      ref.read(deviceIdentityProvider).resolve(storage);
 }

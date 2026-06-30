@@ -7,7 +7,17 @@ import 'package:replywise/core/network/api_error.dart';
 import 'package:replywise/features/auth/application/auth_controller.dart';
 import 'package:replywise/features/auth/auth_state.dart';
 import 'package:replywise/features/auth/data/auth_repository.dart';
+import 'package:replywise/features/auth/data/device_identity.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
+
+class _FakeAndroidIdSource implements AndroidIdSource {
+  _FakeAndroidIdSource(this._id);
+
+  final String? _id;
+
+  @override
+  Future<String?> getId() async => _id;
+}
 
 class _MemoryTokenStorage extends TokenStorage {
   _MemoryTokenStorage({
@@ -99,12 +109,15 @@ class _FakeAuthRepository extends AuthRepository {
 
 ProviderContainer _container(
   _MemoryTokenStorage storage,
-  _FakeAuthRepository repository,
-) => ProviderContainer(
+  _FakeAuthRepository repository, {
+  DeviceIdentity? deviceIdentity,
+}) => ProviderContainer(
   overrides: [
     tokenStorageProvider.overrideWith((ref) => storage),
     authRepositoryProvider.overrideWith((ref) => repository),
     authRetryBaseDelayProvider.overrideWithValue(Duration.zero),
+    if (deviceIdentity != null)
+      deviceIdentityProvider.overrideWith((ref) => deviceIdentity),
   ],
 );
 
@@ -262,4 +275,85 @@ void main() {
       AuthStatus.authenticated,
     );
   });
+
+  test(
+    'reinstall on the same Android device sends the same device hash, '
+    'not a fresh random id',
+    () async {
+      final androidIdentity = DeviceIdentity(
+        androidIdSource: _FakeAndroidIdSource('STABLE-ANDROID-ID'),
+        isAndroid: () => true,
+      );
+      String? firstInstallDeviceId;
+      String? reinstallDeviceId;
+
+      // First install: empty storage, anonymous auth mints app + device ids.
+      final firstInstallStorage = _MemoryTokenStorage();
+      final firstInstallRepo = _FakeAuthRepository()
+        ..anonymousHandler = (appUserId, deviceId, platform) async {
+          firstInstallDeviceId = deviceId;
+          return AnonymousAuthResult(
+            accessToken: 'anonymous-access',
+            refreshToken: 'anonymous-refresh',
+            me: MeData(userId: 1, appUserId: appUserId),
+          );
+        };
+      final firstInstallContainer = _container(
+        firstInstallStorage,
+        firstInstallRepo,
+        deviceIdentity: androidIdentity,
+      );
+      addTearDown(firstInstallContainer.dispose);
+      await firstInstallContainer
+          .read(authControllerProvider.notifier)
+          .initialize();
+
+      // Reinstall: brand-new (empty) secure storage — as if the app had been
+      // uninstalled and reinstalled — but the same physical Android device.
+      final reinstallStorage = _MemoryTokenStorage();
+      final reinstallRepo = _FakeAuthRepository()
+        ..anonymousHandler = (appUserId, deviceId, platform) async {
+          reinstallDeviceId = deviceId;
+          return AnonymousAuthResult(
+            accessToken: 'anonymous-access-2',
+            refreshToken: 'anonymous-refresh-2',
+            me: MeData(userId: 2, appUserId: appUserId),
+          );
+        };
+      final reinstallContainer = _container(
+        reinstallStorage,
+        reinstallRepo,
+        deviceIdentity: androidIdentity,
+      );
+      addTearDown(reinstallContainer.dispose);
+      await reinstallContainer
+          .read(authControllerProvider.notifier)
+          .initialize();
+
+      expect(firstInstallRepo.anonymousCalls, 1);
+      expect(reinstallRepo.anonymousCalls, 1);
+      // A new app_user_id is expected (anonymous identity is allowed to
+      // rotate) but the device hash sent to the backend must match, so the
+      // backend's per-device free quota is shared instead of reset.
+      expect(reinstallStorage.appUserId, isNot(firstInstallStorage.appUserId));
+      expect(reinstallDeviceId, firstInstallDeviceId);
+      expect(reinstallDeviceId, hasLength(64));
+    },
+  );
+
+  test(
+    'falls back to a persisted UUID device id when no Android identity is '
+    'configured',
+    () async {
+      final storage = _MemoryTokenStorage();
+      final repository = _FakeAuthRepository();
+      final container = _container(storage, repository);
+      addTearDown(container.dispose);
+
+      await container.read(authControllerProvider.notifier).initialize();
+
+      expect(storage.deviceId, isNotNull);
+      expect(storage.deviceId, isNot(hasLength(64)));
+    },
+  );
 }
