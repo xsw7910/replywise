@@ -12,9 +12,11 @@ import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
+import '../entitlement/usage_controller.dart';
 import 'application/explain_controller.dart';
 import 'application/pending_reply_input_provider.dart';
 import 'domain/reply_models.dart';
+import 'widgets/reply_status_badge.dart';
 
 const _kColor = AppColors.explainColor;
 const _feature = AppFeature.explain;
@@ -81,12 +83,19 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(explainControllerProvider);
+    final usage = ref.watch(usageControllerProvider).usage;
 
     return AppPage(
       title: _ExplainText.navTitle,
       backgroundImagePath: _feature.pageBackgroundImage,
       transparentAppBar: true,
       centerTitle: false,
+      actions: [
+        ReplyStatusBadge(
+          usage: usage,
+          onTap: () => context.push(AppRoutes.paywall),
+        ),
+      ],
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),

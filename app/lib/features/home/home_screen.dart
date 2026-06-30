@@ -7,6 +7,8 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../entitlement/usage_controller.dart';
+import '../reply/widgets/reply_status_badge.dart';
 
 const _homeHorizontalPadding = 20.0;
 const _homeCardSpacing = 12.0;
@@ -19,6 +21,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final topInset = MediaQuery.paddingOf(context).top;
+    final usage = ref.watch(usageControllerProvider).usage;
 
     return AppPage(
       title: 'Home',
@@ -28,7 +31,13 @@ class HomeScreen extends ConsumerWidget {
         color: AppColors.backgroundBase,
         child: Column(
           children: [
-            _HomeNavBar(topInset: topInset),
+            _HomeNavBar(
+              topInset: topInset,
+              trailing: ReplyStatusBadge(
+                usage: usage,
+                onTap: () => context.push(AppRoutes.paywall),
+              ),
+            ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(
@@ -86,9 +95,10 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class _HomeNavBar extends StatelessWidget {
-  const _HomeNavBar({required this.topInset});
+  const _HomeNavBar({required this.topInset, required this.trailing});
 
   final double topInset;
+  final Widget trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -103,45 +113,53 @@ class _HomeNavBar extends StatelessWidget {
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(13),
             child: Image.asset(
               'assets/icons/app_icon.png',
-              width: 34,
-              height: 34,
+              width: 44,
+              height: 44,
               fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [Color(0xFF3D6FFF), Color(0xFF00C2CB)],
-                ).createShader(bounds),
-                child: Text(
-                  'ReplyWise',
-                  style: AppTextStyles.pageTitle.copyWith(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
-                    height: 1.1,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [Color(0xFF3D6FFF), Color(0xFF00C2CB)],
+                  ).createShader(bounds),
+                  child: Text(
+                    'ReplyWise',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.pageTitle.copyWith(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.4,
+                      height: 1.05,
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                'Your AI reply assistant',
-                style: AppTextStyles.helper.copyWith(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 11,
-                  height: 1.2,
+                Text(
+                  'Your AI reply assistant',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.helper.copyWith(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    height: 1.2,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+          const SizedBox(width: 8),
+          trailing,
         ],
       ),
     );
