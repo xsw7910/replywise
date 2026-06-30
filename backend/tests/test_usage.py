@@ -11,7 +11,7 @@ from app.config import settings
 from app.database import AsyncSessionLocal
 from app.main import app
 from app.models.subscription import SubscriptionCache
-from app.models.usage import DeviceUsage, IdempotencyKey, UsageSummary
+from app.models.usage import DeviceUsage, IdempotencyKey, UsageEvent, UsageSummary
 from app.models.user import User
 from app.services.ai_service import AIService
 
@@ -47,6 +47,23 @@ def _polish(client: TestClient, auth: dict[str, str], key: str, draft: str = 'He
     return client.post('/v1/polish', json={
         'draft': draft, 'direction': 'natural', 'guidanceLang': 'en'
     }, headers={**auth, 'X-Idempotency-Key': key})
+
+
+def _seed_successful_free_events(user_id: int, count: int) -> None:
+    async def seed() -> None:
+        async with AsyncSessionLocal() as db:
+            for index in range(count):
+                db.add(UsageEvent(
+                    user_id=user_id,
+                    endpoint='reply',
+                    credits_used=1,
+                    source='free',
+                    prompt_version=f'seed-{index}',
+                    success=True,
+                ))
+            await db.commit()
+
+    asyncio.run(seed())
 
 
 def test_free_deduction_and_paywall_after_five_uses(client: TestClient) -> None:
@@ -234,6 +251,126 @@ def test_free_quota_shared_by_device_across_reinstall(client: TestClient) -> Non
     first_c = _reply(client, auth_c, 'c-0')
     assert first_c.status_code == 200
     assert first_c.json()['usage']['freeUsesLeft'] == 4
+
+
+def test_me_aggregates_successful_free_events_across_same_device_users(
+    client: TestClient,
+) -> None:
+    device = 'event-aggregate-device'
+    auth_a, user_a = _auth_device(client, 'event-user-a', device)
+    auth_b, user_b = _auth_device(client, 'event-user-b', device)
+    auth_c, _ = _auth_device(client, 'event-user-c', device)
+
+    _seed_successful_free_events(user_a, 2)
+    _seed_successful_free_events(user_b, 1)
+
+    me_b = client.get('/v1/me', headers=auth_b).json()
+    assert me_b['freeUsesUsed'] == 3
+    assert me_b['freeUsesLeft'] == 2
+
+    me_c = client.get('/v1/me', headers=auth_c).json()
+    assert me_c['freeUsesUsed'] == 3
+    assert me_c['freeUsesLeft'] == 2
+
+    # The user that owns two events observes the same device total.
+    me_a = client.get('/v1/me', headers=auth_a).json()
+    assert me_a['freeUsesUsed'] == 3
+
+
+def test_event_exhausted_shared_device_blocks_reply_and_polish(
+    client: TestClient,
+) -> None:
+    device = 'event-exhausted-device'
+    _, user_a = _auth_device(client, 'event-exhaust-a', device)
+    _seed_successful_free_events(user_a, 5)
+
+    auth_new, _ = _auth_device(client, 'event-exhaust-new', device)
+    me = client.get('/v1/me', headers=auth_new).json()
+    assert me['freeUsesUsed'] == 5
+    assert me['freeUsesLeft'] == 0
+    assert me['upgradeRequired'] is True
+
+    reply = _reply(client, auth_new, 'event-exhaust-reply')
+    assert reply.status_code == 402
+    assert reply.json()['error']['code'] == 'PAYWALL_REQUIRED'
+
+    polish = _polish(client, auth_new, 'event-exhaust-polish')
+    assert polish.status_code == 402
+    assert polish.json()['error']['code'] == 'PAYWALL_REQUIRED'
+
+    auth_other, _ = _auth_device(
+        client, 'event-exhaust-other', 'event-exhaust-different-device'
+    )
+    other_me = client.get('/v1/me', headers=auth_other).json()
+    assert other_me['freeUsesUsed'] == 0
+    assert other_me['freeUsesLeft'] == 5
+
+
+def test_paid_credits_remain_user_scoped_on_shared_exhausted_device(
+    client: TestClient,
+) -> None:
+    device = 'user-scoped-credit-device'
+    auth_a, user_a = _auth_device(client, 'credit-owner-a', device)
+    auth_b, _ = _auth_device(client, 'credit-owner-b', device)
+    _seed_successful_free_events(user_a, 5)
+
+    async def grant_only_a() -> None:
+        async with AsyncSessionLocal() as db:
+            summary_a = await db.get(UsageSummary, user_a)
+            summary_a.paid_credits = 1
+            await db.commit()
+
+    asyncio.run(grant_only_a())
+
+    blocked_b = _reply(client, auth_b, 'credit-owner-b-blocked')
+    assert blocked_b.status_code == 402
+    assert client.get('/v1/me', headers=auth_b).json()['paidCredits'] == 0
+
+    allowed_a = _reply(client, auth_a, 'credit-owner-a-allowed')
+    assert allowed_a.status_code == 200
+    assert allowed_a.json()['usage']['source'] == 'credit'
+    assert allowed_a.json()['usage']['paidCredits'] == 0
+
+
+def test_concurrent_same_device_requests_cannot_exceed_last_free_use(
+    client: TestClient,
+) -> None:
+    device = 'shared-last-free-device'
+    _, seed_user = _auth_device(client, 'shared-last-seed', device)
+    _seed_successful_free_events(seed_user, 4)
+    auth_b, _ = _auth_device(client, 'shared-last-b', device)
+    auth_c, _ = _auth_device(client, 'shared-last-c', device)
+
+    results: list[int] = []
+    lock = threading.Lock()
+    barrier = threading.Barrier(2)
+
+    def make_request(auth: dict[str, str], key: str) -> None:
+        barrier.wait(timeout=5)
+        response = _reply(client, auth, key)
+        with lock:
+            results.append(response.status_code)
+
+    threads = [
+        threading.Thread(
+            target=make_request,
+            args=(auth_b, 'shared-last-b-request'),
+        ),
+        threading.Thread(
+            target=make_request,
+            args=(auth_c, 'shared-last-c-request'),
+        ),
+    ]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert results.count(200) == 1, results
+    assert results.count(402) == 1, results
+    me = client.get('/v1/me', headers=auth_b).json()
+    assert me['freeUsesUsed'] == 5
+    assert me['freeUsesLeft'] == 0
 
 
 def test_premium_user_bypasses_exhausted_device_quota(client: TestClient) -> None:

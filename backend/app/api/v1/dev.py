@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
@@ -10,7 +11,7 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.errors import ApiException
 from app.models.subscription import SubscriptionCache
-from app.models.usage import UsageSummary
+from app.models.usage import UsageEvent, UsageSummary
 from app.models.user import User
 from app.services.usage_service import ensure_device_usage, ensure_summary
 
@@ -67,6 +68,17 @@ async def reset_usage(
         0 if body is None or body.free_uses_used is None else body.free_uses_used
     )
     device.updated_at = now
+    # The successful free events are the durable source used to reconcile the
+    # device counter. A development reset must clear that history for every
+    # anonymous user on the device or /v1/me would immediately restore it.
+    await db.execute(
+        delete(UsageEvent).where(
+            UsageEvent.user_id.in_(
+                select(User.id).where(User.device_hash == current_user.device_hash)
+            ),
+            UsageEvent.source == "free",
+        )
+    )
     summary = await ensure_summary(db, current_user.id)
     summary.paid_credits = (
         0 if body is None or body.paid_credits is None else body.paid_credits

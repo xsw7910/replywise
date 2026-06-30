@@ -48,26 +48,47 @@ async def ensure_summary(db: AsyncSession, user_id: int) -> UsageSummary:
 async def ensure_device_usage(db: AsyncSession, device_hash: str) -> DeviceUsage:
     """Get-or-create the device-scoped free-use row for *device_hash*.
 
-    On first creation the consumed count is seeded from the largest
-    free_uses_used among existing users that share this device. This carries
-    a partially-consumed allowance across the move to device-scoped tracking
-    (and across anonymous reinstalls), so the lifetime free quota is never
-    reset by minting a new app_user_id. For a brand-new device the seed is 0.
+    Successful free events are the durable source of truth for historical
+    usage. DeviceUsage is the atomic reservation counter used to prevent two
+    concurrent requests from both taking the final free use. Reconciliation
+    only moves the counter upward: lowering it could erase an in-flight
+    reservation that has not written its success event yet.
     """
+    successful_used = await db.scalar(
+        select(func.coalesce(func.sum(UsageEvent.credits_used), 0))
+        .join(User, User.id == UsageEvent.user_id)
+        .where(
+            User.device_hash == device_hash,
+            UsageEvent.source == "free",
+            UsageEvent.success.is_(True),
+        )
+    )
+    successful_used = int(successful_used or 0)
+    limit = settings.free_lifetime_limit
+
     device = await db.get(DeviceUsage, device_hash)
     if device is not None:
+        reconciled_used = min(successful_used, device.free_uses_limit)
+        if device.free_uses_used < reconciled_used:
+            await db.execute(
+                update(DeviceUsage)
+                .where(
+                    DeviceUsage.device_hash == device_hash,
+                    DeviceUsage.free_uses_used < reconciled_used,
+                )
+                .values(
+                    free_uses_used=reconciled_used,
+                    updated_at=datetime.now(timezone.utc),
+                )
+            )
+            await db.commit()
+            await db.refresh(device)
         return device
 
-    seeded_used = await db.scalar(
-        select(func.max(UsageSummary.free_uses_used))
-        .join(User, User.id == UsageSummary.user_id)
-        .where(User.device_hash == device_hash)
-    )
-    limit = settings.free_lifetime_limit
     device = DeviceUsage(
         device_hash=device_hash,
         free_uses_limit=limit,
-        free_uses_used=min(seeded_used or 0, limit),
+        free_uses_used=min(successful_used, limit),
     )
     db.add(device)
     try:
