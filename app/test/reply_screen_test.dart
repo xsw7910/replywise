@@ -59,6 +59,9 @@ class _RecordingReplyRepository extends ReplyRepository {
 Finder _editableIn(Key key) =>
     find.descendant(of: find.byKey(key), matching: find.byType(EditableText));
 
+Finder _actionIn(Key key, String tooltip) =>
+    find.descendant(of: find.byKey(key), matching: find.byTooltip(tooltip));
+
 void _useTallView(WidgetTester tester) {
   tester.view.physicalSize = const Size(1400, 5200);
   tester.view.devicePixelRatio = 1.0;
@@ -255,6 +258,58 @@ void main() {
     expect(
       repository.lastRequest?.guidance,
       'Make the reply polite and respectful.',
+    );
+  });
+
+  testWidgets('Reply guidance shows Library, Paste, Clear and clears payload', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    final repository = _RecordingReplyRepository();
+    await _pumpReply(tester, repository: repository);
+    await tester.enterText(
+      _editableIn(const Key('reply-incoming-field')),
+      'Can we reschedule?',
+    );
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+
+    const fieldKey = Key('reply-guidance-field');
+    expect(_actionIn(fieldKey, 'Guidance Library'), findsOneWidget);
+    expect(_actionIn(fieldKey, 'Paste'), findsOneWidget);
+    expect(_actionIn(fieldKey, 'Clear'), findsOneWidget);
+
+    await tester.enterText(_editableIn(fieldKey), 'Old guidance');
+    await tester.tap(_actionIn(fieldKey, 'Clear'));
+    await tester.pump();
+    expect(
+      tester.widget<EditableText>(_editableIn(fieldKey)).controller.text,
+      isEmpty,
+    );
+
+    await tester.tap(find.text('Generate Reply'));
+    await tester.pumpAndSettle();
+    expect(repository.lastRequest?.guidance, isEmpty);
+  });
+
+  testWidgets('Reply Guidance Library action inserts a selected template', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpReply(tester);
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+
+    const fieldKey = Key('reply-guidance-field');
+    await tester.tap(_actionIn(fieldKey, 'Guidance Library'));
+    await tester.pumpAndSettle();
+    expect(find.text('Choose guidance'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Use').first);
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.widget<EditableText>(_editableIn(fieldKey)).controller.text,
+      isNotEmpty,
     );
   });
 

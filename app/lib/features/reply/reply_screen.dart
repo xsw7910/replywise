@@ -14,6 +14,7 @@ import '../../core/widgets/glass_card.dart';
 import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_picker_sheet.dart';
+import '../guidance/presentation/guidance_text_field.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import 'widgets/reply_status_badge.dart';
@@ -212,18 +213,6 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
         : text;
     _incomingController.selection = TextSelection.collapsed(
       offset: _incomingController.text.length,
-    );
-  }
-
-  Future<void> _pasteGuidance() async {
-    final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text;
-    if (text == null || text.isEmpty) return;
-    _guidanceController.text = text.length > InputLimits.guidanceMaxLength
-        ? text.substring(0, InputLimits.guidanceMaxLength)
-        : text;
-    _guidanceController.selection = TextSelection.collapsed(
-      offset: _guidanceController.text.length,
     );
   }
 
@@ -522,47 +511,14 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: _PillAction(
-                            icon: Icons.menu_book_rounded,
-                            label: 'Library',
-                            onTap: _openLibrary,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        LabeledTextField(
+                        GuidanceTextField(
                           key: const Key('reply-guidance-field'),
-                          label: 'Reply guidance',
                           feature: _feature,
-                          showHeader: false,
-                          showCounter: false,
                           controller: _guidanceController,
                           hintText: 'Add your reply instructions…',
                           maxLines: 4,
                           maxLength: InputLimits.guidanceMaxLength,
-                          fieldActions: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                tooltip: 'Paste',
-                                visualDensity: VisualDensity.compact,
-                                color: _kColor,
-                                onPressed: _pasteGuidance,
-                                icon: const Icon(
-                                  Icons.content_paste_rounded,
-                                  size: 20,
-                                ),
-                              ),
-                              IconButton(
-                                tooltip: 'Clear',
-                                visualDensity: VisualDensity.compact,
-                                color: _kColor,
-                                onPressed: _guidanceController.clear,
-                                icon: const Icon(Icons.close_rounded, size: 21),
-                              ),
-                            ],
-                          ),
+                          onOpenLibrary: _openLibrary,
                         ),
                         const SizedBox(height: 14),
                         _QuickGuidanceChips(onAppend: _appendGuidanceText),
@@ -763,35 +719,6 @@ class _CardHeader extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Small tinted pill action (e.g. "Add guidance", "Library").
-class _PillAction extends StatelessWidget {
-  const _PillAction({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton.icon(
-      onPressed: onTap,
-      style: TextButton.styleFrom(
-        foregroundColor: _kColor,
-        backgroundColor: Colors.white.withAlpha(150),
-        visualDensity: VisualDensity.compact,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-      icon: Icon(icon, size: 18),
-      label: Text(label),
     );
   }
 }

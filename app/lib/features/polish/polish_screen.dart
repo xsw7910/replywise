@@ -19,6 +19,8 @@ import '../entitlement/usage_controller.dart';
 import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_chip_row.dart';
+import '../guidance/presentation/guidance_picker_sheet.dart';
+import '../guidance/presentation/guidance_text_field.dart';
 import '../reply/widgets/reply_status_badge.dart';
 
 const _kColor = AppColors.polishColor;
@@ -76,6 +78,15 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
       offset: _guidanceController.text.length,
     );
     if (!_guidanceExpanded) setState(() => _guidanceExpanded = true);
+  }
+
+  void _openLibrary() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => GuidancePickerSheet(onSelected: _appendGuidance),
+    );
   }
 
   /// Applies a guidance template handed over from the standalone Guidance
@@ -194,6 +205,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                 setState(() => _guidanceExpanded = !_guidanceExpanded),
             controller: _guidanceController,
             onSelected: _appendGuidance,
+            onOpenLibrary: _openLibrary,
           ),
           const SizedBox(height: 14),
           _PolishMoreOptionsCard(
@@ -330,12 +342,14 @@ class _PolishGuidanceCard extends StatelessWidget {
     required this.onToggle,
     required this.controller,
     required this.onSelected,
+    required this.onOpenLibrary,
   });
 
   final bool expanded;
   final VoidCallback onToggle;
   final TextEditingController controller;
   final ValueChanged<GuidanceTemplate> onSelected;
+  final VoidCallback onOpenLibrary;
 
   @override
   Widget build(BuildContext context) {
@@ -380,22 +394,14 @@ class _PolishGuidanceCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
               child: Column(
                 children: [
-                  LabeledTextField(
+                  GuidanceTextField(
                     key: const Key('polish-custom-guidance-field'),
-                    label: 'Guidance',
                     feature: _feature,
-                    showHeader: false,
-                    showCounter: false,
                     controller: controller,
                     hintText: 'Describe how you want the draft polished',
                     maxLines: 3,
                     maxLength: InputLimits.guidanceMaxLength,
-                    fieldActions: IconButton(
-                      tooltip: 'Clear',
-                      color: _kColor,
-                      onPressed: controller.clear,
-                      icon: const Icon(Icons.close_rounded, size: 20),
-                    ),
+                    onOpenLibrary: onOpenLibrary,
                   ),
                   const SizedBox(height: 12),
                   GuidanceChipRow(feature: _feature, onSelected: onSelected),

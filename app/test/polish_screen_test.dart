@@ -42,6 +42,9 @@ class _RecordingPolishRepository extends PolishRepository {
 Finder _editableIn(Key key) =>
     find.descendant(of: find.byKey(key), matching: find.byType(EditableText));
 
+Finder _actionIn(Key key, String tooltip) =>
+    find.descendant(of: find.byKey(key), matching: find.byTooltip(tooltip));
+
 void _useTallView(WidgetTester tester) {
   tester.view.physicalSize = const Size(1400, 6200);
   tester.view.devicePixelRatio = 1;
@@ -144,5 +147,54 @@ void main() {
     await tester.pump();
 
     expect(repository.lastRequest?.audience, 'my customer');
+  });
+
+  testWidgets(
+    'Polish guidance shows Library, Paste, Clear and clears payload',
+    (tester) async {
+      _useTallView(tester);
+      final repository = await _pumpPolish(tester);
+      await _enterDraft(tester);
+      await tester.tap(find.text('Guidance'));
+      await tester.pumpAndSettle();
+
+      const fieldKey = Key('polish-custom-guidance-field');
+      expect(_actionIn(fieldKey, 'Guidance Library'), findsOneWidget);
+      expect(_actionIn(fieldKey, 'Paste'), findsOneWidget);
+      expect(_actionIn(fieldKey, 'Clear'), findsOneWidget);
+
+      await tester.enterText(_editableIn(fieldKey), 'Old guidance');
+      await tester.tap(_actionIn(fieldKey, 'Clear'));
+      await tester.pump();
+      expect(
+        tester.widget<EditableText>(_editableIn(fieldKey)).controller.text,
+        isEmpty,
+      );
+
+      await tester.tap(find.text('Polish draft'));
+      await tester.pump();
+      expect(repository.lastRequest?.guidance, isNull);
+    },
+  );
+
+  testWidgets('Polish Guidance Library action inserts a selected template', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpPolish(tester);
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+
+    const fieldKey = Key('polish-custom-guidance-field');
+    await tester.tap(_actionIn(fieldKey, 'Guidance Library'));
+    await tester.pumpAndSettle();
+    expect(find.text('Choose guidance'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Use').first);
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.widget<EditableText>(_editableIn(fieldKey)).controller.text,
+      isNotEmpty,
+    );
   });
 }
