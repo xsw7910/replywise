@@ -62,6 +62,18 @@ void main() {
     expect(find.text('Premium'), findsNothing);
   });
 
+  testWidgets('non-premium credit number stays visible before usage refresh', (
+    tester,
+  ) async {
+    await pumpBadge(
+      tester,
+      _state(isPremium: false, freeUsesLeft: null, paidCredits: 4),
+    );
+
+    expect(find.byKey(const Key('credits-status-icon')), findsOneWidget);
+    expect(find.text('4'), findsOneWidget);
+  });
+
   testWidgets(
     'Reply header shows a left-aligned title and drops the old subtitle',
     (tester) async {

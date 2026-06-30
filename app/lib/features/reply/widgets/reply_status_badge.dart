@@ -22,14 +22,12 @@ class ReplyStatusBadge extends StatelessWidget {
     final isPremium = usage.isPremium;
     final color = isPremium ? AppColors.premiumGold : AppColors.replyColor;
 
-    // Total usable credits = free remaining + purchased credits. freeUsesLeft
-    // is null before the first load (and whenever premium), so show only the
-    // icon in that case rather than a misleading "0".
-    final String? label = isPremium
+    // Total usable credits = free remaining + purchased credits. Keep the
+    // number visible while the first usage refresh is pending; paid credits
+    // are still known locally and the refreshed total replaces it shortly.
+    final String label = isPremium
         ? 'Premium'
-        : (usage.freeUsesLeft != null
-              ? '${usage.freeUsesLeft! + usage.paidCredits}'
-              : null);
+        : '${(usage.freeUsesLeft ?? 0) + usage.paidCredits}';
 
     return Padding(
       padding: const EdgeInsets.only(right: 12),
@@ -37,7 +35,7 @@ class ReplyStatusBadge extends StatelessWidget {
         button: true,
         label: isPremium
             ? 'Premium subscription active'
-            : (label != null ? '$label credits remaining' : 'View plans'),
+            : '$label credits remaining',
         child: Material(
           color: color.withAlpha(22),
           shape: const StadiumBorder(),
@@ -64,16 +62,14 @@ class ReplyStatusBadge extends StatelessWidget {
                       height: 22,
                       fit: BoxFit.contain,
                     ),
-                  if (label != null) ...[
-                    const SizedBox(width: 5),
-                    Text(
-                      label,
-                      style: AppTextStyles.badge.copyWith(
-                        color: color,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  const SizedBox(width: 5),
+                  Text(
+                    label,
+                    style: AppTextStyles.badge.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w700,
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),
