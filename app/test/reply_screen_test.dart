@@ -203,6 +203,61 @@ void main() {
     expect(repository.lastRequest?.audience.preset, 'customer');
   });
 
+  testWidgets('Guidance collapsed header matches Polish wording and toggles', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpReply(tester);
+
+    expect(find.text('Guidance'), findsOneWidget);
+    expect(find.text('Add guidance'), findsOneWidget);
+    expect(find.byIcon(Icons.lightbulb_outline_rounded), findsWidgets);
+    expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsWidgets);
+    expect(find.text('Optional tone or key points'), findsNothing);
+    expect(find.text('Optional'), findsNothing);
+
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('reply-guidance-field')), findsOneWidget);
+    expect(find.text('Hide'), findsOneWidget);
+
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('reply-guidance-field')), findsNothing);
+    expect(find.text('Add guidance'), findsOneWidget);
+  });
+
+  testWidgets('selected Reply guidance remains visible and is sent', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    final repository = _RecordingReplyRepository();
+    await _pumpReply(tester, repository: repository);
+    await tester.enterText(
+      _editableIn(const Key('reply-incoming-field')),
+      'Can we reschedule?',
+    );
+
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Be polite'));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<EditableText>(_editableIn(const Key('reply-guidance-field')))
+          .controller
+          .text,
+      'Make the reply polite and respectful.',
+    );
+
+    await tester.tap(find.text('Generate Reply'));
+    await tester.pumpAndSettle();
+    expect(
+      repository.lastRequest?.guidance,
+      'Make the reply polite and respectful.',
+    );
+  });
+
   testWidgets('empty incoming still blocks Generate Reply', (tester) async {
     _useTallView(tester);
     await _pumpReply(tester);

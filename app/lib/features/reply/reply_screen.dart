@@ -478,149 +478,97 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             showFeatureImage: false,
             tintStrength: _kCardTintStrength,
             tintColor: _kCardTint,
-            padding: const EdgeInsets.all(14),
+            padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(210),
-                        shape: BoxShape.circle,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: AppColors.softBlueShadow,
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.tips_and_updates_outlined,
-                        color: _kColor,
-                        size: 21,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  'Guidance',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: AppTextStyles.cardTitle.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              const _OptionalBadge(),
-                            ],
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            _guidanceExpanded
-                                ? 'Tell us how you want to reply.'
-                                : 'Optional tone or key points',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.helper.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      tooltip: _guidanceExpanded
-                          ? 'Collapse guidance'
-                          : 'Expand guidance',
-                      onPressed: () => setState(
-                        () => _guidanceExpanded = !_guidanceExpanded,
-                      ),
-                      icon: AnimatedRotation(
-                        turns: _guidanceExpanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 180),
-                        child: const Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: _kColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                if (!_guidanceExpanded) ...[
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      _PillAction(
-                        icon: Icons.add_rounded,
-                        label: 'Add guidance',
-                        onTap: () => setState(() => _guidanceExpanded = true),
-                      ),
-                      const SizedBox(width: 10),
-                      _PillAction(
-                        icon: Icons.menu_book_rounded,
-                        label: 'Library',
-                        onTap: _openLibrary,
-                      ),
-                    ],
-                  ),
-                ] else ...[
-                  const SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: _PillAction(
-                      icon: Icons.menu_book_rounded,
-                      label: 'Library',
-                      onTap: _openLibrary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  LabeledTextField(
-                    key: const Key('reply-guidance-field'),
-                    label: 'Reply guidance',
-                    feature: _feature,
-                    showHeader: false,
-                    showCounter: false,
-                    controller: _guidanceController,
-                    hintText: 'Add your reply instructions…',
-                    maxLines: 4,
-                    maxLength: InputLimits.guidanceMaxLength,
-                    fieldActions: Row(
-                      mainAxisSize: MainAxisSize.min,
+                InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onTap: () =>
+                      setState(() => _guidanceExpanded = !_guidanceExpanded),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+                    child: Row(
                       children: [
-                        IconButton(
-                          tooltip: 'Paste',
-                          visualDensity: VisualDensity.compact,
+                        const Icon(
+                          Icons.lightbulb_outline_rounded,
                           color: _kColor,
-                          onPressed: _pasteGuidance,
-                          icon: const Icon(
-                            Icons.content_paste_rounded,
-                            size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Guidance',
+                            style: AppTextStyles.cardTitle,
                           ),
                         ),
-                        IconButton(
-                          tooltip: 'Clear',
-                          visualDensity: VisualDensity.compact,
-                          color: _kColor,
-                          onPressed: _guidanceController.clear,
-                          icon: const Icon(Icons.close_rounded, size: 21),
+                        Text(
+                          _guidanceExpanded ? 'Hide' : 'Add guidance',
+                          style: AppTextStyles.helper.copyWith(color: _kColor),
+                        ),
+                        Icon(
+                          _guidanceExpanded
+                              ? Icons.keyboard_arrow_up_rounded
+                              : Icons.keyboard_arrow_down_rounded,
+                          color: AppColors.textSecondary,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 14),
-                  _QuickGuidanceChips(onAppend: _appendGuidanceText),
+                ),
+                if (_guidanceExpanded) ...[
+                  const Divider(height: 1, color: AppColors.cardBorder),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: _PillAction(
+                            icon: Icons.menu_book_rounded,
+                            label: 'Library',
+                            onTap: _openLibrary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        LabeledTextField(
+                          key: const Key('reply-guidance-field'),
+                          label: 'Reply guidance',
+                          feature: _feature,
+                          showHeader: false,
+                          showCounter: false,
+                          controller: _guidanceController,
+                          hintText: 'Add your reply instructions…',
+                          maxLines: 4,
+                          maxLength: InputLimits.guidanceMaxLength,
+                          fieldActions: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                tooltip: 'Paste',
+                                visualDensity: VisualDensity.compact,
+                                color: _kColor,
+                                onPressed: _pasteGuidance,
+                                icon: const Icon(
+                                  Icons.content_paste_rounded,
+                                  size: 20,
+                                ),
+                              ),
+                              IconButton(
+                                tooltip: 'Clear',
+                                visualDensity: VisualDensity.compact,
+                                color: _kColor,
+                                onPressed: _guidanceController.clear,
+                                icon: const Icon(Icons.close_rounded, size: 21),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        _QuickGuidanceChips(onAppend: _appendGuidanceText),
+                      ],
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -815,30 +763,6 @@ class _CardHeader extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Small "Optional" pill shown next to the Reply guidance title.
-class _OptionalBadge extends StatelessWidget {
-  const _OptionalBadge();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: _kColor.withAlpha(26),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        'Optional',
-        style: AppTextStyles.badge.copyWith(
-          color: _kColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 11,
-        ),
-      ),
     );
   }
 }
