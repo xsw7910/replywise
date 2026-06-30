@@ -44,7 +44,7 @@ void main() {
     expect(find.byIcon(Icons.workspace_premium_rounded), findsOneWidget);
     expect(find.text('Premium'), findsOneWidget);
     // No credit icon and no number when premium.
-    expect(find.byIcon(Icons.toll_rounded), findsNothing);
+    expect(find.byIcon(Icons.generating_tokens_rounded), findsNothing);
   });
 
   testWidgets('non-premium user sees credit icon and total credits', (
@@ -56,7 +56,7 @@ void main() {
       _state(isPremium: false, freeUsesLeft: 3, paidCredits: 4),
     );
 
-    expect(find.byIcon(Icons.toll_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.generating_tokens_rounded), findsOneWidget);
     expect(find.text('7'), findsOneWidget);
     expect(find.byIcon(Icons.workspace_premium_rounded), findsNothing);
     expect(find.text('Premium'), findsNothing);

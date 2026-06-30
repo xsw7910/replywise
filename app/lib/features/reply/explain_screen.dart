@@ -87,6 +87,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
 
     return AppPage(
       title: _ExplainText.navTitle,
+      accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
       transparentAppBar: true,
       centerTitle: false,

@@ -148,6 +148,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
 
     return AppPage(
       title: 'Polish',
+      accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
       transparentAppBar: true,
       centerTitle: false,

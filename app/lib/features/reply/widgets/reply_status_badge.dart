@@ -23,7 +23,7 @@ class ReplyStatusBadge extends StatelessWidget {
     final color = isPremium ? AppColors.premiumGold : AppColors.replyColor;
     final icon = isPremium
         ? Icons.workspace_premium_rounded
-        : Icons.toll_rounded;
+        : Icons.generating_tokens_rounded;
 
     // Total usable credits = free remaining + purchased credits. freeUsesLeft
     // is null before the first load (and whenever premium), so show only the
