@@ -11,16 +11,25 @@ class GeneratedResultCard extends StatelessWidget {
     required this.label,
     required this.text,
     this.feature,
+    this.showFeatureImage = true,
+    this.tintColor,
+    this.tintStrength = 1,
   });
 
   final String label;
   final String text;
   final AppFeature? feature;
+  final bool showFeatureImage;
+  final Color? tintColor;
+  final double tintStrength;
 
   @override
   Widget build(BuildContext context) {
     return GlassCard(
       feature: feature,
+      showFeatureImage: showFeatureImage,
+      tintColor: tintColor,
+      tintStrength: tintStrength,
       blur: 8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

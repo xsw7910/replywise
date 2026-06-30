@@ -14,6 +14,8 @@ import '../domain/guidance_template.dart';
 
 const _kColor = AppColors.guidanceColor;
 const _feature = AppFeature.guidance;
+const _kCardTint = Color(0xFFE8F2FF);
+const _kCardTintStrength = 0.65;
 
 class GuidanceLibraryScreen extends ConsumerWidget {
   const GuidanceLibraryScreen({super.key});
@@ -37,11 +39,10 @@ class GuidanceLibraryScreen extends ConsumerWidget {
 
     return AppPage(
       title: 'Guidance Library',
-      subtitle: 'Save and reuse your guidance.',
-      headerImagePath: 'assets/icons/guidance.png',
-      accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
       showBackButton: true,
+      transparentAppBar: true,
+      centerTitle: false,
       actions: [
         IconButton(
           tooltip: 'New guidance',
@@ -146,6 +147,9 @@ class _GuidanceCard extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: GlassCard(
         feature: _feature,
+        showFeatureImage: false,
+        tintColor: _kCardTint,
+        tintStrength: _kCardTintStrength,
         padding: const EdgeInsets.fromLTRB(14, 12, 8, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -151,7 +151,7 @@ void main() {
     await tester.tap(find.text('Polish').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Make your English sound more natural.'), findsOneWidget);
+    expect(find.text('Your draft'), findsOneWidget);
   });
 
   testWidgets('Home Reply feature card opens Reply page', (tester) async {
@@ -159,7 +159,9 @@ void main() {
 
     await tapHomeCard(tester, const Key('home-feature-reply'));
 
-    expect(find.text('Generate natural English replies.'), findsOneWidget);
+    // The Reply page header no longer carries the subtitle; assert on a
+    // stable element of the Reply page body instead.
+    expect(find.text('Message received'), findsOneWidget);
   });
 
   testWidgets('Home Explain feature card opens Explain page', (tester) async {
@@ -167,7 +169,7 @@ void main() {
 
     await tapHomeCard(tester, const Key('home-feature-explain'));
 
-    expect(find.text('Understand the meaning and tone.'), findsOneWidget);
+    expect(find.text('Message to understand'), findsOneWidget);
   });
 
   testWidgets('Home Polish feature card opens Polish page', (tester) async {
@@ -175,7 +177,7 @@ void main() {
 
     await tapHomeCard(tester, const Key('home-feature-polish'));
 
-    expect(find.text('Make your English sound more natural.'), findsOneWidget);
+    expect(find.text('Your draft'), findsOneWidget);
   });
 
   testWidgets('Home Guidance Library feature card opens library page', (

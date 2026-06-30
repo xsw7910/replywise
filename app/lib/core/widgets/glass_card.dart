@@ -15,6 +15,7 @@ class GlassCard extends StatelessWidget {
     this.feature,
     this.tintStrength = 1,
     this.tintColor,
+    this.showFeatureImage = true,
   });
 
   final Widget child;
@@ -26,6 +27,10 @@ class GlassCard extends StatelessWidget {
   final double tintStrength;
   final Color? tintColor;
 
+  /// When false, a feature card keeps its tinted glass decoration but omits the
+  /// photographic background texture.
+  final bool showFeatureImage;
+
   @override
   Widget build(BuildContext context) {
     final f = feature;
@@ -34,6 +39,7 @@ class GlassCard extends StatelessWidget {
     // Feature cards use the themed background image as their fill, keeping the
     // soft border + shadow so they stay distinct from the page background.
     if (f != null) {
+      final content = Padding(padding: padding, child: child);
       return Container(
         decoration: f.glassCardDecoration(
           borderRadius: radius,
@@ -42,14 +48,16 @@ class GlassCard extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.asset(f.backgroundImage, fit: BoxFit.cover),
-              ),
-              Padding(padding: padding, child: child),
-            ],
-          ),
+          child: showFeatureImage
+              ? Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.asset(f.backgroundImage, fit: BoxFit.cover),
+                    ),
+                    content,
+                  ],
+                )
+              : content,
         ),
       );
     }

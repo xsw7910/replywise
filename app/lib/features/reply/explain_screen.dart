@@ -18,6 +18,8 @@ import 'domain/reply_models.dart';
 
 const _kColor = AppColors.explainColor;
 const _feature = AppFeature.explain;
+const _kCardTint = Color(0xFFE8F2FF);
+const _kCardTintStrength = 0.65;
 
 class ExplainScreen extends ConsumerStatefulWidget {
   const ExplainScreen({super.key});
@@ -82,16 +84,18 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
 
     return AppPage(
       title: _ExplainText.navTitle,
-      subtitle: 'Understand the meaning and tone.',
-      headerImagePath: 'assets/icons/explain.png',
-      accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
+      transparentAppBar: true,
+      centerTitle: false,
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
           GlassCard(
             feature: _feature,
+            showFeatureImage: false,
+            tintColor: _kCardTint,
+            tintStrength: _kCardTintStrength,
             child: LabeledTextField(
               key: const Key('explain-message-field'),
               label: _ExplainText.inputLabel,
@@ -252,6 +256,9 @@ class _ResultSection extends StatelessWidget {
     return GlassCard(
       feature: _feature,
       blur: 8,
+      showFeatureImage: false,
+      tintColor: _kCardTint,
+      tintStrength: _kCardTintStrength,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -284,6 +291,9 @@ class _SuggestionCard extends StatelessWidget {
     return GlassCard(
       feature: _feature,
       blur: 8,
+      showFeatureImage: false,
+      tintColor: _kCardTint,
+      tintStrength: _kCardTintStrength,
       padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,6 +328,9 @@ class _ContinueCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       feature: _feature,
+      showFeatureImage: false,
+      tintColor: _kCardTint,
+      tintStrength: _kCardTintStrength,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

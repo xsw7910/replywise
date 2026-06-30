@@ -49,6 +49,9 @@ abstract final class AppColors {
   static const Color error = Color(0xFFE05252);
   static const Color success = Color(0xFF3BC47C);
 
+  // Premium / subscription accent (gold) used for crown badges.
+  static const Color premiumGold = Color(0xFFD99A00);
+
   // Nav bar
   static const Color navBarBackground = Color(0xFFF8FBFF);
   static const Color navBarSelected = primaryBlue;

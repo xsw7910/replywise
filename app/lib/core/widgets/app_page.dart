@@ -17,6 +17,8 @@ class AppPage extends StatelessWidget {
     this.headerIcon,
     this.subtitle,
     this.backgroundImagePath,
+    this.transparentAppBar = false,
+    this.centerTitle,
   });
 
   final String title;
@@ -31,6 +33,14 @@ class AppPage extends StatelessWidget {
   final String? subtitle;
   final String? backgroundImagePath;
 
+  /// When true the app bar is fully transparent and the body (including the
+  /// background image) extends to the top of the screen, behind the header.
+  final bool transparentAppBar;
+
+  /// Overrides the app bar title alignment. Null inherits the app theme
+  /// (centered); false left-aligns the title.
+  final bool? centerTitle;
+
   @override
   Widget build(BuildContext context) {
     final hasFeatureHeader = headerImagePath != null || headerIcon != null;
@@ -41,10 +51,11 @@ class AppPage extends StatelessWidget {
         : null;
 
     return Scaffold(
-      extendBodyBehindAppBar: false,
+      extendBodyBehindAppBar: transparentAppBar,
       appBar: showAppBar
           ? AppBar(
               toolbarHeight: toolbarHeight,
+              centerTitle: centerTitle,
               titleSpacing: showBackButton ? 0 : 16,
               title: hasFeatureHeader
                   ? _FeatureNavigationTitle(
@@ -57,7 +68,9 @@ class AppPage extends StatelessWidget {
                   : Text(title, style: titleStyle),
               actions: actions,
               automaticallyImplyLeading: showBackButton,
-              backgroundColor: Colors.white.withAlpha(175),
+              backgroundColor: transparentAppBar
+                  ? Colors.transparent
+                  : Colors.white.withAlpha(175),
               surfaceTintColor: Colors.transparent,
               elevation: 0,
               scrolledUnderElevation: 0,
@@ -73,7 +86,18 @@ class AppPage extends StatelessWidget {
                 ? Image.asset(backgroundImagePath!, fit: BoxFit.cover)
                 : const ColoredBox(color: AppColors.backgroundBase),
           ),
-          if (useSafeArea) SafeArea(top: !showAppBar, child: child) else child,
+          if (useSafeArea)
+            SafeArea(
+              top: transparentAppBar || !showAppBar,
+              child: transparentAppBar && showAppBar
+                  ? Padding(
+                      padding: EdgeInsets.only(top: toolbarHeight),
+                      child: child,
+                    )
+                  : child,
+            )
+          else
+            child,
         ],
       ),
     );

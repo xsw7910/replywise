@@ -16,7 +16,7 @@ import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_picker_sheet.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
-import '../../core/widgets/usage_badge.dart';
+import 'widgets/reply_status_badge.dart';
 import 'application/explain_controller.dart';
 import 'application/pending_reply_input_provider.dart';
 import 'application/reply_controller.dart';
@@ -25,6 +25,11 @@ import '../entitlement/usage_controller.dart';
 
 const _kColor = AppColors.replyColor;
 const _feature = AppFeature.reply;
+
+// Every card on the Reply page shares one surface tint (matching the
+// "More options" card) so the page reads as a single consistent surface.
+const _kCardTint = Color(0xFFE8F2FF);
+const _kCardTintStrength = 0.65;
 
 class ReplyScreen extends ConsumerStatefulWidget {
   const ReplyScreen({super.key});
@@ -353,6 +358,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: GlassCard(
                     feature: _feature,
+                    showFeatureImage: false,
+                    tintStrength: _kCardTintStrength,
+                    tintColor: _kCardTint,
                     blur: 6,
                     padding: const EdgeInsets.all(12),
                     child: Row(
@@ -383,44 +391,30 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     final replyState = ref.watch(replyControllerProvider);
     final explainState = ref.watch(explainControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
-    final showUsageBadge =
-        usageState.usage.isPremium ||
-        usageState.error != null ||
-        usageState.usage.freeUsesLeft != null;
     _consumePendingGuidance();
     _consumePendingReplyInput();
 
     return AppPage(
       title: 'Reply',
-      subtitle: 'Generate natural English replies.',
-      headerImagePath: 'assets/icons/reply.png',
       accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
+      transparentAppBar: true,
+      centerTitle: false,
       actions: [
-        IconButton(
-          tooltip: 'Plans',
-          onPressed: () => context.push(AppRoutes.paywall),
-          icon: const Icon(Icons.workspace_premium_outlined),
+        ReplyStatusBadge(
+          usage: usageState.usage,
+          onTap: () => context.push(AppRoutes.paywall),
         ),
       ],
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          if (showUsageBadge) ...[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: UsageBadge(
-                state: usageState,
-                onRetry: () =>
-                    ref.read(usageControllerProvider.notifier).refresh(),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
           GlassCard(
             feature: _feature,
-            tintColor: const Color(0xFFDDEEFF),
+            showFeatureImage: false,
+            tintStrength: _kCardTintStrength,
+            tintColor: _kCardTint,
             padding: const EdgeInsets.all(14),
             child: Column(
               children: [
@@ -483,8 +477,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           const SizedBox(height: 14),
           GlassCard(
             feature: _feature,
-            tintStrength: 0.72,
-            tintColor: const Color(0xFFE2F0FF),
+            showFeatureImage: false,
+            tintStrength: _kCardTintStrength,
+            tintColor: _kCardTint,
             padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -715,11 +710,17 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                 label: version.label,
                 text: version.text,
                 feature: _feature,
+                showFeatureImage: false,
+                tintStrength: _kCardTintStrength,
+                tintColor: _kCardTint,
               ),
               const SizedBox(height: 12),
             ],
             GlassCard(
               feature: _feature,
+              showFeatureImage: false,
+              tintStrength: _kCardTintStrength,
+              tintColor: _kCardTint,
               blur: 8,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -961,8 +962,9 @@ class _MoreOptionsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       feature: _feature,
-      tintStrength: 0.65,
-      tintColor: const Color(0xFFE8F2FF),
+      showFeatureImage: false,
+      tintStrength: _kCardTintStrength,
+      tintColor: _kCardTint,
       padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

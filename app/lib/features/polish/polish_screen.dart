@@ -13,16 +13,18 @@ import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
-import '../../core/widgets/usage_badge.dart';
 import 'application/polish_controller.dart';
 import 'domain/polish_models.dart';
 import '../entitlement/usage_controller.dart';
 import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_chip_row.dart';
+import '../reply/widgets/reply_status_badge.dart';
 
 const _kColor = AppColors.polishColor;
 const _feature = AppFeature.polish;
+const _kCardTint = Color(0xFFE8F2FF);
+const _kCardTintStrength = 0.65;
 
 class PolishScreen extends ConsumerStatefulWidget {
   const PolishScreen({super.key});
@@ -102,42 +104,28 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   Widget build(BuildContext context) {
     final polishState = ref.watch(polishControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
-    final showUsageBadge =
-        usageState.usage.isPremium ||
-        usageState.error != null ||
-        usageState.usage.freeUsesLeft != null;
     _consumePendingGuidance();
 
     return AppPage(
       title: 'Polish',
-      subtitle: 'Make your English sound more natural.',
-      headerImagePath: 'assets/icons/polish.png',
-      accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
+      transparentAppBar: true,
+      centerTitle: false,
       actions: [
-        IconButton(
-          tooltip: 'Plans',
-          onPressed: () => context.push(AppRoutes.paywall),
-          icon: const Icon(Icons.workspace_premium_outlined),
+        ReplyStatusBadge(
+          usage: usageState.usage,
+          onTap: () => context.push(AppRoutes.paywall),
         ),
       ],
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          if (showUsageBadge) ...[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: UsageBadge(
-                state: usageState,
-                onRetry: () =>
-                    ref.read(usageControllerProvider.notifier).refresh(),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
           GlassCard(
             feature: _feature,
+            showFeatureImage: false,
+            tintColor: _kCardTint,
+            tintStrength: _kCardTintStrength,
             child: LabeledTextField(
               label: 'Your draft',
               feature: _feature,
@@ -171,6 +159,9 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
           const SizedBox(height: 14),
           GlassCard(
             feature: _feature,
+            showFeatureImage: false,
+            tintColor: _kCardTint,
+            tintStrength: _kCardTintStrength,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -282,11 +273,17 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
               label: _direction,
               text: polishState.result!.polished,
               feature: _feature,
+              showFeatureImage: false,
+              tintColor: _kCardTint,
+              tintStrength: _kCardTintStrength,
             ),
             const SizedBox(height: 12),
             GlassCard(
               feature: _feature,
               blur: 8,
+              showFeatureImage: false,
+              tintColor: _kCardTint,
+              tintStrength: _kCardTintStrength,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
