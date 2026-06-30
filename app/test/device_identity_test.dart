@@ -30,6 +30,18 @@ class _MemoryTokenStorage extends TokenStorage {
   Future<void> saveDeviceId(String id) async => _deviceId = id;
 }
 
+class _FallbackMustNotBeReadStorage extends TokenStorage {
+  _FallbackMustNotBeReadStorage() : super(const FlutterSecureStorage());
+
+  @override
+  Future<String?> getDeviceId() =>
+      throw StateError('fallback storage must not be read');
+
+  @override
+  Future<void> saveDeviceId(String id) =>
+      throw StateError('fallback storage must not be written');
+}
+
 void main() {
   group('DeviceIdentity on Android', () {
     test('same Android ID source produces the same device hash', () async {
@@ -45,18 +57,21 @@ void main() {
       expect(first, hasLength(64)); // SHA-256 hex digest.
     });
 
-    test('different Android ID source produces a different device hash', () async {
-      final hashA = await DeviceIdentity(
-        androidIdSource: _FakeAndroidIdSource('AAAA-1111'),
-        isAndroid: () => true,
-      ).resolve(_MemoryTokenStorage());
-      final hashB = await DeviceIdentity(
-        androidIdSource: _FakeAndroidIdSource('BBBB-2222'),
-        isAndroid: () => true,
-      ).resolve(_MemoryTokenStorage());
+    test(
+      'different Android ID source produces a different device hash',
+      () async {
+        final hashA = await DeviceIdentity(
+          androidIdSource: _FakeAndroidIdSource('AAAA-1111'),
+          isAndroid: () => true,
+        ).resolve(_MemoryTokenStorage());
+        final hashB = await DeviceIdentity(
+          androidIdSource: _FakeAndroidIdSource('BBBB-2222'),
+          isAndroid: () => true,
+        ).resolve(_MemoryTokenStorage());
 
-      expect(hashA, isNot(equals(hashB)));
-    });
+        expect(hashA, isNot(equals(hashB)));
+      },
+    );
 
     test('never sends the raw Android ID — only its SHA-256 hash', () async {
       const rawId = 'super-secret-android-id';
@@ -97,6 +112,33 @@ void main() {
       expect(await storage.getDeviceId(), first);
     });
 
+    test('null Android ID falls back to a persisted install UUID', () async {
+      final identity = DeviceIdentity(
+        androidIdSource: _FakeAndroidIdSource(null),
+        isAndroid: () => true,
+      );
+      final storage = _MemoryTokenStorage();
+
+      final id = await identity.resolve(storage);
+
+      expect(id, isNotEmpty);
+      expect(await storage.getDeviceId(), id);
+    });
+
+    test(
+      'stable Android hash is resolved before fallback storage is checked',
+      () async {
+        final identity = DeviceIdentity(
+          androidIdSource: _FakeAndroidIdSource('abc'),
+          isAndroid: () => true,
+        );
+
+        final hash = await identity.resolve(_FallbackMustNotBeReadStorage());
+
+        expect(hash, hasLength(64));
+      },
+    );
+
     test('plugin failure falls back to a persisted install UUID without '
         'throwing', () async {
       final identity = DeviceIdentity(
@@ -113,18 +155,21 @@ void main() {
   });
 
   group('DeviceIdentity on non-Android platforms', () {
-    test('falls back to a persisted install UUID and keeps it stable', () async {
-      final identity = DeviceIdentity(
-        androidIdSource: _FakeAndroidIdSource('unused-on-this-platform'),
-        isAndroid: () => false,
-      );
-      final storage = _MemoryTokenStorage();
+    test(
+      'falls back to a persisted install UUID and keeps it stable',
+      () async {
+        final identity = DeviceIdentity(
+          androidIdSource: _FakeAndroidIdSource('unused-on-this-platform'),
+          isAndroid: () => false,
+        );
+        final storage = _MemoryTokenStorage();
 
-      final first = await identity.resolve(storage);
-      final second = await identity.resolve(storage);
+        final first = await identity.resolve(storage);
+        final second = await identity.resolve(storage);
 
-      expect(first, second);
-      expect(await storage.getDeviceId(), first);
-    });
+        expect(first, second);
+        expect(await storage.getDeviceId(), first);
+      },
+    );
   });
 }

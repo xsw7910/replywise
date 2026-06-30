@@ -7,6 +7,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import 'token_storage.dart';
+import 'platform_detector_stub.dart'
+    if (dart.library.io) 'platform_detector_io.dart';
 
 part 'device_identity.g.dart';
 
@@ -49,21 +51,36 @@ class DeviceIdentity {
   final AndroidIdSource _androidIdSource;
   final bool Function() _isAndroid;
 
-  static bool _defaultIsAndroid() =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  static bool _defaultIsAndroid() => !kIsWeb && isAndroidPlatform;
+
+  static String _prefix(String value) =>
+      value.length <= 8 ? value : value.substring(0, 8);
+
+  static void _debugLog(String message) {
+    if (kDebugMode) debugPrint(message);
+  }
 
   Future<String?> _stableAndroidHash() async {
-    if (!_isAndroid()) return null;
+    if (!_isAndroid()) {
+      _debugLog('DeviceIdentity: not Android, using fallback');
+      return null;
+    }
     try {
       final id = await _androidIdSource.getId();
-      if (id == null || id.isEmpty) return null;
+      if (id == null || id.isEmpty) {
+        _debugLog('DeviceIdentity: Android ID empty, using fallback');
+        return null;
+      }
       final digest = sha256.convert(
         utf8.encode('$id$_kAndroidPackageName$_kDeviceIdSalt'),
       );
-      return digest.toString();
+      final hash = digest.toString();
+      _debugLog('DeviceIdentity path: android_id, prefix=${_prefix(hash)}');
+      return hash;
     } catch (_) {
       // Plugin unavailable, missing platform implementation, or any other
       // failure — fall back to the install UUID below rather than crash.
+      _debugLog('DeviceIdentity: Android ID unavailable, using fallback');
       return null;
     }
   }
@@ -79,6 +96,9 @@ class DeviceIdentity {
       fallback = const Uuid().v4();
       await storage.saveDeviceId(fallback);
     }
+    _debugLog(
+      'DeviceIdentity path: fallback_uuid, prefix=${_prefix(fallback)}',
+    );
     return fallback;
   }
 }

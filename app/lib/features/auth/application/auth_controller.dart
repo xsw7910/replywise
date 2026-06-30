@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -130,6 +131,10 @@ class AuthController extends _$AuthController {
     );
 
     final deviceId = await _ensureDeviceId(storage);
+    if (kDebugMode) {
+      final prefix = deviceId.length <= 8 ? deviceId : deviceId.substring(0, 8);
+      debugPrint('Anonymous auth device_hash prefix=$prefix');
+    }
     final baseDelay = ref.read(authRetryBaseDelayProvider);
 
     const maxAttempts = 3;
