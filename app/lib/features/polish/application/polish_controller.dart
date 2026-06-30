@@ -68,6 +68,15 @@ class PolishController extends _$PolishController {
       return 'Custom guidance must be '
           '${InputLimits.guidanceMaxLength} characters or less.';
     }
+    if ((request.guidance?.length ?? 0) > InputLimits.guidanceMaxLength) {
+      return 'Guidance must be '
+          '${InputLimits.guidanceMaxLength} characters or less.';
+    }
+    if ((request.tone?.length ?? 0) > 500 ||
+        (request.audience?.length ?? 0) > 500 ||
+        (request.extraInstruction?.length ?? 0) > 1000) {
+      return 'One of the optional instructions is too long.';
+    }
     return null;
   }
 }

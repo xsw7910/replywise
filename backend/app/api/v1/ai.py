@@ -147,6 +147,13 @@ async def polish(
     # 1000-character limit. Keeping these aligned means a Guidance Library item
     # that is valid to save is also valid to use in Polish.
     body.custom = _optional(body.custom, "custom", 1000)
+    body.guidance = _optional(body.guidance, "guidance", 1000)
+    body.tone = _optional(body.tone, "tone", 500)
+    body.audience = _optional(body.audience, "audience", 500)
+    body.length = _optional(body.length, "length", 100)
+    body.extra_instruction = _optional(
+        body.extra_instruction, "extraInstruction", 1000
+    )
     if body.direction == "custom" and not body.custom:
         raise ApiException(
             code="VALIDATION_ERROR",

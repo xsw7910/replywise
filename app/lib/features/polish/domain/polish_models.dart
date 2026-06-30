@@ -3,18 +3,33 @@ class PolishRequest {
     required this.draft,
     required this.direction,
     this.custom,
+    this.guidance,
+    this.tone,
+    this.audience,
+    this.length,
+    this.extraInstruction,
     required this.guidanceLang,
   });
 
   final String draft;
   final String direction;
   final String? custom;
+  final String? guidance;
+  final String? tone;
+  final String? audience;
+  final String? length;
+  final String? extraInstruction;
   final String guidanceLang;
 
   Map<String, dynamic> toJson() => {
     'draft': draft,
     'direction': direction,
     'custom': custom,
+    'guidance': guidance,
+    'tone': tone,
+    'audience': audience,
+    'length': length,
+    'extraInstruction': extraInstruction,
     'guidanceLang': guidanceLang,
   };
 }

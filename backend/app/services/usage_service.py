@@ -16,7 +16,7 @@ def canonicalize(model) -> tuple[str, str]:
     raw = model.model_dump(mode="json")
     clean = _clean(raw)
     clean.setdefault("output_lang", "en")
-    if "audience" in clean:
+    if isinstance(clean.get("audience"), dict):
         clean["audience"].setdefault("mode", "auto")
         clean["audience"].setdefault("formality", 50)
     canonical = json.dumps(clean, separators=(",", ":"), sort_keys=True, ensure_ascii=False)

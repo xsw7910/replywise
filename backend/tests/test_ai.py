@@ -214,6 +214,84 @@ class _CapturingReplyProvider:
         )
 
 
+class _CapturingPolishProvider:
+    def __init__(self) -> None:
+        self.system_prompt = ""
+        self.payload: dict = {}
+
+    async def complete(self, system_prompt: str, payload: dict) -> str:
+        self.system_prompt = system_prompt
+        self.payload = payload
+        return json.dumps(
+            {
+                "polished": payload["draft"].strip(),
+                "changes": "Applied the requested polishing instructions.",
+            }
+        )
+
+
+def test_polish_optional_instructions_reach_provider(client: TestClient) -> None:
+    provider = _CapturingPolishProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/polish",
+            json={
+                "draft": " Please review this draft. ",
+                "direction": "natural",
+                "guidance": " Keep the original meaning. ",
+                "tone": " warm but professional ",
+                "audience": " my manager ",
+                "length": " shorter ",
+                "extraInstruction": " Keep the opening sentence. ",
+            },
+            headers=_headers(client, "polish-options"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert provider.payload["guidance"] == "Keep the original meaning."
+    assert provider.payload["tone"] == "warm but professional"
+    assert provider.payload["audience"] == "my manager"
+    assert provider.payload["length"] == "shorter"
+    assert provider.payload["extra_instruction"] == "Keep the opening sentence."
+    assert '"guidance" is present' in provider.system_prompt
+    assert '"tone" is present' in provider.system_prompt
+    assert '"audience" is present' in provider.system_prompt
+    assert '"extra_instruction" is present' in provider.system_prompt
+
+
+def test_polish_empty_optional_instructions_do_not_crash(
+    client: TestClient,
+) -> None:
+    provider = _CapturingPolishProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/polish",
+            json={
+                "draft": "Please review this draft.",
+                "direction": "natural",
+                "guidance": " ",
+                "tone": " ",
+                "audience": " ",
+                "length": " ",
+                "extraInstruction": " ",
+            },
+            headers=_headers(client, "polish-empty-options"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert provider.payload["guidance"] is None
+    assert provider.payload["tone"] is None
+    assert provider.payload["audience"] is None
+    assert provider.payload["length"] is None
+    assert provider.payload["extra_instruction"] is None
+
+
 def test_reply_custom_tone_and_audience_reach_provider(client: TestClient) -> None:
     provider = _CapturingReplyProvider()
     app.dependency_overrides[get_ai_service] = lambda: AIService(provider)

@@ -50,6 +50,11 @@ class PolishRequest(ApiModel):
     draft: str
     direction: Literal["natural", "professional", "friendly", "concise", "custom"]
     custom: str | None = None
+    guidance: str | None = None
+    tone: str | None = None
+    audience: str | None = None
+    length: str | None = None
+    extra_instruction: str | None = None
     guidance_lang: str = "en"
 
 

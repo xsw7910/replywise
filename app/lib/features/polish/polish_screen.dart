@@ -35,35 +35,47 @@ class PolishScreen extends ConsumerStatefulWidget {
 
 class _PolishScreenState extends ConsumerState<PolishScreen> {
   final _draftController = TextEditingController();
-  final _customGuidanceController = TextEditingController();
-  String _direction = 'Natural';
+  final _guidanceController = TextEditingController();
+  final _customToneController = TextEditingController();
+  final _customAudienceController = TextEditingController();
+  final _extraInstructionController = TextEditingController();
+  bool _guidanceExpanded = false;
+  bool _moreOptionsExpanded = false;
+  String _tone = 'Natural';
+  String _audience = 'Auto';
+  String _length = 'Same';
 
-  static const _directions = [
-    'Natural',
-    'Professional',
-    'Friendly',
-    'Concise',
+  static const _tones = ['Natural', 'Professional', 'Friendly', 'Custom'];
+  static const _audiences = [
+    'Auto',
+    'Friend',
+    'Customer',
+    'Coworker',
+    'Manager',
     'Custom',
   ];
+  static const _lengths = ['Shorter', 'Same', 'Longer'];
 
   @override
   void dispose() {
     _draftController.dispose();
-    _customGuidanceController.dispose();
+    _guidanceController.dispose();
+    _customToneController.dispose();
+    _customAudienceController.dispose();
+    _extraInstructionController.dispose();
     super.dispose();
   }
 
   void _appendGuidance(GuidanceTemplate template) {
-    // Switch to Custom direction so the text is included in the request.
-    if (_direction != 'Custom') setState(() => _direction = 'Custom');
-    final current = _customGuidanceController.text.trim();
+    final current = _guidanceController.text.trim();
     final content = template.content;
-    _customGuidanceController.text = current.isEmpty
+    _guidanceController.text = current.isEmpty
         ? content
         : '$current\n\n$content';
-    _customGuidanceController.selection = TextSelection.collapsed(
-      offset: _customGuidanceController.text.length,
+    _guidanceController.selection = TextSelection.collapsed(
+      offset: _guidanceController.text.length,
     );
+    if (!_guidanceExpanded) setState(() => _guidanceExpanded = true);
   }
 
   /// Applies a guidance template handed over from the standalone Guidance
@@ -87,15 +99,34 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     );
   }
 
+  String? _effectiveTone() {
+    final value = _tone == 'Custom' ? _customToneController.text.trim() : _tone;
+    return value.isEmpty ? null : value;
+  }
+
+  String? _effectiveAudience() {
+    final value = _audience == 'Custom'
+        ? _customAudienceController.text.trim()
+        : _audience;
+    return value == 'Auto' || value.isEmpty ? null : value;
+  }
+
+  String? _optionalText(TextEditingController controller) {
+    final value = controller.text.trim();
+    return value.isEmpty ? null : value;
+  }
+
   Future<void> _polish() => ref
       .read(polishControllerProvider.notifier)
       .polish(
         PolishRequest(
           draft: _draftController.text,
-          direction: _direction.toLowerCase(),
-          custom: _direction == 'Custom'
-              ? _customGuidanceController.text
-              : null,
+          direction: 'natural',
+          guidance: _optionalText(_guidanceController),
+          tone: _effectiveTone(),
+          audience: _effectiveAudience(),
+          length: _length == 'Same' ? null : _length,
+          extraInstruction: _optionalText(_extraInstructionController),
           guidanceLang: 'en',
         ),
       );
@@ -157,61 +188,30 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             ),
           ),
           const SizedBox(height: 14),
-          GlassCard(
-            feature: _feature,
-            showFeatureImage: false,
-            tintColor: _kCardTint,
-            tintStrength: _kCardTintStrength,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: _directions
-                      .map(
-                        (direction) => ChoiceChip(
-                          avatar: Icon(
-                            _directionIcon(direction),
-                            size: 16,
-                            color: direction == _direction
-                                ? _kColor
-                                : AppColors.textSecondary,
-                          ),
-                          label: Text(
-                            direction,
-                            style: TextStyle(
-                              color: direction == _direction
-                                  ? _kColor
-                                  : AppColors.textSecondary,
-                            ),
-                          ),
-                          selected: direction == _direction,
-                          selectedColor: _feature.selectedChipColor,
-                          checkmarkColor: _kColor,
-                          onSelected: (_) =>
-                              setState(() => _direction = direction),
-                        ),
-                      )
-                      .toList(),
-                ),
-                if (_direction == 'Custom') ...[
-                  const SizedBox(height: 16),
-                  LabeledTextField(
-                    key: const Key('polish-custom-guidance-field'),
-                    label: 'Custom guidance',
-                    feature: _feature,
-                    controller: _customGuidanceController,
-                    hintText: 'For example: warmer, but still professional',
-                    helperText: 'Write in any language',
-                    maxLines: 3,
-                    maxLength: InputLimits.guidanceMaxLength,
-                  ),
-                ],
-                const SizedBox(height: 14),
-                GuidanceChipRow(feature: _feature, onSelected: _appendGuidance),
-              ],
-            ),
+          _PolishGuidanceCard(
+            expanded: _guidanceExpanded,
+            onToggle: () =>
+                setState(() => _guidanceExpanded = !_guidanceExpanded),
+            controller: _guidanceController,
+            onSelected: _appendGuidance,
+          ),
+          const SizedBox(height: 14),
+          _PolishMoreOptionsCard(
+            expanded: _moreOptionsExpanded,
+            onToggle: () =>
+                setState(() => _moreOptionsExpanded = !_moreOptionsExpanded),
+            tones: _tones,
+            tone: _tone,
+            onTone: (value) => setState(() => _tone = value),
+            customToneController: _customToneController,
+            audiences: _audiences,
+            audience: _audience,
+            onAudience: (value) => setState(() => _audience = value),
+            customAudienceController: _customAudienceController,
+            lengths: _lengths,
+            length: _length,
+            onLength: (value) => setState(() => _length = value),
+            extraInstructionController: _extraInstructionController,
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
@@ -270,7 +270,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             Text('Polished result', style: AppTextStyles.sectionTitle),
             const SizedBox(height: 12),
             GeneratedResultCard(
-              label: _direction,
+              label: _tone,
               text: polishState.result!.polished,
               feature: _feature,
               showFeatureImage: false,
@@ -322,14 +322,289 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
       ),
     );
   }
+}
 
-  IconData _directionIcon(String direction) {
-    return switch (direction) {
-      'Natural' => Icons.spa_outlined,
-      'Professional' => Icons.business_center_outlined,
-      'Friendly' => Icons.sentiment_satisfied_alt_rounded,
-      'Concise' => Icons.short_text_rounded,
-      _ => Icons.tune_rounded,
-    };
+class _PolishGuidanceCard extends StatelessWidget {
+  const _PolishGuidanceCard({
+    required this.expanded,
+    required this.onToggle,
+    required this.controller,
+    required this.onSelected,
+  });
+
+  final bool expanded;
+  final VoidCallback onToggle;
+  final TextEditingController controller;
+  final ValueChanged<GuidanceTemplate> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      feature: _feature,
+      showFeatureImage: false,
+      tintColor: _kCardTint,
+      tintStrength: _kCardTintStrength,
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(18),
+            onTap: onToggle,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+              child: Row(
+                children: [
+                  const Icon(Icons.lightbulb_outline_rounded, color: _kColor),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text('Guidance', style: AppTextStyles.cardTitle),
+                  ),
+                  Text(
+                    expanded ? 'Hide' : 'Add guidance',
+                    style: AppTextStyles.helper.copyWith(color: _kColor),
+                  ),
+                  Icon(
+                    expanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    color: AppColors.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (expanded) ...[
+            const Divider(height: 1, color: AppColors.cardBorder),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+              child: Column(
+                children: [
+                  LabeledTextField(
+                    key: const Key('polish-custom-guidance-field'),
+                    label: 'Guidance',
+                    feature: _feature,
+                    showHeader: false,
+                    showCounter: false,
+                    controller: controller,
+                    hintText: 'Describe how you want the draft polished',
+                    maxLines: 3,
+                    maxLength: InputLimits.guidanceMaxLength,
+                    fieldActions: IconButton(
+                      tooltip: 'Clear',
+                      color: _kColor,
+                      onPressed: controller.clear,
+                      icon: const Icon(Icons.close_rounded, size: 20),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  GuidanceChipRow(feature: _feature, onSelected: onSelected),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PolishMoreOptionsCard extends StatelessWidget {
+  const _PolishMoreOptionsCard({
+    required this.expanded,
+    required this.onToggle,
+    required this.tones,
+    required this.tone,
+    required this.onTone,
+    required this.customToneController,
+    required this.audiences,
+    required this.audience,
+    required this.onAudience,
+    required this.customAudienceController,
+    required this.lengths,
+    required this.length,
+    required this.onLength,
+    required this.extraInstructionController,
+  });
+
+  final bool expanded;
+  final VoidCallback onToggle;
+  final List<String> tones;
+  final String tone;
+  final ValueChanged<String> onTone;
+  final TextEditingController customToneController;
+  final List<String> audiences;
+  final String audience;
+  final ValueChanged<String> onAudience;
+  final TextEditingController customAudienceController;
+  final List<String> lengths;
+  final String length;
+  final ValueChanged<String> onLength;
+  final TextEditingController extraInstructionController;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      feature: _feature,
+      showFeatureImage: false,
+      tintColor: _kCardTint,
+      tintStrength: _kCardTintStrength,
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(18),
+            onTap: onToggle,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+              child: Row(
+                children: [
+                  const Icon(Icons.tune_rounded, color: _kColor),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('More options', style: AppTextStyles.cardTitle),
+                        Text(
+                          expanded
+                              ? 'Fine-tune your polish'
+                              : '$tone tone · $audience · $length length',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.helper,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    expanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    color: AppColors.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (expanded) ...[
+            const Divider(height: 1, color: AppColors.cardBorder),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _PolishOptionGroup(
+                    label: 'Tone',
+                    options: tones,
+                    selected: tone,
+                    onSelected: onTone,
+                  ),
+                  if (tone == 'Custom') ...[
+                    const SizedBox(height: 10),
+                    LabeledTextField(
+                      key: const Key('polish-custom-tone-field'),
+                      label: 'Describe the tone',
+                      feature: _feature,
+                      showHeader: false,
+                      showCounter: false,
+                      controller: customToneController,
+                      hintText: 'e.g. warm but professional',
+                      maxLines: 1,
+                      maxLength: 500,
+                    ),
+                  ],
+                  const Divider(height: 28, color: AppColors.cardBorder),
+                  _PolishOptionGroup(
+                    label: 'Audience',
+                    options: audiences,
+                    selected: audience,
+                    onSelected: onAudience,
+                  ),
+                  if (audience == 'Custom') ...[
+                    const SizedBox(height: 10),
+                    LabeledTextField(
+                      key: const Key('polish-custom-audience-field'),
+                      label: 'Describe the audience',
+                      feature: _feature,
+                      showHeader: false,
+                      showCounter: false,
+                      controller: customAudienceController,
+                      hintText: 'e.g. my manager',
+                      maxLines: 1,
+                      maxLength: 500,
+                    ),
+                  ],
+                  const Divider(height: 28, color: AppColors.cardBorder),
+                  _PolishOptionGroup(
+                    label: 'Length',
+                    options: lengths,
+                    selected: length,
+                    onSelected: onLength,
+                  ),
+                  const SizedBox(height: 14),
+                  LabeledTextField(
+                    key: const Key('polish-extra-instruction-field'),
+                    label: 'Extra instruction',
+                    feature: _feature,
+                    controller: extraInstructionController,
+                    hintText: 'Add any other polishing preference',
+                    showCounter: false,
+                    maxLines: 2,
+                    maxLength: 1000,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PolishOptionGroup extends StatelessWidget {
+  const _PolishOptionGroup({
+    required this.label,
+    required this.options,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final String label;
+  final List<String> options;
+  final String selected;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: AppTextStyles.cardTitle.copyWith(fontSize: 14)),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: options
+              .map(
+                (option) => ChoiceChip(
+                  label: Text(option),
+                  selected: option == selected,
+                  selectedColor: _feature.selectedChipColor,
+                  checkmarkColor: _kColor,
+                  labelStyle: AppTextStyles.body.copyWith(
+                    color: option == selected
+                        ? _kColor
+                        : AppColors.textSecondary,
+                  ),
+                  onSelected: (_) => onSelected(option),
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    );
   }
 }

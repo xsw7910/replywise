@@ -26,6 +26,14 @@ Exact schema (replace the empty strings with your content):
 Rules:
 - "polished" is the improved English text.
 - "changes" describes what was changed and why, written in the language specified by guidanceLang.
+- Preserve the draft's meaning while improving clarity, flow, grammar, tone, and natural English.
+- When "guidance" is present, follow it as polishing guidance.
+- When "tone" is present, use that tone.
+- When "audience" is present, write for that audience or recipient.
+- When "length" is present, use it as the preferred output length.
+- When "extra_instruction" is present, follow it as an additional user instruction.
+- The legacy "direction" and "custom" fields remain valid polishing instructions.
+- Ignore absent or empty optional instructions.
 - Do not change the meaning or invent facts not present in the draft.\
 """
 

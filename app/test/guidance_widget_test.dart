@@ -21,11 +21,11 @@ Future<void> _initStorage() async {
 }
 
 List<Override> get _overrides => [
-      sharedPreferencesProvider.overrideWithValue(_prefs),
-      guidanceLibraryRepositoryProvider.overrideWith(
-        (ref) => GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
-      ),
-    ];
+  sharedPreferencesProvider.overrideWithValue(_prefs),
+  guidanceLibraryRepositoryProvider.overrideWith(
+    (ref) => GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
+  ),
+];
 
 /// A tall viewport so the whole ListView renders without lazy culling, keeping
 /// chip/card finders and taps reliable.
@@ -35,10 +35,8 @@ void _useTallView(WidgetTester tester) {
   addTearDown(tester.view.reset);
 }
 
-Finder _editableIn(Key key) => find.descendant(
-      of: find.byKey(key),
-      matching: find.byType(EditableText),
-    );
+Finder _editableIn(Key key) =>
+    find.descendant(of: find.byKey(key), matching: find.byType(EditableText));
 
 String _textOf(WidgetTester tester, Key key) =>
     tester.widget<EditableText>(_editableIn(key)).controller.text;
@@ -49,13 +47,16 @@ void main() {
   setUp(_initStorage);
 
   group('Reply guidance append', () {
-    testWidgets('appends selected guidance without overwriting existing text',
-        (tester) async {
+    testWidgets('appends selected guidance without overwriting existing text', (
+      tester,
+    ) async {
       _useTallView(tester);
-      await tester.pumpWidget(ProviderScope(
-        overrides: _overrides,
-        child: const MaterialApp(home: ReplyScreen()),
-      ));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: _overrides,
+          child: const MaterialApp(home: ReplyScreen()),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // Guidance is collapsed by default; reveal the field first.
@@ -63,7 +64,9 @@ void main() {
       await tester.pump();
 
       await tester.enterText(
-          _editableIn(const Key('reply-guidance-field')), 'My own note');
+        _editableIn(const Key('reply-guidance-field')),
+        'My own note',
+      );
       await tester.pump();
 
       await tester.tap(find.text('Be polite'));
@@ -77,16 +80,20 @@ void main() {
   });
 
   group('Polish guidance append', () {
-    testWidgets('fills, then appends, and keeps Custom direction',
-        (tester) async {
+    testWidgets('fills, then appends in the Guidance card', (tester) async {
       _useTallView(tester);
-      await tester.pumpWidget(ProviderScope(
-        overrides: _overrides,
-        child: const MaterialApp(home: PolishScreen()),
-      ));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: _overrides,
+          child: const MaterialApp(home: PolishScreen()),
+        ),
+      );
       await tester.pumpAndSettle();
 
-      // First selection fills and switches direction to Custom.
+      await tester.tap(find.text('Guidance'));
+      await tester.pumpAndSettle();
+
+      // First selection fills the dedicated guidance field.
       await tester.tap(find.text('Be polite'));
       await tester.pumpAndSettle();
 
@@ -104,41 +111,52 @@ void main() {
         'Make the reply polite and respectful.\n\n'
         'Keep the reply short and clear.',
       );
-      // Custom field still present => direction stayed Custom.
-      expect(find.byKey(const Key('polish-custom-guidance-field')),
-          findsOneWidget);
+      // The guidance field remains available for further edits.
+      expect(
+        find.byKey(const Key('polish-custom-guidance-field')),
+        findsOneWidget,
+      );
     });
   });
 
   group('Guidance Library screen', () {
-    testWidgets('built-in cards expose Use; only custom has an edit/delete menu',
-        (tester) async {
+    testWidgets(
+      'built-in cards expose Use; only custom has an edit/delete menu',
+      (tester) async {
+        _useTallView(tester);
+        await _repo.addTemplate(
+          title: 'My custom one',
+          content: 'A reusable note.',
+          category: GuidanceCategory.custom,
+        );
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: _overrides,
+            child: const MaterialApp(home: GuidanceLibraryScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // One Use action per card (built-ins + the one custom).
+        expect(
+          find.widgetWithText(TextButton, 'Use'),
+          findsNWidgets(kBuiltInTemplates.length + 1),
+        );
+        // Exactly one more-menu — only the single custom item has it.
+        expect(find.byIcon(Icons.more_vert_rounded), findsOneWidget);
+      },
+    );
+
+    testWidgets('standalone Use opens an in-Reply / in-Polish chooser', (
+      tester,
+    ) async {
       _useTallView(tester);
-      await _repo.addTemplate(
-        title: 'My custom one',
-        content: 'A reusable note.',
-        category: GuidanceCategory.custom,
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: _overrides,
+          child: const MaterialApp(home: GuidanceLibraryScreen()),
+        ),
       );
-      await tester.pumpWidget(ProviderScope(
-        overrides: _overrides,
-        child: const MaterialApp(home: GuidanceLibraryScreen()),
-      ));
-      await tester.pumpAndSettle();
-
-      // One Use action per card (built-ins + the one custom).
-      expect(find.widgetWithText(TextButton, 'Use'),
-          findsNWidgets(kBuiltInTemplates.length + 1));
-      // Exactly one more-menu — only the single custom item has it.
-      expect(find.byIcon(Icons.more_vert_rounded), findsOneWidget);
-    });
-
-    testWidgets('standalone Use opens an in-Reply / in-Polish chooser',
-        (tester) async {
-      _useTallView(tester);
-      await tester.pumpWidget(ProviderScope(
-        overrides: _overrides,
-        child: const MaterialApp(home: GuidanceLibraryScreen()),
-      ));
       await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(TextButton, 'Use').first);
@@ -148,32 +166,36 @@ void main() {
       expect(find.text('Use in Polish'), findsOneWidget);
     });
 
-    testWidgets('deleting a custom item asks for confirmation; Cancel keeps it',
-        (tester) async {
-      _useTallView(tester);
-      await _repo.addTemplate(
-        title: 'Deletable',
-        content: 'Will be kept after cancel.',
-        category: GuidanceCategory.custom,
-      );
-      await tester.pumpWidget(ProviderScope(
-        overrides: _overrides,
-        child: const MaterialApp(home: GuidanceLibraryScreen()),
-      ));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'deleting a custom item asks for confirmation; Cancel keeps it',
+      (tester) async {
+        _useTallView(tester);
+        await _repo.addTemplate(
+          title: 'Deletable',
+          content: 'Will be kept after cancel.',
+          category: GuidanceCategory.custom,
+        );
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: _overrides,
+            child: const MaterialApp(home: GuidanceLibraryScreen()),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.byIcon(Icons.more_vert_rounded));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Delete'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.byIcon(Icons.more_vert_rounded));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Delete'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Delete this guidance?'), findsOneWidget);
-      expect(find.text('This cannot be undone.'), findsOneWidget);
+        expect(find.text('Delete this guidance?'), findsOneWidget);
+        expect(find.text('This cannot be undone.'), findsOneWidget);
 
-      await tester.tap(find.text('Cancel'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('Cancel'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Deletable'), findsOneWidget);
-    });
+        expect(find.text('Deletable'), findsOneWidget);
+      },
+    );
   });
 }
