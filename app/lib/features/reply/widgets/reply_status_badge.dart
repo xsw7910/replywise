@@ -21,9 +21,6 @@ class ReplyStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final isPremium = usage.isPremium;
     final color = isPremium ? AppColors.premiumGold : AppColors.replyColor;
-    final icon = isPremium
-        ? Icons.workspace_premium_rounded
-        : Icons.generating_tokens_rounded;
 
     // Total usable credits = free remaining + purchased credits. freeUsesLeft
     // is null before the first load (and whenever premium), so show only the
@@ -52,7 +49,21 @@ class ReplyStatusBadge extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 17, color: color),
+                  if (isPremium)
+                    Icon(
+                      Icons.workspace_premium_rounded,
+                      key: const Key('premium-status-icon'),
+                      size: 17,
+                      color: color,
+                    )
+                  else
+                    Image.asset(
+                      'assets/icons/credites.png',
+                      key: const Key('credits-status-icon'),
+                      width: 22,
+                      height: 22,
+                      fit: BoxFit.contain,
+                    ),
                   if (label != null) ...[
                     const SizedBox(width: 5),
                     Text(

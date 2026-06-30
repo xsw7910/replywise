@@ -50,6 +50,7 @@ flutter:
     - assets/icons/polish.png
     - assets/icons/explain.png
     - assets/icons/guidance.png
+    - assets/icons/credites.png
     - assets/image/hero_card.png
     - assets/image/reply_background.png
     - assets/image/polish_background.png
