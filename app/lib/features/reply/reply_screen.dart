@@ -41,6 +41,7 @@ class ReplyScreen extends ConsumerStatefulWidget {
 class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   final _incomingController = TextEditingController();
   final _guidanceController = TextEditingController();
+  final _customToneController = TextEditingController();
   final _customAudienceController = TextEditingController();
 
   bool _guidanceExpanded = false;
@@ -72,6 +73,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   void dispose() {
     _incomingController.dispose();
     _guidanceController.dispose();
+    _customToneController.dispose();
     _customAudienceController.dispose();
     super.dispose();
   }
@@ -142,22 +144,25 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       incoming: _incomingController.text,
       guidance: _composedGuidance(),
       guidanceLang: 'en',
+      tone: _effectiveTone(),
       audience: ReplyAudience(
         mode: mode,
         preset: preset,
-        custom: custom,
+        custom: custom?.trim(),
         formality: _formalityForTone(_tone),
       ),
     );
   }
 
-  /// Folds the lightweight Tone / Length / Channel selections into the
-  /// free-text guidance sent to the backend. The visible guidance field stays
-  /// untouched and the API contract is unchanged.
+  String? _effectiveTone() {
+    final value = _tone == 'Custom' ? _customToneController.text.trim() : _tone;
+    return value == 'Auto' || value.isEmpty ? null : value;
+  }
+
+  /// Folds Length / Channel selections into the free-text guidance. Tone is a
+  /// dedicated request field so custom and predefined values share one path.
   String _composedGuidance() {
     final hints = <String>[];
-    final tone = _toneHint(_tone);
-    if (tone != null) hints.add(tone);
     final length = _lengthHint(_length);
     if (length != null) hints.add(length);
     final channel = _channelHint(_channel);
@@ -180,13 +185,6 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     'Friendly' => 35,
     'Natural' => 50,
     _ => 55,
-  };
-
-  static String? _toneHint(String tone) => switch (tone) {
-    'Natural' => 'Keep the tone natural and conversational.',
-    'Professional' => 'Use a clear, professional tone.',
-    'Friendly' => 'Use a warm, friendly tone.',
-    _ => null,
   };
 
   static String? _lengthHint(String length) => switch (length) {
@@ -636,6 +634,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             tones: _tones,
             tone: _tone,
             onTone: (v) => setState(() => _tone = v),
+            customToneController: _customToneController,
             audiences: _audiences,
             audience: _audience,
             onAudience: (v) => setState(() => _audience = v),
@@ -929,6 +928,7 @@ class _MoreOptionsSection extends StatelessWidget {
     required this.tones,
     required this.tone,
     required this.onTone,
+    required this.customToneController,
     required this.audiences,
     required this.audience,
     required this.onAudience,
@@ -947,6 +947,7 @@ class _MoreOptionsSection extends StatelessWidget {
   final List<String> tones;
   final String tone;
   final ValueChanged<String> onTone;
+  final TextEditingController customToneController;
   final List<String> audiences;
   final String audience;
   final ValueChanged<String> onAudience;
@@ -1039,6 +1040,20 @@ class _MoreOptionsSection extends StatelessWidget {
                     selected: tone,
                     onSelected: onTone,
                   ),
+                  if (tone == 'Custom') ...[
+                    const SizedBox(height: 10),
+                    LabeledTextField(
+                      key: const Key('reply-custom-tone-field'),
+                      label: 'Describe the tone',
+                      feature: _feature,
+                      showHeader: false,
+                      showCounter: false,
+                      controller: customToneController,
+                      hintText: 'e.g. warm but professional',
+                      maxLines: 1,
+                      maxLength: 500,
+                    ),
+                  ],
                   const _OptionDivider(),
                   _OptionGroup(
                     label: 'Audience',
@@ -1051,6 +1066,7 @@ class _MoreOptionsSection extends StatelessWidget {
                   if (audience == 'Custom') ...[
                     const SizedBox(height: 10),
                     LabeledTextField(
+                      key: const Key('reply-custom-audience-field'),
                       label: 'Describe the relationship',
                       feature: _feature,
                       showHeader: false,

@@ -20,6 +20,7 @@ class ReplyRequest(ApiModel):
     guidance: str = ""
     guidance_lang: str = "en"
     output_lang: str = "en"
+    tone: str | None = None
     audience: AudienceRequest = Field(default_factory=AudienceRequest)
 
 

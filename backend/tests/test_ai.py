@@ -194,6 +194,80 @@ class _SanitizedProviderFailure:
             ) from error
 
 
+class _CapturingReplyProvider:
+    def __init__(self) -> None:
+        self.system_prompt = ""
+        self.payload: dict = {}
+
+    async def complete(self, system_prompt: str, payload: dict) -> str:
+        self.system_prompt = system_prompt
+        self.payload = payload
+        return json.dumps(
+            {
+                "versions": [
+                    {"label": "Professional", "text": "Professional reply"},
+                    {"label": "Friendly", "text": "Friendly reply"},
+                    {"label": "Short", "text": "Short reply"},
+                ],
+                "why": "The requested tone and audience were applied.",
+            }
+        )
+
+
+def test_reply_custom_tone_and_audience_reach_provider(client: TestClient) -> None:
+    provider = _CapturingReplyProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/reply",
+            json={
+                **_reply_payload(),
+                "tone": " warm but professional ",
+                "audience": {
+                    "mode": "custom",
+                    "custom": " my manager ",
+                    "formality": 55,
+                },
+            },
+            headers=_headers(client, "custom-tone-audience"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert provider.payload["tone"] == "warm but professional"
+    assert provider.payload["audience"]["custom"] == "my manager"
+    assert '"tone" is present' in provider.system_prompt
+    assert 'audience.mode "custom"' in provider.system_prompt
+
+
+def test_reply_empty_optional_tone_and_audience_do_not_crash(
+    client: TestClient,
+) -> None:
+    provider = _CapturingReplyProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/reply",
+            json={
+                **_reply_payload(),
+                "tone": " ",
+                "audience": {
+                    "mode": "custom",
+                    "custom": " ",
+                    "formality": 55,
+                },
+            },
+            headers=_headers(client, "empty-tone-audience"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert provider.payload["tone"] is None
+    assert provider.payload["audience"]["custom"] is None
+
+
 def test_mock_ai_enabled_uses_local_fake_provider(client: TestClient, monkeypatch) -> None:
     monkeypatch.setattr(settings, "mock_ai_enabled", True)
     monkeypatch.setattr(ai_module, "_ai_service", AIService(_ExplodingProvider()))

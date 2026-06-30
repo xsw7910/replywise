@@ -37,6 +37,25 @@ class _NeverReplyRepository extends ReplyRepository {
       Completer<ReplyResult>().future;
 }
 
+class _RecordingReplyRepository extends ReplyRepository {
+  _RecordingReplyRepository() : super(_DummyClient());
+
+  ReplyRequest? lastRequest;
+
+  @override
+  Future<ReplyResult> generate(ReplyRequest request) async {
+    lastRequest = request;
+    return const ReplyResult(
+      versions: [
+        ReplyVersion(label: 'Professional', text: 'Professional reply'),
+        ReplyVersion(label: 'Friendly', text: 'Friendly reply'),
+        ReplyVersion(label: 'Short', text: 'Short reply'),
+      ],
+      why: 'Test result',
+    );
+  }
+}
+
 Finder _editableIn(Key key) =>
     find.descendant(of: find.byKey(key), matching: find.byType(EditableText));
 
@@ -46,7 +65,10 @@ void _useTallView(WidgetTester tester) {
   addTearDown(tester.view.reset);
 }
 
-Future<void> _pumpReply(WidgetTester tester) async {
+Future<void> _pumpReply(
+  WidgetTester tester, {
+  ReplyRepository? repository,
+}) async {
   SharedPreferences.setMockInitialValues({});
   final prefs = await SharedPreferences.getInstance();
   await tester.pumpWidget(
@@ -57,7 +79,9 @@ Future<void> _pumpReply(WidgetTester tester) async {
           (ref) =>
               GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
         ),
-        replyRepositoryProvider.overrideWith((ref) => _NeverReplyRepository()),
+        replyRepositoryProvider.overrideWith(
+          (ref) => repository ?? _NeverReplyRepository(),
+        ),
       ],
       child: const MaterialApp(home: ReplyScreen()),
     ),
@@ -85,32 +109,99 @@ void main() {
     },
   );
 
-  testWidgets(
-    'whitespace-only guidance also does not block Generate Reply',
-    (tester) async {
-      _useTallView(tester);
-      await _pumpReply(tester);
+  testWidgets('whitespace-only guidance also does not block Generate Reply', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpReply(tester);
 
-      await tester.enterText(
-        _editableIn(const Key('reply-incoming-field')),
-        'Sounds great, thanks.',
-      );
+    await tester.enterText(
+      _editableIn(const Key('reply-incoming-field')),
+      'Sounds great, thanks.',
+    );
 
-      // Expand the guidance section and type only whitespace.
-      await tester.tap(find.text('Add guidance'));
-      await tester.pumpAndSettle();
-      await tester.enterText(
-        _editableIn(const Key('reply-guidance-field')),
-        '   ',
-      );
+    // Expand the guidance section and type only whitespace.
+    await tester.tap(find.text('Add guidance'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      _editableIn(const Key('reply-guidance-field')),
+      '   ',
+    );
 
-      await tester.tap(find.text('Generate Reply'));
-      await tester.pump();
+    await tester.tap(find.text('Generate Reply'));
+    await tester.pump();
 
-      expect(find.text('Describe how you want to reply.'), findsNothing);
-      expect(find.text('Generating…'), findsOneWidget);
-    },
-  );
+    expect(find.text('Describe how you want to reply.'), findsNothing);
+    expect(find.text('Generating…'), findsOneWidget);
+  });
+
+  testWidgets('custom tone input is shown and sent', (tester) async {
+    _useTallView(tester);
+    final repository = _RecordingReplyRepository();
+    await _pumpReply(tester, repository: repository);
+    await tester.enterText(
+      _editableIn(const Key('reply-incoming-field')),
+      'Can you send the report?',
+    );
+    await tester.tap(find.text('More options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Custom').at(0));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('reply-custom-tone-field')), findsOneWidget);
+    await tester.enterText(
+      _editableIn(const Key('reply-custom-tone-field')),
+      ' warm but professional ',
+    );
+    await tester.tap(find.text('Generate Reply'));
+    await tester.pumpAndSettle();
+    expect(repository.lastRequest?.tone, 'warm but professional');
+  });
+
+  testWidgets('custom audience input is shown and sent', (tester) async {
+    _useTallView(tester);
+    final repository = _RecordingReplyRepository();
+    await _pumpReply(tester, repository: repository);
+    await tester.enterText(
+      _editableIn(const Key('reply-incoming-field')),
+      'Can you send the report?',
+    );
+    await tester.tap(find.text('More options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Custom').at(1));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('reply-custom-audience-field')),
+      findsOneWidget,
+    );
+    await tester.enterText(
+      _editableIn(const Key('reply-custom-audience-field')),
+      ' my manager ',
+    );
+    await tester.tap(find.text('Generate Reply'));
+    await tester.pumpAndSettle();
+    expect(repository.lastRequest?.audience.mode, 'custom');
+    expect(repository.lastRequest?.audience.custom, 'my manager');
+  });
+
+  testWidgets('predefined tone and audience are sent', (tester) async {
+    _useTallView(tester);
+    final repository = _RecordingReplyRepository();
+    await _pumpReply(tester, repository: repository);
+    await tester.enterText(
+      _editableIn(const Key('reply-incoming-field')),
+      'Can you send the report?',
+    );
+    await tester.tap(find.text('More options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Professional'));
+    await tester.tap(find.text('Customer'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Generate Reply'));
+    await tester.pumpAndSettle();
+    expect(repository.lastRequest?.tone, 'Professional');
+    expect(repository.lastRequest?.audience.mode, 'preset');
+    expect(repository.lastRequest?.audience.preset, 'customer');
+  });
 
   testWidgets('empty incoming still blocks Generate Reply', (tester) async {
     _useTallView(tester);

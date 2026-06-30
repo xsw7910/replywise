@@ -24,12 +24,14 @@ class ReplyRequest {
     required this.incoming,
     required this.guidance,
     required this.guidanceLang,
+    this.tone,
     required this.audience,
   });
 
   final String incoming;
   final String guidance;
   final String guidanceLang;
+  final String? tone;
   final ReplyAudience audience;
 
   Map<String, dynamic> toJson() => {
@@ -37,6 +39,7 @@ class ReplyRequest {
     'guidance': guidance,
     'guidanceLang': guidanceLang,
     'outputLang': 'en',
+    'tone': tone,
     'audience': audience.toJson(),
   };
 }

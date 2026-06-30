@@ -9,6 +9,10 @@ Rules:
 - Include exactly three versions with labels Professional, Friendly, and Short in that order.
 - Each "text" is a complete, natural English reply.
 - "why" explains the reply approach, written in the language specified by guidanceLang.
+- When "tone" is present, use it as the requested writing style.
+- For audience.mode "preset", write for audience.preset.
+- For audience.mode "custom", write for the recipient described by audience.custom.
+- Ignore an absent or empty tone/audience value instead of inventing one.
 - Do not invent facts not present in the incoming message or guidance.\
 """
 
