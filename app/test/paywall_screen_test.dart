@@ -148,6 +148,35 @@ Future<void> _pumpPaywall(
 // ── Tests ──────────────────────────────────────────────────────────────────────
 
 void main() {
+  testWidgets('paywall uses Premium background and has no header', (
+    tester,
+  ) async {
+    await _pumpPaywall(tester);
+
+    expect(find.byType(AppBar), findsNothing);
+    final background = tester.widget<Image>(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName ==
+                'assets/image/premium_page_backgroud.png',
+      ),
+    );
+    expect(background.fit, BoxFit.fitWidth);
+    expect(background.alignment, Alignment.topCenter);
+    expect(find.byTooltip('Back'), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+    expect(find.text('Write with confidence'), findsNothing);
+    expect(
+      find.text(
+        'Unlimited Reply and Polish generations while Premium is active.',
+      ),
+      findsNothing,
+    );
+    expect(find.byKey(const Key('premium-intro-spacer')), findsOneWidget);
+  });
+
   testWidgets('paywall shows yearly premium wording', (tester) async {
     await _pumpPaywall(tester);
 

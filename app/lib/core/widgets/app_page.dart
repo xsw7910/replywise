@@ -17,6 +17,8 @@ class AppPage extends StatelessWidget {
     this.headerIcon,
     this.subtitle,
     this.backgroundImagePath,
+    this.backgroundImageFit = BoxFit.cover,
+    this.backgroundImageAlignment = Alignment.center,
     this.transparentAppBar = false,
     this.centerTitle,
   });
@@ -32,6 +34,8 @@ class AppPage extends StatelessWidget {
   final IconData? headerIcon;
   final String? subtitle;
   final String? backgroundImagePath;
+  final BoxFit backgroundImageFit;
+  final AlignmentGeometry backgroundImageAlignment;
 
   /// When true the app bar is fully transparent and the body (including the
   /// background image) extends to the top of the screen, behind the header.
@@ -83,7 +87,11 @@ class AppPage extends StatelessWidget {
         children: [
           Positioned.fill(
             child: backgroundImagePath != null
-                ? Image.asset(backgroundImagePath!, fit: BoxFit.cover)
+                ? Image.asset(
+                    backgroundImagePath!,
+                    fit: backgroundImageFit,
+                    alignment: backgroundImageAlignment,
+                  )
                 : const ColoredBox(color: AppColors.backgroundBase),
           ),
           if (useSafeArea)

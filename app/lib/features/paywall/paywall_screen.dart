@@ -62,29 +62,28 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     final price = subscription.offer?.priceString ?? 'the displayed price';
     return AppPage(
       title: 'ReplyWise Premium',
-      showBackButton: true,
+      showAppBar: false,
+      backgroundImagePath: 'assets/image/premium_page_backgroud.png',
+      backgroundImageFit: BoxFit.fitWidth,
+      backgroundImageAlignment: Alignment.topCenter,
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
-          const Icon(
-            Icons.auto_awesome_rounded,
-            color: AppColors.primaryBlue,
-            size: 42,
+          Stack(
+            children: [
+              const SizedBox(key: Key('premium-intro-spacer'), height: 130.4),
+              Positioned(
+                left: -8,
+                top: 0,
+                child: IconButton(
+                  tooltip: 'Back',
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  icon: const Icon(Icons.arrow_back_rounded),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Write with confidence',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.sectionTitle,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Unlimited Reply and Polish generations while Premium is active.',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.body,
-          ),
-          const SizedBox(height: 24),
           GlassCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

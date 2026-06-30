@@ -57,6 +57,7 @@ flutter:
     - assets/image/polish_page_backgroud.png
     - assets/image/explain_page_backgroud.png
     - assets/image/guidance_page_backgroud.png
+    - assets/image/premium_page_backgroud.png
     - assets/icons/app_icon.png
 
 flutter_launcher_icons:
