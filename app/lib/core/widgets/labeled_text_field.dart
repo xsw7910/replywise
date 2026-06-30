@@ -18,6 +18,7 @@ class LabeledTextField extends StatefulWidget {
     this.showHeader = true,
     this.showCounter = true,
     this.fieldActions,
+    this.scrollController,
   });
 
   final String label;
@@ -31,6 +32,7 @@ class LabeledTextField extends StatefulWidget {
   final bool showHeader;
   final bool showCounter;
   final Widget? fieldActions;
+  final ScrollController? scrollController;
 
   @override
   State<LabeledTextField> createState() => _LabeledTextFieldState();
@@ -89,6 +91,7 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
             children: [
               TextField(
                 controller: widget.controller,
+                scrollController: widget.scrollController,
                 focusNode: _focusNode,
                 minLines: widget.minLines ?? widget.maxLines,
                 maxLines: widget.maxLines,

@@ -218,6 +218,10 @@ void main() {
     expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsWidgets);
     expect(find.text('Optional tone or key points'), findsNothing);
     expect(find.text('Optional'), findsNothing);
+    expect(
+      tester.getSize(find.byKey(const Key('reply-more-options-card'))).height,
+      tester.getSize(find.byKey(const Key('reply-guidance-card'))).height,
+    );
 
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
@@ -310,6 +314,35 @@ void main() {
     expect(
       tester.widget<EditableText>(_editableIn(fieldKey)).controller.text,
       isNotEmpty,
+    );
+  });
+
+  testWidgets('Reply guidance scrolls to the bottom when text grows', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpReply(tester);
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+
+    const fieldKey = Key('reply-guidance-field');
+    await tester.enterText(
+      _editableIn(fieldKey),
+      List.generate(12, (index) => 'Guidance line $index').join('\n'),
+    );
+    await tester.pumpAndSettle();
+
+    final textField = tester.widget<TextField>(
+      find.descendant(
+        of: find.byKey(fieldKey),
+        matching: find.byType(TextField),
+      ),
+    );
+    expect(textField.scrollController, isNotNull);
+    expect(textField.scrollController!.offset, greaterThan(0));
+    expect(
+      textField.scrollController!.offset,
+      textField.scrollController!.position.maxScrollExtent,
     );
   });
 

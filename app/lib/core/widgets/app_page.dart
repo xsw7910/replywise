@@ -48,7 +48,15 @@ class AppPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasFeatureHeader = headerImagePath != null || headerIcon != null;
-    final toolbarHeight = hasFeatureHeader ? 68.0 : kToolbarHeight;
+    final baseToolbarHeight = hasFeatureHeader ? 68.0 : kToolbarHeight;
+    // Android's Display Size setting changes the logical viewport width and
+    // device-pixel ratio while the physical screen remains the same. Scale
+    // non-Home AppPage headers from a 360dp reference width so their physical
+    // height stays stable instead of shrinking with that setting. Home owns
+    // its separate _HomeNavBar and intentionally remains responsive.
+    final shortestSide = MediaQuery.sizeOf(context).shortestSide;
+    final displayScale = (shortestSide / 360).clamp(1.0, 1.25);
+    final toolbarHeight = baseToolbarHeight * displayScale;
     final titleStyle = accentColor != null
         ? (Theme.of(context).appBarTheme.titleTextStyle ?? const TextStyle())
               .copyWith(color: accentColor, fontWeight: FontWeight.w700)

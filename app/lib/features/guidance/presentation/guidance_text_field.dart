@@ -8,7 +8,7 @@ import '../../../core/widgets/labeled_text_field.dart';
 ///
 /// Its compact action row is overlaid at the bottom-right by
 /// [LabeledTextField], leaving enough bottom padding to prevent text overlap.
-class GuidanceTextField extends StatelessWidget {
+class GuidanceTextField extends StatefulWidget {
   const GuidanceTextField({
     super.key,
     required this.controller,
@@ -26,6 +26,42 @@ class GuidanceTextField extends StatelessWidget {
   final int maxLines;
   final VoidCallback onOpenLibrary;
 
+  @override
+  State<GuidanceTextField> createState() => _GuidanceTextFieldState();
+}
+
+class _GuidanceTextFieldState extends State<GuidanceTextField> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_scrollToEnd);
+  }
+
+  @override
+  void didUpdateWidget(covariant GuidanceTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_scrollToEnd);
+      widget.controller.addListener(_scrollToEnd);
+    }
+  }
+
+  void _scrollToEnd() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_scrollToEnd);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   Future<void> _paste() async {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
     final text = data?.text;
@@ -33,26 +69,27 @@ class GuidanceTextField extends StatelessWidget {
 
     // Preserve the existing Reply behavior: Paste replaces the current
     // guidance, caps it to the shared limit, and leaves the cursor at the end.
-    controller.text = text.length > maxLength
-        ? text.substring(0, maxLength)
+    widget.controller.text = text.length > widget.maxLength
+        ? text.substring(0, widget.maxLength)
         : text;
-    controller.selection = TextSelection.collapsed(
-      offset: controller.text.length,
+    widget.controller.selection = TextSelection.collapsed(
+      offset: widget.controller.text.length,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final accent = feature.accentColor;
+    final accent = widget.feature.accentColor;
     return LabeledTextField(
       label: 'Guidance',
-      feature: feature,
+      feature: widget.feature,
       showHeader: false,
       showCounter: false,
-      controller: controller,
-      hintText: hintText,
-      maxLines: maxLines,
-      maxLength: maxLength,
+      controller: widget.controller,
+      scrollController: _scrollController,
+      hintText: widget.hintText,
+      maxLines: widget.maxLines,
+      maxLength: widget.maxLength,
       fieldActions: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -60,7 +97,7 @@ class GuidanceTextField extends StatelessWidget {
             tooltip: 'Guidance Library',
             visualDensity: VisualDensity.compact,
             color: accent,
-            onPressed: onOpenLibrary,
+            onPressed: widget.onOpenLibrary,
             icon: const Icon(Icons.menu_book_rounded, size: 20),
           ),
           IconButton(
@@ -74,7 +111,7 @@ class GuidanceTextField extends StatelessWidget {
             tooltip: 'Clear',
             visualDensity: VisualDensity.compact,
             color: accent,
-            onPressed: controller.clear,
+            onPressed: widget.controller.clear,
             icon: const Icon(Icons.close_rounded, size: 21),
           ),
         ],

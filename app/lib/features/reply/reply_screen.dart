@@ -81,7 +81,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
 
   void _appendGuidanceText(String text) {
     final current = _guidanceController.text.trim();
-    _guidanceController.text = current.isEmpty ? text : '$current\n\n$text';
+    _guidanceController.text = current.isEmpty ? text : '$current\n$text';
     _guidanceController.selection = TextSelection.collapsed(
       offset: _guidanceController.text.length,
     );
@@ -174,11 +174,6 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       if (base.isNotEmpty) base,
       if (hints.isNotEmpty) hints.join(' '),
     ].join('\n\n');
-  }
-
-  String _moreOptionsSummary() {
-    final audience = _audience == 'Auto' ? 'Any audience' : _audience;
-    return '$_tone tone · $audience · $_length';
   }
 
   static int _formalityForTone(String tone) => switch (tone) {
@@ -463,6 +458,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           ),
           const SizedBox(height: 14),
           GlassCard(
+            key: const Key('reply-guidance-card'),
             feature: _feature,
             showFeatureImage: false,
             tintStrength: _kCardTintStrength,
@@ -531,8 +527,8 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           ),
           const SizedBox(height: 18),
           _MoreOptionsSection(
+            key: const Key('reply-more-options-card'),
             expanded: _moreOptionsExpanded,
-            summary: _moreOptionsSummary(),
             onToggle: () =>
                 setState(() => _moreOptionsExpanded = !_moreOptionsExpanded),
             tones: _tones,
@@ -773,9 +769,9 @@ class _QuickGuidanceChips extends StatelessWidget {
 /// Length / Channel controls.
 class _MoreOptionsSection extends StatelessWidget {
   const _MoreOptionsSection({
+    super.key,
     required this.expanded,
     required this.onToggle,
-    required this.summary,
     required this.tones,
     required this.tone,
     required this.onTone,
@@ -794,7 +790,6 @@ class _MoreOptionsSection extends StatelessWidget {
 
   final bool expanded;
   final VoidCallback onToggle;
-  final String summary;
   final List<String> tones;
   final String tone;
   final ValueChanged<String> onTone;
@@ -828,43 +823,10 @@ class _MoreOptionsSection extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
               child: Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: _feature.iconBackgroundColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.tune_rounded,
-                      size: 21,
-                      color: _kColor,
-                    ),
-                  ),
+                  const Icon(Icons.tune_rounded, color: _kColor),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'More options',
-                          style: AppTextStyles.cardTitle.copyWith(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          expanded ? 'Fine-tune your reply' : summary,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.helper.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: Text('More options', style: AppTextStyles.cardTitle),
                   ),
                   Icon(
                     expanded

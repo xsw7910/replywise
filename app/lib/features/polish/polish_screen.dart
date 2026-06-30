@@ -71,9 +71,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   void _appendGuidance(GuidanceTemplate template) {
     final current = _guidanceController.text.trim();
     final content = template.content;
-    _guidanceController.text = current.isEmpty
-        ? content
-        : '$current\n\n$content';
+    _guidanceController.text = current.isEmpty ? content : '$current\n$content';
     _guidanceController.selection = TextSelection.collapsed(
       offset: _guidanceController.text.length,
     );
@@ -200,6 +198,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
           ),
           const SizedBox(height: 14),
           _PolishGuidanceCard(
+            key: const Key('polish-guidance-card'),
             expanded: _guidanceExpanded,
             onToggle: () =>
                 setState(() => _guidanceExpanded = !_guidanceExpanded),
@@ -209,6 +208,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
           ),
           const SizedBox(height: 14),
           _PolishMoreOptionsCard(
+            key: const Key('polish-more-options-card'),
             expanded: _moreOptionsExpanded,
             onToggle: () =>
                 setState(() => _moreOptionsExpanded = !_moreOptionsExpanded),
@@ -338,6 +338,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
 
 class _PolishGuidanceCard extends StatelessWidget {
   const _PolishGuidanceCard({
+    super.key,
     required this.expanded,
     required this.onToggle,
     required this.controller,
@@ -417,6 +418,7 @@ class _PolishGuidanceCard extends StatelessWidget {
 
 class _PolishMoreOptionsCard extends StatelessWidget {
   const _PolishMoreOptionsCard({
+    super.key,
     required this.expanded,
     required this.onToggle,
     required this.tones,
@@ -469,20 +471,7 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                   const Icon(Icons.tune_rounded, color: _kColor),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('More options', style: AppTextStyles.cardTitle),
-                        Text(
-                          expanded
-                              ? 'Fine-tune your polish'
-                              : '$tone tone · $audience · $length length',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.helper,
-                        ),
-                      ],
-                    ),
+                    child: Text('More options', style: AppTextStyles.cardTitle),
                   ),
                   Icon(
                     expanded

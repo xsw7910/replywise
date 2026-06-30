@@ -82,6 +82,10 @@ void main() {
 
     expect(find.text('Guidance'), findsOneWidget);
     expect(find.text('More options'), findsOneWidget);
+    expect(
+      tester.getSize(find.byKey(const Key('polish-more-options-card'))).height,
+      tester.getSize(find.byKey(const Key('polish-guidance-card'))).height,
+    );
   });
 
   testWidgets('selected guidance is sent in Polish request', (tester) async {

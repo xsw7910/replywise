@@ -74,7 +74,7 @@ void main() {
 
       expect(
         _textOf(tester, const Key('reply-guidance-field')),
-        'My own note\n\nMake the reply polite and respectful.',
+        'My own note\nMake the reply polite and respectful.',
       );
     });
   });
@@ -108,7 +108,7 @@ void main() {
 
       expect(
         _textOf(tester, const Key('polish-custom-guidance-field')),
-        'Make the reply polite and respectful.\n\n'
+        'Make the reply polite and respectful.\n'
         'Keep the reply short and clear.',
       );
       // The guidance field remains available for further edits.
