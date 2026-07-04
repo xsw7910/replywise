@@ -8,6 +8,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:replywise/core/network/api_client.dart';
+import 'package:replywise/core/theme/app_colors.dart';
+import 'package:replywise/core/theme/app_feature_theme.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
 import 'package:replywise/features/polish/data/polish_repository.dart';
@@ -76,6 +78,49 @@ Future<void> _enterDraft(WidgetTester tester) =>
     tester.enterText(find.byType(TextField).first, 'Please review my draft.');
 
 void main() {
+  testWidgets('Polish mirrors the Reply compact hero and visual hierarchy', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(360, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await _pumpPolish(tester);
+
+    final hero = tester.widget<SliverAppBar>(
+      find.byKey(const Key('polish-hero-header')),
+    );
+    expect(hero.expandedHeight, 112);
+    expect((hero.title! as Text).style?.color, AppColors.polishColor);
+    expect(
+      AppFeature.polish.pageBackgroundImage,
+      'assets/image/polish_page_backgroud.png',
+    );
+    expect(
+      tester.getTopLeft(find.byKey(const Key('polish-text-card'))).dy,
+      closeTo(130, 1),
+    );
+    expect(find.text('Text to polish'), findsOneWidget);
+    expect(find.text("Paste the text you'd like to improve"), findsOneWidget);
+    expect(find.text('Paste your text here…'), findsOneWidget);
+    expect(find.text('Help AI understand your intent'), findsOneWidget);
+    expect(find.text('Adjust tone, length and format'), findsOneWidget);
+    expect(find.text('Polish Text'), findsOneWidget);
+    expect(find.text('Your polished text will appear here.'), findsOneWidget);
+
+    final initialCardTop = tester
+        .getTopLeft(find.byKey(const Key('polish-text-card')))
+        .dy;
+    tester
+        .state<ScrollableState>(find.byType(Scrollable).first)
+        .position
+        .jumpTo(80);
+    await tester.pump();
+    expect(
+      tester.getTopLeft(find.byKey(const Key('polish-text-card'))).dy,
+      lessThan(initialCardTop),
+    );
+  });
+
   testWidgets('Polish shows Guidance and More options cards', (tester) async {
     _useTallView(tester);
     await _pumpPolish(tester);
@@ -95,14 +140,14 @@ void main() {
 
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Be polite'));
+    await tester.tap(find.text('Professional'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Polish draft'));
+    await tester.tap(find.text('Polish Text'));
     await tester.pump();
 
     expect(
       repository.lastRequest?.guidance,
-      'Make the reply polite and respectful.',
+      'Make the writing sound professional.',
     );
   });
 
@@ -122,7 +167,7 @@ void main() {
       _editableIn(const Key('polish-custom-tone-field')),
       ' warm but direct ',
     );
-    await tester.tap(find.text('Polish draft'));
+    await tester.tap(find.text('Polish Text'));
     await tester.pump();
 
     expect(repository.lastRequest?.tone, 'warm but direct');
@@ -147,7 +192,7 @@ void main() {
       _editableIn(const Key('polish-custom-audience-field')),
       ' my customer ',
     );
-    await tester.tap(find.text('Polish draft'));
+    await tester.tap(find.text('Polish Text'));
     await tester.pump();
 
     expect(repository.lastRequest?.audience, 'my customer');
@@ -175,7 +220,7 @@ void main() {
         isEmpty,
       );
 
-      await tester.tap(find.text('Polish draft'));
+      await tester.tap(find.text('Polish Text'));
       await tester.pump();
       expect(repository.lastRequest?.guidance, isNull);
     },

@@ -18,7 +18,6 @@ import 'domain/polish_models.dart';
 import '../entitlement/usage_controller.dart';
 import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
-import '../guidance/presentation/guidance_chip_row.dart';
 import '../guidance/presentation/guidance_picker_sheet.dart';
 import '../guidance/presentation/guidance_text_field.dart';
 import '../reply/widgets/reply_status_badge.dart';
@@ -68,15 +67,17 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     super.dispose();
   }
 
-  void _appendGuidance(GuidanceTemplate template) {
+  void _appendGuidanceText(String content) {
     final current = _guidanceController.text.trim();
-    final content = template.content;
     _guidanceController.text = current.isEmpty ? content : '$current\n$content';
     _guidanceController.selection = TextSelection.collapsed(
       offset: _guidanceController.text.length,
     );
     if (!_guidanceExpanded) setState(() => _guidanceExpanded = true);
   }
+
+  void _appendGuidance(GuidanceTemplate template) =>
+      _appendGuidanceText(template.content);
 
   void _openLibrary() {
     showModalBottomSheet<void>(
@@ -150,187 +151,474 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
       title: 'Polish',
       accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
-      transparentAppBar: true,
-      centerTitle: false,
-      actions: [
-        ReplyStatusBadge(
-          usage: usageState.usage,
-          onTap: () => context.push(AppRoutes.paywall),
-        ),
-      ],
-      child: ListView(
+      showAppBar: false,
+      child: CustomScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
-        children: [
-          GlassCard(
-            feature: _feature,
-            showFeatureImage: false,
-            tintColor: _kCardTint,
-            tintStrength: _kCardTintStrength,
-            child: LabeledTextField(
-              label: 'Your draft',
-              feature: _feature,
-              showCounter: false,
-              controller: _draftController,
-              hintText: 'Paste of type your draft...',
-              maxLines: 7,
-              maxLength: 4000,
-              fieldActions: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    tooltip: 'Paste',
-                    visualDensity: VisualDensity.compact,
-                    color: _kColor,
-                    onPressed: _pasteDraft,
-                    icon: const Icon(Icons.content_paste_rounded, size: 20),
+        slivers: [
+          SliverAppBar(
+            key: const Key('polish-hero-header'),
+            pinned: true,
+            expandedHeight: 112,
+            toolbarHeight: kToolbarHeight,
+            automaticallyImplyLeading: false,
+            centerTitle: false,
+            titleSpacing: 16,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            title: Text(
+              'Polish',
+              style:
+                  (Theme.of(context).appBarTheme.titleTextStyle ??
+                          const TextStyle())
+                      .copyWith(color: _kColor, fontWeight: FontWeight.w700),
+            ),
+            actions: [
+              ReplyStatusBadge(
+                usage: usageState.usage,
+                onTap: () => context.push(AppRoutes.paywall),
+              ),
+            ],
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                GlassCard(
+                  key: const Key('polish-text-card'),
+                  feature: _feature,
+                  showFeatureImage: false,
+                  tintColor: _kCardTint,
+                  tintStrength: _kCardTintStrength,
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
+                    children: [
+                      const _PolishCardHeader(
+                        icon: Icons.edit_note_rounded,
+                        title: 'Text to polish',
+                        subtitle: "Paste the text you'd like to improve",
+                      ),
+                      const SizedBox(height: 14),
+                      LabeledTextField(
+                        key: const Key('polish-draft-field'),
+                        label: 'Text to polish',
+                        feature: _feature,
+                        showHeader: false,
+                        showCounter: false,
+                        controller: _draftController,
+                        hintText: 'Paste your text here…',
+                        maxLines: 5,
+                        maxLength: 4000,
+                        fieldActions: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip: 'Paste',
+                              visualDensity: VisualDensity.compact,
+                              color: _kColor,
+                              onPressed: _pasteDraft,
+                              icon: const Icon(
+                                Icons.content_paste_rounded,
+                                size: 20,
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: 'Clear',
+                              visualDensity: VisualDensity.compact,
+                              color: _kColor,
+                              onPressed: _draftController.clear,
+                              icon: const Icon(Icons.close_rounded, size: 21),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    tooltip: 'Clear',
-                    visualDensity: VisualDensity.compact,
-                    color: _kColor,
-                    onPressed: _draftController.clear,
-                    icon: const Icon(Icons.close_rounded, size: 21),
+                ),
+                const SizedBox(height: 14),
+                _PolishGuidanceCard(
+                  key: const Key('polish-guidance-card'),
+                  expanded: _guidanceExpanded,
+                  onToggle: () =>
+                      setState(() => _guidanceExpanded = !_guidanceExpanded),
+                  controller: _guidanceController,
+                  onQuickGuidance: _appendGuidanceText,
+                  onOpenLibrary: _openLibrary,
+                ),
+                const SizedBox(height: 18),
+                _PolishMoreOptionsCard(
+                  key: const Key('polish-more-options-card'),
+                  expanded: _moreOptionsExpanded,
+                  onToggle: () => setState(
+                    () => _moreOptionsExpanded = !_moreOptionsExpanded,
+                  ),
+                  tones: _tones,
+                  tone: _tone,
+                  onTone: (value) => setState(() => _tone = value),
+                  customToneController: _customToneController,
+                  audiences: _audiences,
+                  audience: _audience,
+                  onAudience: (value) => setState(() => _audience = value),
+                  customAudienceController: _customAudienceController,
+                  lengths: _lengths,
+                  length: _length,
+                  onLength: (value) => setState(() => _length = value),
+                  extraInstructionController: _extraInstructionController,
+                ),
+                const SizedBox(height: 18),
+                _PolishPrimaryButton(
+                  onPressed: polishState.isLoading ? null : _polish,
+                  loading: polishState.isLoading,
+                ),
+                if (polishState.isLoading) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    'Improving clarity while keeping your meaning…',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.helper,
                   ),
                 ],
+                if (polishState.error != null) ...[
+                  const SizedBox(height: 12),
+                  InlineError(
+                    message: polishState.error!,
+                    actionLabel: polishState.errorCode == 'PAYWALL_REQUIRED'
+                        ? null
+                        : 'Try again',
+                    onAction: polishState.errorCode == 'PAYWALL_REQUIRED'
+                        ? null
+                        : _polish,
+                  ),
+                  if (polishState.errorCode == 'PAYWALL_REQUIRED')
+                    TextButton(
+                      onPressed: () => context.push(AppRoutes.paywall),
+                      child: const Text('View plans'),
+                    ),
+                ],
+                if (!polishState.isLoading &&
+                    polishState.error == null &&
+                    polishState.result == null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'Your polished text will appear here.',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.helper,
+                  ),
+                ],
+                if (polishState.result != null) ...[
+                  const SizedBox(height: 26),
+                  Text('Polished result', style: AppTextStyles.sectionTitle),
+                  const SizedBox(height: 12),
+                  GeneratedResultCard(
+                    label: _tone,
+                    text: polishState.result!.polished,
+                    feature: _feature,
+                    showFeatureImage: false,
+                    tintColor: _kCardTint,
+                    tintStrength: _kCardTintStrength,
+                  ),
+                  const SizedBox(height: 12),
+                  GlassCard(
+                    feature: _feature,
+                    blur: 8,
+                    showFeatureImage: false,
+                    tintColor: _kCardTint,
+                    tintStrength: _kCardTintStrength,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('What changed?', style: AppTextStyles.cardTitle),
+                        const SizedBox(height: 6),
+                        Text(
+                          polishState.result!.changes,
+                          style: AppTextStyles.body,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: _kColor,
+                      side: const BorderSide(color: _kColor),
+                    ),
+                    onPressed: polishState.isLoading ? null : _polish,
+                    icon: polishState.isLoading
+                        ? const SizedBox.square(
+                            dimension: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.refresh_rounded),
+                    label: const Text('Polish again'),
+                  ),
+                  if (!usageState.usage.isPremium)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        'Polishing again creates a new result and uses 1 generation.',
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.helper,
+                      ),
+                    ),
+                ],
+              ]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PolishCardHeader extends StatelessWidget {
+  const _PolishCardHeader({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _PolishGradientIconBadge(icon: icon),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.cardTitle,
               ),
-            ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.helper,
+              ),
+            ],
           ),
-          const SizedBox(height: 14),
-          _PolishGuidanceCard(
-            key: const Key('polish-guidance-card'),
-            expanded: _guidanceExpanded,
-            onToggle: () =>
-                setState(() => _guidanceExpanded = !_guidanceExpanded),
-            controller: _guidanceController,
-            onSelected: _appendGuidance,
-            onOpenLibrary: _openLibrary,
+        ),
+      ],
+    );
+  }
+}
+
+class _PolishGradientIconBadge extends StatelessWidget {
+  const _PolishGradientIconBadge({required this.icon});
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [_kColor, Color.lerp(_kColor, Colors.white, 0.35)!],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _kColor.withAlpha(70),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
           ),
-          const SizedBox(height: 14),
-          _PolishMoreOptionsCard(
-            key: const Key('polish-more-options-card'),
-            expanded: _moreOptionsExpanded,
-            onToggle: () =>
-                setState(() => _moreOptionsExpanded = !_moreOptionsExpanded),
-            tones: _tones,
-            tone: _tone,
-            onTone: (value) => setState(() => _tone = value),
-            customToneController: _customToneController,
-            audiences: _audiences,
-            audience: _audience,
-            onAudience: (value) => setState(() => _audience = value),
-            customAudienceController: _customAudienceController,
-            lengths: _lengths,
-            length: _length,
-            onLength: (value) => setState(() => _length = value),
-            extraInstructionController: _extraInstructionController,
+        ],
+      ),
+      child: Icon(icon, color: Colors.white, size: 22),
+    );
+  }
+}
+
+class _PolishExpandButton extends StatelessWidget {
+  const _PolishExpandButton({required this.expanded});
+
+  final bool expanded;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 30,
+      height: 30,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.softBlueShadow,
+            blurRadius: 8,
+            offset: Offset(0, 3),
           ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _feature.primaryButtonColor,
-            ),
-            onPressed: polishState.isLoading ? null : _polish,
-            icon: polishState.isLoading
-                ? const SizedBox.square(
+        ],
+      ),
+      child: Icon(
+        expanded
+            ? Icons.keyboard_arrow_up_rounded
+            : Icons.keyboard_arrow_down_rounded,
+        color: _kColor,
+        size: 19,
+      ),
+    );
+  }
+}
+
+class _PolishQuickGuidanceChips extends StatelessWidget {
+  const _PolishQuickGuidanceChips({required this.onAppend});
+
+  final ValueChanged<String> onAppend;
+
+  static const _items = [
+    (
+      label: 'Professional',
+      instruction: 'Make the writing sound professional.',
+      icon: Icons.business_center_outlined,
+    ),
+    (
+      label: 'Friendly',
+      instruction: 'Make the writing warmer and friendlier.',
+      icon: Icons.sentiment_satisfied_alt_rounded,
+    ),
+    (
+      label: 'Concise',
+      instruction: 'Make the writing concise and direct.',
+      icon: Icons.short_text_rounded,
+    ),
+    (
+      label: 'More natural',
+      instruction: 'Make the wording sound natural and fluent.',
+      icon: Icons.auto_awesome_rounded,
+    ),
+    (
+      label: 'Improve grammar',
+      instruction: 'Correct the grammar while preserving the meaning.',
+      icon: Icons.spellcheck_rounded,
+    ),
+    (
+      label: 'Fix spelling',
+      instruction: 'Correct all spelling errors.',
+      icon: Icons.abc_rounded,
+    ),
+    (
+      label: 'More persuasive',
+      instruction: 'Make the writing more persuasive and compelling.',
+      icon: Icons.campaign_outlined,
+    ),
+    (
+      label: 'More confident',
+      instruction: 'Make the writing sound clear and confident.',
+      icon: Icons.shield_outlined,
+    ),
+    (
+      label: 'Simplify wording',
+      instruction: 'Use simpler, easier-to-read wording.',
+      icon: Icons.filter_alt_off_rounded,
+    ),
+    (
+      label: 'Better flow',
+      instruction: 'Improve sentence flow and transitions.',
+      icon: Icons.water_rounded,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Quick guidance', style: AppTextStyles.badge),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final item in _items)
+              ActionChip(
+                backgroundColor: _feature.selectedChipColor,
+                side: const BorderSide(color: AppColors.glassEdgeStrong),
+                avatar: Icon(item.icon, size: 15, color: _kColor),
+                label: Text(item.label, style: const TextStyle(color: _kColor)),
+                onPressed: () => onAppend(item.instruction),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _PolishPrimaryButton extends StatelessWidget {
+  const _PolishPrimaryButton({required this.onPressed, required this.loading});
+
+  final VoidCallback? onPressed;
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          colors: [_kColor, _kColor, Color.lerp(_kColor, Colors.white, 0.18)!],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _kColor.withAlpha(68),
+            blurRadius: 16,
+            offset: Offset(0, 7),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(18),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: onPressed,
+          child: SizedBox(
+            height: 52,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (loading)
+                  const SizedBox.square(
                     dimension: 18,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       color: Colors.white,
                     ),
                   )
-                : const Icon(Icons.auto_fix_high_rounded),
-            label: Text(polishState.isLoading ? 'Polishing…' : 'Polish draft'),
-          ),
-          if (polishState.isLoading) ...[
-            const SizedBox(height: 10),
-            Text(
-              'Improving clarity while keeping your meaning…',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.helper,
-            ),
-          ],
-          if (polishState.error != null) ...[
-            const SizedBox(height: 12),
-            InlineError(
-              message: polishState.error!,
-              actionLabel: polishState.errorCode == 'PAYWALL_REQUIRED'
-                  ? null
-                  : 'Try again',
-              onAction: polishState.errorCode == 'PAYWALL_REQUIRED'
-                  ? null
-                  : _polish,
-            ),
-            if (polishState.errorCode == 'PAYWALL_REQUIRED')
-              TextButton(
-                onPressed: () => context.push(AppRoutes.paywall),
-                child: const Text('View plans'),
-              ),
-          ],
-          if (!polishState.isLoading &&
-              polishState.error == null &&
-              polishState.result == null) ...[
-            const SizedBox(height: 12),
-            Text(
-              'Your polished draft will appear here.',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.helper,
-            ),
-          ],
-          if (polishState.result != null) ...[
-            const SizedBox(height: 26),
-            Text('Polished result', style: AppTextStyles.sectionTitle),
-            const SizedBox(height: 12),
-            GeneratedResultCard(
-              label: _tone,
-              text: polishState.result!.polished,
-              feature: _feature,
-              showFeatureImage: false,
-              tintColor: _kCardTint,
-              tintStrength: _kCardTintStrength,
-            ),
-            const SizedBox(height: 12),
-            GlassCard(
-              feature: _feature,
-              blur: 8,
-              showFeatureImage: false,
-              tintColor: _kCardTint,
-              tintStrength: _kCardTintStrength,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('What changed?', style: AppTextStyles.cardTitle),
-                  const SizedBox(height: 6),
-                  Text(polishState.result!.changes, style: AppTextStyles.body),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: _kColor,
-                side: const BorderSide(color: _kColor),
-              ),
-              onPressed: polishState.isLoading ? null : _polish,
-              icon: polishState.isLoading
-                  ? const SizedBox.square(
-                      dimension: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.refresh_rounded),
-              label: const Text('Polish again'),
-            ),
-            if (!usageState.usage.isPremium)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(
-                  'Polishing again creates a new result and uses 1 generation.',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.helper,
+                else
+                  const Icon(
+                    Icons.auto_fix_high_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                const SizedBox(width: 9),
+                Text(
+                  loading ? 'Polishing…' : 'Polish Text',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-          ],
-        ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -342,14 +630,14 @@ class _PolishGuidanceCard extends StatelessWidget {
     required this.expanded,
     required this.onToggle,
     required this.controller,
-    required this.onSelected,
+    required this.onQuickGuidance,
     required this.onOpenLibrary,
   });
 
   final bool expanded;
   final VoidCallback onToggle;
   final TextEditingController controller;
-  final ValueChanged<GuidanceTemplate> onSelected;
+  final ValueChanged<String> onQuickGuidance;
   final VoidCallback onOpenLibrary;
 
   @override
@@ -367,24 +655,36 @@ class _PolishGuidanceCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             onTap: onToggle,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+              padding: const EdgeInsets.all(14),
               child: Row(
                 children: [
-                  const Icon(Icons.lightbulb_outline_rounded, color: _kColor),
+                  const _PolishGradientIconBadge(
+                    icon: Icons.auto_fix_high_rounded,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text('Guidance', style: AppTextStyles.cardTitle),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Guidance',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.cardTitle,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Help AI understand your intent',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.helper,
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    expanded ? 'Hide' : 'Add guidance',
-                    style: AppTextStyles.helper.copyWith(color: _kColor),
-                  ),
-                  Icon(
-                    expanded
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
-                    color: AppColors.textSecondary,
-                  ),
+                  const SizedBox(width: 8),
+                  _PolishExpandButton(expanded: expanded),
                 ],
               ),
             ),
@@ -404,8 +704,8 @@ class _PolishGuidanceCard extends StatelessWidget {
                     maxLength: InputLimits.guidanceMaxLength,
                     onOpenLibrary: onOpenLibrary,
                   ),
-                  const SizedBox(height: 12),
-                  GuidanceChipRow(feature: _feature, onSelected: onSelected),
+                  const SizedBox(height: 14),
+                  _PolishQuickGuidanceChips(onAppend: onQuickGuidance),
                 ],
               ),
             ),
@@ -465,20 +765,34 @@ class _PolishMoreOptionsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             onTap: onToggle,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+              padding: const EdgeInsets.all(14),
               child: Row(
                 children: [
-                  const Icon(Icons.tune_rounded, color: _kColor),
+                  const _PolishGradientIconBadge(icon: Icons.tune_rounded),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text('More options', style: AppTextStyles.cardTitle),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'More options',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.cardTitle,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Adjust tone, length and format',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.helper,
+                        ),
+                      ],
+                    ),
                   ),
-                  Icon(
-                    expanded
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
-                    color: AppColors.textSecondary,
-                  ),
+                  const SizedBox(width: 8),
+                  _PolishExpandButton(expanded: expanded),
                 ],
               ),
             ),

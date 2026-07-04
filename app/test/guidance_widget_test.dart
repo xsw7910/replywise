@@ -69,12 +69,13 @@ void main() {
       );
       await tester.pump();
 
-      await tester.tap(find.text('Be polite'));
+      await tester.tap(find.text('Professional'));
       await tester.pump();
 
       expect(
         _textOf(tester, const Key('reply-guidance-field')),
-        'My own note\nMake the reply polite and respectful.',
+        'My own note\n'
+        'Make the reply sound professional and appropriate for work.',
       );
     });
   });
@@ -94,22 +95,22 @@ void main() {
       await tester.pumpAndSettle();
 
       // First selection fills the dedicated guidance field.
-      await tester.tap(find.text('Be polite'));
+      await tester.tap(find.text('Professional'));
       await tester.pumpAndSettle();
 
       expect(
         _textOf(tester, const Key('polish-custom-guidance-field')),
-        'Make the reply polite and respectful.',
+        'Make the writing sound professional.',
       );
 
       // Second selection appends without overwriting.
-      await tester.tap(find.text('Keep it short'));
+      await tester.tap(find.text('Friendly'));
       await tester.pumpAndSettle();
 
       expect(
         _textOf(tester, const Key('polish-custom-guidance-field')),
-        'Make the reply polite and respectful.\n'
-        'Keep the reply short and clear.',
+        'Make the writing sound professional.\n'
+        'Make the writing warmer and friendlier.',
       );
       // The guidance field remains available for further edits.
       expect(

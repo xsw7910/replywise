@@ -151,7 +151,7 @@ void main() {
     await tester.tap(find.text('Polish').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Your draft'), findsOneWidget);
+    expect(find.text('Text to polish'), findsOneWidget);
   });
 
   testWidgets('Home Reply feature card opens Reply page', (tester) async {
@@ -177,7 +177,7 @@ void main() {
 
     await tapHomeCard(tester, const Key('home-feature-polish'));
 
-    expect(find.text('Your draft'), findsOneWidget);
+    expect(find.text('Text to polish'), findsOneWidget);
   });
 
   testWidgets('Home Guidance Library feature card opens library page', (

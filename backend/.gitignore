@@ -9,3 +9,9 @@ htmlcov/
 !.env.example
 
 .venv/
+
+# Runtime SQLite database files — never commit (may contain real user/usage data)
+*.db
+*.db-shm
+*.db-wal
+replywise.db

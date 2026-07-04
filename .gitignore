@@ -1,0 +1,12 @@
+# Repo-wide safety net for runtime SQLite database files.
+# Backend-specific rules also live in backend/.gitignore; these repeat them at
+# the repository root so the backend/-prefixed patterns take effect too, and so
+# any DB file created elsewhere in the tree is caught.
+*.db
+*.db-shm
+*.db-wal
+replywise.db
+backend/replywise.db
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
