@@ -144,6 +144,11 @@ class Settings(BaseSettings):
                 raise ValueError("REVENUECAT_SECRET_API_KEY must be set in production")
             if not self.revenuecat_project_id:
                 raise ValueError("REVENUECAT_PROJECT_ID must be set in production")
+            if not self.revenuecat_credit_product_map.strip():
+                raise ValueError(
+                    "REVENUECAT_CREDIT_PRODUCT_MAP must be set in production so "
+                    "purchased credit packs map to a credit grant"
+                )
             if not self.openai_api_key:
                 raise ValueError("OPENAI_API_KEY must be set in production")
         elif not self.is_dev_or_test:

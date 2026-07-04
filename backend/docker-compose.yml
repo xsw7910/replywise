@@ -22,6 +22,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    # Load every backend setting from .env (REVENUECAT_*, limits, secrets, …).
+    # The explicit `environment:` block below documents the full contract and
+    # applies topology-specific overrides that must win over .env — notably
+    # DATABASE_URL, which always points at the compose Postgres service.
+    env_file:
+      - .env
     environment:
       REPLY_ENV: ${REPLY_ENV:-dev}
       SERVICE_NAME: ${SERVICE_NAME:-reply-backend}
@@ -32,7 +38,14 @@ services:
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
       OPENAI_TIMEOUT_SECONDS: ${OPENAI_TIMEOUT_SECONDS:-30}
       REVENUECAT_SECRET_API_KEY: ${REVENUECAT_SECRET_API_KEY:-}
+      REVENUECAT_PROJECT_ID: ${REVENUECAT_PROJECT_ID:-}
       REVENUECAT_ENTITLEMENT_ID: ${REVENUECAT_ENTITLEMENT_ID:-premium}
+      REVENUECAT_SUBSCRIPTION_PRODUCT_ID: "${REVENUECAT_SUBSCRIPTION_PRODUCT_ID:-premium_yearly:yearly}"
+      REVENUECAT_CREDIT_PRODUCT_MAP: ${REVENUECAT_CREDIT_PRODUCT_MAP:-}
+      EXPLAIN_DAILY_LIMIT: ${EXPLAIN_DAILY_LIMIT:-10}
+      FREE_LIFETIME_LIMIT: ${FREE_LIFETIME_LIMIT:-5}
+      GENERATION_RATE_PER_MINUTE: ${GENERATION_RATE_PER_MINUTE:-8}
+      IDEMPOTENCY_TTL_SECONDS: ${IDEMPOTENCY_TTL_SECONDS:-86400}
       MOCK_AI_ENABLED: ${MOCK_AI_ENABLED:-false}
       DEV_TOOLS_ENABLED: ${DEV_TOOLS_ENABLED:-false}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}

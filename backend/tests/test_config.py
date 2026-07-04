@@ -93,6 +93,7 @@ def test_production_accepts_explicit_non_development_secrets() -> None:
         server_pepper="production-pepper",
         revenuecat_secret_api_key="production-revenuecat-secret",
         revenuecat_project_id="proj_test",
+        revenuecat_credit_product_map="credits_10:10,credits_50:50,credits_100:100",
         openai_api_key="sk-prod-key",
     )
     assert config.app_env == "prod"
@@ -125,7 +126,23 @@ def test_production_rejects_missing_openai_api_key() -> None:
             server_pepper="production-pepper",
             revenuecat_secret_api_key="prod-rc-key",
             revenuecat_project_id="proj_test",
+            revenuecat_credit_product_map="credits_10:10",
             openai_api_key="",
+        )
+
+
+def test_production_rejects_missing_credit_product_map() -> None:
+    with pytest.raises(ValidationError, match="REVENUECAT_CREDIT_PRODUCT_MAP"):
+        Settings(
+            _env_file=None,
+            app_env="prod",
+            database_url=PROD_DATABASE_URL,
+            jwt_secret="production-secret",
+            server_pepper="production-pepper",
+            revenuecat_secret_api_key="prod-rc-key",
+            revenuecat_project_id="proj_test",
+            openai_api_key="sk-prod-key",
+            revenuecat_credit_product_map="",
         )
 
 
@@ -152,6 +169,7 @@ def test_production_accepts_all_required_secrets() -> None:
         server_pepper="production-pepper",
         revenuecat_secret_api_key="prod-rc-key",
         revenuecat_project_id="proj_test",
+        revenuecat_credit_product_map="credits_10:10,credits_50:50,credits_100:100",
         openai_api_key="sk-prod-key",
     )
     assert config.app_env == "prod"
