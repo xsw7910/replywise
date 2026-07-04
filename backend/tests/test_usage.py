@@ -1,19 +1,21 @@
 import asyncio
-import threading
 
 from fastapi.testclient import TestClient
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.api.v1.ai import get_ai_service
 from app.config import settings
-from app.database import AsyncSessionLocal
+from app.database import AsyncSessionLocal, Base
+from app.errors import ApiException
 from app.main import app
 from app.models.subscription import SubscriptionCache
 from app.models.usage import DeviceUsage, IdempotencyKey, UsageEvent, UsageSummary
 from app.models.user import User
 from app.services.ai_service import AIService
+from app.services.usage_service import begin_generation
 
 
 def _auth_device(client: TestClient, app_user_id: str, device_id: str) -> tuple[dict[str, str], int]:
@@ -66,6 +68,37 @@ def _seed_successful_free_events(user_id: int, count: int) -> None:
     asyncio.run(seed())
 
 
+def _isolated_database(tmp_path, filename: str):
+    database_path = (tmp_path / filename).as_posix()
+    engine = create_async_engine(
+        f'sqlite+aiosqlite:///{database_path}',
+        connect_args={'timeout': 5},
+    )
+    return engine, async_sessionmaker(engine, expire_on_commit=False)
+
+
+async def _attempt_generation(
+    sessions,
+    *,
+    user_id: int,
+    device_hash: str,
+    key: str,
+) -> tuple[str, str]:
+    async with sessions() as db:
+        try:
+            source, _ = await begin_generation(
+                db=db,
+                user_id=user_id,
+                device_hash=device_hash,
+                endpoint='reply',
+                key=key,
+                request_hash=f'hash-{key}',
+            )
+        except ApiException as error:
+            return 'error', error.code
+        return 'success', source or ''
+
+
 def test_free_deduction_and_paywall_after_five_uses(client: TestClient) -> None:
     auth, _ = _auth(client, 'free')
     for index in range(5):
@@ -95,6 +128,114 @@ def test_paid_credits_are_used_after_free_allowance(client: TestClient) -> None:
     assert response.status_code == 200
     assert response.json()['usage']['source'] == 'credit'
     assert response.json()['usage']['paidCredits'] == 1
+
+
+def test_concurrent_requests_cannot_overdraw_last_paid_credit(
+    tmp_path,
+) -> None:
+    """Two independent transactions cannot overdraw one remaining credit."""
+
+    async def run_race() -> tuple[list[tuple[str, str]], int]:
+        engine, sessions = _isolated_database(
+            tmp_path,
+            'paid-credit-race.db',
+        )
+        user_id = 1
+        device_hash = 'last-paid-credit-device'
+
+        try:
+            async with engine.begin() as connection:
+                await connection.run_sync(Base.metadata.create_all)
+
+            async with sessions() as db:
+                db.add(
+                    User(
+                        id=user_id,
+                        app_user_id='last-paid-credit-user',
+                        device_hash=device_hash,
+                        platform='test',
+                    )
+                )
+                db.add(
+                    DeviceUsage(
+                        device_hash=device_hash,
+                        free_uses_limit=5,
+                        free_uses_used=5,
+                    )
+                )
+                db.add(UsageSummary(user_id=user_id, paid_credits=1))
+                await db.commit()
+
+            results = await asyncio.gather(
+                _attempt_generation(
+                    sessions,
+                    user_id=user_id,
+                    device_hash=device_hash,
+                    key='last-paid-credit-1',
+                ),
+                _attempt_generation(
+                    sessions,
+                    user_id=user_id,
+                    device_hash=device_hash,
+                    key='last-paid-credit-2',
+                ),
+            )
+
+            async with sessions() as db:
+                summary = await db.get(UsageSummary, user_id)
+                remaining = summary.paid_credits
+            return results, remaining
+        finally:
+            await engine.dispose()
+
+    results, remaining = asyncio.run(run_race())
+
+    assert results.count(('success', 'credit')) == 1, results
+    assert results.count(('error', 'PAYWALL_REQUIRED')) == 1, results
+    assert remaining == 0
+    assert remaining >= 0
+
+
+def test_paid_credit_idempotent_replay_deducts_once(
+    client: TestClient,
+) -> None:
+    """Replay returns the stored response; a changed payload conflicts."""
+    auth, user_id = _auth(client, 'paid-idempotency')
+
+    async def seed_paid_credits() -> None:
+        async with AsyncSessionLocal() as db:
+            user = await db.get(User, user_id)
+            device = await db.get(DeviceUsage, user.device_hash)
+            device.free_uses_used = device.free_uses_limit
+            summary = await db.get(UsageSummary, user_id)
+            summary.paid_credits = 2
+            await db.commit()
+
+    asyncio.run(seed_paid_credits())
+
+    first = _reply(client, auth, 'paid-idempotency-key')
+    replay = _reply(client, auth, 'paid-idempotency-key')
+    conflict = _reply(
+        client,
+        auth,
+        'paid-idempotency-key',
+        incoming='Different payload',
+    )
+
+    assert first.status_code == 200
+    assert first.json()['usage']['source'] == 'credit'
+    assert first.json()['usage']['paidCredits'] == 1
+    assert replay.status_code == 200
+    assert replay.json() == first.json()
+    assert conflict.status_code == 409
+    assert conflict.json()['error']['code'] == 'IDEMPOTENCY_CONFLICT'
+
+    async def paid_credit_balance() -> int:
+        async with AsyncSessionLocal() as db:
+            summary = await db.get(UsageSummary, user_id)
+            return summary.paid_credits
+
+    assert asyncio.run(paid_credit_balance()) == 1
 
 
 def test_idempotent_replay_and_conflict(client: TestClient) -> None:
@@ -186,33 +327,62 @@ def test_polish_deduction_matches_reply(client: TestClient) -> None:
     assert me['freeUsesLeft'] == 3
 
 
-def test_concurrent_no_overdraw(client: TestClient) -> None:
-    """Two concurrent requests must not consume more free uses than succeed."""
-    auth, _ = _auth(client, 'conc-no-overdraw')
-    results: list[int] = []
-    lock = threading.Lock()
-    barrier = threading.Barrier(2)
+def test_concurrent_no_overdraw(tmp_path) -> None:
+    """Concurrent free deductions do not lose updates."""
 
-    def make_request(key: str) -> None:
-        barrier.wait(timeout=5)
-        r = _reply(client, auth, key)
-        with lock:
-            results.append(r.status_code)
+    async def run_race() -> tuple[list[tuple[str, str]], int]:
+        engine, sessions = _isolated_database(tmp_path, 'free-usage-race.db')
+        user_id = 1
+        device_hash = 'free-usage-race-device'
 
-    threads = [
-        threading.Thread(target=make_request, args=(f'conc-no-{i}',))
-        for i in range(2)
-    ]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+        try:
+            async with engine.begin() as connection:
+                await connection.run_sync(Base.metadata.create_all)
 
-    success_count = results.count(200)
-    me = client.get('/v1/me', headers=auth).json()
-    assert me['freeUsesUsed'] == success_count, (
-        f"freeUsesUsed={me['freeUsesUsed']} does not match success_count={success_count}"
-    )
+            async with sessions() as db:
+                db.add(
+                    User(
+                        id=user_id,
+                        app_user_id='free-usage-race-user',
+                        device_hash=device_hash,
+                        platform='test',
+                    )
+                )
+                db.add(
+                    DeviceUsage(
+                        device_hash=device_hash,
+                        free_uses_limit=5,
+                        free_uses_used=0,
+                    )
+                )
+                db.add(UsageSummary(user_id=user_id, paid_credits=0))
+                await db.commit()
+
+            results = await asyncio.gather(
+                _attempt_generation(
+                    sessions,
+                    user_id=user_id,
+                    device_hash=device_hash,
+                    key='free-usage-race-1',
+                ),
+                _attempt_generation(
+                    sessions,
+                    user_id=user_id,
+                    device_hash=device_hash,
+                    key='free-usage-race-2',
+                ),
+            )
+
+            async with sessions() as db:
+                device = await db.get(DeviceUsage, device_hash)
+                free_uses_used = device.free_uses_used
+            return results, free_uses_used
+        finally:
+            await engine.dispose()
+
+    results, free_uses_used = asyncio.run(run_race())
+    assert results.count(('success', 'free')) == 2, results
+    assert free_uses_used == 2
 
 
 def test_free_quota_shared_by_device_across_reinstall(client: TestClient) -> None:
@@ -333,44 +503,68 @@ def test_paid_credits_remain_user_scoped_on_shared_exhausted_device(
 
 
 def test_concurrent_same_device_requests_cannot_exceed_last_free_use(
-    client: TestClient,
+    tmp_path,
 ) -> None:
-    device = 'shared-last-free-device'
-    _, seed_user = _auth_device(client, 'shared-last-seed', device)
-    _seed_successful_free_events(seed_user, 4)
-    auth_b, _ = _auth_device(client, 'shared-last-b', device)
-    auth_c, _ = _auth_device(client, 'shared-last-c', device)
+    async def run_race() -> tuple[list[tuple[str, str]], int]:
+        engine, sessions = _isolated_database(tmp_path, 'last-free-use-race.db')
+        device_hash = 'shared-last-free-device'
 
-    results: list[int] = []
-    lock = threading.Lock()
-    barrier = threading.Barrier(2)
+        try:
+            async with engine.begin() as connection:
+                await connection.run_sync(Base.metadata.create_all)
 
-    def make_request(auth: dict[str, str], key: str) -> None:
-        barrier.wait(timeout=5)
-        response = _reply(client, auth, key)
-        with lock:
-            results.append(response.status_code)
+            async with sessions() as db:
+                db.add_all(
+                    [
+                        User(
+                            id=1,
+                            app_user_id='shared-last-free-user-1',
+                            device_hash=device_hash,
+                            platform='test',
+                        ),
+                        User(
+                            id=2,
+                            app_user_id='shared-last-free-user-2',
+                            device_hash=device_hash,
+                            platform='test',
+                        ),
+                        DeviceUsage(
+                            device_hash=device_hash,
+                            free_uses_limit=5,
+                            free_uses_used=4,
+                        ),
+                        UsageSummary(user_id=1, paid_credits=0),
+                        UsageSummary(user_id=2, paid_credits=0),
+                    ]
+                )
+                await db.commit()
 
-    threads = [
-        threading.Thread(
-            target=make_request,
-            args=(auth_b, 'shared-last-b-request'),
-        ),
-        threading.Thread(
-            target=make_request,
-            args=(auth_c, 'shared-last-c-request'),
-        ),
-    ]
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join()
+            results = await asyncio.gather(
+                _attempt_generation(
+                    sessions,
+                    user_id=1,
+                    device_hash=device_hash,
+                    key='shared-last-free-1',
+                ),
+                _attempt_generation(
+                    sessions,
+                    user_id=2,
+                    device_hash=device_hash,
+                    key='shared-last-free-2',
+                ),
+            )
 
-    assert results.count(200) == 1, results
-    assert results.count(402) == 1, results
-    me = client.get('/v1/me', headers=auth_b).json()
-    assert me['freeUsesUsed'] == 5
-    assert me['freeUsesLeft'] == 0
+            async with sessions() as db:
+                device = await db.get(DeviceUsage, device_hash)
+                free_uses_used = device.free_uses_used
+            return results, free_uses_used
+        finally:
+            await engine.dispose()
+
+    results, free_uses_used = asyncio.run(run_race())
+    assert results.count(('success', 'free')) == 1, results
+    assert results.count(('error', 'PAYWALL_REQUIRED')) == 1, results
+    assert free_uses_used == 5
 
 
 def test_premium_user_bypasses_exhausted_device_quota(client: TestClient) -> None:
@@ -424,27 +618,65 @@ def test_credit_user_on_exhausted_device_consumes_credit(client: TestClient) -> 
     assert response.json()['usage']['paidCredits'] == 2
 
 
-def test_concurrent_rate_limit(client: TestClient, monkeypatch) -> None:
+def test_concurrent_rate_limit(tmp_path, monkeypatch) -> None:
     """With rate_limit=1, two concurrent requests cannot both return 200."""
     monkeypatch.setattr(settings, 'generation_rate_per_minute', 1)
-    auth, _ = _auth(client, 'conc-rate')
-    results: list[int] = []
-    lock = threading.Lock()
-    barrier = threading.Barrier(2)
 
-    def make_request(key: str) -> None:
-        barrier.wait(timeout=5)
-        r = _reply(client, auth, key)
-        with lock:
-            results.append(r.status_code)
+    async def run_race() -> tuple[list[tuple[str, str]], int]:
+        engine, sessions = _isolated_database(tmp_path, 'rate-limit-race.db')
+        user_id = 1
+        device_hash = 'rate-limit-race-device'
 
-    threads = [
-        threading.Thread(target=make_request, args=(f'conc-rate-{i}',))
-        for i in range(2)
-    ]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+        try:
+            async with engine.begin() as connection:
+                await connection.run_sync(Base.metadata.create_all)
 
-    assert results.count(200) < 2, f"Both concurrent requests succeeded; statuses={results}"
+            async with sessions() as db:
+                db.add(
+                    User(
+                        id=user_id,
+                        app_user_id='rate-limit-race-user',
+                        device_hash=device_hash,
+                        platform='test',
+                    )
+                )
+                db.add(
+                    DeviceUsage(
+                        device_hash=device_hash,
+                        free_uses_limit=5,
+                        free_uses_used=0,
+                    )
+                )
+                db.add(UsageSummary(user_id=user_id, paid_credits=0))
+                await db.commit()
+
+            results = await asyncio.gather(
+                _attempt_generation(
+                    sessions,
+                    user_id=user_id,
+                    device_hash=device_hash,
+                    key='rate-limit-race-1',
+                ),
+                _attempt_generation(
+                    sessions,
+                    user_id=user_id,
+                    device_hash=device_hash,
+                    key='rate-limit-race-2',
+                ),
+            )
+
+            async with sessions() as db:
+                device = await db.get(DeviceUsage, device_hash)
+                free_uses_used = device.free_uses_used
+            return results, free_uses_used
+        finally:
+            await engine.dispose()
+
+    results, free_uses_used = asyncio.run(run_race())
+    success_count = results.count(('success', 'free'))
+    assert success_count < 2, results
+    assert all(
+        result == ('success', 'free') or result == ('error', 'RATE_LIMITED')
+        for result in results
+    ), results
+    assert free_uses_used == success_count
