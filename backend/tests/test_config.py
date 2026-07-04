@@ -8,11 +8,58 @@ from app.config import (
     parse_credit_product_map,
 )
 
+PROD_DATABASE_URL = (
+    "postgresql+asyncpg://replywise:test@localhost:5432/replywise"
+)
+
 
 def test_development_secret_defaults_are_allowed() -> None:
     config = Settings(_env_file=None, app_env="dev")
     assert config.jwt_secret == DEV_JWT_SECRET
     assert config.server_pepper == DEV_SERVER_PEPPER
+
+
+def test_development_allows_sqlite() -> None:
+    config = Settings(
+        _env_file=None,
+        app_env="dev",
+        database_url="sqlite+aiosqlite:///./replywise.db",
+    )
+    assert config.database_url.startswith("sqlite")
+
+
+def test_production_rejects_sqlite_database() -> None:
+    with pytest.raises(
+        ValidationError,
+        match="SQLite is not allowed in production",
+    ):
+        Settings(
+            _env_file=None,
+            reply_env="prod",
+            database_url="sqlite+aiosqlite:///./replywise.db",
+            jwt_secret="production-secret",
+            server_pepper="production-pepper",
+            revenuecat_secret_api_key="production-revenuecat-secret",
+            revenuecat_project_id="proj_test",
+            openai_api_key="sk-prod-key",
+        )
+
+
+def test_production_requires_postgresql_asyncpg_url() -> None:
+    with pytest.raises(
+        ValidationError,
+        match="must use PostgreSQL with asyncpg",
+    ):
+        Settings(
+            _env_file=None,
+            reply_env="prod",
+            database_url="postgresql://replywise:test@localhost/replywise",
+            jwt_secret="production-secret",
+            server_pepper="production-pepper",
+            revenuecat_secret_api_key="production-revenuecat-secret",
+            revenuecat_project_id="proj_test",
+            openai_api_key="sk-prod-key",
+        )
 
 
 @pytest.mark.parametrize(
@@ -31,6 +78,7 @@ def test_production_rejects_missing_or_development_secrets(
         Settings(
             _env_file=None,
             app_env="prod",
+            database_url=PROD_DATABASE_URL,
             jwt_secret=jwt_secret,
             server_pepper=server_pepper,
         )
@@ -40,6 +88,7 @@ def test_production_accepts_explicit_non_development_secrets() -> None:
     config = Settings(
         _env_file=None,
         app_env="prod",
+        database_url=PROD_DATABASE_URL,
         jwt_secret="production-secret",
         server_pepper="production-pepper",
         revenuecat_secret_api_key="production-revenuecat-secret",
@@ -54,6 +103,7 @@ def test_production_rejects_local_testing_flags(field: str) -> None:
     kwargs = {
         "_env_file": None,
         "app_env": "prod",
+        "database_url": PROD_DATABASE_URL,
         "jwt_secret": "production-secret",
         "server_pepper": "production-pepper",
         "revenuecat_secret_api_key": "production-revenuecat-secret",
@@ -70,6 +120,7 @@ def test_production_rejects_missing_openai_api_key() -> None:
         Settings(
             _env_file=None,
             app_env="prod",
+            database_url=PROD_DATABASE_URL,
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="prod-rc-key",
@@ -83,6 +134,7 @@ def test_production_rejects_missing_revenuecat_project_id() -> None:
         Settings(
             _env_file=None,
             app_env="prod",
+            database_url=PROD_DATABASE_URL,
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="prod-rc-key",
@@ -95,6 +147,7 @@ def test_production_accepts_all_required_secrets() -> None:
     config = Settings(
         _env_file=None,
         app_env="prod",
+        database_url=PROD_DATABASE_URL,
         jwt_secret="production-secret",
         server_pepper="production-pepper",
         revenuecat_secret_api_key="prod-rc-key",
@@ -110,6 +163,7 @@ def test_reply_env_controls_production_guard() -> None:
             _env_file=None,
             app_env="dev",
             reply_env="prod",
+            database_url=PROD_DATABASE_URL,
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="production-revenuecat-secret",
@@ -178,6 +232,7 @@ def test_production_rejects_malformed_credit_product_map() -> None:
         Settings(
             _env_file=None,
             app_env="prod",
+            database_url=PROD_DATABASE_URL,
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="prod-rc-key",
@@ -191,6 +246,7 @@ def test_production_accepts_valid_credit_product_map() -> None:
     config = Settings(
         _env_file=None,
         app_env="prod",
+        database_url=PROD_DATABASE_URL,
         jwt_secret="production-secret",
         server_pepper="production-pepper",
         revenuecat_secret_api_key="prod-rc-key",

@@ -120,6 +120,16 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_production_secrets(self) -> "Settings":
         if self.runtime_env == "prod":
+            database_url = self.database_url.strip().lower()
+            if database_url.startswith("sqlite"):
+                raise ValueError(
+                    "SQLite is not allowed in production. "
+                    "Use PostgreSQL DATABASE_URL."
+                )
+            if not database_url.startswith("postgresql+asyncpg://"):
+                raise ValueError(
+                    "Production DATABASE_URL must use PostgreSQL with asyncpg."
+                )
             if self.mock_ai_enabled:
                 raise ValueError("MOCK_AI_ENABLED must never be true in production")
             if self.dev_tools_enabled:
