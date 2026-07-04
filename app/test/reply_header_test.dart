@@ -77,6 +77,10 @@ void main() {
   testWidgets(
     'Reply header shows a left-aligned title and drops the old subtitle',
     (tester) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
 
@@ -105,6 +109,31 @@ void main() {
       final titleCenter = tester.getCenter(title).dx;
       final appBarCenter = tester.getCenter(find.byType(AppBar)).dx;
       expect(titleCenter, lessThan(appBarCenter - 80));
+
+      final cardTop = tester
+          .getTopLeft(find.byKey(const Key('reply-message-card')))
+          .dy;
+      // Keep the card at its established vertical anchor so it does not cover
+      // the decorative illustration when the title area is made more compact.
+      expect(cardTop, closeTo(130, 1));
+
+      expect(find.byKey(const Key('reply-hero-header')), findsOneWidget);
+      expect(
+        tester
+            .widget<SliverAppBar>(find.byKey(const Key('reply-hero-header')))
+            .expandedHeight,
+        112,
+      );
+
+      tester
+          .state<ScrollableState>(find.byType(Scrollable).first)
+          .position
+          .jumpTo(80);
+      await tester.pump();
+      expect(
+        tester.getTopLeft(find.byKey(const Key('reply-message-card'))).dy,
+        lessThan(cardTop),
+      );
     },
   );
 

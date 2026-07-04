@@ -27,10 +27,10 @@ import '../entitlement/usage_controller.dart';
 const _kColor = AppColors.replyColor;
 const _feature = AppFeature.reply;
 
-// Every card on the Reply page shares one surface tint (matching the
-// "More options" card) so the page reads as a single consistent surface.
-const _kCardTint = Color(0xFFE8F2FF);
-const _kCardTintStrength = 0.65;
+// Every card on the Reply page shares one plain white surface so the page
+// reads as a single consistent, uncluttered surface.
+const _kCardTint = Colors.white;
+const _kCardTintStrength = 1.0;
 
 class ReplyScreen extends ConsumerStatefulWidget {
   const ReplyScreen({super.key});
@@ -380,280 +380,327 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       title: 'Reply',
       accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
-      transparentAppBar: true,
-      centerTitle: false,
-      actions: [
-        ReplyStatusBadge(
-          usage: usageState.usage,
-          onTap: () => context.push(AppRoutes.paywall),
-        ),
-      ],
-      child: ListView(
+      showAppBar: false,
+      child: CustomScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
-        children: [
-          GlassCard(
-            feature: _feature,
-            showFeatureImage: false,
-            tintStrength: _kCardTintStrength,
-            tintColor: _kCardTint,
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              children: [
-                const _CardHeader(
-                  icon: Icons.chat_bubble_outline_rounded,
-                  title: 'Message received',
-                ),
-                const SizedBox(height: 14),
-                LabeledTextField(
-                  key: const Key('reply-incoming-field'),
-                  label: 'Message you received',
+        slivers: [
+          SliverAppBar(
+            key: const Key('reply-hero-header'),
+            pinned: true,
+            expandedHeight: 112,
+            toolbarHeight: kToolbarHeight,
+            automaticallyImplyLeading: false,
+            centerTitle: false,
+            titleSpacing: 16,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            title: Text(
+              'Reply',
+              style:
+                  (Theme.of(context).appBarTheme.titleTextStyle ??
+                          const TextStyle())
+                      .copyWith(color: _kColor, fontWeight: FontWeight.w700),
+            ),
+            actions: [
+              ReplyStatusBadge(
+                usage: usageState.usage,
+                onTap: () => context.push(AppRoutes.paywall),
+              ),
+            ],
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                GlassCard(
+                  key: const Key('reply-message-card'),
                   feature: _feature,
-                  showHeader: false,
-                  showCounter: false,
-                  controller: _incomingController,
-                  hintText: 'Paste the original message here…',
-                  maxLines: 5,
-                  maxLength: 4000,
-                  fieldActions: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  showFeatureImage: false,
+                  tintStrength: _kCardTintStrength,
+                  tintColor: _kCardTint,
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
                     children: [
-                      IconButton(
-                        tooltip: 'Explain',
-                        visualDensity: VisualDensity.compact,
-                        color: _kColor,
-                        onPressed: explainState.isLoading ? null : _explain,
-                        icon: explainState.isLoading
-                            ? const SizedBox.square(
-                                dimension: 17,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(
-                                Icons.lightbulb_outline_rounded,
+                      const _CardHeader(
+                        icon: Icons.chat_bubble_outline_rounded,
+                        title: 'Message received',
+                      ),
+                      const SizedBox(height: 14),
+                      LabeledTextField(
+                        key: const Key('reply-incoming-field'),
+                        label: 'Message you received',
+                        feature: _feature,
+                        showHeader: false,
+                        showCounter: false,
+                        controller: _incomingController,
+                        hintText: 'Paste the original message here…',
+                        maxLines: 5,
+                        maxLength: 4000,
+                        fieldActions: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip: 'Explain',
+                              visualDensity: VisualDensity.compact,
+                              color: _kColor,
+                              onPressed: explainState.isLoading
+                                  ? null
+                                  : _explain,
+                              icon: explainState.isLoading
+                                  ? const SizedBox.square(
+                                      dimension: 17,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.lightbulb_outline_rounded,
+                                      size: 20,
+                                    ),
+                            ),
+                            IconButton(
+                              tooltip: 'Paste',
+                              visualDensity: VisualDensity.compact,
+                              color: _kColor,
+                              onPressed: _pasteIncoming,
+                              icon: const Icon(
+                                Icons.content_paste_rounded,
                                 size: 20,
                               ),
-                      ),
-                      IconButton(
-                        tooltip: 'Paste',
-                        visualDensity: VisualDensity.compact,
-                        color: _kColor,
-                        onPressed: _pasteIncoming,
-                        icon: const Icon(Icons.content_paste_rounded, size: 20),
-                      ),
-                      IconButton(
-                        tooltip: 'Clear',
-                        visualDensity: VisualDensity.compact,
-                        color: _kColor,
-                        onPressed: _incomingController.clear,
-                        icon: const Icon(Icons.close_rounded, size: 21),
+                            ),
+                            IconButton(
+                              tooltip: 'Clear',
+                              visualDensity: VisualDensity.compact,
+                              color: _kColor,
+                              onPressed: _incomingController.clear,
+                              icon: const Icon(Icons.close_rounded, size: 21),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 14),
-          GlassCard(
-            key: const Key('reply-guidance-card'),
-            feature: _feature,
-            showFeatureImage: false,
-            tintStrength: _kCardTintStrength,
-            tintColor: _kCardTint,
-            padding: EdgeInsets.zero,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(18),
-                  onTap: () =>
-                      setState(() => _guidanceExpanded = !_guidanceExpanded),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.lightbulb_outline_rounded,
-                          color: _kColor,
+                const SizedBox(height: 14),
+                GlassCard(
+                  key: const Key('reply-guidance-card'),
+                  feature: _feature,
+                  showFeatureImage: false,
+                  tintStrength: _kCardTintStrength,
+                  tintColor: _kCardTint,
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InkWell(
+                        borderRadius: BorderRadius.circular(18),
+                        onTap: () => setState(
+                          () => _guidanceExpanded = !_guidanceExpanded,
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Guidance',
-                            style: AppTextStyles.cardTitle,
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const _GradientIconBadge(
+                                    icon: Icons.lightbulb_outline_rounded,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'Guidance',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppTextStyles.cardTitle,
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'Help AI understand your intent',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppTextStyles.helper,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _ExpandButton(expanded: _guidanceExpanded),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        Text(
-                          _guidanceExpanded ? 'Hide' : 'Add guidance',
-                          style: AppTextStyles.helper.copyWith(color: _kColor),
-                        ),
-                        Icon(
-                          _guidanceExpanded
-                              ? Icons.keyboard_arrow_up_rounded
-                              : Icons.keyboard_arrow_down_rounded,
-                          color: AppColors.textSecondary,
+                      ),
+                      if (_guidanceExpanded) ...[
+                        const Divider(height: 1, color: AppColors.cardBorder),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GuidanceTextField(
+                                key: const Key('reply-guidance-field'),
+                                feature: _feature,
+                                controller: _guidanceController,
+                                hintText: 'Add your reply instructions…',
+                                maxLines: 4,
+                                maxLength: InputLimits.guidanceMaxLength,
+                                onOpenLibrary: _openLibrary,
+                              ),
+                              const SizedBox(height: 14),
+                              _QuickGuidanceChips(
+                                onAppend: _appendGuidanceText,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
-                    ),
+                    ],
                   ),
                 ),
-                if (_guidanceExpanded) ...[
-                  const Divider(height: 1, color: AppColors.cardBorder),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+                const SizedBox(height: 18),
+                _MoreOptionsSection(
+                  key: const Key('reply-more-options-card'),
+                  expanded: _moreOptionsExpanded,
+                  onToggle: () => setState(
+                    () => _moreOptionsExpanded = !_moreOptionsExpanded,
+                  ),
+                  tones: _tones,
+                  tone: _tone,
+                  onTone: (v) => setState(() => _tone = v),
+                  customToneController: _customToneController,
+                  audiences: _audiences,
+                  audience: _audience,
+                  onAudience: (v) => setState(() => _audience = v),
+                  customAudienceController: _customAudienceController,
+                  lengths: _lengths,
+                  length: _length,
+                  onLength: (v) => setState(() => _length = v),
+                  channels: _channels,
+                  channel: _channel,
+                  onChannel: (v) => setState(() => _channel = v),
+                ),
+                const SizedBox(height: 18),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _feature.primaryButtonColor,
+                  ),
+                  onPressed: replyState.isLoading ? null : _generate,
+                  icon: replyState.isLoading
+                      ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.auto_awesome_rounded),
+                  label: Text(
+                    replyState.isLoading ? 'Generating…' : 'Generate Reply',
+                  ),
+                ),
+                if (replyState.isLoading) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    'Creating a few natural options…',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.helper,
+                  ),
+                ],
+                if (replyState.error != null) ...[
+                  const SizedBox(height: 12),
+                  InlineError(
+                    message: replyState.error!,
+                    actionLabel: replyState.errorCode == 'PAYWALL_REQUIRED'
+                        ? null
+                        : 'Try again',
+                    onAction: replyState.errorCode == 'PAYWALL_REQUIRED'
+                        ? null
+                        : _generate,
+                  ),
+                  if (replyState.errorCode == 'PAYWALL_REQUIRED')
+                    TextButton(
+                      onPressed: () => context.push(AppRoutes.paywall),
+                      child: const Text('View plans'),
+                    ),
+                ],
+                if (!replyState.isLoading &&
+                    replyState.error == null &&
+                    replyState.result == null) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'Your reply options will appear here.',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.helper,
+                  ),
+                ],
+                if (replyState.result != null) ...[
+                  const SizedBox(height: 26),
+                  Text('Your replies', style: AppTextStyles.sectionTitle),
+                  const SizedBox(height: 12),
+                  for (final version in replyState.result!.versions) ...[
+                    GeneratedResultCard(
+                      label: version.label,
+                      text: version.text,
+                      feature: _feature,
+                      showFeatureImage: false,
+                      tintStrength: _kCardTintStrength,
+                      tintColor: _kCardTint,
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  GlassCard(
+                    feature: _feature,
+                    showFeatureImage: false,
+                    tintStrength: _kCardTintStrength,
+                    tintColor: _kCardTint,
+                    blur: 8,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GuidanceTextField(
-                          key: const Key('reply-guidance-field'),
-                          feature: _feature,
-                          controller: _guidanceController,
-                          hintText: 'Add your reply instructions…',
-                          maxLines: 4,
-                          maxLength: InputLimits.guidanceMaxLength,
-                          onOpenLibrary: _openLibrary,
-                        ),
-                        const SizedBox(height: 14),
-                        _QuickGuidanceChips(onAppend: _appendGuidanceText),
+                        Text('Why this works', style: AppTextStyles.cardTitle),
+                        const SizedBox(height: 6),
+                        Text(replyState.result!.why, style: AppTextStyles.body),
                       ],
                     ),
                   ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(height: 18),
-          _MoreOptionsSection(
-            key: const Key('reply-more-options-card'),
-            expanded: _moreOptionsExpanded,
-            onToggle: () =>
-                setState(() => _moreOptionsExpanded = !_moreOptionsExpanded),
-            tones: _tones,
-            tone: _tone,
-            onTone: (v) => setState(() => _tone = v),
-            customToneController: _customToneController,
-            audiences: _audiences,
-            audience: _audience,
-            onAudience: (v) => setState(() => _audience = v),
-            customAudienceController: _customAudienceController,
-            lengths: _lengths,
-            length: _length,
-            onLength: (v) => setState(() => _length = v),
-            channels: _channels,
-            channel: _channel,
-            onChannel: (v) => setState(() => _channel = v),
-          ),
-          const SizedBox(height: 18),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _feature.primaryButtonColor,
-            ),
-            onPressed: replyState.isLoading ? null : _generate,
-            icon: replyState.isLoading
-                ? const SizedBox.square(
-                    dimension: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: _kColor,
+                      side: const BorderSide(color: _kColor),
                     ),
-                  )
-                : const Icon(Icons.auto_awesome_rounded),
-            label: Text(
-              replyState.isLoading ? 'Generating…' : 'Generate Reply',
+                    onPressed: replyState.isLoading ? null : _generate,
+                    icon: replyState.isLoading
+                        ? const SizedBox.square(
+                            dimension: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.refresh_rounded),
+                    label: const Text('Regenerate replies'),
+                  ),
+                  if (!usageState.usage.isPremium)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        'Regenerating creates new replies and uses 1 generation.',
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.helper,
+                      ),
+                    ),
+                ],
+              ]),
             ),
           ),
-          if (replyState.isLoading) ...[
-            const SizedBox(height: 10),
-            Text(
-              'Creating a few natural options…',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.helper,
-            ),
-          ],
-          if (replyState.error != null) ...[
-            const SizedBox(height: 12),
-            InlineError(
-              message: replyState.error!,
-              actionLabel: replyState.errorCode == 'PAYWALL_REQUIRED'
-                  ? null
-                  : 'Try again',
-              onAction: replyState.errorCode == 'PAYWALL_REQUIRED'
-                  ? null
-                  : _generate,
-            ),
-            if (replyState.errorCode == 'PAYWALL_REQUIRED')
-              TextButton(
-                onPressed: () => context.push(AppRoutes.paywall),
-                child: const Text('View plans'),
-              ),
-          ],
-          if (!replyState.isLoading &&
-              replyState.error == null &&
-              replyState.result == null) ...[
-            const SizedBox(height: 12),
-            Text(
-              'Your reply options will appear here.',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.helper,
-            ),
-          ],
-          if (replyState.result != null) ...[
-            const SizedBox(height: 26),
-            Text('Your replies', style: AppTextStyles.sectionTitle),
-            const SizedBox(height: 12),
-            for (final version in replyState.result!.versions) ...[
-              GeneratedResultCard(
-                label: version.label,
-                text: version.text,
-                feature: _feature,
-                showFeatureImage: false,
-                tintStrength: _kCardTintStrength,
-                tintColor: _kCardTint,
-              ),
-              const SizedBox(height: 12),
-            ],
-            GlassCard(
-              feature: _feature,
-              showFeatureImage: false,
-              tintStrength: _kCardTintStrength,
-              tintColor: _kCardTint,
-              blur: 8,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Why this works', style: AppTextStyles.cardTitle),
-                  const SizedBox(height: 6),
-                  Text(replyState.result!.why, style: AppTextStyles.body),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: _kColor,
-                side: const BorderSide(color: _kColor),
-              ),
-              onPressed: replyState.isLoading ? null : _generate,
-              icon: replyState.isLoading
-                  ? const SizedBox.square(
-                      dimension: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.refresh_rounded),
-              label: const Text('Regenerate replies'),
-            ),
-            if (!usageState.usage.isPremium)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(
-                  'Regenerating creates new replies and uses 1 generation.',
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.helper,
-                ),
-              ),
-          ],
         ],
       ),
     );
@@ -671,22 +718,7 @@ class _CardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.white.withAlpha(210),
-            shape: BoxShape.circle,
-            boxShadow: const [
-              BoxShadow(
-                color: AppColors.softBlueShadow,
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Icon(icon, color: _kColor, size: 21),
-        ),
+        _GradientIconBadge(icon: icon),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -703,6 +735,71 @@ class _CardHeader extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Circular gradient icon badge used on the Message received, Guidance and
+/// More options section headers.
+class _GradientIconBadge extends StatelessWidget {
+  const _GradientIconBadge({required this.icon});
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [_kColor, Color.lerp(_kColor, Colors.white, 0.35)!],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _kColor.withAlpha(70),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Icon(icon, color: Colors.white, size: 22),
+    );
+  }
+}
+
+/// Circular expand/collapse affordance shown at the end of a section header.
+class _ExpandButton extends StatelessWidget {
+  const _ExpandButton({required this.expanded});
+
+  final bool expanded;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 30,
+      height: 30,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.softBlueShadow,
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Icon(
+        expanded
+            ? Icons.keyboard_arrow_up_rounded
+            : Icons.keyboard_arrow_down_rounded,
+        color: _kColor,
+        size: 19,
+      ),
     );
   }
 }
@@ -808,19 +905,38 @@ class _MoreOptionsSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             onTap: onToggle,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-              child: Row(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.tune_rounded, color: _kColor),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text('More options', style: AppTextStyles.cardTitle),
-                  ),
-                  Icon(
-                    expanded
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
-                    color: AppColors.textSecondary,
+                  Row(
+                    children: [
+                      const _GradientIconBadge(icon: Icons.tune_rounded),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'More options',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.cardTitle,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Customize style, tone and format',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.helper,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      _ExpandButton(expanded: expanded),
+                    ],
                   ),
                 ],
               ),

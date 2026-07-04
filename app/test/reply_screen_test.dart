@@ -124,7 +124,7 @@ void main() {
     );
 
     // Expand the guidance section and type only whitespace.
-    await tester.tap(find.text('Add guidance'));
+    await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
     await tester.enterText(
       _editableIn(const Key('reply-guidance-field')),
@@ -206,18 +206,17 @@ void main() {
     expect(repository.lastRequest?.audience.preset, 'customer');
   });
 
-  testWidgets('Guidance collapsed header matches Polish wording and toggles', (
+  testWidgets('Guidance collapsed header shows badge + subtitle and toggles', (
     tester,
   ) async {
     _useTallView(tester);
     await _pumpReply(tester);
 
     expect(find.text('Guidance'), findsOneWidget);
-    expect(find.text('Add guidance'), findsOneWidget);
+    expect(find.text('Help AI understand your intent'), findsOneWidget);
     expect(find.byIcon(Icons.lightbulb_outline_rounded), findsWidgets);
     expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsWidgets);
-    expect(find.text('Optional tone or key points'), findsNothing);
-    expect(find.text('Optional'), findsNothing);
+    expect(find.text('Add guidance'), findsNothing);
     expect(
       tester.getSize(find.byKey(const Key('reply-more-options-card'))).height,
       tester.getSize(find.byKey(const Key('reply-guidance-card'))).height,
@@ -226,12 +225,11 @@ void main() {
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('reply-guidance-field')), findsOneWidget);
-    expect(find.text('Hide'), findsOneWidget);
+    expect(find.byIcon(Icons.keyboard_arrow_up_rounded), findsWidgets);
 
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('reply-guidance-field')), findsNothing);
-    expect(find.text('Add guidance'), findsOneWidget);
   });
 
   testWidgets('selected Reply guidance remains visible and is sent', (

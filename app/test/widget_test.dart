@@ -243,9 +243,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.drag(find.byType(ListView), const Offset(0, -420));
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -420));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Add guidance'));
+    await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
       find.text('Be polite'),
