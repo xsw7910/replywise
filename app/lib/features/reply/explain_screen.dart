@@ -113,7 +113,6 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
               showCounter: false,
               controller: _messageController,
               hintText: _ExplainText.inputHint,
-              helperText: _ExplainText.inputHelper,
               maxLines: 7,
               maxLength: InputLimits.explainMessageMaxLength,
               fieldActions: Row(
@@ -384,9 +383,7 @@ class _IconBadge extends StatelessWidget {
 abstract final class _ExplainText {
   static const navTitle = 'Explain';
   static const inputLabel = 'Message to understand';
-  static const inputHelper = 'Paste the English message you received';
-  static const inputHint =
-      "Sounds good in principle, but let's circle back after Q3 — bandwidth is tight right now.";
+  static const inputHint = 'Paste the message you received';
   static const paste = 'Paste';
   static const explainButton = 'Explain this message';
   static const explaining = 'Explaining…';

@@ -172,8 +172,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
               feature: _feature,
               showCounter: false,
               controller: _draftController,
-              hintText: 'Paste or type your English draft…',
-              helperText: 'Your original meaning stays intact',
+              hintText: 'Paste of type your draft...',
               maxLines: 7,
               maxLength: 4000,
               fieldActions: Row(

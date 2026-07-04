@@ -403,7 +403,6 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                 const _CardHeader(
                   icon: Icons.chat_bubble_outline_rounded,
                   title: 'Message received',
-                  subtitle: 'Paste the original message',
                 ),
                 const SizedBox(height: 14),
                 LabeledTextField(
@@ -661,14 +660,12 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   }
 }
 
-/// Icon-circle + title (+ optional subtitle / trailing action) used as the
-/// header for the Message and Reply guidance cards.
+/// Icon-circle + title used as the header for the Message card.
 class _CardHeader extends StatelessWidget {
-  const _CardHeader({required this.icon, required this.title, this.subtitle});
+  const _CardHeader({required this.icon, required this.title});
 
   final IconData icon;
   final String title;
-  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -702,15 +699,6 @@ class _CardHeader extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              if (subtitle != null) ...[
-                const SizedBox(height: 2),
-                Text(
-                  subtitle!,
-                  style: AppTextStyles.helper.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
             ],
           ),
         ),
