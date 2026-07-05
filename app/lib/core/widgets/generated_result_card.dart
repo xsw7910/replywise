@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/app_feature_theme.dart';
+import '../localization/localization_extensions.dart';
 import '../theme/app_text_styles.dart';
 import 'glass_card.dart';
 
@@ -38,7 +39,7 @@ class GeneratedResultCard extends StatelessWidget {
             children: [
               Expanded(child: Text(label, style: AppTextStyles.cardTitle)),
               IconButton.filledTonal(
-                tooltip: 'Copy result',
+                tooltip: context.l10n.copyResult,
                 style: feature == null
                     ? null
                     : IconButton.styleFrom(
@@ -50,7 +51,9 @@ class GeneratedResultCard extends StatelessWidget {
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(const SnackBar(content: Text('Copied')));
+                    ..showSnackBar(
+                      SnackBar(content: Text(context.l10n.copied)),
+                    );
                 },
                 icon: const Icon(Icons.copy_rounded, size: 18),
               ),

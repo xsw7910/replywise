@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
@@ -59,9 +60,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       }
     });
 
-    final price = subscription.offer?.priceString ?? 'the displayed price';
+    final price =
+        subscription.offer?.priceString ?? context.l10n.displayedPrice;
     return AppPage(
-      title: 'ReplyWise Premium',
+      title: context.l10n.premiumTitle,
       showAppBar: false,
       backgroundImagePath: 'assets/image/premium_page_backgroud.png',
       backgroundImageFit: BoxFit.fitWidth,
@@ -77,7 +79,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 left: -8,
                 top: 0,
                 child: IconButton(
-                  tooltip: 'Back',
+                  tooltip: context.l10n.back,
                   onPressed: () => Navigator.of(context).maybePop(),
                   icon: const Icon(Icons.arrow_back_rounded),
                 ),
@@ -97,21 +99,23 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'ReplyWise Premium',
+                        context.l10n.premiumTitle,
                         style: AppTextStyles.cardTitle,
                       ),
                     ),
                     if (subscription.offer?.hasTrial == true)
-                      const _Badge(label: '3 days free'),
+                      _Badge(label: context.l10n.threeDaysFree),
                   ],
                 ),
                 const SizedBox(height: 16),
-                const _Benefit(text: 'Unlimited Reply generations'),
-                const _Benefit(text: 'Unlimited Polish generations'),
-                const _Benefit(text: 'Free and credit balances stay preserved'),
+                _Benefit(text: context.l10n.unlimitedReply),
+                _Benefit(text: context.l10n.unlimitedPolish),
+                _Benefit(text: context.l10n.balancesPreserved),
                 const SizedBox(height: 18),
                 if (subscription.isLoading)
-                  const _LoadingStatus(message: 'Loading subscription options…')
+                  _LoadingStatus(
+                    message: context.l10n.loadingSubscriptionOptions,
+                  )
                 else
                   ElevatedButton(
                     onPressed: subscription.offer == null || subscription.isBusy
@@ -129,15 +133,15 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                           )
                         : Text(
                             subscription.offer?.hasTrial == true
-                                ? 'Start 3-day Free Trial'
-                                : 'Start Yearly Plan',
+                                ? context.l10n.startFreeTrial
+                                : context.l10n.startYearlyPlan,
                           ),
                   ),
                 const SizedBox(height: 8),
                 Text(
                   subscription.offer?.hasTrial == true
-                      ? 'Free for 3 days, then $price/year. Cancel anytime.'
-                      : '$price/year. Cancel anytime.',
+                      ? context.l10n.trialTerms(price)
+                      : context.l10n.yearlyTerms(price),
                   textAlign: TextAlign.center,
                   style: AppTextStyles.helper,
                 ),
@@ -146,7 +150,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   InlineError(
                     message: subscription.error!,
                     actionLabel: subscription.offer == null && appUserId != null
-                        ? 'Try again'
+                        ? context.l10n.tryAgain
                         : null,
                     onAction: subscription.offer == null && appUserId != null
                         ? () => ref
@@ -173,25 +177,22 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Top-up Credits',
+                        context.l10n.topUpCredits,
                         style: AppTextStyles.cardTitle,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  'Each credit covers one Reply or Polish. Credits never expire.',
-                  style: AppTextStyles.body,
-                ),
+                Text(context.l10n.creditDescription, style: AppTextStyles.body),
                 const SizedBox(height: 14),
                 if (credits.isLoading)
-                  const _LoadingStatus(message: 'Loading credit packages…')
+                  _LoadingStatus(message: context.l10n.loadingCreditPackages)
                 else if (credits.packages.isEmpty && credits.error == null)
                   Column(
                     children: [
                       Text(
-                        'Credit packages are unavailable right now.',
+                        context.l10n.creditPackagesUnavailable,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.helper,
                       ),
@@ -200,7 +201,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                           onPressed: () => ref
                               .read(creditControllerProvider.notifier)
                               .loadPackages(appUserId),
-                          child: const Text('Refresh packages'),
+                          child: Text(context.l10n.refreshPackages),
                         ),
                     ],
                   )
@@ -222,7 +223,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                                 ),
                               )
                             : Text(
-                                'Buy ${pkg.credits} Credits — ${pkg.priceString}',
+                                context.l10n.buyCredits(
+                                  pkg.credits,
+                                  pkg.priceString,
+                                ),
                               ),
                       ),
                     ),
@@ -231,7 +235,9 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   const SizedBox(height: 8),
                   InlineError(
                     message: credits.error!,
-                    actionLabel: appUserId == null ? null : 'Try again',
+                    actionLabel: appUserId == null
+                        ? null
+                        : context.l10n.tryAgain,
                     onAction: appUserId == null
                         ? null
                         : () => ref
@@ -250,11 +256,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                       .read(subscriptionControllerProvider.notifier)
                       .restore(),
             child: subscription.isRestoring
-                ? const Text('Restoring…')
-                : const Text('Restore Premium subscription'),
+                ? Text(context.l10n.restoring)
+                : Text(context.l10n.restorePremium),
           ),
           Text(
-            'Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically.',
+            context.l10n.purchaseVerification,
             textAlign: TextAlign.center,
             style: AppTextStyles.helper,
           ),

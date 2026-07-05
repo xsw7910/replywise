@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/localization/localization_extensions.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../entitlement/entitlement_state.dart';
 
@@ -26,7 +27,7 @@ class ReplyStatusBadge extends StatelessWidget {
     // number visible while the first usage refresh is pending; paid credits
     // are still known locally and the refreshed total replaces it shortly.
     final String label = isPremium
-        ? 'Premium'
+        ? context.l10n.premium
         : '${(usage.freeUsesLeft ?? 0) + usage.paidCredits}';
 
     return Padding(
@@ -34,8 +35,8 @@ class ReplyStatusBadge extends StatelessWidget {
       child: Semantics(
         button: true,
         label: isPremium
-            ? 'Premium subscription active'
-            : '$label credits remaining',
+            ? context.l10n.premiumActive
+            : context.l10n.creditsRemaining(label),
         child: Material(
           color: color.withAlpha(22),
           shape: const StadiumBorder(),

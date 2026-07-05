@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_feature_theme.dart';
+import '../../../core/localization/localization_extensions.dart';
 import '../../../core/widgets/labeled_text_field.dart';
 
 /// Shared guidance editor used by Reply and Polish.
@@ -81,7 +82,7 @@ class _GuidanceTextFieldState extends State<GuidanceTextField> {
   Widget build(BuildContext context) {
     final accent = widget.feature.accentColor;
     return LabeledTextField(
-      label: 'Guidance',
+      label: context.l10n.guidance,
       feature: widget.feature,
       showHeader: false,
       showCounter: false,
@@ -94,21 +95,21 @@ class _GuidanceTextFieldState extends State<GuidanceTextField> {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            tooltip: 'Guidance Library',
+            tooltip: context.l10n.guidanceLibrary,
             visualDensity: VisualDensity.compact,
             color: accent,
             onPressed: widget.onOpenLibrary,
             icon: const Icon(Icons.menu_book_rounded, size: 20),
           ),
           IconButton(
-            tooltip: 'Paste',
+            tooltip: context.l10n.paste,
             visualDensity: VisualDensity.compact,
             color: accent,
             onPressed: _paste,
             icon: const Icon(Icons.content_paste_rounded, size: 20),
           ),
           IconButton(
-            tooltip: 'Clear',
+            tooltip: context.l10n.clear,
             visualDensity: VisualDensity.compact,
             color: accent,
             onPressed: widget.controller.clear,

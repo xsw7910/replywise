@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/input_limits.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
@@ -79,15 +80,15 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text(_ExplainText.copied)));
+    ).showSnackBar(SnackBar(content: Text(context.l10n.copied)));
   }
 
   void _continueToReply() {
     final original = _messageController.text.trim();
     if (original.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter a message to explain first.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.enterMessageFirst)));
       return;
     }
     ref.read(pendingReplyInputProvider.notifier).set(original);
@@ -100,7 +101,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
     final usage = ref.watch(usageControllerProvider).usage;
 
     return AppPage(
-      title: _ExplainText.navTitle,
+      title: context.l10n.explain,
       accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
       transparentAppBar: true,
@@ -122,25 +123,25 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
             tintStrength: _kCardTintStrength,
             child: LabeledTextField(
               key: const Key('explain-message-field'),
-              label: _ExplainText.inputLabel,
+              label: context.l10n.messageToUnderstand,
               feature: _feature,
               showCounter: false,
               controller: _messageController,
-              hintText: _ExplainText.inputHint,
+              hintText: context.l10n.pasteMessageReceived,
               maxLines: 7,
               maxLength: InputLimits.explainMessageMaxLength,
               fieldActions: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    tooltip: _ExplainText.paste,
+                    tooltip: context.l10n.paste,
                     visualDensity: VisualDensity.compact,
                     color: _kColor,
                     onPressed: state.isLoading ? null : _pasteMessage,
                     icon: const Icon(Icons.content_paste_rounded, size: 20),
                   ),
                   IconButton(
-                    tooltip: 'Clear',
+                    tooltip: context.l10n.clear,
                     visualDensity: VisualDensity.compact,
                     color: _kColor,
                     onPressed: _messageController.clear,
@@ -168,22 +169,22 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                 : const Icon(Icons.psychology_alt_rounded),
             label: Text(
               state.isLoading
-                  ? _ExplainText.explaining
-                  : _ExplainText.explainButton,
+                  ? context.l10n.explaining
+                  : context.l10n.explainThisMessage,
             ),
           ),
           if (state.error != null) ...[
             const SizedBox(height: 12),
             InlineError(
               message: _friendlyError(state),
-              actionLabel: 'Try again',
+              actionLabel: context.l10n.tryAgain,
               onAction: state.isLoading ? null : _explain,
             ),
           ],
           if (state.isLoading) ...[
             const SizedBox(height: 14),
             Text(
-              'Reading between the lines…',
+              context.l10n.readingBetweenLines,
               textAlign: TextAlign.center,
               style: AppTextStyles.helper,
             ),
@@ -191,7 +192,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
           if (_result == null && !state.isLoading && state.error == null) ...[
             const SizedBox(height: 14),
             Text(
-              'Your explanation will appear here.',
+              context.l10n.explanationAppearsHere,
               textAlign: TextAlign.center,
               style: AppTextStyles.helper,
             ),
@@ -200,37 +201,34 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
             const SizedBox(height: 24),
             _ResultSection(
               icon: Icons.article_outlined,
-              title: _ExplainText.meaning,
+              title: context.l10n.meaning,
               text: _result!.meaning,
               color: _kColor,
             ),
             const SizedBox(height: 12),
             _ResultSection(
               icon: Icons.record_voice_over_outlined,
-              title: _ExplainText.tone,
+              title: context.l10n.tone,
               text: _result!.tone,
               color: _kColor,
             ),
             const SizedBox(height: 12),
             _ResultSection(
               icon: Icons.visibility_outlined,
-              title: _ExplainText.hiddenMeaning,
+              title: context.l10n.hiddenMeaning,
               text: _result!.hiddenMeaning.trim().isEmpty
-                  ? 'No hidden meaning detected.'
+                  ? context.l10n.noHiddenMeaning
                   : _result!.hiddenMeaning,
               color: _kColor,
             ),
             const SizedBox(height: 18),
             Text(
-              _ExplainText.suggestedReplies,
+              context.l10n.suggestedReplies,
               style: AppTextStyles.sectionTitle,
             ),
             const SizedBox(height: 10),
             if (_result!.suggestedReplies.isEmpty)
-              Text(
-                'No suggested replies returned.',
-                style: AppTextStyles.helper,
-              )
+              Text(context.l10n.noSuggestedReplies, style: AppTextStyles.helper)
             else
               for (final suggestion in _result!.suggestedReplies) ...[
                 _SuggestionCard(
@@ -249,15 +247,15 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
 
   String _friendlyError(ExplainState state) {
     if (state.errorCode == 'RATE_LIMITED') {
-      return _ExplainText.rateLimited;
+      return context.l10n.explainRateLimited;
     }
     if (state.errorCode == 'MODEL_PARSE_ERROR') {
-      return 'We could not read the explanation clearly. Please try again.';
+      return context.l10n.explainParseError;
     }
     if (state.errorCode == 'MODEL_UNAVAILABLE') {
-      return 'Explain is temporarily unavailable. Please try again shortly.';
+      return context.l10n.explainUnavailable;
     }
-    return state.error ?? 'Unable to explain this message.';
+    return state.error ?? context.l10n.unableToExplain;
   }
 }
 
@@ -328,7 +326,7 @@ class _SuggestionCard extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(child: Text(suggestion, style: AppTextStyles.body)),
           IconButton(
-            tooltip: _ExplainText.copy,
+            tooltip: context.l10n.copy,
             style: IconButton.styleFrom(
               foregroundColor: _kColor,
               backgroundColor: _feature.iconBackgroundColor,
@@ -357,7 +355,7 @@ class _ContinueCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(_ExplainText.replyCtaTitle, style: AppTextStyles.cardTitle),
+          Text(context.l10n.replyCtaTitle, style: AppTextStyles.cardTitle),
           const SizedBox(height: 10),
           ElevatedButton.icon(
             key: const Key('explain-continue-reply-button'),
@@ -366,7 +364,7 @@ class _ContinueCard extends StatelessWidget {
             ),
             onPressed: onPressed,
             icon: const Icon(Icons.reply_rounded),
-            label: const Text(_ExplainText.replyCtaButton),
+            label: Text(context.l10n.generateReply),
           ),
         ],
       ),
@@ -392,24 +390,4 @@ class _IconBadge extends StatelessWidget {
       child: Icon(icon, color: color, size: 20),
     );
   }
-}
-
-abstract final class _ExplainText {
-  static const navTitle = 'Explain';
-  static const inputLabel = 'Message to understand';
-  static const inputHint = 'Paste the message you received';
-  static const paste = 'Paste';
-  static const explainButton = 'Explain this message';
-  static const explaining = 'Explaining…';
-  static const meaning = 'Meaning';
-  static const tone = 'Tone';
-  static const hiddenMeaning = 'Hidden Meaning';
-  static const suggestedReplies = 'Suggested Replies';
-  static const copy = 'Copy';
-  static const copied = 'Copied';
-  static const rateLimited =
-      "You’ve reached the explain limit for now. Please try again later.";
-  static const replyCtaTitle =
-      'Want a reply that better matches your intention?';
-  static const replyCtaButton = 'Generate Reply';
 }

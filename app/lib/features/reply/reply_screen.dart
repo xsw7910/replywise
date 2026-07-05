@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/input_limits.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
@@ -271,7 +272,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Couldn’t explain this message',
+                context.l10n.couldNotExplain,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.cardTitle,
               ),
@@ -287,7 +288,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(sheetContext),
-                      child: const Text('Close'),
+                      child: Text(context.l10n.close),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -300,7 +301,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                         Navigator.pop(sheetContext);
                         _explain();
                       },
-                      child: const Text('Try again'),
+                      child: Text(context.l10n.tryAgain),
                     ),
                   ),
                 ],
@@ -314,9 +315,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
 
   Future<void> _showExplainResult(ExplainResult result) {
     final copyText = [
-      'Meaning: ${result.meaning}',
-      'Tone: ${result.tone}',
-      'Hidden meaning: ${result.hiddenMeaning}',
+      '${context.l10n.meaning}: ${result.meaning}',
+      '${context.l10n.tone}: ${result.tone}',
+      '${context.l10n.hiddenMeaning}: ${result.hiddenMeaning}',
     ].join('\n\n');
 
     return showModalBottomSheet<void>(
@@ -334,33 +335,39 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Explain message',
+                      context.l10n.explainMessage,
                       style: AppTextStyles.sectionTitle,
                     ),
                   ),
                   IconButton(
-                    tooltip: 'Copy explanation',
+                    tooltip: context.l10n.copyExplanation,
                     onPressed: () async {
                       await Clipboard.setData(ClipboardData(text: copyText));
                       if (!sheetContext.mounted) return;
-                      ScaffoldMessenger.of(
-                        sheetContext,
-                      ).showSnackBar(const SnackBar(content: Text('Copied')));
+                      ScaffoldMessenger.of(sheetContext).showSnackBar(
+                        SnackBar(content: Text(sheetContext.l10n.copied)),
+                      );
                     },
                     icon: const Icon(Icons.copy_rounded),
                   ),
                 ],
               ),
               const SizedBox(height: 14),
-              _ExplanationRow(label: 'Meaning', text: result.meaning),
-              _ExplanationRow(label: 'Tone', text: result.tone),
               _ExplanationRow(
-                label: 'Hidden meaning',
+                label: context.l10n.meaning,
+                text: result.meaning,
+              ),
+              _ExplanationRow(label: context.l10n.tone, text: result.tone),
+              _ExplanationRow(
+                label: context.l10n.hiddenMeaning,
                 text: result.hiddenMeaning.isEmpty
-                    ? 'No hidden meaning detected.'
+                    ? context.l10n.noHiddenMeaning
                     : result.hiddenMeaning,
               ),
-              Text('Suggested replies', style: AppTextStyles.cardTitle),
+              Text(
+                context.l10n.suggestedReplies,
+                style: AppTextStyles.cardTitle,
+              ),
               const SizedBox(height: 8),
               for (final suggestion in result.suggestedReplies)
                 Padding(
@@ -382,7 +389,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                             Navigator.pop(sheetContext);
                             _guidanceController.text = suggestion;
                           },
-                          child: const Text('Use'),
+                          child: Text(context.l10n.use),
                         ),
                       ],
                     ),
@@ -404,7 +411,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     _consumePendingReplyInput();
 
     return AppPage(
-      title: 'Reply',
+      title: context.l10n.reply,
       accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
       showAppBar: false,
@@ -424,7 +431,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             title: Text(
-              'Reply',
+              context.l10n.reply,
               style:
                   (Theme.of(context).appBarTheme.titleTextStyle ??
                           const TextStyle())
@@ -450,26 +457,26 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   padding: const EdgeInsets.all(14),
                   child: Column(
                     children: [
-                      const _CardHeader(
+                      _CardHeader(
                         icon: Icons.chat_bubble_outline_rounded,
-                        title: 'Message received',
+                        title: context.l10n.messageReceived,
                       ),
                       const SizedBox(height: 14),
                       LabeledTextField(
                         key: const Key('reply-incoming-field'),
-                        label: 'Message you received',
+                        label: context.l10n.messageYouReceived,
                         feature: _feature,
                         showHeader: false,
                         showCounter: false,
                         controller: _incomingController,
-                        hintText: 'Paste the original message here…',
+                        hintText: context.l10n.pasteOriginalMessage,
                         maxLines: 5,
                         maxLength: 4000,
                         fieldActions: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              tooltip: 'Explain',
+                              tooltip: context.l10n.explain,
                               visualDensity: VisualDensity.compact,
                               color: _kColor,
                               onPressed: explainState.isLoading
@@ -488,7 +495,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                                     ),
                             ),
                             IconButton(
-                              tooltip: 'Paste',
+                              tooltip: context.l10n.paste,
                               visualDensity: VisualDensity.compact,
                               color: _kColor,
                               onPressed: _pasteIncoming,
@@ -498,7 +505,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                               ),
                             ),
                             IconButton(
-                              tooltip: 'Clear',
+                              tooltip: context.l10n.clear,
                               visualDensity: VisualDensity.compact,
                               color: _kColor,
                               onPressed: _incomingController.clear,
@@ -544,14 +551,14 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          'Guidance',
+                                          context.l10n.guidance,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: AppTextStyles.cardTitle,
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          'Help AI understand your intent',
+                                          context.l10n.helpAiUnderstandIntent,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: AppTextStyles.helper,
@@ -578,7 +585,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                                 key: const Key('reply-guidance-field'),
                                 feature: _feature,
                                 controller: _guidanceController,
-                                hintText: 'Add your reply instructions…',
+                                hintText: context.l10n.addReplyInstructions,
                                 maxLines: 4,
                                 maxLength: InputLimits.guidanceMaxLength,
                                 onOpenLibrary: _openLibrary,
@@ -632,13 +639,15 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                         )
                       : const Icon(Icons.auto_awesome_rounded),
                   label: Text(
-                    replyState.isLoading ? 'Generating…' : 'Generate Reply',
+                    replyState.isLoading
+                        ? context.l10n.generating
+                        : context.l10n.generateReply,
                   ),
                 ),
                 if (replyState.isLoading) ...[
                   const SizedBox(height: 10),
                   Text(
-                    'Creating a few natural options…',
+                    context.l10n.creatingNaturalOptions,
                     textAlign: TextAlign.center,
                     style: AppTextStyles.helper,
                   ),
@@ -649,7 +658,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                     message: replyState.error!,
                     actionLabel: replyState.errorCode == 'PAYWALL_REQUIRED'
                         ? null
-                        : 'Try again',
+                        : context.l10n.tryAgain,
                     onAction: replyState.errorCode == 'PAYWALL_REQUIRED'
                         ? null
                         : _generate,
@@ -657,7 +666,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   if (replyState.errorCode == 'PAYWALL_REQUIRED')
                     TextButton(
                       onPressed: () => context.push(AppRoutes.paywall),
-                      child: const Text('View plans'),
+                      child: Text(context.l10n.viewPlans),
                     ),
                 ],
                 if (!replyState.isLoading &&
@@ -665,14 +674,17 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                     replyState.result == null) ...[
                   const SizedBox(height: 12),
                   Text(
-                    'Your reply options will appear here.',
+                    context.l10n.replyOptionsAppearHere,
                     textAlign: TextAlign.center,
                     style: AppTextStyles.helper,
                   ),
                 ],
                 if (replyState.result != null) ...[
                   const SizedBox(height: 26),
-                  Text('Your replies', style: AppTextStyles.sectionTitle),
+                  Text(
+                    context.l10n.yourReplies,
+                    style: AppTextStyles.sectionTitle,
+                  ),
                   const SizedBox(height: 12),
                   for (final version in replyState.result!.versions) ...[
                     GeneratedResultCard(
@@ -694,7 +706,10 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Why this works', style: AppTextStyles.cardTitle),
+                        Text(
+                          context.l10n.whyThisWorks,
+                          style: AppTextStyles.cardTitle,
+                        ),
                         const SizedBox(height: 6),
                         Text(replyState.result!.why, style: AppTextStyles.body),
                       ],
@@ -713,13 +728,13 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.refresh_rounded),
-                    label: const Text('Regenerate replies'),
+                    label: Text(context.l10n.regenerateReplies),
                   ),
                   if (!usageState.usage.isPremium)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
                       child: Text(
-                        'Regenerating creates new replies and uses 1 generation.',
+                        context.l10n.regenerateUsageNote,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.helper,
                       ),
@@ -851,10 +866,18 @@ class _QuickGuidanceChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final labels = {
+      'builtin_be_polite': context.l10n.bePolite,
+      'builtin_keep_short': context.l10n.keepItShort,
+      'builtin_professional': context.l10n.professional,
+      'builtin_friendly': context.l10n.friendly,
+      'builtin_decline': context.l10n.declinePolitely,
+      'builtin_thanks': context.l10n.sayThankYou,
+    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quick guidance', style: AppTextStyles.badge),
+        Text(context.l10n.quickGuidance, style: AppTextStyles.badge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -865,7 +888,10 @@ class _QuickGuidanceChips extends StatelessWidget {
                 backgroundColor: _feature.selectedChipColor,
                 side: const BorderSide(color: AppColors.glassEdgeStrong),
                 avatar: Icon(icon, size: 15, color: _kColor),
-                label: Text(label, style: const TextStyle(color: _kColor)),
+                label: Text(
+                  labels[id] ?? label,
+                  style: const TextStyle(color: _kColor),
+                ),
                 onPressed: () => onAppend(
                   kBuiltInTemplates.firstWhere((t) => t.id == id).content,
                 ),
@@ -946,14 +972,14 @@ class _MoreOptionsSection extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'More options',
+                              context.l10n.moreOptions,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTextStyles.cardTitle,
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Customize style, tone and format',
+                              context.l10n.customizeStyleToneFormat,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: AppTextStyles.helper,
@@ -977,7 +1003,7 @@ class _MoreOptionsSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _OptionGroup(
-                    label: 'Tone',
+                    label: context.l10n.tone,
                     groupIcon: Icons.record_voice_over_outlined,
                     accentColor: AppColors.replyColor,
                     options: tones,
@@ -988,19 +1014,19 @@ class _MoreOptionsSection extends StatelessWidget {
                     const SizedBox(height: 10),
                     LabeledTextField(
                       key: const Key('reply-custom-tone-field'),
-                      label: 'Describe the tone',
+                      label: context.l10n.describeTone,
                       feature: _feature,
                       showHeader: false,
                       showCounter: false,
                       controller: customToneController,
-                      hintText: 'e.g. warm but professional',
+                      hintText: context.l10n.toneHint,
                       maxLines: 1,
                       maxLength: 500,
                     ),
                   ],
                   const _OptionDivider(),
                   _OptionGroup(
-                    label: 'Audience',
+                    label: context.l10n.audience,
                     groupIcon: Icons.groups_outlined,
                     accentColor: AppColors.explainColor,
                     options: audiences,
@@ -1011,19 +1037,19 @@ class _MoreOptionsSection extends StatelessWidget {
                     const SizedBox(height: 10),
                     LabeledTextField(
                       key: const Key('reply-custom-audience-field'),
-                      label: 'Describe the relationship',
+                      label: context.l10n.describeRelationship,
                       feature: _feature,
                       showHeader: false,
                       showCounter: false,
                       controller: customAudienceController,
-                      hintText: 'For example: my landlord',
+                      hintText: context.l10n.relationshipHint,
                       maxLines: 1,
                       maxLength: 500,
                     ),
                   ],
                   const _OptionDivider(),
                   _OptionGroup(
-                    label: 'Length',
+                    label: context.l10n.length,
                     groupIcon: Icons.format_size_rounded,
                     accentColor: AppColors.polishColor,
                     options: lengths,
@@ -1032,7 +1058,7 @@ class _MoreOptionsSection extends StatelessWidget {
                   ),
                   const _OptionDivider(),
                   _OptionGroup(
-                    label: 'Channel',
+                    label: context.l10n.channel,
                     groupIcon: Icons.send_outlined,
                     accentColor: AppColors.replyColor,
                     options: channels,
@@ -1096,7 +1122,7 @@ class _OptionGroup extends StatelessWidget {
                       : AppColors.textSecondary,
                 ),
                 label: Text(
-                  option,
+                  _localizedOption(context, option),
                   style: TextStyle(
                     color: option == selected
                         ? accentColor
@@ -1120,36 +1146,45 @@ class _OptionGroup extends StatelessWidget {
   }
 
   IconData _optionIcon(String option) {
-    return switch (label) {
-      'Tone' => switch (option) {
-        'Auto' => Icons.auto_awesome_rounded,
-        'Natural' => Icons.spa_outlined,
-        'Professional' => Icons.business_center_outlined,
-        'Friendly' => Icons.sentiment_satisfied_alt_rounded,
-        _ => Icons.tune_rounded,
-      },
-      'Audience' => switch (option) {
-        'Auto' => Icons.auto_awesome_rounded,
-        'Friend' => Icons.person_outline_rounded,
-        'Customer' => Icons.storefront_outlined,
-        'Coworker' => Icons.groups_outlined,
-        'Manager' => Icons.supervisor_account_outlined,
-        _ => Icons.person_search_outlined,
-      },
-      'Length' => switch (option) {
-        'Short' => Icons.short_text_rounded,
-        'Medium' => Icons.subject_rounded,
-        _ => Icons.notes_rounded,
-      },
-      _ => switch (option) {
-        'Auto' => Icons.devices_rounded,
-        'Text' => Icons.sms_outlined,
-        'Email' => Icons.email_outlined,
-        _ => Icons.chat_bubble_outline_rounded,
-      },
+    return switch (option) {
+      'Auto' => Icons.auto_awesome_rounded,
+      'Natural' => Icons.spa_outlined,
+      'Professional' => Icons.business_center_outlined,
+      'Friendly' => Icons.sentiment_satisfied_alt_rounded,
+      'Friend' => Icons.person_outline_rounded,
+      'Customer' => Icons.storefront_outlined,
+      'Coworker' => Icons.groups_outlined,
+      'Manager' => Icons.supervisor_account_outlined,
+      'Short' => Icons.short_text_rounded,
+      'Medium' => Icons.subject_rounded,
+      'Detailed' => Icons.notes_rounded,
+      'Text' => Icons.sms_outlined,
+      'Email' => Icons.email_outlined,
+      'Chat' => Icons.chat_bubble_outline_rounded,
+      _ => Icons.tune_rounded,
     };
   }
 }
+
+String _localizedOption(BuildContext context, String option) =>
+    switch (option) {
+      'Auto' => context.l10n.auto,
+      'Natural' => context.l10n.natural,
+      'Professional' => context.l10n.professional,
+      'Friendly' => context.l10n.friendly,
+      'Custom' => context.l10n.custom,
+      'Friend' => context.l10n.friend,
+      'Customer' => context.l10n.customer,
+      'Coworker' => context.l10n.coworker,
+      'Manager' => context.l10n.manager,
+      'Short' => context.l10n.short,
+      'Medium' => context.l10n.medium,
+      'Detailed' => context.l10n.detailed,
+      'Text' => context.l10n.textChannel,
+      'Email' => context.l10n.email,
+      'Chat' => context.l10n.chat,
+      _ => option,
+    };
 
 class _OptionDivider extends StatelessWidget {
   const _OptionDivider();

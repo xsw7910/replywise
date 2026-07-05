@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../router/app_router.dart';
+import '../localization/localization_extensions.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_colors.dart';
 
@@ -12,43 +13,43 @@ class AppShell extends StatelessWidget {
 
   final Widget child;
 
-  static const _tabs = [
+  List<_TabData> _tabs(BuildContext context) => [
     (
       route: AppRoutes.home,
-      label: 'Home',
+      label: context.l10n.home,
       icon: Icons.home_rounded,
       color: AppColors.primaryBlue,
     ),
     (
       route: AppRoutes.reply,
-      label: 'Reply',
+      label: context.l10n.reply,
       icon: Icons.reply_rounded,
       color: AppColors.replyColor,
     ),
     (
       route: AppRoutes.explain,
-      label: 'Explain',
+      label: context.l10n.explain,
       icon: Icons.psychology_alt_rounded,
       color: AppColors.explainColor,
     ),
     (
       route: AppRoutes.polish,
-      label: 'Polish',
+      label: context.l10n.polish,
       icon: Icons.auto_fix_high_rounded,
       color: AppColors.polishColor,
     ),
     (
       route: AppRoutes.settings,
-      label: 'Settings',
+      label: context.l10n.settings,
       icon: Icons.settings_rounded,
       color: AppColors.primaryBlue,
     ),
   ];
 
-  int _selectedIndex(BuildContext context) {
+  int _selectedIndex(BuildContext context, List<_TabData> tabs) {
     final location = GoRouterState.of(context).uri.path;
     if (location == AppRoutes.home) return 0;
-    final idx = _tabs.indexWhere(
+    final idx = tabs.indexWhere(
       (t) => t.route != AppRoutes.home && location.startsWith(t.route),
     );
     return idx < 0 ? 0 : idx;
@@ -56,15 +57,16 @@ class AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedIndex = _selectedIndex(context);
+    final tabs = _tabs(context);
+    final selectedIndex = _selectedIndex(context, tabs);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundBase,
       body: child,
       bottomNavigationBar: _SoftNavBar(
-        tabs: _tabs,
+        tabs: tabs,
         selectedIndex: selectedIndex,
-        onSelected: (i) => context.go(_tabs[i].route),
+        onSelected: (i) => context.go(tabs[i].route),
       ),
     );
   }

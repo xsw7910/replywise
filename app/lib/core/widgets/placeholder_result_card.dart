@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/app_skin.dart';
+import '../localization/localization_extensions.dart';
 import '../theme/app_text_styles.dart';
 import 'glass_card.dart';
 
@@ -10,12 +11,12 @@ class PlaceholderResultCard extends StatelessWidget {
     super.key,
     required this.label,
     required this.text,
-    this.caption = 'Static preview',
+    this.caption,
   });
 
   final String label;
   final String text;
-  final String caption;
+  final String? caption;
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +34,23 @@ class PlaceholderResultCard extends StatelessWidget {
                   children: [
                     Text(label, style: AppTextStyles.cardTitle),
                     const SizedBox(height: 2),
-                    Text(caption, style: AppTextStyles.badge),
+                    Text(
+                      caption ?? context.l10n.staticPreviewCaption,
+                      style: AppTextStyles.badge,
+                    ),
                   ],
                 ),
               ),
               IconButton.filledTonal(
-                tooltip: 'Copy preview',
+                tooltip: context.l10n.copyPreview,
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: text));
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(const SnackBar(content: Text('Copied')));
+                    ..showSnackBar(
+                      SnackBar(content: Text(context.l10n.copied)),
+                    );
                 },
                 icon: const Icon(Icons.copy_rounded, size: 18),
               ),

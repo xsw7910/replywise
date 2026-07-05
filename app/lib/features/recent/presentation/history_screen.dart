@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/localization/localization_extensions.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_page.dart';
 import '../application/recent_providers.dart';
@@ -28,20 +29,17 @@ class HistoryScreen extends ConsumerWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Clear history?'),
-        content: const Text(
-          'This removes all recent items on this device. '
-          'This cannot be undone.',
-        ),
+        title: Text(context.l10n.clearHistory),
+        content: Text(context.l10n.clearHistoryDescription),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           TextButton(
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Clear all'),
+            child: Text(context.l10n.clearAll),
           ),
         ],
       ),
@@ -54,15 +52,16 @@ class HistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemsAsync = ref.watch(recentItemsProvider);
-    final hasItems = (itemsAsync.asData?.value ?? const <RecentItem>[]).isNotEmpty;
+    final hasItems =
+        (itemsAsync.asData?.value ?? const <RecentItem>[]).isNotEmpty;
 
     return AppPage(
-      title: 'History',
+      title: context.l10n.history,
       showBackButton: true,
       actions: [
         if (hasItems)
           IconButton(
-            tooltip: 'Clear all',
+            tooltip: context.l10n.clearAll,
             onPressed: () => _clearAll(context, ref),
             icon: const Icon(Icons.delete_sweep_outlined),
           ),
@@ -83,7 +82,7 @@ class HistoryScreen extends ConsumerWidget {
                     item: item,
                     onTap: () => openRecentItem(context, ref, item),
                     trailing: IconButton(
-                      tooltip: 'Delete',
+                      tooltip: context.l10n.delete,
                       color: AppColors.textMuted,
                       icon: const Icon(Icons.close_rounded, size: 20),
                       onPressed: () => _delete(ref, item.id),
@@ -113,11 +112,10 @@ class _EmptyHistory extends StatelessWidget {
               color: AppColors.textDisabled,
             ),
             const SizedBox(height: 12),
-            Text('Nothing here yet', style: AppTextStyles.cardTitle),
+            Text(context.l10n.nothingHereYet, style: AppTextStyles.cardTitle),
             const SizedBox(height: 6),
             Text(
-              'Your recent replies, polished text, and '
-              'explanations will appear here.',
+              context.l10n.recentEmptyMessage,
               textAlign: TextAlign.center,
               style: AppTextStyles.helper,
             ),

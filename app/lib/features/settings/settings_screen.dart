@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_config.dart';
+import '../../core/localization/locale_controller.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -23,7 +25,69 @@ class SettingsScreen extends ConsumerWidget {
   void _showPreviewMessage(BuildContext context, String label) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('$label is a static preview.')));
+      ..showSnackBar(
+        SnackBar(content: Text(context.l10n.staticPreview(label))),
+      );
+  }
+
+  Future<void> _showLanguageSelector(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final selected = ref.read(localeControllerProvider);
+    final chosen = await showModalBottomSheet<String>(
+      context: context,
+      useSafeArea: true,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (context) => ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.78,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+              child: Text(
+                context.l10n.chooseLanguage,
+                style: AppTextStyles.sectionTitle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: ListView.builder(
+                itemCount: appLocaleOptions.length,
+                itemBuilder: (context, index) {
+                  final option = appLocaleOptions[index];
+                  final isSelected = option.code == selected;
+                  return ListTile(
+                    leading: Icon(
+                      isSelected
+                          ? Icons.radio_button_checked_rounded
+                          : Icons.radio_button_off_rounded,
+                      color: isSelected
+                          ? AppColors.primaryBlue
+                          : AppColors.textMuted,
+                    ),
+                    title: Text(
+                      option.code == 'system'
+                          ? context.l10n.systemDefault
+                          : option.nativeName,
+                    ),
+                    selected: isSelected,
+                    onTap: () => Navigator.pop(context, option.code),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (chosen != null && context.mounted) {
+      await ref.read(localeControllerProvider.notifier).select(chosen);
+    }
   }
 
   @override
@@ -33,6 +97,10 @@ class SettingsScreen extends ConsumerWidget {
     final usageState = ref.watch(usageControllerProvider);
     final showDevTools = ref.watch(devToolsPanelVisibleProvider);
     final devToolsState = ref.watch(devToolsControllerProvider);
+    final localePreference = ref.watch(localeControllerProvider);
+    final selectedLocale = appLocaleOptions.firstWhere(
+      (option) => option.code == localePreference,
+    );
 
     ref.listen(devToolsControllerProvider, (previous, next) {
       final message = next.message;
@@ -44,7 +112,7 @@ class SettingsScreen extends ConsumerWidget {
     });
 
     return AppPage(
-      title: 'Settings',
+      title: context.l10n.settings,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
         children: [
@@ -71,7 +139,10 @@ class SettingsScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Your plan', style: AppTextStyles.cardTitle),
+                          Text(
+                            context.l10n.yourPlan,
+                            style: AppTextStyles.cardTitle,
+                          ),
                           const SizedBox(height: 6),
                           UsageBadge(
                             state: usageState,
@@ -84,7 +155,7 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     FilledButton.tonal(
                       onPressed: () => context.push(AppRoutes.paywall),
-                      child: const Text('Plans'),
+                      child: Text(context.l10n.plans),
                     ),
                   ],
                 ),
@@ -93,46 +164,55 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           _SettingsSection(
-            title: 'Guidance',
+            title: context.l10n.guidance,
             children: [
               _SettingsTile(
                 icon: Icons.library_books_outlined,
-                label: 'Guidance Library',
+                label: context.l10n.guidanceLibrary,
                 onTap: () => context.push(AppRoutes.guidanceLibrary),
               ),
             ],
           ),
           const SizedBox(height: 16),
           _SettingsSection(
-            title: 'Language & input',
+            title: context.l10n.languageAndInput,
             children: [
               _SettingsTile(
                 icon: Icons.language_rounded,
-                label: 'App language',
-                trailing: const Text('English'),
-                onTap: () => _showPreviewMessage(context, 'App language'),
+                label: context.l10n.appLanguage,
+                trailing: Text(
+                  selectedLocale.code == 'system'
+                      ? context.l10n.systemDefault
+                      : selectedLocale.nativeName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onTap: () => _showLanguageSelector(context, ref),
               ),
               _SettingsTile(
                 icon: Icons.mic_none_rounded,
-                label: 'Voice guidance language',
-                trailing: const Text('Auto Detect'),
-                onTap: () => _showPreviewMessage(context, 'Voice language'),
+                label: context.l10n.voiceGuidanceLanguage,
+                trailing: Text(context.l10n.autoDetect),
+                onTap: () => _showPreviewMessage(
+                  context,
+                  context.l10n.voiceGuidanceLanguage,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 16),
           _SettingsSection(
-            title: 'About',
+            title: context.l10n.about,
             children: [
-              const _SettingsTile(
+              _SettingsTile(
                 icon: Icons.info_outline_rounded,
-                label: 'Version',
+                label: context.l10n.version,
                 trailing: Text('1.0.0'),
                 onTap: null,
               ),
               _SettingsTile(
                 icon: Icons.cloud_outlined,
-                label: 'Environment',
+                label: context.l10n.environment,
                 trailing: Text(AppConfig.env),
                 onTap: null,
               ),
@@ -172,7 +252,7 @@ class _DeveloperTestingCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Developer Testing', style: AppTextStyles.cardTitle),
+          Text(context.l10n.developerTesting, style: AppTextStyles.cardTitle),
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
@@ -181,32 +261,32 @@ class _DeveloperTestingCard extends ConsumerWidget {
               FilledButton.tonalIcon(
                 onPressed: isBusy ? null : controller.resetUsage,
                 icon: const Icon(Icons.restart_alt_rounded),
-                label: const Text('Reset free usage'),
+                label: Text(context.l10n.resetFreeUsage),
               ),
               FilledButton.tonalIcon(
                 onPressed: isBusy ? null : () => controller.addCredits(10),
                 icon: const Icon(Icons.add_circle_outline_rounded),
-                label: const Text('Add 10 credits'),
+                label: Text(context.l10n.addCredits(10)),
               ),
               FilledButton.tonalIcon(
                 onPressed: isBusy ? null : () => controller.addCredits(50),
                 icon: const Icon(Icons.add_circle_outline_rounded),
-                label: const Text('Add 50 credits'),
+                label: Text(context.l10n.addCredits(50)),
               ),
               FilledButton.tonalIcon(
                 onPressed: isBusy ? null : () => controller.setPremium(true),
                 icon: const Icon(Icons.workspace_premium_rounded),
-                label: const Text('Simulate Premium On'),
+                label: Text(context.l10n.simulatePremiumOn),
               ),
               FilledButton.tonalIcon(
                 onPressed: isBusy ? null : () => controller.setPremium(false),
                 icon: const Icon(Icons.workspace_premium_outlined),
-                label: const Text('Simulate Premium Off'),
+                label: Text(context.l10n.simulatePremiumOff),
               ),
               OutlinedButton.icon(
                 onPressed: isBusy ? null : controller.refreshAccountState,
                 icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Refresh account state'),
+                label: Text(context.l10n.refreshAccountState),
               ),
             ],
           ),
@@ -224,36 +304,37 @@ class _AuthStatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final (icon, color, label) = switch (authState.status) {
       AuthStatus.authenticated => (
         Icons.verified_user_outlined,
         AppColors.success,
-        'Anonymous session ready',
+        l10n.anonymousSessionReady,
       ),
       AuthStatus.authenticating => (
         Icons.sync_rounded,
         AppColors.primaryBlue,
-        'Connecting anonymous session…',
+        l10n.connectingAnonymousSession,
       ),
       AuthStatus.refreshing => (
         Icons.sync_lock_outlined,
         AppColors.primaryBlue,
-        'Refreshing secure session…',
+        l10n.refreshingSecureSession,
       ),
       AuthStatus.tokenExpired => (
         Icons.history_toggle_off_rounded,
         AppColors.primaryBlue,
-        'Restoring anonymous session…',
+        l10n.restoringAnonymousSession,
       ),
       AuthStatus.failure => (
         Icons.gpp_bad_outlined,
         AppColors.error,
-        'Anonymous session unavailable',
+        l10n.anonymousSessionUnavailable,
       ),
       AuthStatus.unauthenticated => (
         Icons.shield_outlined,
         AppColors.textSecondary,
-        'Anonymous session not started',
+        l10n.anonymousSessionNotStarted,
       ),
     };
 
@@ -261,7 +342,7 @@ class _AuthStatusCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Secure session', style: AppTextStyles.cardTitle),
+          Text(l10n.secureSession, style: AppTextStyles.cardTitle),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -277,7 +358,7 @@ class _AuthStatusCard extends StatelessWidget {
                 TextButton.icon(
                   onPressed: onRetry,
                   icon: const Icon(Icons.refresh_rounded, size: 17),
-                  label: const Text('Retry'),
+                  label: Text(l10n.retry),
                 ),
             ],
           ),
@@ -334,16 +415,19 @@ class _BackendStatusCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Developer', style: AppTextStyles.cardTitle),
                     Text(
-                      'Local backend connection',
+                      context.l10n.developer,
+                      style: AppTextStyles.cardTitle,
+                    ),
+                    Text(
+                      context.l10n.localBackendConnection,
                       style: AppTextStyles.helper,
                     ),
                   ],
                 ),
               ),
               IconButton(
-                tooltip: 'Refresh backend status',
+                tooltip: context.l10n.refreshBackendStatus,
                 onPressed: healthState.isLoading ? null : onRefresh,
                 icon: const Icon(Icons.refresh_rounded),
               ),
@@ -351,18 +435,18 @@ class _BackendStatusCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           healthState.when(
-            loading: () => const _StatusRow(
+            loading: () => _StatusRow(
               icon: Icons.sync_rounded,
               color: AppColors.primaryBlue,
-              title: 'Checking backend…',
+              title: context.l10n.checkingBackend,
             ),
             data: (health) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _StatusRow(
+                _StatusRow(
                   icon: Icons.check_circle_rounded,
                   color: AppColors.success,
-                  title: 'Connected',
+                  title: context.l10n.connected,
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -374,16 +458,15 @@ class _BackendStatusCard extends StatelessWidget {
             error: (_, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const _StatusRow(
+                _StatusRow(
                   icon: Icons.error_rounded,
                   color: AppColors.error,
-                  title: 'Connection failed',
+                  title: context.l10n.connectionFailed,
                 ),
                 const SizedBox(height: 5),
                 InlineError(
-                  message:
-                      'We couldn’t reach the service. Check your connection and try again.',
-                  actionLabel: 'Retry',
+                  message: context.l10n.serviceUnreachable,
+                  actionLabel: context.l10n.retry,
                   onAction: onRefresh,
                 ),
               ],

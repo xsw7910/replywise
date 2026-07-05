@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_router.dart';
+import '../../../core/localization/localization_extensions.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../application/guidance_library_controller.dart';
 import '../domain/guidance_template.dart';
+import 'guidance_localization.dart';
 
 /// Full-screen bottom sheet for picking a guidance item.
 /// Calls [onSelected] with the chosen template and pops itself.
@@ -32,7 +34,7 @@ class GuidancePickerSheet extends ConsumerWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Choose guidance',
+                  context.l10n.chooseGuidance,
                   style: AppTextStyles.sectionTitle,
                 ),
               ),
@@ -47,7 +49,7 @@ class GuidancePickerSheet extends ConsumerWidget {
                       children: [
                         if (state.favorites.isNotEmpty) ...[
                           _SectionHeader(
-                            'Favorites',
+                            context.l10n.favorites,
                             Icons.star_rounded,
                             AppColors.primaryBlue,
                           ),
@@ -60,7 +62,7 @@ class GuidancePickerSheet extends ConsumerWidget {
                           const SizedBox(height: 8),
                         ],
                         _SectionHeader(
-                          'Built-in',
+                          context.l10n.builtIn,
                           Icons.library_books_outlined,
                           AppColors.textSecondary,
                         ),
@@ -75,7 +77,7 @@ class GuidancePickerSheet extends ConsumerWidget {
                         if (state.customTemplates.isNotEmpty) ...[
                           const SizedBox(height: 8),
                           _SectionHeader(
-                            'My Guidance',
+                            context.l10n.myGuidance,
                             Icons.edit_note_rounded,
                             AppColors.textSecondary,
                           ),
@@ -104,7 +106,7 @@ class GuidancePickerSheet extends ConsumerWidget {
                       context.push(AppRoutes.guidanceLibrary);
                     },
                     icon: const Icon(Icons.menu_book_rounded, size: 18),
-                    label: const Text('Manage Library'),
+                    label: Text(context.l10n.manageLibrary),
                   ),
                 ),
               ),
@@ -145,9 +147,12 @@ class _PickerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
     contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-    title: Text(template.title, style: AppTextStyles.cardTitle),
+    title: Text(
+      localizedGuidanceTitle(context, template),
+      style: AppTextStyles.cardTitle,
+    ),
     subtitle: Text(
-      template.content,
+      localizedGuidanceContent(context, template),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: AppTextStyles.helper,
@@ -162,7 +167,7 @@ class _PickerTile extends StatelessWidget {
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: const Text('Use'),
+      child: Text(context.l10n.use),
     ),
   );
 }

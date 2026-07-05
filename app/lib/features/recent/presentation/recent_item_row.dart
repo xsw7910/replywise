@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/localization/localization_extensions.dart';
 import '../../reply/application/pending_reply_input_provider.dart';
 import '../domain/recent_item.dart';
 
@@ -56,14 +57,21 @@ class RecentItemRow extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      formatRecentTimestamp(item.createdAt),
+                      _localizedTimestamp(context, item.createdAt),
                       style: AppTextStyles.helper,
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              _TypePill(label: item.type.displayLabel, color: accent),
+              _TypePill(
+                label: switch (item.type) {
+                  RecentType.reply => context.l10n.reply,
+                  RecentType.polish => context.l10n.polish,
+                  RecentType.explain => context.l10n.explain,
+                },
+                color: accent,
+              ),
               ?trailing,
             ],
           ),
@@ -71,6 +79,18 @@ class RecentItemRow extends StatelessWidget {
       ),
     );
   }
+}
+
+String _localizedTimestamp(BuildContext context, DateTime dt) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final that = DateTime(dt.year, dt.month, dt.day);
+  final days = today.difference(that).inDays;
+  final material = MaterialLocalizations.of(context);
+  final time = material.formatTimeOfDay(TimeOfDay.fromDateTime(dt));
+  if (days == 0) return context.l10n.todayAt(time);
+  if (days == 1) return context.l10n.yesterdayAt(time);
+  return context.l10n.dateAt(material.formatShortDate(dt), time);
 }
 
 class _TypePill extends StatelessWidget {
@@ -87,10 +107,7 @@ class _TypePill extends StatelessWidget {
         color: color.withAlpha(24),
         borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(
-        label,
-        style: AppTextStyles.badge.copyWith(color: color),
-      ),
+      child: Text(label, style: AppTextStyles.badge.copyWith(color: color)),
     );
   }
 }
@@ -128,8 +145,18 @@ String _formatTime(DateTime dt) {
 }
 
 const _months = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
 
 String _month(int month) => _months[(month - 1) % 12];

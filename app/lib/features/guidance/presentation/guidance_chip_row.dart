@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/localization/localization_extensions.dart';
 import '../../../core/theme/app_feature_theme.dart';
 import '../../../core/theme/app_colors.dart';
 import '../application/guidance_library_controller.dart';
@@ -30,7 +31,7 @@ class GuidanceChipRow extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quick guidance', style: AppTextStyles.badge),
+        Text(context.l10n.quickGuidance, style: AppTextStyles.badge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -61,7 +62,7 @@ class GuidanceChipRow extends ConsumerWidget {
                 color: feature?.accentColor,
               ),
               label: Text(
-                'Library',
+                context.l10n.library,
                 style: TextStyle(color: feature?.accentColor),
               ),
               onPressed: () => _openPicker(context),

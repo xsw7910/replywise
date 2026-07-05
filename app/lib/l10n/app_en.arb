@@ -1,0 +1,274 @@
+{
+  "@@locale": "en",
+  "appTitle": "ReplyWise",
+  "systemDefault": "System default",
+  "chooseLanguage": "Choose app language",
+  "settings": "Settings",
+  "home": "Home",
+  "reply": "Reply",
+  "explain": "Explain",
+  "polish": "Polish",
+  "yourAiReplyAssistant": "Your AI reply assistant",
+  "generateThoughtfulReplies": "Generate thoughtful replies instantly.",
+  "makeWritingClear": "Make your writing clear and natural.",
+  "understandTone": "Understand tone and hidden meaning.",
+  "templates": "Templates",
+  "reuseInstructions": "Reuse your favorite AI instructions.",
+  "recent": "Recent",
+  "viewAll": "View all",
+  "nothingHereYet": "Nothing here yet",
+  "recentEmptyMessage": "Your recent replies, polished text, and explanations will appear here.",
+  "createFirstReply": "Create your first reply",
+  "tipOfTheDay": "Tip of the day",
+  "tipShortEmails": "Keep emails under 120 words for higher response rates.",
+  "tipLeadWithAsk": "Lead with your ask — put the key request in the first line.",
+  "tipMatchTone": "Match the other person's tone to build rapport faster.",
+  "tipClearSubject": "A clear subject line gets more replies than a clever one.",
+  "tipReadAloud": "Read your reply aloud once — it catches awkward phrasing.",
+  "tipClearNextStep": "End with one clear next step so the reader knows what to do.",
+  "yourPlan": "Your plan",
+  "plans": "Plans",
+  "guidance": "Guidance",
+  "guidanceLibrary": "Guidance Library",
+  "languageAndInput": "Language & input",
+  "appLanguage": "App language",
+  "voiceGuidanceLanguage": "Voice guidance language",
+  "autoDetect": "Auto Detect",
+  "staticPreview": "{label} is a static preview.",
+  "@staticPreview": {"placeholders": {"label": {"type": "String"}}},
+  "about": "About",
+  "version": "Version",
+  "environment": "Environment",
+  "developerTesting": "Developer Testing",
+  "resetFreeUsage": "Reset free usage",
+  "addCredits": "Add {count} credits",
+  "@addCredits": {"placeholders": {"count": {"type": "int"}}},
+  "simulatePremiumOn": "Simulate Premium On",
+  "simulatePremiumOff": "Simulate Premium Off",
+  "refreshAccountState": "Refresh account state",
+  "secureSession": "Secure session",
+  "anonymousSessionReady": "Anonymous session ready",
+  "connectingAnonymousSession": "Connecting anonymous session…",
+  "refreshingSecureSession": "Refreshing secure session…",
+  "restoringAnonymousSession": "Restoring anonymous session…",
+  "anonymousSessionUnavailable": "Anonymous session unavailable",
+  "anonymousSessionNotStarted": "Anonymous session not started",
+  "retry": "Retry",
+  "developer": "Developer",
+  "localBackendConnection": "Local backend connection",
+  "refreshBackendStatus": "Refresh backend status",
+  "checkingBackend": "Checking backend…",
+  "connected": "Connected",
+  "connectionFailed": "Connection failed",
+  "serviceUnreachable": "We couldn’t reach the service. Check your connection and try again.",
+  "copied": "Copied",
+  "close": "Close",
+  "tryAgain": "Try again",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "use": "Use",
+  "save": "Save",
+  "done": "Done",
+  "manageLibrary": "Manage Library",
+  "newGuidance": "New Guidance",
+  "quickGuidance": "Quick guidance",
+  "viewPlans": "View plans",
+  "restore": "Restore",
+  "loading": "Loading…"
+  ,"premium": "Premium"
+  ,"premiumUnlimited": "Premium · Unlimited"
+  ,"updating": "Updating"
+  ,"updatingBalance": "Updating balance…"
+  ,"balanceUnavailable": "Balance unavailable"
+  ,"checking": "Checking"
+  ,"checkingBalance": "Checking balance…"
+  ,"freeCount": "{free} free"
+  ,"@freeCount": {"placeholders": {"free": {"type": "int"}}}
+  ,"usageBalance": "{free} free · {credits} credits"
+  ,"@usageBalance": {"placeholders": {"free": {"type": "int"},"credits": {"type": "int"}}}
+  ,"copyPreview": "Copy preview"
+  ,"copyResult": "Copy result"
+  ,"staticPreviewCaption": "Static preview"
+  ,"history": "History"
+  ,"clearHistory": "Clear history?"
+  ,"clearHistoryDescription": "This removes all recent items on this device. This cannot be undone."
+  ,"clearAll": "Clear all"
+  ,"messageReceived": "Message received"
+  ,"messageYouReceived": "Message you received"
+  ,"pasteOriginalMessage": "Paste the original message here…"
+  ,"paste": "Paste"
+  ,"clear": "Clear"
+  ,"helpAiUnderstandIntent": "Help AI understand your intent"
+  ,"addReplyInstructions": "Add your reply instructions…"
+  ,"generating": "Generating…"
+  ,"generateReply": "Generate Reply"
+  ,"creatingNaturalOptions": "Creating a few natural options…"
+  ,"replyOptionsAppearHere": "Your reply options will appear here."
+  ,"yourReplies": "Your replies"
+  ,"whyThisWorks": "Why this works"
+  ,"regenerateReplies": "Regenerate replies"
+  ,"regenerateUsageNote": "Regenerating creates new replies and uses 1 generation."
+  ,"couldNotExplain": "Couldn’t explain this message"
+  ,"explainMessage": "Explain message"
+  ,"copyExplanation": "Copy explanation"
+  ,"meaning": "Meaning"
+  ,"tone": "Tone"
+  ,"hiddenMeaning": "Hidden Meaning"
+  ,"noHiddenMeaning": "No hidden meaning detected."
+  ,"suggestedReplies": "Suggested Replies"
+  ,"moreOptions": "More options"
+  ,"audience": "Audience"
+  ,"length": "Length"
+  ,"channel": "Channel"
+  ,"describeTone": "Describe the tone"
+  ,"toneHint": "e.g. warm but professional"
+  ,"describeRelationship": "Describe the relationship"
+  ,"relationshipHint": "For example: my landlord"
+  ,"customizeStyleToneFormat": "Customize style, tone and format"
+  ,"bePolite": "Be polite"
+  ,"keepItShort": "Keep it short"
+  ,"professional": "Professional"
+  ,"friendly": "Friendly"
+  ,"declinePolitely": "Decline politely"
+  ,"sayThankYou": "Say thank you"
+  ,"auto": "Auto"
+  ,"natural": "Natural"
+  ,"custom": "Custom"
+  ,"friend": "Friend"
+  ,"customer": "Customer"
+  ,"coworker": "Coworker"
+  ,"manager": "Manager"
+  ,"short": "Short"
+  ,"medium": "Medium"
+  ,"detailed": "Detailed"
+  ,"textChannel": "Text"
+  ,"email": "Email"
+  ,"chat": "Chat"
+  ,"textToPolish": "Text to polish"
+  ,"pasteTextToImprove": "Paste the text you'd like to improve"
+  ,"pasteYourText": "Paste your text here…"
+  ,"improvingClarity": "Improving clarity while keeping your meaning…"
+  ,"polishedTextAppearsHere": "Your polished text will appear here."
+  ,"polishedResult": "Polished result"
+  ,"whatChanged": "What changed?"
+  ,"polishAgain": "Polish again"
+  ,"polishAgainUsageNote": "Polishing again creates a new result and uses 1 generation."
+  ,"messageToUnderstand": "Message to understand"
+  ,"pasteMessageReceived": "Paste the message you received"
+  ,"explainThisMessage": "Explain this message"
+  ,"explaining": "Explaining…"
+  ,"readingBetweenLines": "Reading between the lines…"
+  ,"explanationAppearsHere": "Your explanation will appear here."
+  ,"noSuggestedReplies": "No suggested replies returned."
+  ,"copy": "Copy"
+  ,"enterMessageFirst": "Enter a message to explain first."
+  ,"explainRateLimited": "You’ve reached the explain limit for now. Please try again later."
+  ,"explainParseError": "We could not read the explanation clearly. Please try again."
+  ,"explainUnavailable": "Explain is temporarily unavailable. Please try again shortly."
+  ,"unableToExplain": "Unable to explain this message."
+  ,"replyCtaTitle": "Want a reply that better matches your intention?"
+  ,"premiumTitle": "ReplyWise Premium"
+  ,"back": "Back"
+  ,"threeDaysFree": "3 days free"
+  ,"unlimitedReply": "Unlimited Reply generations"
+  ,"unlimitedPolish": "Unlimited Polish generations"
+  ,"balancesPreserved": "Free and credit balances stay preserved"
+  ,"loadingSubscriptionOptions": "Loading subscription options…"
+  ,"startFreeTrial": "Start 3-day Free Trial"
+  ,"startYearlyPlan": "Start Yearly Plan"
+  ,"trialTerms": "Free for 3 days, then {price}/year. Cancel anytime."
+  ,"@trialTerms": {"placeholders": {"price": {"type": "String"}}}
+  ,"yearlyTerms": "{price}/year. Cancel anytime."
+  ,"@yearlyTerms": {"placeholders": {"price": {"type": "String"}}}
+  ,"displayedPrice": "the displayed price"
+  ,"topUpCredits": "Top-up Credits"
+  ,"creditDescription": "Each credit covers one Reply or Polish. Credits never expire."
+  ,"loadingCreditPackages": "Loading credit packages…"
+  ,"creditPackagesUnavailable": "Credit packages are unavailable right now."
+  ,"refreshPackages": "Refresh packages"
+  ,"buyCredits": "Buy {credits} Credits — {price}"
+  ,"@buyCredits": {"placeholders": {"credits": {"type": "int"},"price": {"type": "String"}}}
+  ,"restoring": "Restoring…"
+  ,"restorePremium": "Restore Premium subscription"
+  ,"purchaseVerification": "Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically."
+  ,"newGuidance": "New Guidance"
+  ,"newGuidanceTooltip": "New guidance"
+  ,"builtIn": "Built-in"
+  ,"myGuidance": "My Guidance"
+  ,"useInReply": "Use in Reply"
+  ,"useInPolish": "Use in Polish"
+  ,"deleteGuidance": "Delete this guidance?"
+  ,"cannotBeUndone": "This cannot be undone."
+  ,"category": "Category"
+  ,"titleLabel": "Title"
+  ,"guidanceTitleHint": "Short name for this guidance…"
+  ,"guidanceHint": "Describe how the AI should shape the reply…"
+  ,"writeAnyLanguage": "Write in any language"
+  ,"saveChanges": "Save changes"
+  ,"saveGuidance": "Save guidance"
+  ,"couldNotSaveGuidance": "Could not save this guidance. Please try again."
+  ,"concise": "Concise"
+  ,"moreNatural": "More natural"
+  ,"improveGrammar": "Improve grammar"
+  ,"fixSpelling": "Fix spelling"
+  ,"morePersuasive": "More persuasive"
+  ,"moreConfident": "More confident"
+  ,"simplifyWording": "Simplify wording"
+  ,"betterFlow": "Better flow"
+  ,"describePolish": "Describe how you want the draft polished"
+  ,"describeAudience": "Describe the audience"
+  ,"audienceHint": "e.g. my manager"
+  ,"extraInstruction": "Extra instruction"
+  ,"extraPolishHint": "Add any other polishing preference"
+  ,"polishing": "Polishing…"
+  ,"polishText": "Polish Text"
+  ,"adjustToneLengthFormat": "Adjust tone, length and format"
+  ,"instructionProfessional": "Make the writing sound professional."
+  ,"instructionFriendly": "Make the writing warmer and friendlier."
+  ,"instructionConcise": "Make the writing concise and direct."
+  ,"instructionNatural": "Make the wording sound natural and fluent."
+  ,"instructionGrammar": "Correct the grammar while preserving the meaning."
+  ,"instructionSpelling": "Correct all spelling errors."
+  ,"instructionPersuasive": "Make the writing more persuasive and compelling."
+  ,"instructionConfident": "Make the writing sound clear and confident."
+  ,"instructionSimple": "Use simpler, easier-to-read wording."
+  ,"instructionFlow": "Improve sentence flow and transitions."
+  ,"shorter": "Shorter"
+  ,"sameLength": "Same"
+  ,"longer": "Longer"
+  ,"favorites": "Favorites"
+  ,"createGuidanceEmpty": "Create your own guidance to reuse it later."
+  ,"removeFavorite": "Remove from favorites"
+  ,"addFavorite": "Add to favorites"
+  ,"useTemplate": "Use “{title}”"
+  ,"@useTemplate": {"placeholders": {"title": {"type": "String"}}}
+  ,"chooseGuidance": "Choose guidance"
+  ,"library": "Library"
+  ,"general": "General"
+  ,"decline": "Decline"
+  ,"thanks": "Thanks"
+  ,"followUp": "Follow-up"
+  ,"editGuidance": "Edit Guidance"
+  ,"makeProfessional": "Make it professional"
+  ,"makeFriendly": "Make it friendly"
+  ,"askMoreTime": "Ask for more time"
+  ,"soundConfident": "Sound confident"
+  ,"guidancePoliteContent": "Make the reply polite and respectful."
+  ,"guidanceShortContent": "Keep the reply short and clear."
+  ,"guidanceProfessionalContent": "Make the reply sound professional and appropriate for work."
+  ,"guidanceFriendlyContent": "Make the reply warm and friendly."
+  ,"guidanceDeclineContent": "Politely decline the request without sounding rude."
+  ,"guidanceThanksContent": "Add appreciation and a polite thank-you."
+  ,"guidanceMoreTimeContent": "Ask for more time while sounding responsible and polite."
+  ,"guidanceConfidentContent": "Make the reply sound confident but not aggressive."
+  ,"todayAt": "Today · {time}"
+  ,"@todayAt": {"placeholders": {"time": {"type": "String"}}}
+  ,"yesterdayAt": "Yesterday · {time}"
+  ,"@yesterdayAt": {"placeholders": {"time": {"type": "String"}}}
+  ,"dateAt": "{date} · {time}"
+  ,"@dateAt": {"placeholders": {"date": {"type": "String"},"time": {"type": "String"}}}
+  ,"premiumActive": "Premium subscription active"
+  ,"creditsRemaining": "{count} credits remaining"
+  ,"@creditsRemaining": {"placeholders": {"count": {"type": "String"}}}
+}

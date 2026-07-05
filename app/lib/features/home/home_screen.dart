@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/router/app_router.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -45,7 +46,7 @@ class HomeScreen extends ConsumerWidget {
     final usage = ref.watch(usageControllerProvider).usage;
 
     return AppPage(
-      title: 'Home',
+      title: context.l10n.home,
       showAppBar: false,
       useSafeArea: false,
       child: ColoredBox(
@@ -80,8 +81,8 @@ class HomeScreen extends ConsumerWidget {
                             key: const Key('home-feature-reply'),
                             imagePath: 'assets/icons/reply.png',
                             feature: AppFeature.reply,
-                            title: 'Reply',
-                            subtitle: 'Generate thoughtful replies instantly.',
+                            title: context.l10n.reply,
+                            subtitle: context.l10n.generateThoughtfulReplies,
                             onTap: () => context.go(AppRoutes.reply),
                           ),
                         ),
@@ -91,8 +92,8 @@ class HomeScreen extends ConsumerWidget {
                             key: const Key('home-feature-polish'),
                             imagePath: 'assets/icons/polish.png',
                             feature: AppFeature.polish,
-                            title: 'Polish',
-                            subtitle: 'Make your writing clear and natural.',
+                            title: context.l10n.polish,
+                            subtitle: context.l10n.makeWritingClear,
                             onTap: () => context.go(AppRoutes.polish),
                           ),
                         ),
@@ -109,8 +110,8 @@ class HomeScreen extends ConsumerWidget {
                             key: const Key('home-feature-explain'),
                             imagePath: 'assets/icons/explain.png',
                             feature: AppFeature.explain,
-                            title: 'Explain',
-                            subtitle: 'Understand tone and hidden meaning.',
+                            title: context.l10n.explain,
+                            subtitle: context.l10n.understandTone,
                             onTap: () => context.go(AppRoutes.explain),
                           ),
                         ),
@@ -120,8 +121,8 @@ class HomeScreen extends ConsumerWidget {
                             key: const Key('home-feature-guidance'),
                             imagePath: 'assets/icons/guidance.png',
                             feature: AppFeature.guidance,
-                            title: 'Templates',
-                            subtitle: 'Reuse your favorite AI instructions.',
+                            title: context.l10n.templates,
+                            subtitle: context.l10n.reuseInstructions,
                             onTap: () =>
                                 context.push(AppRoutes.guidanceLibrary),
                           ),
@@ -181,7 +182,7 @@ class _HomeNavBar extends StatelessWidget {
                     colors: [Color(0xFF3D6FFF), Color(0xFF00C2CB)],
                   ).createShader(bounds),
                   child: Text(
-                    'ReplyWise',
+                    context.l10n.appTitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.pageTitle.copyWith(
@@ -194,7 +195,7 @@ class _HomeNavBar extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Your AI reply assistant',
+                  context.l10n.yourAiReplyAssistant,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.helper.copyWith(
@@ -378,12 +379,12 @@ class _RecentSection extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Text('Recent', style: AppTextStyles.sectionTitle),
+            Text(context.l10n.recent, style: AppTextStyles.sectionTitle),
             const Spacer(),
             if (items.isNotEmpty)
               TextButton(
                 onPressed: () => context.push(AppRoutes.history),
-                child: const Text('View all'),
+                child: Text(context.l10n.viewAll),
               ),
           ],
         ),
@@ -469,13 +470,12 @@ class _RecentEmpty extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Nothing here yet',
+                            context.l10n.nothingHereYet,
                             style: AppTextStyles.cardTitle,
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Your recent replies, polished text, and '
-                            'explanations will appear here.',
+                            context.l10n.recentEmptyMessage,
                             style: AppTextStyles.helper,
                           ),
                         ],
@@ -497,7 +497,7 @@ class _RecentEmpty extends StatelessWidget {
               ),
               onPressed: onCreate,
               icon: const Icon(Icons.edit_note_rounded, size: 20),
-              label: const Text('Create your first reply'),
+              label: Text(context.l10n.createFirstReply),
             ),
           ),
         ],
@@ -510,18 +510,17 @@ class _RecentEmpty extends StatelessWidget {
 class _TipOfTheDay extends StatelessWidget {
   const _TipOfTheDay();
 
-  static const _tips = <String>[
-    'Keep emails under 120 words for higher response rates.',
-    'Lead with your ask — put the key request in the first line.',
-    "Match the other person's tone to build rapport faster.",
-    'A clear subject line gets more replies than a clever one.',
-    'Read your reply aloud once — it catches awkward phrasing.',
-    'End with one clear next step so the reader knows what to do.',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final tip = _tips[DateTime.now().day % _tips.length];
+    final tips = [
+      context.l10n.tipShortEmails,
+      context.l10n.tipLeadWithAsk,
+      context.l10n.tipMatchTone,
+      context.l10n.tipClearSubject,
+      context.l10n.tipReadAloud,
+      context.l10n.tipClearNextStep,
+    ];
+    final tip = tips[DateTime.now().day % tips.length];
     const amber = AppColors.guidanceColor;
 
     return Container(
@@ -571,7 +570,7 @@ class _TipOfTheDay extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Tip of the day',
+                          context.l10n.tipOfTheDay,
                           style: AppTextStyles.cardTitle.copyWith(
                             color: AppColors.guidanceDark,
                           ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/input_limits.dart';
+import '../../core/localization/localization_extensions.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
@@ -133,7 +134,9 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   Future<void> _polish() async {
     // Capture the draft before the async gap.
     final draft = _draftController.text;
-    await ref.read(polishControllerProvider.notifier).polish(
+    await ref
+        .read(polishControllerProvider.notifier)
+        .polish(
           PolishRequest(
             draft: draft,
             direction: 'natural',
@@ -170,7 +173,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     _consumePendingGuidance();
 
     return AppPage(
-      title: 'Polish',
+      title: context.l10n.polish,
       accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
       showAppBar: false,
@@ -190,7 +193,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             elevation: 0,
             scrolledUnderElevation: 0,
             title: Text(
-              'Polish',
+              context.l10n.polish,
               style:
                   (Theme.of(context).appBarTheme.titleTextStyle ??
                           const TextStyle())
@@ -216,27 +219,27 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                   padding: const EdgeInsets.all(14),
                   child: Column(
                     children: [
-                      const _PolishCardHeader(
+                      _PolishCardHeader(
                         icon: Icons.edit_note_rounded,
-                        title: 'Text to polish',
-                        subtitle: "Paste the text you'd like to improve",
+                        title: context.l10n.textToPolish,
+                        subtitle: context.l10n.pasteTextToImprove,
                       ),
                       const SizedBox(height: 14),
                       LabeledTextField(
                         key: const Key('polish-draft-field'),
-                        label: 'Text to polish',
+                        label: context.l10n.textToPolish,
                         feature: _feature,
                         showHeader: false,
                         showCounter: false,
                         controller: _draftController,
-                        hintText: 'Paste your text here…',
+                        hintText: context.l10n.pasteYourText,
                         maxLines: 5,
                         maxLength: 4000,
                         fieldActions: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              tooltip: 'Paste',
+                              tooltip: context.l10n.paste,
                               visualDensity: VisualDensity.compact,
                               color: _kColor,
                               onPressed: _pasteDraft,
@@ -246,7 +249,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                               ),
                             ),
                             IconButton(
-                              tooltip: 'Clear',
+                              tooltip: context.l10n.clear,
                               visualDensity: VisualDensity.compact,
                               color: _kColor,
                               onPressed: _draftController.clear,
@@ -296,7 +299,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                 if (polishState.isLoading) ...[
                   const SizedBox(height: 10),
                   Text(
-                    'Improving clarity while keeping your meaning…',
+                    context.l10n.improvingClarity,
                     textAlign: TextAlign.center,
                     style: AppTextStyles.helper,
                   ),
@@ -307,7 +310,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                     message: polishState.error!,
                     actionLabel: polishState.errorCode == 'PAYWALL_REQUIRED'
                         ? null
-                        : 'Try again',
+                        : context.l10n.tryAgain,
                     onAction: polishState.errorCode == 'PAYWALL_REQUIRED'
                         ? null
                         : _polish,
@@ -315,7 +318,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                   if (polishState.errorCode == 'PAYWALL_REQUIRED')
                     TextButton(
                       onPressed: () => context.push(AppRoutes.paywall),
-                      child: const Text('View plans'),
+                      child: Text(context.l10n.viewPlans),
                     ),
                 ],
                 if (!polishState.isLoading &&
@@ -323,14 +326,17 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                     polishState.result == null) ...[
                   const SizedBox(height: 12),
                   Text(
-                    'Your polished text will appear here.',
+                    context.l10n.polishedTextAppearsHere,
                     textAlign: TextAlign.center,
                     style: AppTextStyles.helper,
                   ),
                 ],
                 if (polishState.result != null) ...[
                   const SizedBox(height: 26),
-                  Text('Polished result', style: AppTextStyles.sectionTitle),
+                  Text(
+                    context.l10n.polishedResult,
+                    style: AppTextStyles.sectionTitle,
+                  ),
                   const SizedBox(height: 12),
                   GeneratedResultCard(
                     label: _tone,
@@ -350,7 +356,10 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('What changed?', style: AppTextStyles.cardTitle),
+                        Text(
+                          context.l10n.whatChanged,
+                          style: AppTextStyles.cardTitle,
+                        ),
                         const SizedBox(height: 6),
                         Text(
                           polishState.result!.changes,
@@ -372,13 +381,13 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.refresh_rounded),
-                    label: const Text('Polish again'),
+                    label: Text(context.l10n.polishAgain),
                   ),
                   if (!usageState.usage.isPremium)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
                       child: Text(
-                        'Polishing again creates a new result and uses 1 generation.',
+                        context.l10n.polishAgainUsageNote,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.helper,
                       ),
@@ -558,10 +567,34 @@ class _PolishQuickGuidanceChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final labels = {
+      'Professional': context.l10n.professional,
+      'Friendly': context.l10n.friendly,
+      'Concise': context.l10n.concise,
+      'More natural': context.l10n.moreNatural,
+      'Improve grammar': context.l10n.improveGrammar,
+      'Fix spelling': context.l10n.fixSpelling,
+      'More persuasive': context.l10n.morePersuasive,
+      'More confident': context.l10n.moreConfident,
+      'Simplify wording': context.l10n.simplifyWording,
+      'Better flow': context.l10n.betterFlow,
+    };
+    final instructions = {
+      'Professional': context.l10n.instructionProfessional,
+      'Friendly': context.l10n.instructionFriendly,
+      'Concise': context.l10n.instructionConcise,
+      'More natural': context.l10n.instructionNatural,
+      'Improve grammar': context.l10n.instructionGrammar,
+      'Fix spelling': context.l10n.instructionSpelling,
+      'More persuasive': context.l10n.instructionPersuasive,
+      'More confident': context.l10n.instructionConfident,
+      'Simplify wording': context.l10n.instructionSimple,
+      'Better flow': context.l10n.instructionFlow,
+    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quick guidance', style: AppTextStyles.badge),
+        Text(context.l10n.quickGuidance, style: AppTextStyles.badge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -572,8 +605,12 @@ class _PolishQuickGuidanceChips extends StatelessWidget {
                 backgroundColor: _feature.selectedChipColor,
                 side: const BorderSide(color: AppColors.glassEdgeStrong),
                 avatar: Icon(item.icon, size: 15, color: _kColor),
-                label: Text(item.label, style: const TextStyle(color: _kColor)),
-                onPressed: () => onAppend(item.instruction),
+                label: Text(
+                  labels[item.label] ?? item.label,
+                  style: const TextStyle(color: _kColor),
+                ),
+                onPressed: () =>
+                    onAppend(instructions[item.label] ?? item.instruction),
               ),
           ],
         ),
@@ -631,7 +668,7 @@ class _PolishPrimaryButton extends StatelessWidget {
                   ),
                 const SizedBox(width: 9),
                 Text(
-                  loading ? 'Polishing…' : 'Polish Text',
+                  loading ? context.l10n.polishing : context.l10n.polishText,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -690,14 +727,14 @@ class _PolishGuidanceCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Guidance',
+                          context.l10n.guidance,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.cardTitle,
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Help AI understand your intent',
+                          context.l10n.helpAiUnderstandIntent,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.helper,
@@ -721,7 +758,7 @@ class _PolishGuidanceCard extends StatelessWidget {
                     key: const Key('polish-custom-guidance-field'),
                     feature: _feature,
                     controller: controller,
-                    hintText: 'Describe how you want the draft polished',
+                    hintText: context.l10n.describePolish,
                     maxLines: 3,
                     maxLength: InputLimits.guidanceMaxLength,
                     onOpenLibrary: onOpenLibrary,
@@ -798,14 +835,14 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'More options',
+                          context.l10n.moreOptions,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.cardTitle,
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Adjust tone, length and format',
+                          context.l10n.adjustToneLengthFormat,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.helper,
@@ -827,7 +864,7 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _PolishOptionGroup(
-                    label: 'Tone',
+                    label: context.l10n.tone,
                     options: tones,
                     selected: tone,
                     onSelected: onTone,
@@ -836,19 +873,19 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                     const SizedBox(height: 10),
                     LabeledTextField(
                       key: const Key('polish-custom-tone-field'),
-                      label: 'Describe the tone',
+                      label: context.l10n.describeTone,
                       feature: _feature,
                       showHeader: false,
                       showCounter: false,
                       controller: customToneController,
-                      hintText: 'e.g. warm but professional',
+                      hintText: context.l10n.toneHint,
                       maxLines: 1,
                       maxLength: 500,
                     ),
                   ],
                   const Divider(height: 28, color: AppColors.cardBorder),
                   _PolishOptionGroup(
-                    label: 'Audience',
+                    label: context.l10n.audience,
                     options: audiences,
                     selected: audience,
                     onSelected: onAudience,
@@ -857,19 +894,19 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                     const SizedBox(height: 10),
                     LabeledTextField(
                       key: const Key('polish-custom-audience-field'),
-                      label: 'Describe the audience',
+                      label: context.l10n.describeAudience,
                       feature: _feature,
                       showHeader: false,
                       showCounter: false,
                       controller: customAudienceController,
-                      hintText: 'e.g. my manager',
+                      hintText: context.l10n.audienceHint,
                       maxLines: 1,
                       maxLength: 500,
                     ),
                   ],
                   const Divider(height: 28, color: AppColors.cardBorder),
                   _PolishOptionGroup(
-                    label: 'Length',
+                    label: context.l10n.length,
                     options: lengths,
                     selected: length,
                     onSelected: onLength,
@@ -877,10 +914,10 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                   const SizedBox(height: 14),
                   LabeledTextField(
                     key: const Key('polish-extra-instruction-field'),
-                    label: 'Extra instruction',
+                    label: context.l10n.extraInstruction,
                     feature: _feature,
                     controller: extraInstructionController,
-                    hintText: 'Add any other polishing preference',
+                    hintText: context.l10n.extraPolishHint,
                     showCounter: false,
                     maxLines: 2,
                     maxLength: 1000,
@@ -921,7 +958,7 @@ class _PolishOptionGroup extends StatelessWidget {
           children: options
               .map(
                 (option) => ChoiceChip(
-                  label: Text(option),
+                  label: Text(_localizedPolishOption(context, option)),
                   selected: option == selected,
                   selectedColor: _feature.selectedChipColor,
                   checkmarkColor: _kColor,
@@ -939,3 +976,20 @@ class _PolishOptionGroup extends StatelessWidget {
     );
   }
 }
+
+String _localizedPolishOption(BuildContext context, String option) =>
+    switch (option) {
+      'Natural' => context.l10n.natural,
+      'Professional' => context.l10n.professional,
+      'Friendly' => context.l10n.friendly,
+      'Custom' => context.l10n.custom,
+      'Auto' => context.l10n.auto,
+      'Friend' => context.l10n.friend,
+      'Customer' => context.l10n.customer,
+      'Coworker' => context.l10n.coworker,
+      'Manager' => context.l10n.manager,
+      'Shorter' => context.l10n.shorter,
+      'Same' => context.l10n.sameLength,
+      'Longer' => context.l10n.longer,
+      _ => option,
+    };

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../features/entitlement/usage_controller.dart';
 import '../theme/app_colors.dart';
+import '../localization/localization_extensions.dart';
 import '../theme/app_text_styles.dart';
 
 class UsageBadge extends StatelessWidget {
@@ -19,25 +20,29 @@ class UsageBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usage = state.usage;
+    final l10n = context.l10n;
     final (icon, label) = usage.isPremium
         ? (
             Icons.workspace_premium_rounded,
-            compact ? 'Premium' : 'Premium · Unlimited',
+            compact ? l10n.premium : l10n.premiumUnlimited,
           )
         : state.isLoading
-        ? (Icons.sync_rounded, compact ? 'Updating' : 'Updating balance…')
+        ? (Icons.sync_rounded, compact ? l10n.updating : l10n.updatingBalance)
         : state.error != null
-        ? (Icons.cloud_off_outlined, compact ? 'Retry' : 'Balance unavailable')
+        ? (
+            Icons.cloud_off_outlined,
+            compact ? l10n.retry : l10n.balanceUnavailable,
+          )
         : usage.freeUsesLeft == null
         ? (
             Icons.hourglass_empty_rounded,
-            compact ? 'Checking' : 'Checking balance…',
+            compact ? l10n.checking : l10n.checkingBalance,
           )
         : (
             Icons.bolt_rounded,
             compact
-                ? '${usage.freeUsesLeft} free'
-                : '${usage.freeUsesLeft} free · ${usage.paidCredits} credits',
+                ? l10n.freeCount(usage.freeUsesLeft!)
+                : l10n.usageBalance(usage.freeUsesLeft!, usage.paidCredits),
           );
 
     return Semantics(

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/input_limits.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/localization/localization_extensions.dart';
 import '../../../core/theme/app_feature_theme.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_page.dart';
@@ -11,6 +12,7 @@ import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/labeled_text_field.dart';
 import '../application/guidance_library_controller.dart';
 import '../domain/guidance_template.dart';
+import 'guidance_localization.dart';
 
 const _feature = AppFeature.guidance;
 const _kColor = AppColors.guidanceColor;
@@ -102,9 +104,7 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
-          const SnackBar(
-            content: Text('Could not save this guidance. Please try again.'),
-          ),
+          SnackBar(content: Text(context.l10n.couldNotSaveGuidance)),
         );
     }
   }
@@ -114,7 +114,7 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
     final isEditing = widget.existing != null;
 
     return AppPage(
-      title: isEditing ? 'Edit Guidance' : 'New Guidance',
+      title: isEditing ? context.l10n.editGuidance : context.l10n.newGuidance,
       accentColor: _kColor,
       showBackButton: true,
       child: ListView(
@@ -126,10 +126,10 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 LabeledTextField(
-                  label: 'Title',
+                  label: context.l10n.titleLabel,
                   feature: _feature,
                   controller: _titleController,
-                  hintText: 'Short name for this guidance…',
+                  hintText: context.l10n.guidanceTitleHint,
                   maxLines: 1,
                   maxLength: InputLimits.guidanceTitleMaxLength,
                 ),
@@ -144,11 +144,11 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
                 ],
                 const SizedBox(height: 16),
                 LabeledTextField(
-                  label: 'Guidance',
+                  label: context.l10n.guidance,
                   feature: _feature,
                   controller: _contentController,
-                  hintText: 'Describe how the AI should shape the reply…',
-                  helperText: 'Write in any language',
+                  hintText: context.l10n.guidanceHint,
+                  helperText: context.l10n.writeAnyLanguage,
                   maxLines: 5,
                   maxLength: InputLimits.guidanceMaxLength,
                 ),
@@ -162,7 +162,7 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
                   ),
                 ],
                 const SizedBox(height: 16),
-                Text('Category', style: AppTextStyles.cardTitle),
+                Text(context.l10n.category, style: AppTextStyles.cardTitle),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
@@ -171,7 +171,7 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
                       .map(
                         (c) => ChoiceChip(
                           label: Text(
-                            c.label,
+                            localizedGuidanceCategory(context, c),
                             style: TextStyle(
                               color: _category == c
                                   ? _kColor
@@ -203,7 +203,11 @@ class _GuidanceEditScreenState extends ConsumerState<GuidanceEditScreen> {
                       color: Colors.white,
                     ),
                   )
-                : Text(isEditing ? 'Save changes' : 'Save guidance'),
+                : Text(
+                    isEditing
+                        ? context.l10n.saveChanges
+                        : context.l10n.saveGuidance,
+                  ),
           ),
         ],
       ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_router.dart';
+import '../../../core/localization/localization_extensions.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_feature_theme.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -11,6 +12,7 @@ import '../../../core/widgets/glass_card.dart';
 import '../application/guidance_library_controller.dart';
 import '../application/pending_guidance_provider.dart';
 import '../domain/guidance_template.dart';
+import 'guidance_localization.dart';
 
 const _kColor = AppColors.guidanceColor;
 const _feature = AppFeature.guidance;
@@ -40,14 +42,14 @@ class GuidanceLibraryScreen extends ConsumerWidget {
     });
 
     return AppPage(
-      title: 'Guidance Library',
+      title: context.l10n.guidanceLibrary,
       backgroundImagePath: _feature.pageBackgroundImage,
       showBackButton: true,
       transparentAppBar: true,
       centerTitle: false,
       actions: [
         IconButton(
-          tooltip: 'New guidance',
+          tooltip: context.l10n.newGuidanceTooltip,
           icon: const Icon(Icons.add_rounded),
           onPressed: () => context.push(AppRoutes.guidanceEdit),
         ),
@@ -76,13 +78,13 @@ class _Body extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
       children: [
         if (state.favorites.isNotEmpty) ...[
-          _SectionLabel('Favorites', Icons.star_rounded, _kColor),
+          _SectionLabel(context.l10n.favorites, Icons.star_rounded, _kColor),
           const SizedBox(height: 8),
           ...state.favorites.map((t) => _GuidanceCard(template: t)),
           const SizedBox(height: 20),
         ],
         _SectionLabel(
-          'Built-in',
+          context.l10n.builtIn,
           Icons.library_books_outlined,
           AppColors.textSecondary,
         ),
@@ -90,7 +92,7 @@ class _Body extends StatelessWidget {
         ...builtIns.map((t) => _GuidanceCard(template: t)),
         const SizedBox(height: 20),
         _SectionLabel(
-          'My Guidance',
+          context.l10n.myGuidance,
           Icons.edit_note_rounded,
           AppColors.textSecondary,
         ),
@@ -99,7 +101,7 @@ class _Body extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              'Create your own guidance to reuse it later.',
+              context.l10n.createGuidanceEmpty,
               style: AppTextStyles.body,
             ),
           )
@@ -112,7 +114,7 @@ class _Body extends StatelessWidget {
           ),
           onPressed: () => context.push(AppRoutes.guidanceEdit),
           icon: const Icon(Icons.add_rounded),
-          label: const Text('New Guidance'),
+          label: Text(context.l10n.newGuidance),
         ),
       ],
     );
@@ -159,7 +161,10 @@ class _GuidanceCard extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(template.title, style: AppTextStyles.cardTitle),
+                  child: Text(
+                    localizedGuidanceTitle(context, template),
+                    style: AppTextStyles.cardTitle,
+                  ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -171,7 +176,7 @@ class _GuidanceCard extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    template.category.label,
+                    localizedGuidanceCategory(context, template.category),
                     style: AppTextStyles.badge.copyWith(
                       color: AppColors.guidanceDark,
                     ),
@@ -181,7 +186,7 @@ class _GuidanceCard extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              template.content,
+              localizedGuidanceContent(context, template),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: AppTextStyles.body,
@@ -190,8 +195,8 @@ class _GuidanceCard extends ConsumerWidget {
               children: [
                 IconButton(
                   tooltip: template.isFavorite
-                      ? 'Remove from favorites'
-                      : 'Add to favorites',
+                      ? context.l10n.removeFavorite
+                      : context.l10n.addFavorite,
                   icon: Icon(
                     template.isFavorite
                         ? Icons.star_rounded
@@ -204,7 +209,7 @@ class _GuidanceCard extends ConsumerWidget {
                 TextButton(
                   style: TextButton.styleFrom(foregroundColor: _kColor),
                   onPressed: () => _showUseSheet(context, ref),
-                  child: const Text('Use'),
+                  child: Text(context.l10n.use),
                 ),
                 if (!template.isBuiltIn)
                   PopupMenuButton<_Action>(
@@ -213,11 +218,14 @@ class _GuidanceCard extends ConsumerWidget {
                       color: AppColors.textHint,
                     ),
                     onSelected: (action) => _onAction(context, ref, action),
-                    itemBuilder: (_) => const [
-                      PopupMenuItem(value: _Action.edit, child: Text('Edit')),
+                    itemBuilder: (_) => [
+                      PopupMenuItem(
+                        value: _Action.edit,
+                        child: Text(context.l10n.edit),
+                      ),
                       PopupMenuItem(
                         value: _Action.delete,
-                        child: Text('Delete'),
+                        child: Text(context.l10n.delete),
                       ),
                     ],
                   ),
@@ -242,19 +250,21 @@ class _GuidanceCard extends ConsumerWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Use "${template.title}"',
+                  context.l10n.useTemplate(
+                    localizedGuidanceTitle(context, template),
+                  ),
                   style: AppTextStyles.cardTitle,
                 ),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.reply_rounded, color: _kColor),
-              title: const Text('Use in Reply'),
+              title: Text(context.l10n.useInReply),
               onTap: () => _useIn(sheetContext, ref, AppRoutes.reply),
             ),
             ListTile(
               leading: const Icon(Icons.auto_fix_high_rounded, color: _kColor),
-              title: const Text('Use in Polish'),
+              title: Text(context.l10n.useInPolish),
               onTap: () => _useIn(sheetContext, ref, AppRoutes.polish),
             ),
             const SizedBox(height: 8),
@@ -282,16 +292,16 @@ class _GuidanceCard extends ConsumerWidget {
         final confirmed = await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Delete this guidance?'),
-            content: const Text('This cannot be undone.'),
+            title: Text(context.l10n.deleteGuidance),
+            content: Text(context.l10n.cannotBeUndone),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Cancel'),
+                child: Text(context.l10n.cancel),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Delete'),
+                child: Text(context.l10n.delete),
               ),
             ],
           ),
