@@ -20,8 +20,10 @@ import 'widgets/reply_status_badge.dart';
 
 const _kColor = AppColors.explainColor;
 const _feature = AppFeature.explain;
-const _kCardTint = Color(0xFFE8F2FF);
-const _kCardTintStrength = 0.65;
+// Match the Reply page: every card shares one plain white surface so the app
+// reads as a single consistent surface.
+const _kCardTint = Colors.white;
+const _kCardTintStrength = 1.0;
 
 class ExplainScreen extends ConsumerStatefulWidget {
   const ExplainScreen({super.key});

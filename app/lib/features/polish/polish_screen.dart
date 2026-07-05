@@ -24,8 +24,10 @@ import '../reply/widgets/reply_status_badge.dart';
 
 const _kColor = AppColors.polishColor;
 const _feature = AppFeature.polish;
-const _kCardTint = Color(0xFFE8F2FF);
-const _kCardTintStrength = 0.65;
+// Match the Reply page: every card shares one plain white surface so the app
+// reads as a single consistent surface.
+const _kCardTint = Colors.white;
+const _kCardTintStrength = 1.0;
 
 class PolishScreen extends ConsumerStatefulWidget {
   const PolishScreen({super.key});

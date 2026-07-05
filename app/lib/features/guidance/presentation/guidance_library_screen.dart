@@ -14,8 +14,10 @@ import '../domain/guidance_template.dart';
 
 const _kColor = AppColors.guidanceColor;
 const _feature = AppFeature.guidance;
-const _kCardTint = Color(0xFFE8F2FF);
-const _kCardTintStrength = 0.65;
+// Match the Reply page: every card shares one plain white surface so the app
+// reads as a single consistent surface.
+const _kCardTint = Colors.white;
+const _kCardTintStrength = 1.0;
 
 class GuidanceLibraryScreen extends ConsumerWidget {
   const GuidanceLibraryScreen({super.key});
