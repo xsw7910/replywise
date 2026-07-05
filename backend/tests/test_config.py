@@ -40,6 +40,7 @@ def test_production_rejects_sqlite_database() -> None:
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="production-revenuecat-secret",
+            revenuecat_webhook_secret="production-webhook-secret",
             revenuecat_project_id="proj_test",
             openai_api_key="sk-prod-key",
         )
@@ -57,6 +58,7 @@ def test_production_requires_postgresql_asyncpg_url() -> None:
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="production-revenuecat-secret",
+            revenuecat_webhook_secret="production-webhook-secret",
             revenuecat_project_id="proj_test",
             openai_api_key="sk-prod-key",
         )
@@ -92,6 +94,7 @@ def test_production_accepts_explicit_non_development_secrets() -> None:
         jwt_secret="production-secret",
         server_pepper="production-pepper",
         revenuecat_secret_api_key="production-revenuecat-secret",
+        revenuecat_webhook_secret="production-webhook-secret",
         revenuecat_project_id="proj_test",
         revenuecat_credit_product_map="credits_10:10,credits_50:50,credits_100:100",
         openai_api_key="sk-prod-key",
@@ -108,6 +111,7 @@ def test_production_rejects_local_testing_flags(field: str) -> None:
         "jwt_secret": "production-secret",
         "server_pepper": "production-pepper",
         "revenuecat_secret_api_key": "production-revenuecat-secret",
+        "revenuecat_webhook_secret": "production-webhook-secret",
         "revenuecat_project_id": "proj_test",
         "openai_api_key": "sk-prod-key",
         field: True,
@@ -125,6 +129,7 @@ def test_production_rejects_missing_openai_api_key() -> None:
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="prod-rc-key",
+            revenuecat_webhook_secret="production-webhook-secret",
             revenuecat_project_id="proj_test",
             revenuecat_credit_product_map="credits_10:10",
             openai_api_key="",
@@ -140,6 +145,7 @@ def test_production_rejects_missing_credit_product_map() -> None:
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="prod-rc-key",
+            revenuecat_webhook_secret="production-webhook-secret",
             revenuecat_project_id="proj_test",
             openai_api_key="sk-prod-key",
             revenuecat_credit_product_map="",
@@ -155,7 +161,24 @@ def test_production_rejects_missing_revenuecat_project_id() -> None:
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="prod-rc-key",
+            revenuecat_webhook_secret="production-webhook-secret",
             revenuecat_project_id="",
+            openai_api_key="sk-prod-key",
+        )
+
+
+def test_production_rejects_missing_revenuecat_webhook_secret() -> None:
+    with pytest.raises(ValidationError, match="REVENUECAT_WEBHOOK_SECRET"):
+        Settings(
+            _env_file=None,
+            app_env="prod",
+            database_url=PROD_DATABASE_URL,
+            jwt_secret="production-secret",
+            server_pepper="production-pepper",
+            revenuecat_secret_api_key="prod-rc-key",
+            revenuecat_webhook_secret="",
+            revenuecat_project_id="proj_test",
+            revenuecat_credit_product_map="credits_10:10",
             openai_api_key="sk-prod-key",
         )
 
@@ -168,6 +191,7 @@ def test_production_accepts_all_required_secrets() -> None:
         jwt_secret="production-secret",
         server_pepper="production-pepper",
         revenuecat_secret_api_key="prod-rc-key",
+        revenuecat_webhook_secret="production-webhook-secret",
         revenuecat_project_id="proj_test",
         revenuecat_credit_product_map="credits_10:10,credits_50:50,credits_100:100",
         openai_api_key="sk-prod-key",
@@ -185,6 +209,7 @@ def test_reply_env_controls_production_guard() -> None:
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="production-revenuecat-secret",
+            revenuecat_webhook_secret="production-webhook-secret",
             mock_ai_enabled=True,
         )
 
@@ -254,6 +279,7 @@ def test_production_rejects_malformed_credit_product_map() -> None:
             jwt_secret="production-secret",
             server_pepper="production-pepper",
             revenuecat_secret_api_key="prod-rc-key",
+            revenuecat_webhook_secret="production-webhook-secret",
             revenuecat_project_id="proj_test",
             openai_api_key="sk-prod-key",
             revenuecat_credit_product_map="credits_10:not_a_number",
@@ -268,6 +294,7 @@ def test_production_accepts_valid_credit_product_map() -> None:
         jwt_secret="production-secret",
         server_pepper="production-pepper",
         revenuecat_secret_api_key="prod-rc-key",
+        revenuecat_webhook_secret="production-webhook-secret",
         revenuecat_project_id="proj_test",
         openai_api_key="sk-prod-key",
         revenuecat_credit_product_map="credits_10:10,prod733d52bcdd:10",

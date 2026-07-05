@@ -85,6 +85,7 @@ class Settings(BaseSettings):
     allowed_origins: str = "*"
 
     revenuecat_secret_api_key: str = ""
+    revenuecat_webhook_secret: str = ""
     revenuecat_project_id: str = ""
     revenuecat_entitlement_id: str = "premium"
     revenuecat_subscription_product_id: str = "premium_yearly:yearly"
@@ -142,6 +143,8 @@ class Settings(BaseSettings):
                 )
             if not self.revenuecat_secret_api_key:
                 raise ValueError("REVENUECAT_SECRET_API_KEY must be set in production")
+            if not self.revenuecat_webhook_secret:
+                raise ValueError("REVENUECAT_WEBHOOK_SECRET must be set in production")
             if not self.revenuecat_project_id:
                 raise ValueError("REVENUECAT_PROJECT_ID must be set in production")
             if not self.revenuecat_credit_product_map.strip():
