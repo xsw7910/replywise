@@ -107,7 +107,10 @@ OPENAI_TIMEOUT_SECONDS=30
 
 # v2 API — must use a v2-compatible secret key (not a v1 key)
 # REVENUECAT_PROJECT_ID: RevenueCat dashboard → Project Settings → Project ID
+# REVENUECAT_WEBHOOK_SECRET: the Authorization value configured on the RevenueCat
+#   webhook (see section 7). Generate with: python3 -c "import secrets; print(secrets.token_hex(32))"
 REVENUECAT_SECRET_API_KEY=<RevenueCat-v2-compatible-secret-key>
+REVENUECAT_WEBHOOK_SECRET=<random-webhook-authorization-secret>
 REVENUECAT_PROJECT_ID=<proj_xxxxxxxxxxxxxxxx>
 REVENUECAT_ENTITLEMENT_ID=premium
 REVENUECAT_SUBSCRIPTION_PRODUCT_ID=premium_yearly:yearly
@@ -128,6 +131,7 @@ Production startup intentionally fails when:
 - `DATABASE_URL` is SQLite or is not `postgresql+asyncpg://`.
 - `OPENAI_API_KEY` is empty.
 - `REVENUECAT_SECRET_API_KEY` is empty.
+- `REVENUECAT_WEBHOOK_SECRET` is empty.
 - `REVENUECAT_PROJECT_ID` or `REVENUECAT_CREDIT_PRODUCT_MAP` is empty.
 - development JWT/pepper values are used.
 - `MOCK_AI_ENABLED=true`.
@@ -139,25 +143,43 @@ use PostgreSQL.
 
 ## 5. PostgreSQL migration and API startup
 
-Production never calls `Base.metadata.create_all()`. Apply every migration
-before starting or updating the API:
+Production **must** use PostgreSQL with the asyncpg driver
+(`DATABASE_URL=postgresql+asyncpg://…`). With `REPLY_ENV=prod` the backend
+**rejects any SQLite URL at startup** and **does not create tables
+automatically** — `Base.metadata.create_all()` runs only in dev/test. Therefore
+the schema must be applied with Alembic **before** the API starts, or every
+request will fail against an empty database.
+
+Apply every migration before starting or updating the API:
 
 ```bash
-cd /home/ubuntu/apps/replywise/backend
+cd backend        # /home/ubuntu/apps/replywise/backend on the VM
 docker compose build api
 docker compose up -d postgres
 docker compose run --rm api alembic upgrade head
 docker compose up -d api
-docker compose ps
+curl -fsS http://localhost:8000/health
+docker compose logs --tail=30 api
 ```
 
-The migration container's `depends_on` condition waits for PostgreSQL's
-healthcheck. If `alembic upgrade head` fails, do not start the API.
+A one-shot `migrate` service is also wired in: `api` `depends_on` it with
+`condition: service_completed_successfully`, so **`docker compose up -d api`
+automatically runs `alembic upgrade head` first** (via `postgres → migrate →
+api`) and refuses to start the API if the migration fails. The explicit
+`docker compose run --rm api alembic upgrade head` above remains valid and
+idempotent — running it when already at head is a no-op.
 
-Local VM health check:
+If `alembic upgrade head` fails, **do not start the API**. Confirm the applied
+revision at any time with:
 
 ```bash
-curl --fail --silent --show-error http://127.0.0.1:8000/health
+docker compose run --rm api alembic current   # should report the latest head
+```
+
+Expected health response:
+
+```json
+{"status":"ok","service":"reply-backend"}
 ```
 
 Expected:
@@ -191,7 +213,55 @@ Public health check:
 curl --fail --silent --show-error https://api-reply.novaaistudio.ca/health
 ```
 
-## 7. Authenticated real OpenAI smoke tests
+## 7. RevenueCat webhook configuration
+
+The backend exposes a webhook so RevenueCat can push entitlement and purchase
+changes in real time (subscription renew/cancel/refund/expiration and credit
+purchases). This complements the client-side `/v1/entitlement/sync` and
+`/v1/credits/sync`, which remain as a fallback if a webhook is ever missed.
+
+In the RevenueCat dashboard → Project → Integrations → Webhooks, add:
+
+- **URL**: `https://api-reply.novaaistudio.ca/v1/webhooks/revenuecat`
+  (replace with your production domain; must be the HTTPS Caddy endpoint).
+- **Authorization header**: set it to the **same value** as
+  `REVENUECAT_WEBHOOK_SECRET` in the production `.env`. The backend accepts both
+  a bare secret (`<secret>`) and the `Bearer <secret>` form, and compares in
+  constant time. A missing or mismatched value returns `401`.
+
+Recommended events to enable (any other event type is safely ignored):
+
+```text
+INITIAL_PURCHASE
+RENEWAL
+UNCANCELLATION
+PRODUCT_CHANGE
+EXPIRATION
+CANCELLATION
+BILLING_ISSUE
+REFUND
+NON_RENEWING_PURCHASE
+```
+
+Behavior:
+
+- `INITIAL_PURCHASE` / `RENEWAL` / `UNCANCELLATION` / `PRODUCT_CHANGE` mark the
+  user's cached entitlement **active** (premium on).
+- `EXPIRATION` / `CANCELLATION` / `BILLING_ISSUE` / `REFUND` mark it **inactive**
+  (premium off).
+- `NON_RENEWING_PURCHASE` grants credits per `REVENUECAT_CREDIT_PRODUCT_MAP`.
+- Every event is de-duplicated by RevenueCat `event.id`, and credit grants are
+  additionally de-duplicated by transaction id, so replays never double-apply.
+
+Verify after configuring (RevenueCat provides a "Send test event" button):
+
+```bash
+# A test event with a valid Authorization header returns 200; a wrong/absent
+# secret returns 401. Never paste the real secret into shared logs.
+docker compose logs --tail=50 api | grep -i webhook
+```
+
+## 8. Authenticated real OpenAI smoke tests
 
 Production rejects mock AI and requires an OpenAI key, so a successfully started prod service uses the real OpenAI provider.
 
@@ -270,7 +340,7 @@ Confirm that:
 
 These calls consume the configured free usage for the smoke-test identity.
 
-## 8. Logs and troubleshooting
+## 9. Logs and troubleshooting
 
 Backend:
 
@@ -317,7 +387,7 @@ Common failures:
 - PostgreSQL connection error: verify the `postgres` container is healthy and
   `POSTGRES_PASSWORD` matches the password encoded in the database URL.
 
-## 9. Database backup
+## 10. Database backup
 
 Create a compressed PostgreSQL dump:
 
@@ -335,9 +405,24 @@ Copy a backup off the VM from your workstation:
 scp -i <SSH_KEY_PATH> ubuntu@<VM_HOST>:/home/ubuntu/apps/replywise/backend/replywise-backup-<DATE>.sql.gz .
 ```
 
-## 10. Safe update
+## 11. Safe update
 
-### Automated redeploy (disabled until the script supports Alembic)
+### Guarded deploy helper (recommended)
+
+On the VM, after pulling the new code, use the guarded helper. It validates the
+Compose config and prints the ordered plan by default (dry run), and only runs
+the mutating steps — `postgres` up, `alembic upgrade head`, `api` up, health,
+logs — when you pass `--run`:
+
+```bash
+cd /home/ubuntu/apps/replywise
+git pull --ff-only origin main
+
+scripts/check_prod_deploy.sh          # dry run: validate + print the plan
+scripts/check_prod_deploy.sh --run    # execute the deploy sequence
+```
+
+### Legacy PowerShell redeploy (disabled until it supports Alembic)
 
 Do not run the legacy redeploy script until it has been updated to build the
 Compose image, apply Alembic migrations, and restart the API container:
@@ -388,7 +473,7 @@ curl --fail --silent --show-error https://api-reply.novaaistudio.ca/health
 
 The `.env` is gitignored, and PostgreSQL data survives in the named volume.
 
-## 11. Rollback
+## 12. Rollback
 
 Before updating, record the current commit and create a PostgreSQL backup:
 
@@ -428,7 +513,7 @@ Code rollback does not automatically downgrade the database. Only run
 been reviewed and tested. Do not restore an older dump unless compatibility
 requires it and the restore has been rehearsed.
 
-## 12. Pre-Google-Play manual checklist
+## 13. Pre-Google-Play manual checklist
 
 - DNS resolves to the Oracle VM.
 - Caddy has a valid certificate and public `/health` succeeds.
@@ -436,6 +521,7 @@ requires it and the restore has been rehearsed.
 - Existing RevenueCat entitlement and product identifiers are verified unchanged.
 - `REVENUECAT_SECRET_API_KEY` is a **v2-compatible** key (v1 keys return HTTP 403 on v2 endpoints).
 - `REVENUECAT_PROJECT_ID` is set to the project ID from the RevenueCat dashboard → Project Settings.
+- `REVENUECAT_WEBHOOK_SECRET` is set, and the RevenueCat webhook (section 7) points to `…/v1/webhooks/revenuecat` with the matching Authorization value and the recommended events enabled.
 - `docker compose run --rm api alembic current` reports the expected head revision.
 - Reply, Polish, Explain, entitlement sync, and credits sync pass against production.
 - Service restart preserves auth, usage, entitlement cache, credits, and idempotency records.

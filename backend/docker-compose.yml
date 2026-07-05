@@ -15,6 +15,24 @@ services:
       retries: 5
       start_period: 10s
 
+  # One-shot schema migration. Runs `alembic upgrade head` once Postgres is
+  # healthy, then exits. `api` waits for it to complete successfully, so
+  # `docker compose up -d api` always applies migrations first. Production never
+  # auto-creates tables, so this step (or a manual `alembic upgrade head`) is
+  # required; running it when already at head is a no-op.
+  migrate:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      REPLY_ENV: ${REPLY_ENV:-dev}
+      DATABASE_URL: postgresql+asyncpg://replywise:${POSTGRES_PASSWORD}@postgres:5432/replywise
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+
   api:
     build: .
     ports:
@@ -22,6 +40,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     # Load every backend setting from .env (REVENUECAT_*, limits, secrets, …).
     # The explicit `environment:` block below documents the full contract and
     # applies topology-specific overrides that must win over .env — notably

@@ -28,6 +28,13 @@ Record evidence for the exact build submitted to Google Play. Do not place secre
 - [ ] Production JWT secret and server pepper supplied securely
 - [ ] Release manifest does not allow global cleartext traffic
 
+## Backend deployment (see `docs/ORACLE_VM_BACKEND_DEPLOYMENT.md`)
+
+- [ ] Backend `DATABASE_URL` uses PostgreSQL + asyncpg (production rejects SQLite)
+- [ ] `docker compose run --rm api alembic upgrade head` applied — production does **not** auto-create tables
+- [ ] `docker compose run --rm api alembic current` reports the expected head revision
+- [ ] `REVENUECAT_WEBHOOK_SECRET` set and the RevenueCat webhook points to `…/v1/webhooks/revenuecat` with the matching Authorization value
+
 ## Billing and Play Console
 
 - [ ] Premium subscription and trial are active and match paywall copy
