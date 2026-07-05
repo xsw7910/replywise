@@ -92,7 +92,8 @@ Production deploy sequence (run from backend/):
 Reminders:
   • REPLY_ENV=prod rejects SQLite and does NOT create tables automatically.
   • Configure the RevenueCat webhook -> https://<domain>/v1/webhooks/revenuecat
-    with the Authorization value equal to REVENUECAT_WEBHOOK_SECRET.
+    with the Authorization header set to the RAW REVENUECAT_WEBHOOK_SECRET value
+    (no "Bearer" prefix).
 ──────────────────────────────────────────────────────────────────
 
 PLAN

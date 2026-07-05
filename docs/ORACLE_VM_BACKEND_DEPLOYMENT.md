@@ -224,10 +224,11 @@ In the RevenueCat dashboard → Project → Integrations → Webhooks, add:
 
 - **URL**: `https://api-reply.novaaistudio.ca/v1/webhooks/revenuecat`
   (replace with your production domain; must be the HTTPS Caddy endpoint).
-- **Authorization header**: set it to the **same value** as
-  `REVENUECAT_WEBHOOK_SECRET` in the production `.env`. The backend accepts both
-  a bare secret (`<secret>`) and the `Bearer <secret>` form, and compares in
-  constant time. A missing or mismatched value returns `401`.
+- **Authorization header**: set it to the **raw value** of
+  `REVENUECAT_WEBHOOK_SECRET` from the production `.env` — **do not add a
+  `Bearer` prefix or any other decoration**. The header must equal the secret
+  exactly (compared in constant time). A missing, mismatched, or
+  `Bearer`-prefixed value returns `401`.
 
 Recommended events to enable (any other event type is safely ignored):
 
@@ -253,11 +254,21 @@ Behavior:
 - Every event is de-duplicated by RevenueCat `event.id`, and credit grants are
   additionally de-duplicated by transaction id, so replays never double-apply.
 
-Verify after configuring (RevenueCat provides a "Send test event" button):
+Verify after configuring — send a test request from the VM (or use RevenueCat's
+"Send test event" button). The raw secret returns `200`; a wrong, absent, or
+`Bearer`-prefixed value returns `401`. `$REVENUECAT_WEBHOOK_SECRET` is read from
+the shell environment — never paste the real secret into shared logs.
 
 ```bash
-# A test event with a valid Authorization header returns 200; a wrong/absent
-# secret returns 401. Never paste the real secret into shared logs.
+curl -i -X POST https://api-reply.novaaistudio.ca/v1/webhooks/revenuecat \
+  -H "Content-Type: application/json" \
+  -H "Authorization: $REVENUECAT_WEBHOOK_SECRET" \
+  -d '{"event":{"id":"test_webhook_001","type":"INITIAL_PURCHASE","app_user_id":"test_user","product_id":"premium_yearly","transaction_id":"test_txn_001"}}'
+```
+
+Then optionally confirm the backend handled it:
+
+```bash
 docker compose logs --tail=50 api | grep -i webhook
 ```
 
@@ -521,7 +532,7 @@ requires it and the restore has been rehearsed.
 - Existing RevenueCat entitlement and product identifiers are verified unchanged.
 - `REVENUECAT_SECRET_API_KEY` is a **v2-compatible** key (v1 keys return HTTP 403 on v2 endpoints).
 - `REVENUECAT_PROJECT_ID` is set to the project ID from the RevenueCat dashboard → Project Settings.
-- `REVENUECAT_WEBHOOK_SECRET` is set, and the RevenueCat webhook (section 7) points to `…/v1/webhooks/revenuecat` with the matching Authorization value and the recommended events enabled.
+- `REVENUECAT_WEBHOOK_SECRET` is set, and the RevenueCat webhook (section 7) points to `…/v1/webhooks/revenuecat` with the Authorization header set to the **raw secret value (no `Bearer` prefix)** and the recommended events enabled.
 - `docker compose run --rm api alembic current` reports the expected head revision.
 - Reply, Polish, Explain, entitlement sync, and credits sync pass against production.
 - Service restart preserves auth, usage, entitlement cache, credits, and idempotency records.
