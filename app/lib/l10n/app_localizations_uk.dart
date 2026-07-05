@@ -33,23 +33,24 @@ class AppLocalizationsUk extends AppLocalizations {
   String get polish => 'Покращити';
 
   @override
-  String get yourAiReplyAssistant => 'Your AI reply assistant';
+  String get yourAiReplyAssistant => 'Ваш AI помічник відповіді';
 
   @override
   String get generateThoughtfulReplies =>
-      'Generate thoughtful replies instantly.';
+      'Миттєво створюйте вдумливі відповіді.';
 
   @override
-  String get makeWritingClear => 'Make your writing clear and natural.';
+  String get makeWritingClear => 'Пишіть чітко й природно.';
 
   @override
-  String get understandTone => 'Understand tone and hidden meaning.';
+  String get understandTone => 'Зрозумійте тон і прихований зміст.';
 
   @override
   String get templates => 'Шаблони';
 
   @override
-  String get reuseInstructions => 'Reuse your favorite AI instructions.';
+  String get reuseInstructions =>
+      'Повторно використовуйте свої улюблені інструкції ШІ.';
 
   @override
   String get recent => 'Нещодавні';
@@ -62,7 +63,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get recentEmptyMessage =>
-      'Your recent replies, polished text, and explanations will appear here.';
+      'Тут з’являться ваші останні відповіді, відшліфований текст і пояснення.';
 
   @override
   String get createFirstReply => 'Створити першу відповідь';
@@ -72,27 +73,27 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get tipShortEmails =>
-      'Keep emails under 120 words for higher response rates.';
+      'Тримайте електронні листи менше 120 слів, щоб отримати більше відповідей.';
 
   @override
   String get tipLeadWithAsk =>
-      'Lead with your ask — put the key request in the first line.';
+      'Lead with your ask — помістіть ключовий запит у першому рядку.';
 
   @override
   String get tipMatchTone =>
-      'Match the other person\'s tone to build rapport faster.';
+      'Збігайтеся з тоном іншої людини, щоб швидше налагодити взаєморозуміння.';
 
   @override
   String get tipClearSubject =>
-      'A clear subject line gets more replies than a clever one.';
+      'Чіткий рядок теми отримує більше відповідей, ніж розумний.';
 
   @override
   String get tipReadAloud =>
-      'Read your reply aloud once — it catches awkward phrasing.';
+      'Прочитайте свою відповідь вголос один раз — вона вловить незграбні фрази.';
 
   @override
   String get tipClearNextStep =>
-      'End with one clear next step so the reader knows what to do.';
+      'Завершіть одним чітким наступним кроком, щоб читач знав, що робити.';
 
   @override
   String get yourPlan => 'Ваш план';
@@ -101,39 +102,39 @@ class AppLocalizationsUk extends AppLocalizations {
   String get plans => 'Плани';
 
   @override
-  String get credits => 'Credits';
+  String get credits => 'Кредити';
 
   @override
-  String get totalCredits => 'Total credits';
+  String get totalCredits => 'Всього кредитів';
 
   @override
-  String get watchAd => 'Watch ad';
+  String get watchAd => 'Дивитися рекламу';
 
   @override
-  String get watchAdReward => '+1 credit';
+  String get watchAdReward => '+1 кредит';
 
   @override
-  String get currentPlan => 'Current plan';
+  String get currentPlan => 'Поточний план';
 
   @override
-  String get freePlan => 'Free plan';
+  String get freePlan => 'Безкоштовний план';
 
   @override
   String freeRepliesPerDay(int count) {
-    return '$count free replies per day';
+    return '$count безкоштовних відповідей на день';
   }
 
   @override
-  String get upgrade => 'Upgrade';
+  String get upgrade => 'Покращити';
 
   @override
-  String get support => 'Support';
+  String get support => 'Підтримка';
 
   @override
-  String get supportDescription => 'Help center / Contact us';
+  String get supportDescription => 'Довідковий центр / Зв\'язатися з нами';
 
   @override
-  String get aboutDescription => 'Version, Privacy, Terms';
+  String get aboutDescription => 'Версія, конфіденційність, умови';
 
   @override
   String get guidance => 'Інструкції';
@@ -148,34 +149,34 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appLanguage => 'Мова застосунку';
 
   @override
-  String get voiceGuidanceLanguage => 'Voice guidance language';
+  String get voiceGuidanceLanguage => 'Мова голосових підказок';
 
   @override
-  String get autoDetect => 'Auto Detect';
+  String get autoDetect => 'Автоматичне визначення';
 
   @override
   String staticPreview(String label) {
-    return '$label is a static preview.';
+    return '$label є статичним попереднім переглядом.';
   }
 
   @override
   String get about => 'Про застосунок';
 
   @override
-  String get version => 'Version';
+  String get version => 'Версія';
 
   @override
-  String get environment => 'Environment';
+  String get environment => 'Навколишнє середовище';
 
   @override
-  String get developerTesting => 'Developer Testing';
+  String get developerTesting => 'Тестування розробником';
 
   @override
-  String get resetFreeUsage => 'Reset free usage';
+  String get resetFreeUsage => 'Скинути безкоштовне використання';
 
   @override
   String addCredits(int count) {
-    return 'Add $count credits';
+    return 'Додайте $count кредитів';
   }
 
   @override
@@ -185,62 +186,62 @@ class AppLocalizationsUk extends AppLocalizations {
   String get simulatePremiumOff => 'Simulate Premium Off';
 
   @override
-  String get refreshAccountState => 'Refresh account state';
+  String get refreshAccountState => 'Оновити стан облікового запису';
 
   @override
-  String get secureSession => 'Secure session';
+  String get secureSession => 'Безпечний сеанс';
 
   @override
-  String get anonymousSessionReady => 'Anonymous session ready';
+  String get anonymousSessionReady => 'Анонімна сесія готова';
 
   @override
-  String get connectingAnonymousSession => 'Connecting anonymous session…';
+  String get connectingAnonymousSession => 'Підключення анонімного сеансу…';
 
   @override
-  String get refreshingSecureSession => 'Refreshing secure session…';
+  String get refreshingSecureSession => 'Оновлення безпечного сеансу…';
 
   @override
-  String get restoringAnonymousSession => 'Restoring anonymous session…';
+  String get restoringAnonymousSession => 'Відновлення анонімного сеансу…';
 
   @override
-  String get anonymousSessionUnavailable => 'Anonymous session unavailable';
+  String get anonymousSessionUnavailable => 'Анонімний сеанс недоступний';
 
   @override
-  String get anonymousSessionNotStarted => 'Anonymous session not started';
+  String get anonymousSessionNotStarted => 'Анонімний сеанс не почався';
 
   @override
   String get retry => 'Повторити';
 
   @override
-  String get developer => 'Developer';
+  String get developer => 'Розробник';
 
   @override
-  String get localBackendConnection => 'Local backend connection';
+  String get localBackendConnection => 'Локальний серверний підключення';
 
   @override
-  String get refreshBackendStatus => 'Refresh backend status';
+  String get refreshBackendStatus => 'Оновити статус серверної частини';
 
   @override
-  String get checkingBackend => 'Checking backend…';
+  String get checkingBackend => 'Перевірка серверної частини…';
 
   @override
-  String get connected => 'Connected';
+  String get connected => 'Підключено';
 
   @override
-  String get connectionFailed => 'Connection failed';
+  String get connectionFailed => 'Помилка підключення';
 
   @override
   String get serviceUnreachable =>
-      'We couldn’t reach the service. Check your connection and try again.';
+      'Ми не змогли додзвонитися до служби. Перевірте підключення та повторіть спробу.';
 
   @override
-  String get copied => 'Copied';
+  String get copied => 'Скопійовано';
 
   @override
-  String get close => 'Close';
+  String get close => 'Закрити';
 
   @override
-  String get tryAgain => 'Try again';
+  String get tryAgain => 'Спробуйте знову';
 
   @override
   String get cancel => 'Скасувати';
@@ -261,601 +262,605 @@ class AppLocalizationsUk extends AppLocalizations {
   String get done => 'Готово';
 
   @override
-  String get manageLibrary => 'Manage Library';
+  String get manageLibrary => 'Керувати бібліотекою';
 
   @override
-  String get newGuidance => 'New Guidance';
+  String get newGuidance => 'Нове керівництво';
 
   @override
-  String get quickGuidance => 'Quick guidance';
+  String get quickGuidance => 'Швидке керівництво';
 
   @override
-  String get viewPlans => 'View plans';
+  String get viewPlans => 'Переглянути плани';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'Відновити';
 
   @override
-  String get loading => 'Loading…';
+  String get loading => 'Завантаження…';
 
   @override
-  String get premium => 'Premium';
+  String get premium => 'Преміум';
 
   @override
-  String get premiumUnlimited => 'Premium · Unlimited';
+  String get premiumUnlimited => 'Преміум · Необмежений';
 
   @override
-  String get updating => 'Updating';
+  String get updating => 'Оновлення';
 
   @override
-  String get updatingBalance => 'Updating balance…';
+  String get updatingBalance => 'Оновлення балансу…';
 
   @override
-  String get balanceUnavailable => 'Balance unavailable';
+  String get balanceUnavailable => 'Баланс недоступний';
 
   @override
-  String get checking => 'Checking';
+  String get checking => 'Перевірка';
 
   @override
-  String get checkingBalance => 'Checking balance…';
+  String get checkingBalance => 'Перевірка балансу…';
 
   @override
   String freeCount(int free) {
-    return '$free free';
+    return '$free безкоштовно';
   }
 
   @override
   String usageBalance(int free, int credits) {
-    return '$free free · $credits credits';
+    return '$free безкоштовно · $credits кредитів';
   }
 
   @override
-  String get copyPreview => 'Copy preview';
+  String get copyPreview => 'Копіювати попередній перегляд';
 
   @override
-  String get copyResult => 'Copy result';
+  String get copyResult => 'Копіювати результат';
 
   @override
-  String get staticPreviewCaption => 'Static preview';
+  String get staticPreviewCaption => 'Статичний попередній перегляд';
 
   @override
-  String get history => 'History';
+  String get history => 'історія';
 
   @override
-  String get clearHistory => 'Clear history?';
+  String get clearHistory => 'Очистити історію?';
 
   @override
   String get clearHistoryDescription =>
-      'This removes all recent items on this device. This cannot be undone.';
+      'Буде видалено всі останні елементи на цьому пристрої. Це неможливо скасувати.';
 
   @override
-  String get clearAll => 'Clear all';
+  String get clearAll => 'Очистити все';
 
   @override
-  String get messageReceived => 'Message received';
+  String get messageReceived => 'Повідомлення отримано';
 
   @override
-  String get messageYouReceived => 'Message you received';
+  String get messageYouReceived => 'Повідомлення, яке ви отримали';
 
   @override
-  String get pasteOriginalMessage => 'Paste the original message here…';
+  String get pasteOriginalMessage => 'Вставте оригінальне повідомлення сюди…';
 
   @override
-  String get paste => 'Paste';
+  String get paste => 'Вставити';
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'ясно';
 
   @override
-  String get helpAiUnderstandIntent => 'Help AI understand your intent';
+  String get helpAiUnderstandIntent => 'Допоможіть ШІ зрозуміти ваші наміри';
 
   @override
-  String get addReplyInstructions => 'Add your reply instructions…';
+  String get addReplyInstructions => 'Додайте інструкції для відповіді…';
 
   @override
-  String get generating => 'Generating…';
+  String get generating => 'Створення…';
 
   @override
-  String get generateReply => 'Generate Reply';
+  String get generateReply => 'Створити відповідь';
 
   @override
-  String get creatingNaturalOptions => 'Creating a few natural options…';
+  String get creatingNaturalOptions => 'Створення кількох природних варіантів…';
 
   @override
-  String get replyOptionsAppearHere => 'Your reply options will appear here.';
+  String get replyOptionsAppearHere =>
+      'Тут з’являться ваші варіанти відповіді.';
 
   @override
-  String get yourReplies => 'Your replies';
+  String get yourReplies => 'Ваші відповіді';
 
   @override
-  String get whyThisWorks => 'Why this works';
+  String get whyThisWorks => 'Чому це працює';
 
   @override
-  String get regenerateReplies => 'Regenerate replies';
+  String get regenerateReplies => 'Відновити відповіді';
 
   @override
   String get regenerateUsageNote =>
-      'Regenerating creates new replies and uses 1 generation.';
+      'Повторне створення створює нові відповіді та використовує 1 покоління.';
 
   @override
-  String get couldNotExplain => 'Couldn’t explain this message';
+  String get couldNotExplain => 'Не вдалося пояснити це повідомлення';
 
   @override
-  String get explainMessage => 'Explain message';
+  String get explainMessage => 'Поясніть повідомлення';
 
   @override
-  String get copyExplanation => 'Copy explanation';
+  String get copyExplanation => 'Скопіюйте пояснення';
 
   @override
-  String get meaning => 'Meaning';
+  String get meaning => 'Сенс';
 
   @override
-  String get tone => 'Tone';
+  String get tone => 'Тон';
 
   @override
-  String get hiddenMeaning => 'Hidden Meaning';
+  String get hiddenMeaning => 'Прихований сенс';
 
   @override
-  String get noHiddenMeaning => 'No hidden meaning detected.';
+  String get noHiddenMeaning => 'Прихованого сенсу не виявлено.';
 
   @override
-  String get suggestedReplies => 'Suggested Replies';
+  String get suggestedReplies => 'Запропоновані відповіді';
 
   @override
-  String get moreOptions => 'More options';
+  String get moreOptions => 'Більше варіантів';
 
   @override
-  String get audience => 'Audience';
+  String get audience => 'Аудиторія';
 
   @override
-  String get length => 'Length';
+  String get length => 'Довжина';
 
   @override
-  String get channel => 'Channel';
+  String get channel => 'Канал';
 
   @override
-  String get describeTone => 'Describe the tone';
+  String get describeTone => 'Опишіть тон';
 
   @override
-  String get toneHint => 'e.g. warm but professional';
+  String get toneHint => 'напр. тепло, але професійно';
 
   @override
-  String get describeRelationship => 'Describe the relationship';
+  String get describeRelationship => 'Опишіть відносини';
 
   @override
-  String get relationshipHint => 'For example: my landlord';
+  String get relationshipHint => 'Наприклад: мій орендодавець';
 
   @override
-  String get customizeStyleToneFormat => 'Customize style, tone and format';
+  String get customizeStyleToneFormat => 'Налаштуйте стиль, тон і формат';
 
   @override
-  String get bePolite => 'Be polite';
+  String get bePolite => 'Будь ввічливим';
 
   @override
-  String get keepItShort => 'Keep it short';
+  String get keepItShort => 'Будьте короткими';
 
   @override
-  String get professional => 'Professional';
+  String get professional => 'професійний';
 
   @override
-  String get friendly => 'Friendly';
+  String get friendly => 'дружній';
 
   @override
-  String get declinePolitely => 'Decline politely';
+  String get declinePolitely => 'Ввічливо відмовитися';
 
   @override
-  String get sayThankYou => 'Say thank you';
+  String get sayThankYou => 'Скажи спасибі';
 
   @override
-  String get auto => 'Auto';
+  String get auto => 'Авто';
 
   @override
-  String get natural => 'Natural';
+  String get natural => 'Природні';
 
   @override
   String get custom => 'Custom';
 
   @override
-  String get friend => 'Friend';
+  String get friend => 'Друг';
 
   @override
-  String get customer => 'Customer';
+  String get customer => 'Замовник';
 
   @override
-  String get coworker => 'Coworker';
+  String get coworker => 'Колега по роботі';
 
   @override
-  String get manager => 'Manager';
+  String get manager => 'Менеджер';
 
   @override
-  String get short => 'Short';
+  String get short => 'Короткий';
 
   @override
-  String get medium => 'Medium';
+  String get medium => 'Середній';
 
   @override
-  String get detailed => 'Detailed';
+  String get detailed => 'Детальний';
 
   @override
-  String get textChannel => 'Text';
+  String get textChannel => 'текст';
 
   @override
-  String get email => 'Email';
+  String get email => 'Електронна пошта';
 
   @override
-  String get chat => 'Chat';
+  String get chat => 'Чат';
 
   @override
-  String get textToPolish => 'Text to polish';
+  String get textToPolish => 'Текст для полірування';
 
   @override
-  String get pasteTextToImprove => 'Paste the text you\'d like to improve';
+  String get pasteTextToImprove => 'Вставте текст, який ви хочете покращити';
 
   @override
-  String get pasteYourText => 'Paste your text here…';
+  String get pasteYourText => 'Вставте свій текст тут…';
 
   @override
-  String get improvingClarity =>
-      'Improving clarity while keeping your meaning…';
+  String get improvingClarity => 'Покращуючи ясність, зберігаючи значення…';
 
   @override
-  String get polishedTextAppearsHere => 'Your polished text will appear here.';
+  String get polishedTextAppearsHere => 'Ваш покращений текст з’явиться тут.';
 
   @override
-  String get polishedResult => 'Polished result';
+  String get polishedResult => 'Покращений текст';
 
   @override
-  String get whatChanged => 'What changed?';
+  String get whatChanged => 'Що змінилося?';
 
   @override
-  String get polishAgain => 'Polish again';
+  String get polishAgain => 'Знову покращити';
 
   @override
   String get polishAgainUsageNote =>
-      'Polishing again creates a new result and uses 1 generation.';
+      'Повторне покращення створює новий результат і використовує 1 покоління.';
 
   @override
-  String get messageToUnderstand => 'Message to understand';
+  String get messageToUnderstand => 'Повідомлення для розуміння';
 
   @override
-  String get pasteMessageReceived => 'Paste the message you received';
+  String get pasteMessageReceived => 'Вставте отримане повідомлення';
 
   @override
-  String get explainThisMessage => 'Explain this message';
+  String get explainThisMessage => 'Поясніть це повідомлення';
 
   @override
-  String get explaining => 'Explaining…';
+  String get explaining => 'Пояснення…';
 
   @override
-  String get readingBetweenLines => 'Reading between the lines…';
+  String get readingBetweenLines => 'Читаючи між рядків…';
 
   @override
-  String get explanationAppearsHere => 'Your explanation will appear here.';
+  String get explanationAppearsHere => 'Ваше пояснення з’явиться тут.';
 
   @override
-  String get noSuggestedReplies => 'No suggested replies returned.';
+  String get noSuggestedReplies => 'Немає запропонованих відповідей.';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'Копіювати';
 
   @override
-  String get enterMessageFirst => 'Enter a message to explain first.';
+  String get enterMessageFirst =>
+      'Спочатку введіть повідомлення, щоб пояснити.';
 
   @override
   String get explainRateLimited =>
-      'You’ve reached the explain limit for now. Please try again later.';
+      'Наразі ви досягли ліміту пояснень. Спробуйте пізніше.';
 
   @override
   String get explainParseError =>
-      'We could not read the explanation clearly. Please try again.';
+      'Ми не змогли чітко прочитати пояснення. Спробуйте ще раз.';
 
   @override
   String get explainUnavailable =>
-      'Explain is temporarily unavailable. Please try again shortly.';
+      'Пояснення тимчасово недоступне. Спробуйте ще раз незабаром.';
 
   @override
-  String get unableToExplain => 'Unable to explain this message.';
+  String get unableToExplain => 'Неможливо пояснити це повідомлення.';
 
   @override
   String get replyCtaTitle =>
-      'Want a reply that better matches your intention?';
+      'Хочете отримати відповідь, яка краще відповідає вашим намірам?';
 
   @override
   String get premiumTitle => 'ReplyWise Premium';
 
   @override
-  String get back => 'Back';
+  String get back => 'Назад';
 
   @override
-  String get threeDaysFree => '3 days free';
+  String get threeDaysFree => '3 дні безкоштовно';
 
   @override
-  String get unlimitedReply => 'Unlimited Reply generations';
+  String get unlimitedReply => 'Необмежена кількість поколінь відповідей';
 
   @override
-  String get unlimitedPolish => 'Unlimited Polish generations';
+  String get unlimitedPolish => 'Необмежені покращення тексту';
 
   @override
-  String get balancesPreserved => 'Free and credit balances stay preserved';
+  String get balancesPreserved =>
+      'Вільні та кредитні залишки залишаються збереженими';
 
   @override
-  String get loadingSubscriptionOptions => 'Loading subscription options…';
+  String get loadingSubscriptionOptions => 'Завантаження варіантів підписки…';
 
   @override
-  String get startFreeTrial => 'Start 3-day Free Trial';
+  String get startFreeTrial => 'Почніть 3-денну безкоштовну пробну версію';
 
   @override
-  String get startYearlyPlan => 'Start Yearly Plan';
+  String get startYearlyPlan => 'Розпочати річний план';
 
   @override
   String trialTerms(String price) {
-    return 'Free for 3 days, then $price/year. Cancel anytime.';
+    return 'Безкоштовно протягом 3 днів, потім $price/рік. Скасувати будь-коли.';
   }
 
   @override
   String yearlyTerms(String price) {
-    return '$price/year. Cancel anytime.';
+    return '$price/рік. Скасувати будь-коли.';
   }
 
   @override
-  String get displayedPrice => 'the displayed price';
+  String get displayedPrice => 'відображена ціна';
 
   @override
-  String get topUpCredits => 'Top-up Credits';
+  String get topUpCredits => 'Поповнення кредитів';
 
   @override
   String get creditDescription =>
-      'Each credit covers one Reply or Polish. Credits never expire.';
+      'Кожен кредит покриває одну відповідь або одне покращення тексту. Термін дії кредитів не закінчується.';
 
   @override
-  String get loadingCreditPackages => 'Loading credit packages…';
+  String get loadingCreditPackages => 'Завантаження кредитних пакетів…';
 
   @override
-  String get creditPackagesUnavailable =>
-      'Credit packages are unavailable right now.';
+  String get creditPackagesUnavailable => 'Кредитні пакети зараз недоступні.';
 
   @override
-  String get refreshPackages => 'Refresh packages';
+  String get refreshPackages => 'Оновити пакети';
 
   @override
   String buyCredits(int credits, String price) {
-    return 'Buy $credits Credits — $price';
+    return 'Придбайте $credits кредитів — $price';
   }
 
   @override
-  String get restoring => 'Restoring…';
+  String get restoring => 'Відновлення…';
 
   @override
-  String get restorePremium => 'Restore Premium subscription';
+  String get restorePremium => 'Відновити підписку Premium';
 
   @override
   String get purchaseVerification =>
-      'Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically.';
+      'Покупки преміум-класу та кредиту перевіряються ReplyWise. Покупки в кредит звіряються автоматично.';
 
   @override
-  String get newGuidanceTooltip => 'New guidance';
+  String get newGuidanceTooltip => 'Нове керівництво';
 
   @override
-  String get builtIn => 'Built-in';
+  String get builtIn => 'Вбудований';
 
   @override
-  String get myGuidance => 'My Guidance';
+  String get myGuidance => 'Моє керівництво';
 
   @override
-  String get useInReply => 'Use in Reply';
+  String get useInReply => 'Використовуйте у відповіді';
 
   @override
-  String get useInPolish => 'Use in Polish';
+  String get useInPolish => 'Використовуйте для покращення тексту';
 
   @override
-  String get deleteGuidance => 'Delete this guidance?';
+  String get deleteGuidance => 'Видалити цю інструкцію?';
 
   @override
-  String get cannotBeUndone => 'This cannot be undone.';
+  String get cannotBeUndone => 'Це неможливо скасувати.';
 
   @override
-  String get category => 'Category';
+  String get category => 'Категорія';
 
   @override
-  String get titleLabel => 'Title';
+  String get titleLabel => 'Назва';
 
   @override
-  String get guidanceTitleHint => 'Short name for this guidance…';
+  String get guidanceTitleHint => 'Коротка назва цього посібника…';
 
   @override
-  String get guidanceHint => 'Describe how the AI should shape the reply…';
+  String get guidanceHint =>
+      'Опишіть, як штучний інтелект має формувати відповідь…';
 
   @override
-  String get writeAnyLanguage => 'Write in any language';
+  String get writeAnyLanguage => 'Пишіть будь-якою мовою';
 
   @override
-  String get saveChanges => 'Save changes';
+  String get saveChanges => 'Зберегти зміни';
 
   @override
-  String get saveGuidance => 'Save guidance';
+  String get saveGuidance => 'Зберегти керівництво';
 
   @override
   String get couldNotSaveGuidance =>
-      'Could not save this guidance. Please try again.';
+      'Не вдалося зберегти цю інструкцію. Спробуйте ще раз.';
 
   @override
-  String get concise => 'Concise';
+  String get concise => 'Лаконічний';
 
   @override
-  String get moreNatural => 'More natural';
+  String get moreNatural => 'Більш натуральний';
 
   @override
-  String get improveGrammar => 'Improve grammar';
+  String get improveGrammar => 'Удосконалювати граматику';
 
   @override
-  String get fixSpelling => 'Fix spelling';
+  String get fixSpelling => 'Виправити правопис';
 
   @override
-  String get morePersuasive => 'More persuasive';
+  String get morePersuasive => 'Більш переконливий';
 
   @override
-  String get moreConfident => 'More confident';
+  String get moreConfident => 'Більш впевнений';
 
   @override
-  String get simplifyWording => 'Simplify wording';
+  String get simplifyWording => 'Спростіть формулювання';
 
   @override
-  String get betterFlow => 'Better flow';
+  String get betterFlow => 'Кращий потік';
 
   @override
-  String get describePolish => 'Describe how you want the draft polished';
+  String get describePolish => 'Опишіть, як ви хочете відшліфувати чернетку';
 
   @override
-  String get describeAudience => 'Describe the audience';
+  String get describeAudience => 'Охарактеризуйте аудиторію';
 
   @override
-  String get audienceHint => 'e.g. my manager';
+  String get audienceHint => 'напр. мій менеджер';
 
   @override
-  String get extraInstruction => 'Extra instruction';
+  String get extraInstruction => 'Додаткова інструкція';
 
   @override
-  String get extraPolishHint => 'Add any other polishing preference';
+  String get extraPolishHint =>
+      'Додайте будь-які інші параметри покращення тексту';
 
   @override
-  String get polishing => 'Polishing…';
+  String get polishing => 'Покращення тексту…';
 
   @override
-  String get polishText => 'Polish Text';
+  String get polishText => 'Покращте текст';
 
   @override
-  String get adjustToneLengthFormat => 'Adjust tone, length and format';
+  String get adjustToneLengthFormat => 'Налаштуйте тон, довжину та формат';
 
   @override
-  String get instructionProfessional => 'Make the writing sound professional.';
+  String get instructionProfessional => 'Нехай текст звучить професійно.';
 
   @override
-  String get instructionFriendly => 'Make the writing warmer and friendlier.';
+  String get instructionFriendly => 'Зробіть письмо теплішим і дружнішим.';
 
   @override
-  String get instructionConcise => 'Make the writing concise and direct.';
+  String get instructionConcise => 'Зробіть письмо лаконічним і прямим.';
 
   @override
-  String get instructionNatural => 'Make the wording sound natural and fluent.';
+  String get instructionNatural =>
+      'Нехай формулювання звучить природно і плавно.';
 
   @override
-  String get instructionGrammar =>
-      'Correct the grammar while preserving the meaning.';
+  String get instructionGrammar => 'Виправте граматику, зберігши значення.';
 
   @override
-  String get instructionSpelling => 'Correct all spelling errors.';
+  String get instructionSpelling => 'Виправте всі орфографічні помилки.';
 
   @override
   String get instructionPersuasive =>
-      'Make the writing more persuasive and compelling.';
+      'Зробіть текст більш переконливим і переконливим.';
 
   @override
   String get instructionConfident =>
-      'Make the writing sound clear and confident.';
+      'Нехай написане звучить чітко та впевнено.';
 
   @override
-  String get instructionSimple => 'Use simpler, easier-to-read wording.';
+  String get instructionSimple =>
+      'Використовуйте простіші формулювання, які легше читати.';
 
   @override
-  String get instructionFlow => 'Improve sentence flow and transitions.';
+  String get instructionFlow => 'Покращте потік речень і переходи.';
 
   @override
-  String get shorter => 'Shorter';
+  String get shorter => 'Коротше';
 
   @override
-  String get sameLength => 'Same';
+  String get sameLength => 'Те саме';
 
   @override
-  String get longer => 'Longer';
+  String get longer => 'Довше';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'Вибране';
 
   @override
   String get createGuidanceEmpty =>
-      'Create your own guidance to reuse it later.';
+      'Створіть власну інструкцію, щоб використовувати її пізніше.';
 
   @override
-  String get removeFavorite => 'Remove from favorites';
+  String get removeFavorite => 'Видалити з вибраного';
 
   @override
-  String get addFavorite => 'Add to favorites';
+  String get addFavorite => 'Додати в обране';
 
   @override
   String useTemplate(String title) {
-    return 'Use “$title”';
+    return 'Використовуйте «$title»';
   }
 
   @override
-  String get chooseGuidance => 'Choose guidance';
+  String get chooseGuidance => 'Виберіть керівництво';
 
   @override
-  String get library => 'Library';
+  String get library => 'Бібліотека';
 
   @override
-  String get general => 'General';
+  String get general => 'Загальний';
 
   @override
-  String get decline => 'Decline';
+  String get decline => 'відхилити';
 
   @override
-  String get thanks => 'Thanks';
+  String get thanks => 'дякую';
 
   @override
-  String get followUp => 'Follow-up';
+  String get followUp => 'Подальші дії';
 
   @override
-  String get editGuidance => 'Edit Guidance';
+  String get editGuidance => 'Редагувати вказівки';
 
   @override
-  String get makeProfessional => 'Make it professional';
+  String get makeProfessional => 'Зробіть це професійно';
 
   @override
-  String get makeFriendly => 'Make it friendly';
+  String get makeFriendly => 'Зробіть це дружнім';
 
   @override
-  String get askMoreTime => 'Ask for more time';
+  String get askMoreTime => 'Попросіть більше часу';
 
   @override
-  String get soundConfident => 'Sound confident';
+  String get soundConfident => 'Звучить впевнено';
 
   @override
-  String get guidancePoliteContent => 'Make the reply polite and respectful.';
+  String get guidancePoliteContent => 'Відповідайте ввічливо й шанобливо.';
 
   @override
-  String get guidanceShortContent => 'Keep the reply short and clear.';
+  String get guidanceShortContent => 'Нехай відповідь буде короткою та чіткою.';
 
   @override
   String get guidanceProfessionalContent =>
-      'Make the reply sound professional and appropriate for work.';
+      'Нехай відповідь звучить професійно та підходить для роботи.';
 
   @override
-  String get guidanceFriendlyContent => 'Make the reply warm and friendly.';
+  String get guidanceFriendlyContent =>
+      'Зробіть відповідь теплою і доброзичливою.';
 
   @override
   String get guidanceDeclineContent =>
-      'Politely decline the request without sounding rude.';
+      'Ввічливо відхиліть запит, не видаючись грубим.';
 
   @override
-  String get guidanceThanksContent =>
-      'Add appreciation and a polite thank-you.';
+  String get guidanceThanksContent => 'Додайте вдячність і ввічливу подяку.';
 
   @override
   String get guidanceMoreTimeContent =>
-      'Ask for more time while sounding responsible and polite.';
+      'Попросіть більше часу, звучачи відповідально та ввічливо.';
 
   @override
   String get guidanceConfidentContent =>
-      'Make the reply sound confident but not aggressive.';
+      'Нехай відповідь звучить впевнено, але не агресивно.';
 
   @override
   String todayAt(String time) {
-    return 'Today · $time';
+    return 'Сьогодні · $time';
   }
 
   @override
   String yesterdayAt(String time) {
-    return 'Yesterday · $time';
+    return 'Учора · $time';
   }
 
   @override
@@ -864,10 +869,10 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get premiumActive => 'Premium subscription active';
+  String get premiumActive => 'Преміум підписка активна';
 
   @override
   String creditsRemaining(String count) {
-    return '$count credits remaining';
+    return 'Залишилося $count кредитів';
   }
 }

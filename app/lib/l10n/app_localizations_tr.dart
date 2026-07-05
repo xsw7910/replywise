@@ -9,7 +9,7 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appTitle => 'ReplyWise';
+  String get appTitle => 'YanıtlaWise';
 
   @override
   String get systemDefault => 'Sistem varsayılanı';
@@ -33,23 +33,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get polish => 'İyileştir';
 
   @override
-  String get yourAiReplyAssistant => 'Your AI reply assistant';
+  String get yourAiReplyAssistant => 'Yapay zeka yanıt asistanınız';
 
   @override
   String get generateThoughtfulReplies =>
-      'Generate thoughtful replies instantly.';
+      'Anında düşünceli yanıtlar oluşturun.';
 
   @override
-  String get makeWritingClear => 'Make your writing clear and natural.';
+  String get makeWritingClear => 'Yazınızı net ve doğal yapın.';
 
   @override
-  String get understandTone => 'Understand tone and hidden meaning.';
+  String get understandTone => 'Tonu ve gizli anlamı anlayın.';
 
   @override
   String get templates => 'Şablonlar';
 
   @override
-  String get reuseInstructions => 'Reuse your favorite AI instructions.';
+  String get reuseInstructions => 'Favori AI talimatlarınızı yeniden kullanın.';
 
   @override
   String get recent => 'Son kullanılanlar';
@@ -62,7 +62,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get recentEmptyMessage =>
-      'Your recent replies, polished text, and explanations will appear here.';
+      'Son yanıtlarınız, gösterişli metniniz ve açıklamalarınız burada görünecek.';
 
   @override
   String get createFirstReply => 'İlk yanıtını oluştur';
@@ -72,27 +72,27 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tipShortEmails =>
-      'Keep emails under 120 words for higher response rates.';
+      'Daha yüksek yanıt oranları için e-postaları 120 kelimenin altında tutun.';
 
   @override
   String get tipLeadWithAsk =>
-      'Lead with your ask — put the key request in the first line.';
+      'İsteğinizle liderlik edin; anahtar isteği ilk satıra koyun.';
 
   @override
   String get tipMatchTone =>
-      'Match the other person\'s tone to build rapport faster.';
+      'Daha hızlı uyum sağlamak için diğer kişinin ses tonunu eşleştirin.';
 
   @override
   String get tipClearSubject =>
-      'A clear subject line gets more replies than a clever one.';
+      'Açık bir konu satırı, akıllı bir konu satırından daha fazla yanıt alır.';
 
   @override
   String get tipReadAloud =>
-      'Read your reply aloud once — it catches awkward phrasing.';
+      'Yanıtınızı bir kez yüksek sesle okuyun; garip ifadeler yakalar.';
 
   @override
   String get tipClearNextStep =>
-      'End with one clear next step so the reader knows what to do.';
+      'Okuyucunun ne yapacağını bilmesi için bir sonraki adımı açık bir şekilde bitirin.';
 
   @override
   String get yourPlan => 'Planın';
@@ -101,39 +101,39 @@ class AppLocalizationsTr extends AppLocalizations {
   String get plans => 'Planlar';
 
   @override
-  String get credits => 'Credits';
+  String get credits => 'Kredi';
 
   @override
-  String get totalCredits => 'Total credits';
+  String get totalCredits => 'Toplam kredi';
 
   @override
-  String get watchAd => 'Watch ad';
+  String get watchAd => 'Reklamı izle';
 
   @override
-  String get watchAdReward => '+1 credit';
+  String get watchAdReward => '+1 kredi';
 
   @override
-  String get currentPlan => 'Current plan';
+  String get currentPlan => 'Mevcut plan';
 
   @override
-  String get freePlan => 'Free plan';
+  String get freePlan => 'Ücretsiz plan';
 
   @override
   String freeRepliesPerDay(int count) {
-    return '$count free replies per day';
+    return 'Günlük $count ücretsiz yanıt';
   }
 
   @override
-  String get upgrade => 'Upgrade';
+  String get upgrade => 'Yükselt';
 
   @override
-  String get support => 'Support';
+  String get support => 'Destek';
 
   @override
-  String get supportDescription => 'Help center / Contact us';
+  String get supportDescription => 'Yardım merkezi / Bize ulaşın';
 
   @override
-  String get aboutDescription => 'Version, Privacy, Terms';
+  String get aboutDescription => 'Sürüm, Gizlilik, Şartlar';
 
   @override
   String get guidance => 'Yönergeler';
@@ -148,99 +148,99 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appLanguage => 'Uygulama dili';
 
   @override
-  String get voiceGuidanceLanguage => 'Voice guidance language';
+  String get voiceGuidanceLanguage => 'Sesli yönlendirme dili';
 
   @override
-  String get autoDetect => 'Auto Detect';
+  String get autoDetect => 'Otomatik Algılama';
 
   @override
   String staticPreview(String label) {
-    return '$label is a static preview.';
+    return '$label statik bir önizlemedir.';
   }
 
   @override
   String get about => 'Hakkında';
 
   @override
-  String get version => 'Version';
+  String get version => 'Sürüm';
 
   @override
-  String get environment => 'Environment';
+  String get environment => 'Çevre';
 
   @override
-  String get developerTesting => 'Developer Testing';
+  String get developerTesting => 'Geliştirici Testi';
 
   @override
-  String get resetFreeUsage => 'Reset free usage';
+  String get resetFreeUsage => 'Ücretsiz kullanımı sıfırla';
 
   @override
   String addCredits(int count) {
-    return 'Add $count credits';
+    return '$count kredi ekle';
   }
 
   @override
-  String get simulatePremiumOn => 'Simulate Premium On';
+  String get simulatePremiumOn => 'Premium Simülasyonu Açık';
 
   @override
-  String get simulatePremiumOff => 'Simulate Premium Off';
+  String get simulatePremiumOff => 'Premium Kapalı Simülasyonu';
 
   @override
-  String get refreshAccountState => 'Refresh account state';
+  String get refreshAccountState => 'Hesap durumunu yenile';
 
   @override
-  String get secureSession => 'Secure session';
+  String get secureSession => 'Güvenli oturum';
 
   @override
-  String get anonymousSessionReady => 'Anonymous session ready';
+  String get anonymousSessionReady => 'Anonim oturum hazır';
 
   @override
-  String get connectingAnonymousSession => 'Connecting anonymous session…';
+  String get connectingAnonymousSession => 'Anonim oturuma bağlanılıyor…';
 
   @override
-  String get refreshingSecureSession => 'Refreshing secure session…';
+  String get refreshingSecureSession => 'Güvenli oturum yenileniyor…';
 
   @override
-  String get restoringAnonymousSession => 'Restoring anonymous session…';
+  String get restoringAnonymousSession => 'Anonim oturum geri yükleniyor…';
 
   @override
-  String get anonymousSessionUnavailable => 'Anonymous session unavailable';
+  String get anonymousSessionUnavailable => 'Anonim oturum kullanılamıyor';
 
   @override
-  String get anonymousSessionNotStarted => 'Anonymous session not started';
+  String get anonymousSessionNotStarted => 'Anonim oturum başlatılmadı';
 
   @override
   String get retry => 'Tekrar dene';
 
   @override
-  String get developer => 'Developer';
+  String get developer => 'Geliştirici';
 
   @override
-  String get localBackendConnection => 'Local backend connection';
+  String get localBackendConnection => 'Yerel arka uç bağlantısı';
 
   @override
-  String get refreshBackendStatus => 'Refresh backend status';
+  String get refreshBackendStatus => 'Arka uç durumunu yenile';
 
   @override
-  String get checkingBackend => 'Checking backend…';
+  String get checkingBackend => 'Arka uç kontrol ediliyor…';
 
   @override
-  String get connected => 'Connected';
+  String get connected => 'Bağlı';
 
   @override
-  String get connectionFailed => 'Connection failed';
+  String get connectionFailed => 'Bağlantı başarısız oldu';
 
   @override
   String get serviceUnreachable =>
-      'We couldn’t reach the service. Check your connection and try again.';
+      'Servise ulaşamadık. Bağlantınızı kontrol edip tekrar deneyin.';
 
   @override
-  String get copied => 'Copied';
+  String get copied => 'Kopyalandı';
 
   @override
-  String get close => 'Close';
+  String get close => 'Kapalı';
 
   @override
-  String get tryAgain => 'Try again';
+  String get tryAgain => 'Tekrar deneyin';
 
   @override
   String get cancel => 'İptal';
@@ -261,601 +261,606 @@ class AppLocalizationsTr extends AppLocalizations {
   String get done => 'Bitti';
 
   @override
-  String get manageLibrary => 'Manage Library';
+  String get manageLibrary => 'Kitaplığı Yönet';
 
   @override
-  String get newGuidance => 'New Guidance';
+  String get newGuidance => 'Yeni Rehber';
 
   @override
-  String get quickGuidance => 'Quick guidance';
+  String get quickGuidance => 'Hızlı rehberlik';
 
   @override
-  String get viewPlans => 'View plans';
+  String get viewPlans => 'Planları görüntüle';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'Eski haline getirmek';
 
   @override
-  String get loading => 'Loading…';
+  String get loading => 'Yükleniyor…';
 
   @override
   String get premium => 'Premium';
 
   @override
-  String get premiumUnlimited => 'Premium · Unlimited';
+  String get premiumUnlimited => 'Prim · Sınırsız';
 
   @override
-  String get updating => 'Updating';
+  String get updating => 'Güncelleniyor';
 
   @override
-  String get updatingBalance => 'Updating balance…';
+  String get updatingBalance => 'Bakiye güncelleniyor…';
 
   @override
-  String get balanceUnavailable => 'Balance unavailable';
+  String get balanceUnavailable => 'Bakiye kullanılamıyor';
 
   @override
-  String get checking => 'Checking';
+  String get checking => 'Kontrol ediliyor';
 
   @override
-  String get checkingBalance => 'Checking balance…';
+  String get checkingBalance => 'Bakiye kontrol ediliyor…';
 
   @override
   String freeCount(int free) {
-    return '$free free';
+    return '$free ücretsiz';
   }
 
   @override
   String usageBalance(int free, int credits) {
-    return '$free free · $credits credits';
+    return '$free ücretsiz · $credits kredi';
   }
 
   @override
-  String get copyPreview => 'Copy preview';
+  String get copyPreview => 'Önizlemeyi kopyala';
 
   @override
-  String get copyResult => 'Copy result';
+  String get copyResult => 'Sonucu kopyala';
 
   @override
-  String get staticPreviewCaption => 'Static preview';
+  String get staticPreviewCaption => 'Statik önizleme';
 
   @override
-  String get history => 'History';
+  String get history => 'Tarih';
 
   @override
-  String get clearHistory => 'Clear history?';
+  String get clearHistory => 'Geçmiş temizlensin mi?';
 
   @override
   String get clearHistoryDescription =>
-      'This removes all recent items on this device. This cannot be undone.';
+      'Bu işlem, bu cihazdaki tüm son öğeleri kaldırır. Bu geri alınamaz.';
 
   @override
-  String get clearAll => 'Clear all';
+  String get clearAll => 'Tümünü temizle';
 
   @override
-  String get messageReceived => 'Message received';
+  String get messageReceived => 'Mesaj alındı';
 
   @override
-  String get messageYouReceived => 'Message you received';
+  String get messageYouReceived => 'Aldığınız mesaj';
 
   @override
-  String get pasteOriginalMessage => 'Paste the original message here…';
+  String get pasteOriginalMessage => 'Orijinal mesajı buraya yapıştırın…';
 
   @override
-  String get paste => 'Paste';
+  String get paste => 'Yapıştır';
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'Temizlemek';
 
   @override
-  String get helpAiUnderstandIntent => 'Help AI understand your intent';
+  String get helpAiUnderstandIntent =>
+      'Yapay zekanın amacınızı anlamasına yardımcı olun';
 
   @override
-  String get addReplyInstructions => 'Add your reply instructions…';
+  String get addReplyInstructions => 'Yanıt talimatlarınızı ekleyin…';
 
   @override
-  String get generating => 'Generating…';
+  String get generating => 'Oluşturuluyor…';
 
   @override
-  String get generateReply => 'Generate Reply';
+  String get generateReply => 'Yanıt Oluştur';
 
   @override
-  String get creatingNaturalOptions => 'Creating a few natural options…';
+  String get creatingNaturalOptions => 'Birkaç doğal seçenek yaratmak…';
 
   @override
-  String get replyOptionsAppearHere => 'Your reply options will appear here.';
+  String get replyOptionsAppearHere => 'Yanıt seçenekleriniz burada görünecek.';
 
   @override
-  String get yourReplies => 'Your replies';
+  String get yourReplies => 'Yanıtlarınız';
 
   @override
-  String get whyThisWorks => 'Why this works';
+  String get whyThisWorks => 'Bu neden işe yarıyor?';
 
   @override
-  String get regenerateReplies => 'Regenerate replies';
+  String get regenerateReplies => 'Yanıtları yeniden oluştur';
 
   @override
   String get regenerateUsageNote =>
-      'Regenerating creates new replies and uses 1 generation.';
+      'Yeniden oluşturma, yeni yanıtlar oluşturur ve 1 nesil kullanır.';
 
   @override
-  String get couldNotExplain => 'Couldn’t explain this message';
+  String get couldNotExplain => 'Bu mesajı açıklayamadım';
 
   @override
-  String get explainMessage => 'Explain message';
+  String get explainMessage => 'Mesajı açıkla';
 
   @override
-  String get copyExplanation => 'Copy explanation';
+  String get copyExplanation => 'Açıklamayı kopyala';
 
   @override
-  String get meaning => 'Meaning';
+  String get meaning => 'Anlam';
 
   @override
-  String get tone => 'Tone';
+  String get tone => 'Ton';
 
   @override
-  String get hiddenMeaning => 'Hidden Meaning';
+  String get hiddenMeaning => 'Gizli Anlam';
 
   @override
-  String get noHiddenMeaning => 'No hidden meaning detected.';
+  String get noHiddenMeaning => 'Gizli bir anlam tespit edilmedi.';
 
   @override
-  String get suggestedReplies => 'Suggested Replies';
+  String get suggestedReplies => 'Önerilen Yanıtlar';
 
   @override
-  String get moreOptions => 'More options';
+  String get moreOptions => 'Daha fazla seçenek';
 
   @override
-  String get audience => 'Audience';
+  String get audience => 'Kitle';
 
   @override
-  String get length => 'Length';
+  String get length => 'Uzunluk';
 
   @override
-  String get channel => 'Channel';
+  String get channel => 'Kanal';
 
   @override
-  String get describeTone => 'Describe the tone';
+  String get describeTone => 'Tonu açıklayın';
 
   @override
-  String get toneHint => 'e.g. warm but professional';
+  String get toneHint => 'örneğin sıcak ama profesyonel';
 
   @override
-  String get describeRelationship => 'Describe the relationship';
+  String get describeRelationship => 'İlişkiyi açıklayın';
 
   @override
-  String get relationshipHint => 'For example: my landlord';
+  String get relationshipHint => 'Örneğin: ev sahibim';
 
   @override
-  String get customizeStyleToneFormat => 'Customize style, tone and format';
+  String get customizeStyleToneFormat => 'Stili, tonu ve formatı özelleştirin';
 
   @override
-  String get bePolite => 'Be polite';
+  String get bePolite => 'Kibar ol';
 
   @override
-  String get keepItShort => 'Keep it short';
+  String get keepItShort => 'Kısa tutun';
 
   @override
-  String get professional => 'Professional';
+  String get professional => 'Profesyonel';
 
   @override
-  String get friendly => 'Friendly';
+  String get friendly => 'Arkadaşça';
 
   @override
-  String get declinePolitely => 'Decline politely';
+  String get declinePolitely => 'Kibarca reddet';
 
   @override
-  String get sayThankYou => 'Say thank you';
+  String get sayThankYou => 'Teşekkür ederim deyin';
 
   @override
-  String get auto => 'Auto';
+  String get auto => 'Otomatik';
 
   @override
-  String get natural => 'Natural';
+  String get natural => 'Doğal';
 
   @override
-  String get custom => 'Custom';
+  String get custom => 'Gelenek';
 
   @override
-  String get friend => 'Friend';
+  String get friend => 'Arkadaş';
 
   @override
-  String get customer => 'Customer';
+  String get customer => 'Müşteri';
 
   @override
-  String get coworker => 'Coworker';
+  String get coworker => 'İş arkadaşı';
 
   @override
-  String get manager => 'Manager';
+  String get manager => 'Müdür';
 
   @override
-  String get short => 'Short';
+  String get short => 'Kısa';
 
   @override
-  String get medium => 'Medium';
+  String get medium => 'Orta';
 
   @override
-  String get detailed => 'Detailed';
+  String get detailed => 'Ayrıntılı';
 
   @override
-  String get textChannel => 'Text';
+  String get textChannel => 'Metin';
 
   @override
-  String get email => 'Email';
+  String get email => 'E-posta';
 
   @override
-  String get chat => 'Chat';
+  String get chat => 'Sohbet';
 
   @override
-  String get textToPolish => 'Text to polish';
+  String get textToPolish => 'Parlatılacak metin';
 
   @override
-  String get pasteTextToImprove => 'Paste the text you\'d like to improve';
+  String get pasteTextToImprove => 'Geliştirmek istediğiniz metni yapıştırın';
 
   @override
-  String get pasteYourText => 'Paste your text here…';
+  String get pasteYourText => 'Metninizi buraya yapıştırın…';
 
   @override
-  String get improvingClarity =>
-      'Improving clarity while keeping your meaning…';
+  String get improvingClarity => 'Anlamınızı korurken netliği artırmak…';
 
   @override
-  String get polishedTextAppearsHere => 'Your polished text will appear here.';
+  String get polishedTextAppearsHere =>
+      'Geliştirilmiş metniniz burada görünecek.';
 
   @override
-  String get polishedResult => 'Polished result';
+  String get polishedResult => 'Geliştirilmiş metin';
 
   @override
-  String get whatChanged => 'What changed?';
+  String get whatChanged => 'Ne değişti?';
 
   @override
-  String get polishAgain => 'Polish again';
+  String get polishAgain => 'Tekrar geliştirin';
 
   @override
   String get polishAgainUsageNote =>
-      'Polishing again creates a new result and uses 1 generation.';
+      'Tekrar iyileştirme yeni bir sonuç yaratır ve 1 nesil kullanır.';
 
   @override
-  String get messageToUnderstand => 'Message to understand';
+  String get messageToUnderstand => 'Anlamak için mesaj';
 
   @override
-  String get pasteMessageReceived => 'Paste the message you received';
+  String get pasteMessageReceived => 'Aldığınız mesajı yapıştırın';
 
   @override
-  String get explainThisMessage => 'Explain this message';
+  String get explainThisMessage => 'Bu mesajı açıklayın';
 
   @override
-  String get explaining => 'Explaining…';
+  String get explaining => 'Açıklanıyor…';
 
   @override
-  String get readingBetweenLines => 'Reading between the lines…';
+  String get readingBetweenLines => 'Satır aralarını okumak…';
 
   @override
-  String get explanationAppearsHere => 'Your explanation will appear here.';
+  String get explanationAppearsHere => 'Açıklamanız burada görünecektir.';
 
   @override
-  String get noSuggestedReplies => 'No suggested replies returned.';
+  String get noSuggestedReplies => 'Önerilen yanıtlardan hiçbiri geri dönmedi.';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'Kopyala';
 
   @override
-  String get enterMessageFirst => 'Enter a message to explain first.';
+  String get enterMessageFirst => 'Önce açıklayacak bir mesaj girin.';
 
   @override
   String get explainRateLimited =>
-      'You’ve reached the explain limit for now. Please try again later.';
+      'Şimdilik açıklama sınırına ulaştınız. Lütfen daha sonra tekrar deneyin.';
 
   @override
   String get explainParseError =>
-      'We could not read the explanation clearly. Please try again.';
+      'Açıklamayı net okuyamadık. Lütfen tekrar deneyin.';
 
   @override
   String get explainUnavailable =>
-      'Explain is temporarily unavailable. Please try again shortly.';
+      'Açıklama geçici olarak kullanılamıyor. Lütfen kısa süre sonra tekrar deneyin.';
 
   @override
-  String get unableToExplain => 'Unable to explain this message.';
+  String get unableToExplain => 'Bu mesajı açıklayamıyorum.';
 
   @override
   String get replyCtaTitle =>
-      'Want a reply that better matches your intention?';
+      'Niyetinize daha iyi uyan bir yanıt mı istiyorsunuz?';
 
   @override
   String get premiumTitle => 'ReplyWise Premium';
 
   @override
-  String get back => 'Back';
+  String get back => 'Geri';
 
   @override
-  String get threeDaysFree => '3 days free';
+  String get threeDaysFree => '3 gün ücretsiz';
 
   @override
-  String get unlimitedReply => 'Unlimited Reply generations';
+  String get unlimitedReply => 'Sınırsız Yanıt nesilleri';
 
   @override
-  String get unlimitedPolish => 'Unlimited Polish generations';
+  String get unlimitedPolish => 'Sınırsız metin iyileştirmeleri';
 
   @override
-  String get balancesPreserved => 'Free and credit balances stay preserved';
+  String get balancesPreserved => 'Ücretsiz ve kredi bakiyeleri korunur';
 
   @override
-  String get loadingSubscriptionOptions => 'Loading subscription options…';
+  String get loadingSubscriptionOptions => 'Abonelik seçenekleri yükleniyor…';
 
   @override
-  String get startFreeTrial => 'Start 3-day Free Trial';
+  String get startFreeTrial => '3 Günlük Ücretsiz Denemeyi Başlatın';
 
   @override
-  String get startYearlyPlan => 'Start Yearly Plan';
+  String get startYearlyPlan => 'Yıllık Planı Başlat';
 
   @override
   String trialTerms(String price) {
-    return 'Free for 3 days, then $price/year. Cancel anytime.';
+    return '3 gün boyunca ücretsiz, ardından yılda $price. İstediğiniz zaman iptal edin.';
   }
 
   @override
   String yearlyTerms(String price) {
-    return '$price/year. Cancel anytime.';
+    return '$price/yıl. İstediğiniz zaman iptal edin.';
   }
 
   @override
-  String get displayedPrice => 'the displayed price';
+  String get displayedPrice => 'görüntülenen fiyat';
 
   @override
-  String get topUpCredits => 'Top-up Credits';
+  String get topUpCredits => 'Yükleme Kredileri';
 
   @override
   String get creditDescription =>
-      'Each credit covers one Reply or Polish. Credits never expire.';
+      'Her kredi bir yanıtı veya bir metin iyileştirmesini kapsar. Kredilerin süresi asla dolmaz.';
 
   @override
-  String get loadingCreditPackages => 'Loading credit packages…';
+  String get loadingCreditPackages => 'Kredi paketleri yükleniyor…';
 
   @override
   String get creditPackagesUnavailable =>
-      'Credit packages are unavailable right now.';
+      'Kredi paketleri şu anda kullanılamıyor.';
 
   @override
-  String get refreshPackages => 'Refresh packages';
+  String get refreshPackages => 'Paketleri yenile';
 
   @override
   String buyCredits(int credits, String price) {
-    return 'Buy $credits Credits — $price';
+    return '$credits Kredi Satın Alın — $price';
   }
 
   @override
-  String get restoring => 'Restoring…';
+  String get restoring => 'Geri yükleniyor…';
 
   @override
-  String get restorePremium => 'Restore Premium subscription';
+  String get restorePremium => 'Premium aboneliğini geri yükle';
 
   @override
   String get purchaseVerification =>
-      'Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically.';
+      'Premium ve kredi satın alımları ReplyWise tarafından doğrulanır. Kredi alımlarının mutabakatı otomatik olarak yapılır.';
 
   @override
-  String get newGuidanceTooltip => 'New guidance';
+  String get newGuidanceTooltip => 'Yeni rehberlik';
 
   @override
-  String get builtIn => 'Built-in';
+  String get builtIn => 'Yerleşik';
 
   @override
-  String get myGuidance => 'My Guidance';
+  String get myGuidance => 'Rehberim';
 
   @override
-  String get useInReply => 'Use in Reply';
+  String get useInReply => 'Yanıtta kullan';
 
   @override
-  String get useInPolish => 'Use in Polish';
+  String get useInPolish => 'Metin iyileştirme için kullanın';
 
   @override
-  String get deleteGuidance => 'Delete this guidance?';
+  String get deleteGuidance => 'Bu kılavuz silinsin mi?';
 
   @override
-  String get cannotBeUndone => 'This cannot be undone.';
+  String get cannotBeUndone => 'Bu geri alınamaz.';
 
   @override
-  String get category => 'Category';
+  String get category => 'Kategori';
 
   @override
-  String get titleLabel => 'Title';
+  String get titleLabel => 'Başlık';
 
   @override
-  String get guidanceTitleHint => 'Short name for this guidance…';
+  String get guidanceTitleHint => 'Bu rehberin kısa adı…';
 
   @override
-  String get guidanceHint => 'Describe how the AI should shape the reply…';
+  String get guidanceHint =>
+      'Yapay zekanın yanıtı nasıl şekillendirmesi gerektiğini açıklayın…';
 
   @override
-  String get writeAnyLanguage => 'Write in any language';
+  String get writeAnyLanguage => 'Herhangi bir dilde yazın';
 
   @override
-  String get saveChanges => 'Save changes';
+  String get saveChanges => 'Değişiklikleri kaydet';
 
   @override
-  String get saveGuidance => 'Save guidance';
+  String get saveGuidance => 'Kılavuzu kaydet';
 
   @override
   String get couldNotSaveGuidance =>
-      'Could not save this guidance. Please try again.';
+      'Bu kılavuz kaydedilemedi. Lütfen tekrar deneyin.';
 
   @override
-  String get concise => 'Concise';
+  String get concise => 'Kısa';
 
   @override
-  String get moreNatural => 'More natural';
+  String get moreNatural => 'Daha doğal';
 
   @override
-  String get improveGrammar => 'Improve grammar';
+  String get improveGrammar => 'Dilbilgisini geliştirin';
 
   @override
-  String get fixSpelling => 'Fix spelling';
+  String get fixSpelling => 'Yazımı düzelt';
 
   @override
-  String get morePersuasive => 'More persuasive';
+  String get morePersuasive => 'Daha ikna edici';
 
   @override
-  String get moreConfident => 'More confident';
+  String get moreConfident => 'Daha güvenli';
 
   @override
-  String get simplifyWording => 'Simplify wording';
+  String get simplifyWording => 'İfadeleri basitleştirin';
 
   @override
-  String get betterFlow => 'Better flow';
+  String get betterFlow => 'Daha iyi akış';
 
   @override
-  String get describePolish => 'Describe how you want the draft polished';
+  String get describePolish =>
+      'Taslağın nasıl cilalanmasını istediğinizi açıklayın';
 
   @override
-  String get describeAudience => 'Describe the audience';
+  String get describeAudience => 'İzleyiciyi tanımlayın';
 
   @override
-  String get audienceHint => 'e.g. my manager';
+  String get audienceHint => 'örneğin menajerim';
 
   @override
-  String get extraInstruction => 'Extra instruction';
+  String get extraInstruction => 'Ekstra talimat';
 
   @override
-  String get extraPolishHint => 'Add any other polishing preference';
+  String get extraPolishHint => 'Başka metin iyileştirme tercihleri ​​ekleyin';
 
   @override
-  String get polishing => 'Polishing…';
+  String get polishing => 'Metin iyileştiriliyor…';
 
   @override
-  String get polishText => 'Polish Text';
+  String get polishText => 'Metni iyileştirin';
 
   @override
-  String get adjustToneLengthFormat => 'Adjust tone, length and format';
+  String get adjustToneLengthFormat => 'Tonu, uzunluğu ve formatı ayarlayın';
 
   @override
-  String get instructionProfessional => 'Make the writing sound professional.';
+  String get instructionProfessional =>
+      'Yazının profesyonel görünmesini sağlayın.';
 
   @override
-  String get instructionFriendly => 'Make the writing warmer and friendlier.';
+  String get instructionFriendly => 'Yazıyı daha sıcak ve samimi hale getirin.';
 
   @override
-  String get instructionConcise => 'Make the writing concise and direct.';
+  String get instructionConcise => 'Yazıyı kısa ve net yapın.';
 
   @override
-  String get instructionNatural => 'Make the wording sound natural and fluent.';
+  String get instructionNatural =>
+      'İfadelerin doğal ve akıcı olmasını sağlayın.';
 
   @override
-  String get instructionGrammar =>
-      'Correct the grammar while preserving the meaning.';
+  String get instructionGrammar => 'Anlamı korurken dilbilgisini düzeltin.';
 
   @override
-  String get instructionSpelling => 'Correct all spelling errors.';
+  String get instructionSpelling => 'Tüm yazım hatalarını düzeltin.';
 
   @override
   String get instructionPersuasive =>
-      'Make the writing more persuasive and compelling.';
+      'Yazıyı daha ikna edici ve ilgi çekici hale getirin.';
 
   @override
   String get instructionConfident =>
-      'Make the writing sound clear and confident.';
+      'Yazının net ve kendinden emin olmasını sağlayın.';
 
   @override
-  String get instructionSimple => 'Use simpler, easier-to-read wording.';
+  String get instructionSimple =>
+      'Daha basit, okunması kolay ifadeler kullanın.';
 
   @override
-  String get instructionFlow => 'Improve sentence flow and transitions.';
+  String get instructionFlow => 'Cümle akışını ve geçişleri iyileştirin.';
 
   @override
-  String get shorter => 'Shorter';
+  String get shorter => 'Daha kısa';
 
   @override
-  String get sameLength => 'Same';
+  String get sameLength => 'Aynı';
 
   @override
-  String get longer => 'Longer';
+  String get longer => 'Daha uzun';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'Favoriler';
 
   @override
   String get createGuidanceEmpty =>
-      'Create your own guidance to reuse it later.';
+      'Daha sonra yeniden kullanmak için kendi rehberinizi oluşturun.';
 
   @override
-  String get removeFavorite => 'Remove from favorites';
+  String get removeFavorite => 'Favorilerden kaldır';
 
   @override
-  String get addFavorite => 'Add to favorites';
+  String get addFavorite => 'Favorilere ekle';
 
   @override
   String useTemplate(String title) {
-    return 'Use “$title”';
+    return '“$title” kullanın';
   }
 
   @override
-  String get chooseGuidance => 'Choose guidance';
+  String get chooseGuidance => 'Rehberliği seçin';
 
   @override
-  String get library => 'Library';
+  String get library => 'Kütüphane';
 
   @override
-  String get general => 'General';
+  String get general => 'Genel';
 
   @override
-  String get decline => 'Decline';
+  String get decline => 'Reddetmek';
 
   @override
-  String get thanks => 'Thanks';
+  String get thanks => 'Teşekkürler';
 
   @override
-  String get followUp => 'Follow-up';
+  String get followUp => 'Takip etmek';
 
   @override
-  String get editGuidance => 'Edit Guidance';
+  String get editGuidance => 'Kılavuzu Düzenle';
 
   @override
-  String get makeProfessional => 'Make it professional';
+  String get makeProfessional => 'Profesyonel hale getirin';
 
   @override
-  String get makeFriendly => 'Make it friendly';
+  String get makeFriendly => 'Dostça yap';
 
   @override
-  String get askMoreTime => 'Ask for more time';
+  String get askMoreTime => 'Daha fazla zaman isteyin';
 
   @override
-  String get soundConfident => 'Sound confident';
+  String get soundConfident => 'Kendine güvenen bir ses';
 
   @override
-  String get guidancePoliteContent => 'Make the reply polite and respectful.';
+  String get guidancePoliteContent => 'Cevabınızı kibar ve saygılı yapın.';
 
   @override
-  String get guidanceShortContent => 'Keep the reply short and clear.';
+  String get guidanceShortContent => 'Cevabınızı kısa ve net tutun.';
 
   @override
   String get guidanceProfessionalContent =>
-      'Make the reply sound professional and appropriate for work.';
+      'Yanıtınızın profesyonel ve iş için uygun olmasını sağlayın.';
 
   @override
-  String get guidanceFriendlyContent => 'Make the reply warm and friendly.';
+  String get guidanceFriendlyContent => 'Cevabınızı sıcak ve samimi yapın.';
 
   @override
   String get guidanceDeclineContent =>
-      'Politely decline the request without sounding rude.';
+      'Talebi kaba görünmeden kibarca reddedin.';
 
   @override
   String get guidanceThanksContent =>
-      'Add appreciation and a polite thank-you.';
+      'Takdirinizi ve kibar bir teşekkürünüzü ekleyin.';
 
   @override
   String get guidanceMoreTimeContent =>
-      'Ask for more time while sounding responsible and polite.';
+      'Sorumlu ve kibar görünerek daha fazla zaman isteyin.';
 
   @override
   String get guidanceConfidentContent =>
-      'Make the reply sound confident but not aggressive.';
+      'Yanıtınızın kendinden emin görünmesini sağlayın ancak agresif olmayın.';
 
   @override
   String todayAt(String time) {
-    return 'Today · $time';
+    return 'Bugün · $time';
   }
 
   @override
   String yesterdayAt(String time) {
-    return 'Yesterday · $time';
+    return 'Dün · $time';
   }
 
   @override
@@ -864,10 +869,10 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get premiumActive => 'Premium subscription active';
+  String get premiumActive => 'Premium abonelik aktif';
 
   @override
   String creditsRemaining(String count) {
-    return '$count credits remaining';
+    return '$count kredi kaldı';
   }
 }

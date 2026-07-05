@@ -9,7 +9,7 @@ class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
 
   @override
-  String get appTitle => 'ReplyWise';
+  String get appTitle => 'Antwoord verstandig';
 
   @override
   String get systemDefault => 'Systeemstandaard';
@@ -33,23 +33,24 @@ class AppLocalizationsNl extends AppLocalizations {
   String get polish => 'Verbeteren';
 
   @override
-  String get yourAiReplyAssistant => 'Your AI reply assistant';
+  String get yourAiReplyAssistant => 'Uw AI-antwoordassistent';
 
   @override
   String get generateThoughtfulReplies =>
-      'Generate thoughtful replies instantly.';
+      'Genereer direct doordachte antwoorden.';
 
   @override
-  String get makeWritingClear => 'Make your writing clear and natural.';
+  String get makeWritingClear =>
+      'Zorg ervoor dat uw schrijven duidelijk en natuurlijk is.';
 
   @override
-  String get understandTone => 'Understand tone and hidden meaning.';
+  String get understandTone => 'Begrijp de toon en de verborgen betekenis.';
 
   @override
   String get templates => 'Sjablonen';
 
   @override
-  String get reuseInstructions => 'Reuse your favorite AI instructions.';
+  String get reuseInstructions => 'Hergebruik uw favoriete AI-instructies.';
 
   @override
   String get recent => 'Recent';
@@ -62,7 +63,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get recentEmptyMessage =>
-      'Your recent replies, polished text, and explanations will appear here.';
+      'Uw recente antwoorden, verzorgde tekst en uitleg worden hier weergegeven.';
 
   @override
   String get createFirstReply => 'Maak je eerste antwoord';
@@ -72,27 +73,27 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tipShortEmails =>
-      'Keep emails under 120 words for higher response rates.';
+      'Houd e-mails onder de 120 woorden voor een hoger responspercentage.';
 
   @override
   String get tipLeadWithAsk =>
-      'Lead with your ask — put the key request in the first line.';
+      'Leid met uw vraag: plaats het sleutelverzoek op de eerste regel.';
 
   @override
   String get tipMatchTone =>
-      'Match the other person\'s tone to build rapport faster.';
+      'Pas de toon van de ander aan om sneller een verstandhouding op te bouwen.';
 
   @override
   String get tipClearSubject =>
-      'A clear subject line gets more replies than a clever one.';
+      'Een duidelijke onderwerpregel krijgt meer reacties dan een slimme onderwerpregel.';
 
   @override
   String get tipReadAloud =>
-      'Read your reply aloud once — it catches awkward phrasing.';
+      'Lees je antwoord een keer hardop; er komen ongemakkelijke bewoordingen in voor.';
 
   @override
   String get tipClearNextStep =>
-      'End with one clear next step so the reader knows what to do.';
+      'Sluit af met één duidelijke volgende stap, zodat de lezer weet wat hij moet doen.';
 
   @override
   String get yourPlan => 'Je abonnement';
@@ -101,39 +102,39 @@ class AppLocalizationsNl extends AppLocalizations {
   String get plans => 'Abonnementen';
 
   @override
-  String get credits => 'Credits';
+  String get credits => 'Tegoed';
 
   @override
-  String get totalCredits => 'Total credits';
+  String get totalCredits => 'Totaal tegoed';
 
   @override
-  String get watchAd => 'Watch ad';
+  String get watchAd => 'Advertentie bekijken';
 
   @override
-  String get watchAdReward => '+1 credit';
+  String get watchAdReward => '+1 krediet';
 
   @override
-  String get currentPlan => 'Current plan';
+  String get currentPlan => 'Huidig ​​abonnement';
 
   @override
-  String get freePlan => 'Free plan';
+  String get freePlan => 'Gratis abonnement';
 
   @override
   String freeRepliesPerDay(int count) {
-    return '$count free replies per day';
+    return '$count gratis antwoorden per dag';
   }
 
   @override
-  String get upgrade => 'Upgrade';
+  String get upgrade => 'Upgraden';
 
   @override
-  String get support => 'Support';
+  String get support => 'Ondersteuning';
 
   @override
-  String get supportDescription => 'Help center / Contact us';
+  String get supportDescription => 'Helpcentrum / Neem contact met ons op';
 
   @override
-  String get aboutDescription => 'Version, Privacy, Terms';
+  String get aboutDescription => 'Versie, Privacy, Voorwaarden';
 
   @override
   String get guidance => 'Instructies';
@@ -148,99 +149,99 @@ class AppLocalizationsNl extends AppLocalizations {
   String get appLanguage => 'App-taal';
 
   @override
-  String get voiceGuidanceLanguage => 'Voice guidance language';
+  String get voiceGuidanceLanguage => 'Taal voor stembegeleiding';
 
   @override
-  String get autoDetect => 'Auto Detect';
+  String get autoDetect => 'Automatische detectie';
 
   @override
   String staticPreview(String label) {
-    return '$label is a static preview.';
+    return '$label is een statisch voorbeeld.';
   }
 
   @override
   String get about => 'Over';
 
   @override
-  String get version => 'Version';
+  String get version => 'Versie';
 
   @override
-  String get environment => 'Environment';
+  String get environment => 'Omgeving';
 
   @override
-  String get developerTesting => 'Developer Testing';
+  String get developerTesting => 'Testen van ontwikkelaars';
 
   @override
-  String get resetFreeUsage => 'Reset free usage';
+  String get resetFreeUsage => 'Gratis gebruik resetten';
 
   @override
   String addCredits(int count) {
-    return 'Add $count credits';
+    return 'Voeg $count credits toe';
   }
 
   @override
-  String get simulatePremiumOn => 'Simulate Premium On';
+  String get simulatePremiumOn => 'Premium simuleren Aan';
 
   @override
-  String get simulatePremiumOff => 'Simulate Premium Off';
+  String get simulatePremiumOff => 'Simulatie Premium Uit';
 
   @override
-  String get refreshAccountState => 'Refresh account state';
+  String get refreshAccountState => 'Vernieuw de accountstatus';
 
   @override
-  String get secureSession => 'Secure session';
+  String get secureSession => 'Veilige sessie';
 
   @override
-  String get anonymousSessionReady => 'Anonymous session ready';
+  String get anonymousSessionReady => 'Anonieme sessie klaar';
 
   @override
-  String get connectingAnonymousSession => 'Connecting anonymous session…';
+  String get connectingAnonymousSession => 'Anonieme sessie verbinden…';
 
   @override
-  String get refreshingSecureSession => 'Refreshing secure session…';
+  String get refreshingSecureSession => 'Beveiligde sessie vernieuwen…';
 
   @override
-  String get restoringAnonymousSession => 'Restoring anonymous session…';
+  String get restoringAnonymousSession => 'Anonieme sessie herstellen…';
 
   @override
-  String get anonymousSessionUnavailable => 'Anonymous session unavailable';
+  String get anonymousSessionUnavailable => 'Anonieme sessie niet beschikbaar';
 
   @override
-  String get anonymousSessionNotStarted => 'Anonymous session not started';
+  String get anonymousSessionNotStarted => 'Anonieme sessie niet gestart';
 
   @override
   String get retry => 'Opnieuw proberen';
 
   @override
-  String get developer => 'Developer';
+  String get developer => 'Ontwikkelaar';
 
   @override
-  String get localBackendConnection => 'Local backend connection';
+  String get localBackendConnection => 'Lokale backend-verbinding';
 
   @override
-  String get refreshBackendStatus => 'Refresh backend status';
+  String get refreshBackendStatus => 'Vernieuw de backend-status';
 
   @override
-  String get checkingBackend => 'Checking backend…';
+  String get checkingBackend => 'Backend controleren…';
 
   @override
-  String get connected => 'Connected';
+  String get connected => 'Aangesloten';
 
   @override
-  String get connectionFailed => 'Connection failed';
+  String get connectionFailed => 'Verbinding mislukt';
 
   @override
   String get serviceUnreachable =>
-      'We couldn’t reach the service. Check your connection and try again.';
+      'We konden de dienst niet bereiken. Controleer uw verbinding en probeer het opnieuw.';
 
   @override
-  String get copied => 'Copied';
+  String get copied => 'Gekopieerd';
 
   @override
-  String get close => 'Close';
+  String get close => 'Dichtbij';
 
   @override
-  String get tryAgain => 'Try again';
+  String get tryAgain => 'Probeer het opnieuw';
 
   @override
   String get cancel => 'Annuleren';
@@ -261,601 +262,611 @@ class AppLocalizationsNl extends AppLocalizations {
   String get done => 'Gereed';
 
   @override
-  String get manageLibrary => 'Manage Library';
+  String get manageLibrary => 'Beheer bibliotheek';
 
   @override
-  String get newGuidance => 'New Guidance';
+  String get newGuidance => 'Nieuwe begeleiding';
 
   @override
-  String get quickGuidance => 'Quick guidance';
+  String get quickGuidance => 'Snelle begeleiding';
 
   @override
-  String get viewPlans => 'View plans';
+  String get viewPlans => 'Bekijk plannen';
 
   @override
-  String get restore => 'Restore';
+  String get restore => 'Herstellen';
 
   @override
-  String get loading => 'Loading…';
+  String get loading => 'Laden…';
 
   @override
   String get premium => 'Premium';
 
   @override
-  String get premiumUnlimited => 'Premium · Unlimited';
+  String get premiumUnlimited => 'Premium · Onbeperkt';
 
   @override
-  String get updating => 'Updating';
+  String get updating => 'Updaten';
 
   @override
-  String get updatingBalance => 'Updating balance…';
+  String get updatingBalance => 'Saldo bijwerken…';
 
   @override
-  String get balanceUnavailable => 'Balance unavailable';
+  String get balanceUnavailable => 'Saldo niet beschikbaar';
 
   @override
-  String get checking => 'Checking';
+  String get checking => 'Controleren';
 
   @override
-  String get checkingBalance => 'Checking balance…';
+  String get checkingBalance => 'Saldo controleren…';
 
   @override
   String freeCount(int free) {
-    return '$free free';
+    return '$free gratis';
   }
 
   @override
   String usageBalance(int free, int credits) {
-    return '$free free · $credits credits';
+    return '$free gratis · $credits tegoeden';
   }
 
   @override
-  String get copyPreview => 'Copy preview';
+  String get copyPreview => 'Kopieervoorbeeld';
 
   @override
-  String get copyResult => 'Copy result';
+  String get copyResult => 'Kopieer resultaat';
 
   @override
-  String get staticPreviewCaption => 'Static preview';
+  String get staticPreviewCaption => 'Statisch voorbeeld';
 
   @override
-  String get history => 'History';
+  String get history => 'Geschiedenis';
 
   @override
-  String get clearHistory => 'Clear history?';
+  String get clearHistory => 'Geschiedenis wissen?';
 
   @override
   String get clearHistoryDescription =>
-      'This removes all recent items on this device. This cannot be undone.';
+      'Hiermee worden alle recente items op dit apparaat verwijderd. Dit kan niet ongedaan worden gemaakt.';
 
   @override
-  String get clearAll => 'Clear all';
+  String get clearAll => 'Alles wissen';
 
   @override
-  String get messageReceived => 'Message received';
+  String get messageReceived => 'Bericht ontvangen';
 
   @override
-  String get messageYouReceived => 'Message you received';
+  String get messageYouReceived => 'Bericht dat je hebt ontvangen';
 
   @override
-  String get pasteOriginalMessage => 'Paste the original message here…';
+  String get pasteOriginalMessage => 'Plak hier het originele bericht...';
 
   @override
-  String get paste => 'Paste';
+  String get paste => 'Plakken';
 
   @override
-  String get clear => 'Clear';
+  String get clear => 'Duidelijk';
 
   @override
-  String get helpAiUnderstandIntent => 'Help AI understand your intent';
+  String get helpAiUnderstandIntent => 'Help AI uw bedoeling te begrijpen';
 
   @override
-  String get addReplyInstructions => 'Add your reply instructions…';
+  String get addReplyInstructions => 'Voeg uw antwoordinstructies toe…';
 
   @override
-  String get generating => 'Generating…';
+  String get generating => 'Genereren…';
 
   @override
-  String get generateReply => 'Generate Reply';
+  String get generateReply => 'Antwoord genereren';
 
   @override
-  String get creatingNaturalOptions => 'Creating a few natural options…';
+  String get creatingNaturalOptions => 'Een paar natuurlijke opties creëren…';
 
   @override
-  String get replyOptionsAppearHere => 'Your reply options will appear here.';
+  String get replyOptionsAppearHere => 'Hier verschijnen uw antwoordopties.';
 
   @override
-  String get yourReplies => 'Your replies';
+  String get yourReplies => 'Jouw antwoorden';
 
   @override
-  String get whyThisWorks => 'Why this works';
+  String get whyThisWorks => 'Waarom dit werkt';
 
   @override
-  String get regenerateReplies => 'Regenerate replies';
+  String get regenerateReplies => 'Antwoorden opnieuw genereren';
 
   @override
   String get regenerateUsageNote =>
-      'Regenerating creates new replies and uses 1 generation.';
+      'Door opnieuw te genereren worden nieuwe antwoorden gemaakt en wordt 1 generatie gebruikt.';
 
   @override
-  String get couldNotExplain => 'Couldn’t explain this message';
+  String get couldNotExplain => 'Kan dit bericht niet verklaren';
 
   @override
-  String get explainMessage => 'Explain message';
+  String get explainMessage => 'Bericht uitleggen';
 
   @override
-  String get copyExplanation => 'Copy explanation';
+  String get copyExplanation => 'Kopieer uitleg';
 
   @override
-  String get meaning => 'Meaning';
+  String get meaning => 'Betekenis';
 
   @override
-  String get tone => 'Tone';
+  String get tone => 'Toon';
 
   @override
-  String get hiddenMeaning => 'Hidden Meaning';
+  String get hiddenMeaning => 'Verborgen betekenis';
 
   @override
-  String get noHiddenMeaning => 'No hidden meaning detected.';
+  String get noHiddenMeaning => 'Geen verborgen betekenis gedetecteerd.';
 
   @override
-  String get suggestedReplies => 'Suggested Replies';
+  String get suggestedReplies => 'Voorgestelde antwoorden';
 
   @override
-  String get moreOptions => 'More options';
+  String get moreOptions => 'Meer opties';
 
   @override
-  String get audience => 'Audience';
+  String get audience => 'Publiek';
 
   @override
-  String get length => 'Length';
+  String get length => 'Lengte';
 
   @override
-  String get channel => 'Channel';
+  String get channel => 'Kanaal';
 
   @override
-  String get describeTone => 'Describe the tone';
+  String get describeTone => 'Beschrijf de toon';
 
   @override
-  String get toneHint => 'e.g. warm but professional';
+  String get toneHint => 'bijv. warm maar professioneel';
 
   @override
-  String get describeRelationship => 'Describe the relationship';
+  String get describeRelationship => 'Beschrijf de relatie';
 
   @override
-  String get relationshipHint => 'For example: my landlord';
+  String get relationshipHint => 'Bijvoorbeeld: mijn huisbaas';
 
   @override
-  String get customizeStyleToneFormat => 'Customize style, tone and format';
+  String get customizeStyleToneFormat => 'Pas stijl, toon en formaat aan';
 
   @override
-  String get bePolite => 'Be polite';
+  String get bePolite => 'Wees beleefd';
 
   @override
-  String get keepItShort => 'Keep it short';
+  String get keepItShort => 'Houd het kort';
 
   @override
-  String get professional => 'Professional';
+  String get professional => 'Professioneel';
 
   @override
-  String get friendly => 'Friendly';
+  String get friendly => 'Vriendelijk';
 
   @override
-  String get declinePolitely => 'Decline politely';
+  String get declinePolitely => 'Beleefd weigeren';
 
   @override
-  String get sayThankYou => 'Say thank you';
+  String get sayThankYou => 'Zeg dankje';
 
   @override
   String get auto => 'Auto';
 
   @override
-  String get natural => 'Natural';
+  String get natural => 'Natuurlijk';
 
   @override
-  String get custom => 'Custom';
+  String get custom => 'Aangepast';
 
   @override
-  String get friend => 'Friend';
+  String get friend => 'Vriend';
 
   @override
-  String get customer => 'Customer';
+  String get customer => 'Klant';
 
   @override
-  String get coworker => 'Coworker';
+  String get coworker => 'Collega';
 
   @override
   String get manager => 'Manager';
 
   @override
-  String get short => 'Short';
+  String get short => 'Kort';
 
   @override
   String get medium => 'Medium';
 
   @override
-  String get detailed => 'Detailed';
+  String get detailed => 'Gedetailleerd';
 
   @override
-  String get textChannel => 'Text';
+  String get textChannel => 'Tekst';
 
   @override
-  String get email => 'Email';
+  String get email => 'E-mail';
 
   @override
-  String get chat => 'Chat';
+  String get chat => 'Chatten';
 
   @override
-  String get textToPolish => 'Text to polish';
+  String get textToPolish => 'Tekst om te polijsten';
 
   @override
-  String get pasteTextToImprove => 'Paste the text you\'d like to improve';
+  String get pasteTextToImprove => 'Plak de tekst die u wilt verbeteren';
 
   @override
-  String get pasteYourText => 'Paste your text here…';
+  String get pasteYourText => 'Plak hier uw tekst...';
 
   @override
   String get improvingClarity =>
-      'Improving clarity while keeping your meaning…';
+      'Verbetering van de duidelijkheid terwijl u uw betekenis behoudt...';
 
   @override
-  String get polishedTextAppearsHere => 'Your polished text will appear here.';
+  String get polishedTextAppearsHere => 'Uw verbeterde tekst verschijnt hier.';
 
   @override
-  String get polishedResult => 'Polished result';
+  String get polishedResult => 'Verbeterde tekst';
 
   @override
-  String get whatChanged => 'What changed?';
+  String get whatChanged => 'Wat is er veranderd?';
 
   @override
-  String get polishAgain => 'Polish again';
+  String get polishAgain => 'Opnieuw verbeteren';
 
   @override
   String get polishAgainUsageNote =>
-      'Polishing again creates a new result and uses 1 generation.';
+      'Opnieuw verbeteren zorgt voor een nieuw resultaat en vergt 1 generatie.';
 
   @override
-  String get messageToUnderstand => 'Message to understand';
+  String get messageToUnderstand => 'Bericht om te begrijpen';
 
   @override
-  String get pasteMessageReceived => 'Paste the message you received';
+  String get pasteMessageReceived => 'Plak het bericht dat je hebt ontvangen';
 
   @override
-  String get explainThisMessage => 'Explain this message';
+  String get explainThisMessage => 'Leg dit bericht uit';
 
   @override
-  String get explaining => 'Explaining…';
+  String get explaining => 'Uitleggen…';
 
   @override
-  String get readingBetweenLines => 'Reading between the lines…';
+  String get readingBetweenLines => 'Tussen de regels door lezen…';
 
   @override
-  String get explanationAppearsHere => 'Your explanation will appear here.';
+  String get explanationAppearsHere => 'Uw uitleg zal hier verschijnen.';
 
   @override
-  String get noSuggestedReplies => 'No suggested replies returned.';
+  String get noSuggestedReplies =>
+      'Er zijn geen voorgestelde antwoorden geretourneerd.';
 
   @override
-  String get copy => 'Copy';
+  String get copy => 'Kopiëren';
 
   @override
-  String get enterMessageFirst => 'Enter a message to explain first.';
+  String get enterMessageFirst => 'Voer eerst een bericht in om uit te leggen.';
 
   @override
   String get explainRateLimited =>
-      'You’ve reached the explain limit for now. Please try again later.';
+      'Je hebt voorlopig de uitleglimiet bereikt. Probeer het later opnieuw.';
 
   @override
   String get explainParseError =>
-      'We could not read the explanation clearly. Please try again.';
+      'Wij konden de uitleg niet duidelijk lezen. Probeer het opnieuw.';
 
   @override
   String get explainUnavailable =>
-      'Explain is temporarily unavailable. Please try again shortly.';
+      'Uitleg is tijdelijk niet beschikbaar. Probeer het binnenkort opnieuw.';
 
   @override
-  String get unableToExplain => 'Unable to explain this message.';
+  String get unableToExplain => 'Kan dit bericht niet verklaren.';
 
   @override
   String get replyCtaTitle =>
-      'Want a reply that better matches your intention?';
+      'Wilt u een antwoord dat beter aansluit bij uw intentie?';
 
   @override
   String get premiumTitle => 'ReplyWise Premium';
 
   @override
-  String get back => 'Back';
+  String get back => 'Rug';
 
   @override
-  String get threeDaysFree => '3 days free';
+  String get threeDaysFree => '3 dagen gratis';
 
   @override
-  String get unlimitedReply => 'Unlimited Reply generations';
+  String get unlimitedReply => 'Onbeperkte antwoordgeneraties';
 
   @override
-  String get unlimitedPolish => 'Unlimited Polish generations';
+  String get unlimitedPolish => 'Onbeperkte tekstverbeteringen';
 
   @override
-  String get balancesPreserved => 'Free and credit balances stay preserved';
+  String get balancesPreserved => 'Vrije en tegoeden blijven behouden';
 
   @override
-  String get loadingSubscriptionOptions => 'Loading subscription options…';
+  String get loadingSubscriptionOptions => 'Abonnementopties laden…';
 
   @override
-  String get startFreeTrial => 'Start 3-day Free Trial';
+  String get startFreeTrial => 'Start een gratis proefperiode van 3 dagen';
 
   @override
-  String get startYearlyPlan => 'Start Yearly Plan';
+  String get startYearlyPlan => 'Jaarplan starten';
 
   @override
   String trialTerms(String price) {
-    return 'Free for 3 days, then $price/year. Cancel anytime.';
+    return '3 dagen gratis, daarna $price/jaar. Annuleer op elk gewenst moment.';
   }
 
   @override
   String yearlyTerms(String price) {
-    return '$price/year. Cancel anytime.';
+    return '$price/jaar. Annuleer op elk gewenst moment.';
   }
 
   @override
-  String get displayedPrice => 'the displayed price';
+  String get displayedPrice => 'de weergegeven prijs';
 
   @override
-  String get topUpCredits => 'Top-up Credits';
+  String get topUpCredits => 'Opwaardeerkredieten';
 
   @override
   String get creditDescription =>
-      'Each credit covers one Reply or Polish. Credits never expire.';
+      'Elke credit omvat één antwoord of één tekstverbetering. Tegoeden verlopen nooit.';
 
   @override
-  String get loadingCreditPackages => 'Loading credit packages…';
+  String get loadingCreditPackages => 'Kredietpakketten laden…';
 
   @override
   String get creditPackagesUnavailable =>
-      'Credit packages are unavailable right now.';
+      'Kredietpakketten zijn momenteel niet beschikbaar.';
 
   @override
-  String get refreshPackages => 'Refresh packages';
+  String get refreshPackages => 'Pakketten vernieuwen';
 
   @override
   String buyCredits(int credits, String price) {
-    return 'Buy $credits Credits — $price';
+    return 'Koop $credits Credits — $price';
   }
 
   @override
-  String get restoring => 'Restoring…';
+  String get restoring => 'Herstellen…';
 
   @override
-  String get restorePremium => 'Restore Premium subscription';
+  String get restorePremium => 'Premium-abonnement herstellen';
 
   @override
   String get purchaseVerification =>
-      'Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically.';
+      'Premium- en kredietaankopen worden geverifieerd door ReplyWise. Kredietaankopen worden automatisch afgestemd.';
 
   @override
-  String get newGuidanceTooltip => 'New guidance';
+  String get newGuidanceTooltip => 'Nieuwe begeleiding';
 
   @override
-  String get builtIn => 'Built-in';
+  String get builtIn => 'Ingebouwd';
 
   @override
-  String get myGuidance => 'My Guidance';
+  String get myGuidance => 'Mijn begeleiding';
 
   @override
-  String get useInReply => 'Use in Reply';
+  String get useInReply => 'Gebruik in antwoord';
 
   @override
-  String get useInPolish => 'Use in Polish';
+  String get useInPolish => 'Gebruik voor tekstverbetering';
 
   @override
-  String get deleteGuidance => 'Delete this guidance?';
+  String get deleteGuidance => 'Deze begeleiding verwijderen?';
 
   @override
-  String get cannotBeUndone => 'This cannot be undone.';
+  String get cannotBeUndone => 'Dit kan niet ongedaan worden gemaakt.';
 
   @override
-  String get category => 'Category';
+  String get category => 'Categorie';
 
   @override
-  String get titleLabel => 'Title';
+  String get titleLabel => 'Titel';
 
   @override
-  String get guidanceTitleHint => 'Short name for this guidance…';
+  String get guidanceTitleHint => 'Korte naam voor deze richtlijn…';
 
   @override
-  String get guidanceHint => 'Describe how the AI should shape the reply…';
+  String get guidanceHint =>
+      'Beschrijf hoe de AI het antwoord moet vormgeven...';
 
   @override
-  String get writeAnyLanguage => 'Write in any language';
+  String get writeAnyLanguage => 'Schrijf in elke taal';
 
   @override
-  String get saveChanges => 'Save changes';
+  String get saveChanges => 'Wijzigingen opslaan';
 
   @override
-  String get saveGuidance => 'Save guidance';
+  String get saveGuidance => 'Begeleiding opslaan';
 
   @override
   String get couldNotSaveGuidance =>
-      'Could not save this guidance. Please try again.';
+      'Kan deze begeleiding niet opslaan. Probeer het opnieuw.';
 
   @override
-  String get concise => 'Concise';
+  String get concise => 'Beknopt';
 
   @override
-  String get moreNatural => 'More natural';
+  String get moreNatural => 'Natuurlijker';
 
   @override
-  String get improveGrammar => 'Improve grammar';
+  String get improveGrammar => 'Verbeter de grammatica';
 
   @override
-  String get fixSpelling => 'Fix spelling';
+  String get fixSpelling => 'Spelling corrigeren';
 
   @override
-  String get morePersuasive => 'More persuasive';
+  String get morePersuasive => 'Overtuigender';
 
   @override
-  String get moreConfident => 'More confident';
+  String get moreConfident => 'Meer zelfvertrouwen';
 
   @override
-  String get simplifyWording => 'Simplify wording';
+  String get simplifyWording => 'Vereenvoudig de formulering';
 
   @override
-  String get betterFlow => 'Better flow';
+  String get betterFlow => 'Betere stroom';
 
   @override
-  String get describePolish => 'Describe how you want the draft polished';
+  String get describePolish =>
+      'Beschrijf hoe u de diepgang gepolijst wilt hebben';
 
   @override
-  String get describeAudience => 'Describe the audience';
+  String get describeAudience => 'Beschrijf het publiek';
 
   @override
-  String get audienceHint => 'e.g. my manager';
+  String get audienceHint => 'bijv. mijn leidinggevende';
 
   @override
-  String get extraInstruction => 'Extra instruction';
+  String get extraInstruction => 'Extra instructie';
 
   @override
-  String get extraPolishHint => 'Add any other polishing preference';
+  String get extraPolishHint =>
+      'Voeg eventuele andere voorkeuren voor tekstverbetering toe';
 
   @override
-  String get polishing => 'Polishing…';
+  String get polishing => 'Tekst verbeteren…';
 
   @override
-  String get polishText => 'Polish Text';
+  String get polishText => 'Tekst verbeteren';
 
   @override
-  String get adjustToneLengthFormat => 'Adjust tone, length and format';
+  String get adjustToneLengthFormat => 'Pas toon, lengte en formaat aan';
 
   @override
-  String get instructionProfessional => 'Make the writing sound professional.';
+  String get instructionProfessional =>
+      'Zorg ervoor dat het schrijven professioneel klinkt.';
 
   @override
-  String get instructionFriendly => 'Make the writing warmer and friendlier.';
+  String get instructionFriendly =>
+      'Maak het schrijven warmer en vriendelijker.';
 
   @override
-  String get instructionConcise => 'Make the writing concise and direct.';
+  String get instructionConcise => 'Maak het schrijven beknopt en direct.';
 
   @override
-  String get instructionNatural => 'Make the wording sound natural and fluent.';
+  String get instructionNatural =>
+      'Zorg ervoor dat de tekst natuurlijk en vloeiend klinkt.';
 
   @override
   String get instructionGrammar =>
-      'Correct the grammar while preserving the meaning.';
+      'Corrigeer de grammatica met behoud van de betekenis.';
 
   @override
-  String get instructionSpelling => 'Correct all spelling errors.';
+  String get instructionSpelling => 'Corrigeer alle spelfouten.';
 
   @override
   String get instructionPersuasive =>
-      'Make the writing more persuasive and compelling.';
+      'Maak het schrijven overtuigender en overtuigender.';
 
   @override
   String get instructionConfident =>
-      'Make the writing sound clear and confident.';
+      'Laat het schrijven helder en zelfverzekerd klinken.';
 
   @override
-  String get instructionSimple => 'Use simpler, easier-to-read wording.';
+  String get instructionSimple =>
+      'Gebruik eenvoudigere, gemakkelijker leesbare bewoordingen.';
 
   @override
-  String get instructionFlow => 'Improve sentence flow and transitions.';
+  String get instructionFlow => 'Verbeter de zinsverloop en overgangen.';
 
   @override
-  String get shorter => 'Shorter';
+  String get shorter => 'Korter';
 
   @override
-  String get sameLength => 'Same';
+  String get sameLength => 'Dezelfde';
 
   @override
-  String get longer => 'Longer';
+  String get longer => 'Langer';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => 'Favorieten';
 
   @override
   String get createGuidanceEmpty =>
-      'Create your own guidance to reuse it later.';
+      'Creëer uw eigen begeleiding om deze later opnieuw te gebruiken.';
 
   @override
-  String get removeFavorite => 'Remove from favorites';
+  String get removeFavorite => 'Verwijderen uit favorieten';
 
   @override
-  String get addFavorite => 'Add to favorites';
+  String get addFavorite => 'Toevoegen aan favorieten';
 
   @override
   String useTemplate(String title) {
-    return 'Use “$title”';
+    return 'Gebruik “$title”';
   }
 
   @override
-  String get chooseGuidance => 'Choose guidance';
+  String get chooseGuidance => 'Kies voor begeleiding';
 
   @override
-  String get library => 'Library';
+  String get library => 'Bibliotheek';
 
   @override
-  String get general => 'General';
+  String get general => 'Algemeen';
 
   @override
-  String get decline => 'Decline';
+  String get decline => 'Afwijzen';
 
   @override
-  String get thanks => 'Thanks';
+  String get thanks => 'Bedankt';
 
   @override
-  String get followUp => 'Follow-up';
+  String get followUp => 'Vervolg';
 
   @override
-  String get editGuidance => 'Edit Guidance';
+  String get editGuidance => 'Begeleiding bewerken';
 
   @override
-  String get makeProfessional => 'Make it professional';
+  String get makeProfessional => 'Maak het professioneel';
 
   @override
-  String get makeFriendly => 'Make it friendly';
+  String get makeFriendly => 'Maak het vriendelijk';
 
   @override
-  String get askMoreTime => 'Ask for more time';
+  String get askMoreTime => 'Vraag om meer tijd';
 
   @override
-  String get soundConfident => 'Sound confident';
+  String get soundConfident => 'Klinkt zelfverzekerd';
 
   @override
-  String get guidancePoliteContent => 'Make the reply polite and respectful.';
+  String get guidancePoliteContent =>
+      'Zorg ervoor dat het antwoord beleefd en respectvol is.';
 
   @override
-  String get guidanceShortContent => 'Keep the reply short and clear.';
+  String get guidanceShortContent => 'Houd het antwoord kort en duidelijk.';
 
   @override
   String get guidanceProfessionalContent =>
-      'Make the reply sound professional and appropriate for work.';
+      'Zorg ervoor dat het antwoord professioneel en geschikt voor het werk klinkt.';
 
   @override
-  String get guidanceFriendlyContent => 'Make the reply warm and friendly.';
+  String get guidanceFriendlyContent =>
+      'Zorg ervoor dat het antwoord warm en vriendelijk is.';
 
   @override
   String get guidanceDeclineContent =>
-      'Politely decline the request without sounding rude.';
+      'Wijs het verzoek beleefd af zonder onbeleefd te klinken.';
 
   @override
   String get guidanceThanksContent =>
-      'Add appreciation and a polite thank-you.';
+      'Voeg waardering en een beleefd bedankje toe.';
 
   @override
   String get guidanceMoreTimeContent =>
-      'Ask for more time while sounding responsible and polite.';
+      'Vraag om meer tijd terwijl u verantwoordelijk en beleefd klinkt.';
 
   @override
   String get guidanceConfidentContent =>
-      'Make the reply sound confident but not aggressive.';
+      'Zorg ervoor dat het antwoord zelfverzekerd maar niet agressief klinkt.';
 
   @override
   String todayAt(String time) {
-    return 'Today · $time';
+    return 'Vandaag · $time';
   }
 
   @override
   String yesterdayAt(String time) {
-    return 'Yesterday · $time';
+    return 'Gisteren · $time';
   }
 
   @override
@@ -864,10 +875,10 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get premiumActive => 'Premium subscription active';
+  String get premiumActive => 'Premium-abonnement actief';
 
   @override
   String creditsRemaining(String count) {
-    return '$count credits remaining';
+    return '$count resterend krediet';
   }
 }

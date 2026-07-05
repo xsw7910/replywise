@@ -33,23 +33,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get polish => '润色';
 
   @override
-  String get yourAiReplyAssistant => 'Your AI reply assistant';
+  String get yourAiReplyAssistant => '您的AI回复助手';
 
   @override
-  String get generateThoughtfulReplies =>
-      'Generate thoughtful replies instantly.';
+  String get generateThoughtfulReplies => '立即生成深思熟虑的回复。';
 
   @override
-  String get makeWritingClear => 'Make your writing clear and natural.';
+  String get makeWritingClear => '让你的写作清晰自然。';
 
   @override
-  String get understandTone => 'Understand tone and hidden meaning.';
+  String get understandTone => '理解语气和隐藏的含义。';
 
   @override
   String get templates => '模板';
 
   @override
-  String get reuseInstructions => 'Reuse your favorite AI instructions.';
+  String get reuseInstructions => '重复使用您最喜欢的人工智能指令。';
 
   @override
   String get recent => '最近使用';
@@ -61,8 +60,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get nothingHereYet => '这里还没有内容';
 
   @override
-  String get recentEmptyMessage =>
-      'Your recent replies, polished text, and explanations will appear here.';
+  String get recentEmptyMessage => '您最近的回复、经过修改的文本和解释将显示在此处。';
 
   @override
   String get createFirstReply => '创建第一条回复';
@@ -71,28 +69,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tipOfTheDay => '每日提示';
 
   @override
-  String get tipShortEmails =>
-      'Keep emails under 120 words for higher response rates.';
+  String get tipShortEmails => '将电子邮件控制在 120 个字以下，以获得更高的回复率。';
 
   @override
-  String get tipLeadWithAsk =>
-      'Lead with your ask — put the key request in the first line.';
+  String get tipLeadWithAsk => '提出你的要求——将关键要求放在第一行。';
 
   @override
-  String get tipMatchTone =>
-      'Match the other person\'s tone to build rapport faster.';
+  String get tipMatchTone => '配合对方的语气可以更快地建立融洽的关系。';
 
   @override
-  String get tipClearSubject =>
-      'A clear subject line gets more replies than a clever one.';
+  String get tipClearSubject => '清晰的主题比聪明的主题能获得更多回复。';
 
   @override
-  String get tipReadAloud =>
-      'Read your reply aloud once — it catches awkward phrasing.';
+  String get tipReadAloud => '大声朗读一次你的回复——它会发现一些尴尬的措辞。';
 
   @override
-  String get tipClearNextStep =>
-      'End with one clear next step so the reader knows what to do.';
+  String get tipClearNextStep => '以明确的下一步结束，以便读者知道该怎么做。';
 
   @override
   String get yourPlan => '你的方案';
@@ -101,45 +93,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String get plans => '方案';
 
   @override
-  String get credits => 'Credits';
+  String get credits => '积分';
 
   @override
-  String get totalCredits => 'Total credits';
+  String get totalCredits => '总积分';
 
   @override
-  String get watchAd => 'Watch ad';
+  String get watchAd => '观看广告';
 
   @override
-  String get watchAdReward => '+1 credit';
+  String get watchAdReward => '+1 积分';
 
   @override
-  String get currentPlan => 'Current plan';
+  String get currentPlan => '当前方案';
 
   @override
-  String get freePlan => 'Free plan';
+  String get freePlan => '免费方案';
 
   @override
   String freeRepliesPerDay(int count) {
-    return '$count free replies per day';
+    return '每天 $count 次免费回复';
   }
 
   @override
-  String get upgrade => 'Upgrade';
+  String get upgrade => '升级';
 
   @override
-  String get support => 'Support';
+  String get support => '支持';
 
   @override
-  String get supportDescription => 'Help center / Contact us';
+  String get supportDescription => '帮助中心/联系我们';
 
   @override
-  String get aboutDescription => 'Version, Privacy, Terms';
+  String get aboutDescription => '版本、隐私、条款';
 
   @override
-  String get guidance => '指导';
+  String get guidance => '指引';
 
   @override
-  String get guidanceLibrary => '指导语库';
+  String get guidanceLibrary => '指引库';
 
   @override
   String get languageAndInput => '语言和输入';
@@ -155,7 +147,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String staticPreview(String label) {
-    return '$label is a static preview.';
+    return '$label 是静态预览。';
   }
 
   @override
@@ -168,79 +160,78 @@ class AppLocalizationsZh extends AppLocalizations {
   String get environment => '环境';
 
   @override
-  String get developerTesting => 'Developer Testing';
+  String get developerTesting => '开发者测试';
 
   @override
-  String get resetFreeUsage => 'Reset free usage';
+  String get resetFreeUsage => '重置免费使用量';
 
   @override
   String addCredits(int count) {
-    return 'Add $count credits';
+    return '添加 $count 积分';
   }
 
   @override
-  String get simulatePremiumOn => 'Simulate Premium On';
+  String get simulatePremiumOn => '开启高级版模拟';
 
   @override
-  String get simulatePremiumOff => 'Simulate Premium Off';
+  String get simulatePremiumOff => '关闭高级版模拟';
 
   @override
-  String get refreshAccountState => 'Refresh account state';
+  String get refreshAccountState => '刷新帐户状态';
 
   @override
-  String get secureSession => 'Secure session';
+  String get secureSession => '安全会话';
 
   @override
-  String get anonymousSessionReady => 'Anonymous session ready';
+  String get anonymousSessionReady => '匿名会话准备就绪';
 
   @override
-  String get connectingAnonymousSession => 'Connecting anonymous session…';
+  String get connectingAnonymousSession => '正在连接匿名会话...';
 
   @override
-  String get refreshingSecureSession => 'Refreshing secure session…';
+  String get refreshingSecureSession => '正在刷新安全会话...';
 
   @override
-  String get restoringAnonymousSession => 'Restoring anonymous session…';
+  String get restoringAnonymousSession => '正在恢复匿名会话...';
 
   @override
-  String get anonymousSessionUnavailable => 'Anonymous session unavailable';
+  String get anonymousSessionUnavailable => '匿名会话不可用';
 
   @override
-  String get anonymousSessionNotStarted => 'Anonymous session not started';
+  String get anonymousSessionNotStarted => '匿名会话未启动';
 
   @override
   String get retry => '重试';
 
   @override
-  String get developer => 'Developer';
+  String get developer => '开发者';
 
   @override
-  String get localBackendConnection => 'Local backend connection';
+  String get localBackendConnection => '本地后端连接';
 
   @override
-  String get refreshBackendStatus => 'Refresh backend status';
+  String get refreshBackendStatus => '刷新后端状态';
 
   @override
-  String get checkingBackend => 'Checking backend…';
+  String get checkingBackend => '检查后端...';
 
   @override
-  String get connected => 'Connected';
+  String get connected => '已连接';
 
   @override
-  String get connectionFailed => 'Connection failed';
+  String get connectionFailed => '连接失败';
 
   @override
-  String get serviceUnreachable =>
-      'We couldn’t reach the service. Check your connection and try again.';
+  String get serviceUnreachable => '我们无法联系到该服务。检查您的连接并重试。';
 
   @override
-  String get copied => 'Copied';
+  String get copied => '已复制';
 
   @override
-  String get close => 'Close';
+  String get close => '关闭';
 
   @override
-  String get tryAgain => 'Try again';
+  String get tryAgain => '再试一次';
 
   @override
   String get cancel => '取消';
@@ -261,601 +252,580 @@ class AppLocalizationsZh extends AppLocalizations {
   String get done => '完成';
 
   @override
-  String get manageLibrary => 'Manage Library';
+  String get manageLibrary => '管理指引库';
 
   @override
-  String get newGuidance => 'New Guidance';
+  String get newGuidance => '新指南';
 
   @override
-  String get quickGuidance => 'Quick guidance';
+  String get quickGuidance => '快速指导';
 
   @override
-  String get viewPlans => 'View plans';
+  String get viewPlans => '查看计划';
 
   @override
-  String get restore => 'Restore';
+  String get restore => '恢复';
 
   @override
-  String get loading => 'Loading…';
+  String get loading => '加载中…';
 
   @override
-  String get premium => 'Premium';
+  String get premium => '高级版';
 
   @override
-  String get premiumUnlimited => 'Premium · Unlimited';
+  String get premiumUnlimited => '高级版 · 无限使用';
 
   @override
-  String get updating => 'Updating';
+  String get updating => '更新中';
 
   @override
-  String get updatingBalance => 'Updating balance…';
+  String get updatingBalance => '正在更新余额...';
 
   @override
-  String get balanceUnavailable => 'Balance unavailable';
+  String get balanceUnavailable => '余额不可用';
 
   @override
-  String get checking => 'Checking';
+  String get checking => '检查';
 
   @override
-  String get checkingBalance => 'Checking balance…';
+  String get checkingBalance => '检查余额...';
 
   @override
   String freeCount(int free) {
-    return '$free free';
+    return '免费 $free 次';
   }
 
   @override
   String usageBalance(int free, int credits) {
-    return '$free free · $credits credits';
+    return '免费 $free 次 · $credits 积分';
   }
 
   @override
-  String get copyPreview => 'Copy preview';
+  String get copyPreview => '复制预览';
 
   @override
-  String get copyResult => 'Copy result';
+  String get copyResult => '复制结果';
 
   @override
-  String get staticPreviewCaption => 'Static preview';
+  String get staticPreviewCaption => '静态预览';
 
   @override
-  String get history => 'History';
+  String get history => '历史';
 
   @override
-  String get clearHistory => 'Clear history?';
+  String get clearHistory => '清除历史记录？';
 
   @override
-  String get clearHistoryDescription =>
-      'This removes all recent items on this device. This cannot be undone.';
+  String get clearHistoryDescription => '这将删除该设备上的所有最近项目。此操作无法撤消。';
 
   @override
-  String get clearAll => 'Clear all';
+  String get clearAll => '全部清除';
 
   @override
-  String get messageReceived => 'Message received';
+  String get messageReceived => '收到消息';
 
   @override
-  String get messageYouReceived => 'Message you received';
+  String get messageYouReceived => '您收到的消息';
 
   @override
-  String get pasteOriginalMessage => 'Paste the original message here…';
+  String get pasteOriginalMessage => '将原始消息粘贴到此处...';
 
   @override
-  String get paste => 'Paste';
+  String get paste => '粘贴';
 
   @override
-  String get clear => 'Clear';
+  String get clear => '清除';
 
   @override
-  String get helpAiUnderstandIntent => 'Help AI understand your intent';
+  String get helpAiUnderstandIntent => '帮助 AI 理解你的意图';
 
   @override
-  String get addReplyInstructions => 'Add your reply instructions…';
+  String get addReplyInstructions => '添加您的回复说明...';
 
   @override
-  String get generating => 'Generating…';
+  String get generating => '生成…';
 
   @override
-  String get generateReply => 'Generate Reply';
+  String get generateReply => '生成回复';
 
   @override
-  String get creatingNaturalOptions => 'Creating a few natural options…';
+  String get creatingNaturalOptions => '正在生成自然流畅的回复...';
 
   @override
-  String get replyOptionsAppearHere => 'Your reply options will appear here.';
+  String get replyOptionsAppearHere => '您的回复选项将出现在这里。';
 
   @override
-  String get yourReplies => 'Your replies';
+  String get yourReplies => '您的回复';
 
   @override
-  String get whyThisWorks => 'Why this works';
+  String get whyThisWorks => '为什么这有效';
 
   @override
-  String get regenerateReplies => 'Regenerate replies';
+  String get regenerateReplies => '重新生成回复';
 
   @override
-  String get regenerateUsageNote =>
-      'Regenerating creates new replies and uses 1 generation.';
+  String get regenerateUsageNote => '重新生成会创建新回复并消耗 1 次生成额度。';
 
   @override
-  String get couldNotExplain => 'Couldn’t explain this message';
+  String get couldNotExplain => '无法解释此消息';
 
   @override
-  String get explainMessage => 'Explain message';
+  String get explainMessage => '解释消息';
 
   @override
-  String get copyExplanation => 'Copy explanation';
+  String get copyExplanation => '复制解释';
 
   @override
-  String get meaning => 'Meaning';
+  String get meaning => '含义';
 
   @override
-  String get tone => 'Tone';
+  String get tone => '语气';
 
   @override
-  String get hiddenMeaning => 'Hidden Meaning';
+  String get hiddenMeaning => '隐含含义';
 
   @override
-  String get noHiddenMeaning => 'No hidden meaning detected.';
+  String get noHiddenMeaning => '未检测到隐藏含义。';
 
   @override
-  String get suggestedReplies => 'Suggested Replies';
+  String get suggestedReplies => '建议回复';
 
   @override
-  String get moreOptions => 'More options';
+  String get moreOptions => '更多选择';
 
   @override
-  String get audience => 'Audience';
+  String get audience => '受众';
 
   @override
-  String get length => 'Length';
+  String get length => '长度';
 
   @override
-  String get channel => 'Channel';
+  String get channel => '渠道';
 
   @override
-  String get describeTone => 'Describe the tone';
+  String get describeTone => '描述语气';
 
   @override
-  String get toneHint => 'e.g. warm but professional';
+  String get toneHint => '例如热情但专业';
 
   @override
-  String get describeRelationship => 'Describe the relationship';
+  String get describeRelationship => '描述关系';
 
   @override
-  String get relationshipHint => 'For example: my landlord';
+  String get relationshipHint => '例如：我的房东';
 
   @override
-  String get customizeStyleToneFormat => 'Customize style, tone and format';
+  String get customizeStyleToneFormat => '自定义风格、语气和格式';
 
   @override
-  String get bePolite => 'Be polite';
+  String get bePolite => '有礼貌';
 
   @override
-  String get keepItShort => 'Keep it short';
+  String get keepItShort => '保持简短';
 
   @override
-  String get professional => 'Professional';
+  String get professional => '专业';
 
   @override
-  String get friendly => 'Friendly';
+  String get friendly => '友好';
 
   @override
-  String get declinePolitely => 'Decline politely';
+  String get declinePolitely => '礼貌地拒绝';
 
   @override
-  String get sayThankYou => 'Say thank you';
+  String get sayThankYou => '说声谢谢';
 
   @override
-  String get auto => 'Auto';
+  String get auto => '自动';
 
   @override
-  String get natural => 'Natural';
+  String get natural => '自然';
 
   @override
-  String get custom => 'Custom';
+  String get custom => '自定义';
 
   @override
-  String get friend => 'Friend';
+  String get friend => '朋友';
 
   @override
-  String get customer => 'Customer';
+  String get customer => '顾客';
 
   @override
-  String get coworker => 'Coworker';
+  String get coworker => '同事';
 
   @override
-  String get manager => 'Manager';
+  String get manager => '经理';
 
   @override
-  String get short => 'Short';
+  String get short => '短的';
 
   @override
-  String get medium => 'Medium';
+  String get medium => '中等的';
 
   @override
-  String get detailed => 'Detailed';
+  String get detailed => '详细';
 
   @override
-  String get textChannel => 'Text';
+  String get textChannel => '文本';
 
   @override
-  String get email => 'Email';
+  String get email => '电子邮件';
 
   @override
-  String get chat => 'Chat';
+  String get chat => '聊天';
 
   @override
-  String get textToPolish => 'Text to polish';
+  String get textToPolish => '待润色的文本';
 
   @override
-  String get pasteTextToImprove => 'Paste the text you\'d like to improve';
+  String get pasteTextToImprove => '粘贴您想要改进的文字';
 
   @override
-  String get pasteYourText => 'Paste your text here…';
+  String get pasteYourText => '将您的文字粘贴到此处...';
 
   @override
-  String get improvingClarity =>
-      'Improving clarity while keeping your meaning…';
+  String get improvingClarity => '提高清晰度，同时保留您的意思……';
 
   @override
-  String get polishedTextAppearsHere => 'Your polished text will appear here.';
+  String get polishedTextAppearsHere => '您精心设计的文本将出现在这里。';
 
   @override
-  String get polishedResult => 'Polished result';
+  String get polishedResult => '润色结果';
 
   @override
-  String get whatChanged => 'What changed?';
+  String get whatChanged => '修改内容';
 
   @override
-  String get polishAgain => 'Polish again';
+  String get polishAgain => '再次润色';
 
   @override
-  String get polishAgainUsageNote =>
-      'Polishing again creates a new result and uses 1 generation.';
+  String get polishAgainUsageNote => '再次润色会生成新结果并消耗 1 次生成额度。';
 
   @override
-  String get messageToUnderstand => 'Message to understand';
+  String get messageToUnderstand => '留言了解';
 
   @override
-  String get pasteMessageReceived => 'Paste the message you received';
+  String get pasteMessageReceived => '粘贴您收到的消息';
 
   @override
-  String get explainThisMessage => 'Explain this message';
+  String get explainThisMessage => '解释一下这条消息';
 
   @override
-  String get explaining => 'Explaining…';
+  String get explaining => '解释...';
 
   @override
-  String get readingBetweenLines => 'Reading between the lines…';
+  String get readingBetweenLines => '阅读字里行间……';
 
   @override
-  String get explanationAppearsHere => 'Your explanation will appear here.';
+  String get explanationAppearsHere => '您的解释将出现在这里。';
 
   @override
-  String get noSuggestedReplies => 'No suggested replies returned.';
+  String get noSuggestedReplies => '没有返回建议的回复。';
 
   @override
-  String get copy => 'Copy';
+  String get copy => '复制';
 
   @override
-  String get enterMessageFirst => 'Enter a message to explain first.';
+  String get enterMessageFirst => '首先输入一条消息进行解释。';
 
   @override
-  String get explainRateLimited =>
-      'You’ve reached the explain limit for now. Please try again later.';
+  String get explainRateLimited => '您目前已达到解释限制。请稍后重试。';
 
   @override
-  String get explainParseError =>
-      'We could not read the explanation clearly. Please try again.';
+  String get explainParseError => '我们无法清楚地阅读解释。请再试一次。';
 
   @override
-  String get explainUnavailable =>
-      'Explain is temporarily unavailable. Please try again shortly.';
+  String get explainUnavailable => '暂时无法解释。请稍后重试。';
 
   @override
-  String get unableToExplain => 'Unable to explain this message.';
+  String get unableToExplain => '无法解释此消息。';
 
   @override
-  String get replyCtaTitle =>
-      'Want a reply that better matches your intention?';
+  String get replyCtaTitle => '想要一个更符合您意图的回复吗？';
 
   @override
-  String get premiumTitle => 'ReplyWise Premium';
+  String get premiumTitle => 'ReplyWise 高级版';
 
   @override
-  String get back => 'Back';
+  String get back => '后退';
 
   @override
-  String get threeDaysFree => '3 days free';
+  String get threeDaysFree => '3天免费';
 
   @override
-  String get unlimitedReply => 'Unlimited Reply generations';
+  String get unlimitedReply => '无限生成回复';
 
   @override
-  String get unlimitedPolish => 'Unlimited Polish generations';
+  String get unlimitedPolish => '无限润色';
 
   @override
-  String get balancesPreserved => 'Free and credit balances stay preserved';
+  String get balancesPreserved => '免费次数和积分余额将保留';
 
   @override
-  String get loadingSubscriptionOptions => 'Loading subscription options…';
+  String get loadingSubscriptionOptions => '正在加载订阅选项...';
 
   @override
-  String get startFreeTrial => 'Start 3-day Free Trial';
+  String get startFreeTrial => '开始 3 天免费试用';
 
   @override
-  String get startYearlyPlan => 'Start Yearly Plan';
+  String get startYearlyPlan => '开始年度计划';
 
   @override
   String trialTerms(String price) {
-    return 'Free for 3 days, then $price/year. Cancel anytime.';
+    return '免费 3 天，然后 $price/年。随时取消。';
   }
 
   @override
   String yearlyTerms(String price) {
-    return '$price/year. Cancel anytime.';
+    return '$price/年。随时取消。';
   }
 
   @override
-  String get displayedPrice => 'the displayed price';
+  String get displayedPrice => '显示的价格';
 
   @override
-  String get topUpCredits => 'Top-up Credits';
+  String get topUpCredits => '充值积分';
 
   @override
-  String get creditDescription =>
-      'Each credit covers one Reply or Polish. Credits never expire.';
+  String get creditDescription => '每个积分可用于生成一次回复或润色一次。积分永不过期。';
 
   @override
-  String get loadingCreditPackages => 'Loading credit packages…';
+  String get loadingCreditPackages => '正在加载积分包...';
 
   @override
-  String get creditPackagesUnavailable =>
-      'Credit packages are unavailable right now.';
+  String get creditPackagesUnavailable => '积分套餐暂时不可用。';
 
   @override
-  String get refreshPackages => 'Refresh packages';
+  String get refreshPackages => '刷新套餐';
 
   @override
   String buyCredits(int credits, String price) {
-    return 'Buy $credits Credits — $price';
+    return '购买 $credits 积分 — $price';
   }
 
   @override
-  String get restoring => 'Restoring…';
+  String get restoring => '正在恢复…';
 
   @override
-  String get restorePremium => 'Restore Premium subscription';
+  String get restorePremium => '恢复高级订阅';
 
   @override
-  String get purchaseVerification =>
-      'Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically.';
+  String get purchaseVerification => '高级版订阅和积分购买均由 ReplyWise 验证。积分购买会自动同步。';
 
   @override
-  String get newGuidanceTooltip => 'New guidance';
+  String get newGuidanceTooltip => '新指导';
 
   @override
-  String get builtIn => 'Built-in';
+  String get builtIn => '内置';
 
   @override
-  String get myGuidance => 'My Guidance';
+  String get myGuidance => '我的指导';
 
   @override
-  String get useInReply => 'Use in Reply';
+  String get useInReply => '在回复中使用';
 
   @override
-  String get useInPolish => 'Use in Polish';
+  String get useInPolish => '用于润色';
 
   @override
-  String get deleteGuidance => 'Delete this guidance?';
+  String get deleteGuidance => '删除这个指导吗？';
 
   @override
-  String get cannotBeUndone => 'This cannot be undone.';
+  String get cannotBeUndone => '此操作无法撤消。';
 
   @override
-  String get category => 'Category';
+  String get category => '类别';
 
   @override
-  String get titleLabel => 'Title';
+  String get titleLabel => '标题';
 
   @override
-  String get guidanceTitleHint => 'Short name for this guidance…';
+  String get guidanceTitleHint => '本指引的简短名称...';
 
   @override
-  String get guidanceHint => 'Describe how the AI should shape the reply…';
+  String get guidanceHint => '描述 AI 应如何生成回复...';
 
   @override
-  String get writeAnyLanguage => 'Write in any language';
+  String get writeAnyLanguage => '用任何语言书写';
 
   @override
-  String get saveChanges => 'Save changes';
+  String get saveChanges => '保存更改';
 
   @override
-  String get saveGuidance => 'Save guidance';
+  String get saveGuidance => '保存指导';
 
   @override
-  String get couldNotSaveGuidance =>
-      'Could not save this guidance. Please try again.';
+  String get couldNotSaveGuidance => '无法保存此指南。请再试一次。';
 
   @override
-  String get concise => 'Concise';
+  String get concise => '简洁的';
 
   @override
-  String get moreNatural => 'More natural';
+  String get moreNatural => '更自然';
 
   @override
-  String get improveGrammar => 'Improve grammar';
+  String get improveGrammar => '提高语法';
 
   @override
-  String get fixSpelling => 'Fix spelling';
+  String get fixSpelling => '修正拼写';
 
   @override
-  String get morePersuasive => 'More persuasive';
+  String get morePersuasive => '更有说服力';
 
   @override
-  String get moreConfident => 'More confident';
+  String get moreConfident => '更加自信';
 
   @override
-  String get simplifyWording => 'Simplify wording';
+  String get simplifyWording => '简化措辞';
 
   @override
-  String get betterFlow => 'Better flow';
+  String get betterFlow => '更好的流动性';
 
   @override
-  String get describePolish => 'Describe how you want the draft polished';
+  String get describePolish => '描述您希望如何完善草稿';
 
   @override
-  String get describeAudience => 'Describe the audience';
+  String get describeAudience => '描述一下观众';
 
   @override
-  String get audienceHint => 'e.g. my manager';
+  String get audienceHint => '例如我的经理';
 
   @override
-  String get extraInstruction => 'Extra instruction';
+  String get extraInstruction => '额外说明';
 
   @override
-  String get extraPolishHint => 'Add any other polishing preference';
+  String get extraPolishHint => '添加其他润色偏好';
 
   @override
-  String get polishing => 'Polishing…';
+  String get polishing => '正在润色...';
 
   @override
-  String get polishText => 'Polish Text';
+  String get polishText => '润色文本';
 
   @override
-  String get adjustToneLengthFormat => 'Adjust tone, length and format';
+  String get adjustToneLengthFormat => '调整语气、长度和格式';
 
   @override
-  String get instructionProfessional => 'Make the writing sound professional.';
+  String get instructionProfessional => '让写作听起来专业。';
 
   @override
-  String get instructionFriendly => 'Make the writing warmer and friendlier.';
+  String get instructionFriendly => '让文笔更加温暖、亲切。';
 
   @override
-  String get instructionConcise => 'Make the writing concise and direct.';
+  String get instructionConcise => '使写作简洁、直接。';
 
   @override
-  String get instructionNatural => 'Make the wording sound natural and fluent.';
+  String get instructionNatural => '使措辞听起来自然、流畅。';
 
   @override
-  String get instructionGrammar =>
-      'Correct the grammar while preserving the meaning.';
+  String get instructionGrammar => '纠正语法，同时保留含义。';
 
   @override
-  String get instructionSpelling => 'Correct all spelling errors.';
+  String get instructionSpelling => '更正所有拼写错误。';
 
   @override
-  String get instructionPersuasive =>
-      'Make the writing more persuasive and compelling.';
+  String get instructionPersuasive => '使文章更具说服力和说服力。';
 
   @override
-  String get instructionConfident =>
-      'Make the writing sound clear and confident.';
+  String get instructionConfident => '让写作听起来清晰而自信。';
 
   @override
-  String get instructionSimple => 'Use simpler, easier-to-read wording.';
+  String get instructionSimple => '使用更简单、更易于阅读的措辞。';
 
   @override
-  String get instructionFlow => 'Improve sentence flow and transitions.';
+  String get instructionFlow => '改善句子流畅和过渡。';
 
   @override
-  String get shorter => 'Shorter';
+  String get shorter => '较短';
 
   @override
-  String get sameLength => 'Same';
+  String get sameLength => '保持长度';
 
   @override
-  String get longer => 'Longer';
+  String get longer => '更长';
 
   @override
-  String get favorites => 'Favorites';
+  String get favorites => '收藏夹';
 
   @override
-  String get createGuidanceEmpty =>
-      'Create your own guidance to reuse it later.';
+  String get createGuidanceEmpty => '创建您自己的指南以便稍后重用。';
 
   @override
-  String get removeFavorite => 'Remove from favorites';
+  String get removeFavorite => '从收藏夹中删除';
 
   @override
-  String get addFavorite => 'Add to favorites';
+  String get addFavorite => '添加到收藏夹';
 
   @override
   String useTemplate(String title) {
-    return 'Use “$title”';
+    return '使用“$title”';
   }
 
   @override
-  String get chooseGuidance => 'Choose guidance';
+  String get chooseGuidance => '选择指导';
 
   @override
-  String get library => 'Library';
+  String get library => '指引库';
 
   @override
-  String get general => 'General';
+  String get general => '通用';
 
   @override
-  String get decline => 'Decline';
+  String get decline => '拒绝';
 
   @override
-  String get thanks => 'Thanks';
+  String get thanks => '谢谢';
 
   @override
-  String get followUp => 'Follow-up';
+  String get followUp => '跟进';
 
   @override
-  String get editGuidance => 'Edit Guidance';
+  String get editGuidance => '编辑指南';
 
   @override
-  String get makeProfessional => 'Make it professional';
+  String get makeProfessional => '让它变得专业';
 
   @override
-  String get makeFriendly => 'Make it friendly';
+  String get makeFriendly => '让它变得友好';
 
   @override
-  String get askMoreTime => 'Ask for more time';
+  String get askMoreTime => '要求更多时间';
 
   @override
-  String get soundConfident => 'Sound confident';
+  String get soundConfident => '听起来很自信';
 
   @override
-  String get guidancePoliteContent => 'Make the reply polite and respectful.';
+  String get guidancePoliteContent => '回复时要礼貌且尊重。';
 
   @override
-  String get guidanceShortContent => 'Keep the reply short and clear.';
+  String get guidanceShortContent => '保持回复简短、清晰。';
 
   @override
-  String get guidanceProfessionalContent =>
-      'Make the reply sound professional and appropriate for work.';
+  String get guidanceProfessionalContent => '让回复听起来专业且适合工作。';
 
   @override
-  String get guidanceFriendlyContent => 'Make the reply warm and friendly.';
+  String get guidanceFriendlyContent => '回复要热情友好。';
 
   @override
-  String get guidanceDeclineContent =>
-      'Politely decline the request without sounding rude.';
+  String get guidanceDeclineContent => '礼貌地拒绝请求，但不要显得粗鲁。';
 
   @override
-  String get guidanceThanksContent =>
-      'Add appreciation and a polite thank-you.';
+  String get guidanceThanksContent => '添加赞赏和礼貌的感谢。';
 
   @override
-  String get guidanceMoreTimeContent =>
-      'Ask for more time while sounding responsible and polite.';
+  String get guidanceMoreTimeContent => '要求更多时间，同时听起来负责任且有礼貌。';
 
   @override
-  String get guidanceConfidentContent =>
-      'Make the reply sound confident but not aggressive.';
+  String get guidanceConfidentContent => '让回答听起来自信但不咄咄逼人。';
 
   @override
   String todayAt(String time) {
-    return 'Today · $time';
+    return '今天·$time';
   }
 
   @override
   String yesterdayAt(String time) {
-    return 'Yesterday · $time';
+    return '昨天·$time';
   }
 
   @override
@@ -864,17 +834,20 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get premiumActive => 'Premium subscription active';
+  String get premiumActive => '高级订阅已激活';
 
   @override
   String creditsRemaining(String count) {
-    return '$count credits remaining';
+    return '$count 剩余积分';
   }
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
 class AppLocalizationsZhHant extends AppLocalizationsZh {
   AppLocalizationsZhHant() : super('zh_Hant');
+
+  @override
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => '跟隨系統';
@@ -898,7 +871,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get polish => '潤飾';
 
   @override
+  String get yourAiReplyAssistant => '您的AI回覆助手';
+
+  @override
+  String get generateThoughtfulReplies => '立即產生深思熟慮的回應。';
+
+  @override
+  String get makeWritingClear => '讓你的寫作清晰自然。';
+
+  @override
+  String get understandTone => '理解語氣和隱藏的意思。';
+
+  @override
   String get templates => '範本';
+
+  @override
+  String get reuseInstructions => '重複使用您最喜歡的人工智慧指令。';
 
   @override
   String get recent => '最近使用';
@@ -910,16 +898,72 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get nothingHereYet => '這裡還沒有內容';
 
   @override
+  String get recentEmptyMessage => '您最近的回覆、經過修改的文字和解釋將顯示在此。';
+
+  @override
   String get createFirstReply => '建立第一則回覆';
 
   @override
   String get tipOfTheDay => '每日提示';
 
   @override
+  String get tipShortEmails => '將電子郵件控制在 120 個字以下，以獲得更高的回覆率。';
+
+  @override
+  String get tipLeadWithAsk => '提出你的要求－將關鍵要求放在第一行。';
+
+  @override
+  String get tipMatchTone => '配合對方的語氣可以更快建立融洽的關係。';
+
+  @override
+  String get tipClearSubject => '清晰的主題比聰明的主題能獲得更多回應。';
+
+  @override
+  String get tipReadAloud => '大聲朗讀一次你的回覆——它會發現一些尷尬的措辭。';
+
+  @override
+  String get tipClearNextStep => '以明確的下一步結束，讓讀者知道該怎麼做。';
+
+  @override
   String get yourPlan => '你的方案';
 
   @override
   String get plans => '方案';
+
+  @override
+  String get credits => '點數';
+
+  @override
+  String get totalCredits => '總點數';
+
+  @override
+  String get watchAd => '觀看廣告';
+
+  @override
+  String get watchAdReward => '+1 點數';
+
+  @override
+  String get currentPlan => '目前方案';
+
+  @override
+  String get freePlan => '免費方案';
+
+  @override
+  String freeRepliesPerDay(int count) {
+    return '每天 $count 次免費回覆';
+  }
+
+  @override
+  String get upgrade => '升級';
+
+  @override
+  String get support => '支援';
+
+  @override
+  String get supportDescription => '幫助中心/聯絡我們';
+
+  @override
+  String get aboutDescription => '版本、隱私權、條款';
 
   @override
   String get guidance => '指引';
@@ -940,6 +984,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get autoDetect => '自動偵測';
 
   @override
+  String staticPreview(String label) {
+    return '$label 是靜態預覽。';
+  }
+
+  @override
   String get about => '關於';
 
   @override
@@ -949,7 +998,78 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get environment => '環境';
 
   @override
+  String get developerTesting => '開發者測試';
+
+  @override
+  String get resetFreeUsage => '重置免費使用量';
+
+  @override
+  String addCredits(int count) {
+    return '加入 $count 積分';
+  }
+
+  @override
+  String get simulatePremiumOn => '開啟進階版模擬';
+
+  @override
+  String get simulatePremiumOff => '關閉進階版模擬';
+
+  @override
+  String get refreshAccountState => '刷新帳號狀態';
+
+  @override
+  String get secureSession => '安全會話';
+
+  @override
+  String get anonymousSessionReady => '匿名會話準備就緒';
+
+  @override
+  String get connectingAnonymousSession => '正在連接匿名會話...';
+
+  @override
+  String get refreshingSecureSession => '正在刷新安全會話...';
+
+  @override
+  String get restoringAnonymousSession => '正在恢復匿名會話...';
+
+  @override
+  String get anonymousSessionUnavailable => '匿名會話不可用';
+
+  @override
+  String get anonymousSessionNotStarted => '匿名會話未啟動';
+
+  @override
   String get retry => '重試';
+
+  @override
+  String get developer => '開發者';
+
+  @override
+  String get localBackendConnection => '本機後端連線';
+
+  @override
+  String get refreshBackendStatus => '重新整理後端狀態';
+
+  @override
+  String get checkingBackend => '檢查後端...';
+
+  @override
+  String get connected => '已連接';
+
+  @override
+  String get connectionFailed => '連線失敗';
+
+  @override
+  String get serviceUnreachable => '我們無法聯繫到該服務。檢查您的連線並重試。';
+
+  @override
+  String get copied => '已複製';
+
+  @override
+  String get close => '關閉';
+
+  @override
+  String get tryAgain => '再試一次';
 
   @override
   String get cancel => '取消';
@@ -968,4 +1088,594 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get done => '完成';
+
+  @override
+  String get manageLibrary => '管理指引庫';
+
+  @override
+  String get newGuidance => '新指南';
+
+  @override
+  String get quickGuidance => '快速指導';
+
+  @override
+  String get viewPlans => '查看計劃';
+
+  @override
+  String get restore => '恢復';
+
+  @override
+  String get loading => '載入中…';
+
+  @override
+  String get premium => '進階版';
+
+  @override
+  String get premiumUnlimited => '進階版 · 無限使用';
+
+  @override
+  String get updating => '更新中';
+
+  @override
+  String get updatingBalance => '正在更新餘額...';
+
+  @override
+  String get balanceUnavailable => '餘額不可用';
+
+  @override
+  String get checking => '檢查';
+
+  @override
+  String get checkingBalance => '檢查餘額...';
+
+  @override
+  String freeCount(int free) {
+    return '免費 $free 次';
+  }
+
+  @override
+  String usageBalance(int free, int credits) {
+    return '免費 $free 次 · $credits 點數';
+  }
+
+  @override
+  String get copyPreview => '複製預覽';
+
+  @override
+  String get copyResult => '複製結果';
+
+  @override
+  String get staticPreviewCaption => '靜態預覽';
+
+  @override
+  String get history => '歷史';
+
+  @override
+  String get clearHistory => '清除歷史記錄？';
+
+  @override
+  String get clearHistoryDescription => '這將刪除該裝置上的所有最近項目。此操作無法撤銷。';
+
+  @override
+  String get clearAll => '全部清除';
+
+  @override
+  String get messageReceived => '收到訊息';
+
+  @override
+  String get messageYouReceived => '您收到的訊息';
+
+  @override
+  String get pasteOriginalMessage => '將原始訊息貼到此處...';
+
+  @override
+  String get paste => '貼上';
+
+  @override
+  String get clear => '清除';
+
+  @override
+  String get helpAiUnderstandIntent => '協助 AI 理解你的意圖';
+
+  @override
+  String get addReplyInstructions => '新增您的回覆說明...';
+
+  @override
+  String get generating => '生成…';
+
+  @override
+  String get generateReply => '生成回覆';
+
+  @override
+  String get creatingNaturalOptions => '正在產生自然流暢的回覆...';
+
+  @override
+  String get replyOptionsAppearHere => '您的回覆選項將出現在這裡。';
+
+  @override
+  String get yourReplies => '您的回覆';
+
+  @override
+  String get whyThisWorks => '為什麼這有效';
+
+  @override
+  String get regenerateReplies => '重新生成回复';
+
+  @override
+  String get regenerateUsageNote => '重新產生會建立新回覆並使用 1 次產生額度。';
+
+  @override
+  String get couldNotExplain => '無法解釋此訊息';
+
+  @override
+  String get explainMessage => '解釋訊息';
+
+  @override
+  String get copyExplanation => '複製解釋';
+
+  @override
+  String get meaning => '含義';
+
+  @override
+  String get tone => '語氣';
+
+  @override
+  String get hiddenMeaning => '隱含含義';
+
+  @override
+  String get noHiddenMeaning => '未檢測到隱藏含義。';
+
+  @override
+  String get suggestedReplies => '建議回复';
+
+  @override
+  String get moreOptions => '更多選擇';
+
+  @override
+  String get audience => '受眾';
+
+  @override
+  String get length => '長度';
+
+  @override
+  String get channel => '頻道';
+
+  @override
+  String get describeTone => '描述語氣';
+
+  @override
+  String get toneHint => '例如熱情但專業';
+
+  @override
+  String get describeRelationship => '描述關係';
+
+  @override
+  String get relationshipHint => '例如：我的房東';
+
+  @override
+  String get customizeStyleToneFormat => '自訂風格、語氣和格式';
+
+  @override
+  String get bePolite => '有禮貌';
+
+  @override
+  String get keepItShort => '保持簡短';
+
+  @override
+  String get professional => '專業';
+
+  @override
+  String get friendly => '友善';
+
+  @override
+  String get declinePolitely => '禮貌地拒絕';
+
+  @override
+  String get sayThankYou => '說聲謝謝';
+
+  @override
+  String get auto => '自動';
+
+  @override
+  String get natural => '自然';
+
+  @override
+  String get custom => '自訂';
+
+  @override
+  String get friend => '朋友';
+
+  @override
+  String get customer => '顧客';
+
+  @override
+  String get coworker => '同事';
+
+  @override
+  String get manager => '主管';
+
+  @override
+  String get short => '短的';
+
+  @override
+  String get medium => '中等的';
+
+  @override
+  String get detailed => '詳細';
+
+  @override
+  String get textChannel => '文字';
+
+  @override
+  String get email => '電子郵件';
+
+  @override
+  String get chat => '聊天';
+
+  @override
+  String get textToPolish => '待潤飾的文本';
+
+  @override
+  String get pasteTextToImprove => '貼上您想要改進的文字';
+
+  @override
+  String get pasteYourText => '將您的文字貼到此處...';
+
+  @override
+  String get improvingClarity => '提高清晰度，同時保留您的意思…';
+
+  @override
+  String get polishedTextAppearsHere => '您精心設計的文字將出現在這裡。';
+
+  @override
+  String get polishedResult => '潤飾結果';
+
+  @override
+  String get whatChanged => '修改內容';
+
+  @override
+  String get polishAgain => '再次潤飾';
+
+  @override
+  String get polishAgainUsageNote => '再次潤飾會產生新結果並使用 1 次產生額度。';
+
+  @override
+  String get messageToUnderstand => '留言了解';
+
+  @override
+  String get pasteMessageReceived => '貼上您收到的訊息';
+
+  @override
+  String get explainThisMessage => '解釋一下這則訊息';
+
+  @override
+  String get explaining => '解釋...';
+
+  @override
+  String get readingBetweenLines => '閱讀字裡行間…';
+
+  @override
+  String get explanationAppearsHere => '您的解釋將會出現在這裡。';
+
+  @override
+  String get noSuggestedReplies => '沒有返回建議的回應。';
+
+  @override
+  String get copy => '複製';
+
+  @override
+  String get enterMessageFirst => '首先輸入一則訊息進行解釋。';
+
+  @override
+  String get explainRateLimited => '您目前已達到解釋限制。請稍後重試。';
+
+  @override
+  String get explainParseError => '我們無法清楚地閱讀解釋。請再試一次。';
+
+  @override
+  String get explainUnavailable => '暫時無法解釋。請稍後重試。';
+
+  @override
+  String get unableToExplain => '無法解釋此訊息。';
+
+  @override
+  String get replyCtaTitle => '想要一個更符合您意圖的回覆嗎？';
+
+  @override
+  String get premiumTitle => 'ReplyWise 進階版';
+
+  @override
+  String get back => '後退';
+
+  @override
+  String get threeDaysFree => '3天免費';
+
+  @override
+  String get unlimitedReply => '無限產生回覆';
+
+  @override
+  String get unlimitedPolish => '無限潤飾';
+
+  @override
+  String get balancesPreserved => '免費次數與點數餘額將保留';
+
+  @override
+  String get loadingSubscriptionOptions => '正在載入訂閱選項...';
+
+  @override
+  String get startFreeTrial => '開始 3 天免費試用';
+
+  @override
+  String get startYearlyPlan => '開始年度計劃';
+
+  @override
+  String trialTerms(String price) {
+    return '免費 3 天，然後 $price/年。隨時取消。';
+  }
+
+  @override
+  String yearlyTerms(String price) {
+    return '$price/年。隨時取消。';
+  }
+
+  @override
+  String get displayedPrice => '顯示的價格';
+
+  @override
+  String get topUpCredits => '儲值積分';
+
+  @override
+  String get creditDescription => '每個點數可用於產生一次回覆或潤飾一次。點數永不過期。';
+
+  @override
+  String get loadingCreditPackages => '正在加載積分包...';
+
+  @override
+  String get creditPackagesUnavailable => '點數方案暫時無法使用。';
+
+  @override
+  String get refreshPackages => '刷新套餐';
+
+  @override
+  String buyCredits(int credits, String price) {
+    return '購買 $credits 積分 — $price';
+  }
+
+  @override
+  String get restoring => '正在恢復…';
+
+  @override
+  String get restorePremium => '恢復高級訂閱';
+
+  @override
+  String get purchaseVerification => '進階版訂閱與點數購買均由 ReplyWise 驗證。點數購買會自動同步。';
+
+  @override
+  String get newGuidanceTooltip => '新指導';
+
+  @override
+  String get builtIn => '內建';
+
+  @override
+  String get myGuidance => '我的指導';
+
+  @override
+  String get useInReply => '在回覆中使用';
+
+  @override
+  String get useInPolish => '用於潤飾';
+
+  @override
+  String get deleteGuidance => '刪除這個指導嗎？';
+
+  @override
+  String get cannotBeUndone => '此操作無法撤銷。';
+
+  @override
+  String get category => '類別';
+
+  @override
+  String get titleLabel => '標題';
+
+  @override
+  String get guidanceTitleHint => '此指引的簡短名稱...';
+
+  @override
+  String get guidanceHint => '描述 AI 應如何產生回覆...';
+
+  @override
+  String get writeAnyLanguage => '用任何語言書寫';
+
+  @override
+  String get saveChanges => '儲存變更';
+
+  @override
+  String get saveGuidance => '保存指導';
+
+  @override
+  String get couldNotSaveGuidance => '無法儲存此指南。請再試一次。';
+
+  @override
+  String get concise => '簡潔的';
+
+  @override
+  String get moreNatural => '更自然';
+
+  @override
+  String get improveGrammar => '提高文法';
+
+  @override
+  String get fixSpelling => '修正拼字';
+
+  @override
+  String get morePersuasive => '更有說服力';
+
+  @override
+  String get moreConfident => '更有自信';
+
+  @override
+  String get simplifyWording => '簡化措辭';
+
+  @override
+  String get betterFlow => '更好的流動性';
+
+  @override
+  String get describePolish => '描述您希望如何完善草稿';
+
+  @override
+  String get describeAudience => '描述觀眾';
+
+  @override
+  String get audienceHint => '例如我的經理';
+
+  @override
+  String get extraInstruction => '額外說明';
+
+  @override
+  String get extraPolishHint => '新增其他潤飾偏好';
+
+  @override
+  String get polishing => '正在潤飾...';
+
+  @override
+  String get polishText => '潤飾文字';
+
+  @override
+  String get adjustToneLengthFormat => '調整語氣、長度與格式';
+
+  @override
+  String get instructionProfessional => '讓寫作聽起來專業。';
+
+  @override
+  String get instructionFriendly => '讓文筆更加溫暖、親切。';
+
+  @override
+  String get instructionConcise => '使寫作簡潔、直接。';
+
+  @override
+  String get instructionNatural => '使措辭聽起來自然、流暢。';
+
+  @override
+  String get instructionGrammar => '糾正語法，同時保留含義。';
+
+  @override
+  String get instructionSpelling => '更正所有拼字錯誤。';
+
+  @override
+  String get instructionPersuasive => '使文章更具說服力和說服力。';
+
+  @override
+  String get instructionConfident => '讓寫作聽起來清晰又自信。';
+
+  @override
+  String get instructionSimple => '使用更簡單、更易於閱讀的措詞。';
+
+  @override
+  String get instructionFlow => '改善句子流暢和過渡。';
+
+  @override
+  String get shorter => '較短';
+
+  @override
+  String get sameLength => '保持長度';
+
+  @override
+  String get longer => '更長';
+
+  @override
+  String get favorites => '收藏夾';
+
+  @override
+  String get createGuidanceEmpty => '建立您自己的指南以便稍後重複使用。';
+
+  @override
+  String get removeFavorite => '從收藏夾中刪除';
+
+  @override
+  String get addFavorite => '加入收藏夾';
+
+  @override
+  String useTemplate(String title) {
+    return '使用“$title”';
+  }
+
+  @override
+  String get chooseGuidance => '選擇指導';
+
+  @override
+  String get library => '指引庫';
+
+  @override
+  String get general => '一般';
+
+  @override
+  String get decline => '婉拒';
+
+  @override
+  String get thanks => '謝謝';
+
+  @override
+  String get followUp => '跟進';
+
+  @override
+  String get editGuidance => '編輯指南';
+
+  @override
+  String get makeProfessional => '讓它變得專業';
+
+  @override
+  String get makeFriendly => '讓它變得友好';
+
+  @override
+  String get askMoreTime => '要求更多時間';
+
+  @override
+  String get soundConfident => '聽起來很有自信';
+
+  @override
+  String get guidancePoliteContent => '回覆時要禮貌且尊重。';
+
+  @override
+  String get guidanceShortContent => '保持回覆簡短、清晰。';
+
+  @override
+  String get guidanceProfessionalContent => '讓回覆聽起來專業且適合工作。';
+
+  @override
+  String get guidanceFriendlyContent => '回復要熱情友善。';
+
+  @override
+  String get guidanceDeclineContent => '禮貌地拒絕請求，但不要顯得粗魯。';
+
+  @override
+  String get guidanceThanksContent => '添加讚賞和禮貌的感謝。';
+
+  @override
+  String get guidanceMoreTimeContent => '要求更多時間，同時聽起來負責任且有禮貌。';
+
+  @override
+  String get guidanceConfidentContent => '讓回答聽起來自信但不咄咄逼人。';
+
+  @override
+  String todayAt(String time) {
+    return '今天·$time';
+  }
+
+  @override
+  String yesterdayAt(String time) {
+    return '昨天·$time';
+  }
+
+  @override
+  String dateAt(String date, String time) {
+    return '$date · $time';
+  }
+
+  @override
+  String get premiumActive => '高級訂閱已激活';
+
+  @override
+  String creditsRemaining(String count) {
+    return '$count 剩餘積分';
+  }
 }

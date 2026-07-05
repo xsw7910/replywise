@@ -326,11 +326,6 @@ class _PlanCard extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                if (!usage.isPremium)
-                  Text(
-                    context.l10n.freeRepliesPerDay(usage.freeUsesLimit),
-                    style: AppTextStyles.helper,
-                  ),
               ],
             ),
           ),
