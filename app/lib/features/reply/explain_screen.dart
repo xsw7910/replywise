@@ -13,6 +13,8 @@ import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import '../entitlement/usage_controller.dart';
+import '../recent/application/recent_providers.dart';
+import '../recent/domain/recent_item.dart';
 import 'application/explain_controller.dart';
 import 'application/pending_reply_input_provider.dart';
 import 'domain/reply_models.dart';
@@ -55,11 +57,21 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   }
 
   Future<void> _explain() async {
+    // Capture the message before the async gap.
+    final input = _messageController.text;
     final result = await ref
         .read(explainControllerProvider.notifier)
-        .explain(text: _messageController.text, explainLang: 'en');
+        .explain(text: input, explainLang: 'en');
     if (!mounted || result == null) return;
     setState(() => _result = result);
+    await saveRecentItem(
+      ref,
+      RecentItem.create(
+        type: RecentType.explain,
+        inputText: input,
+        outputText: result.meaning,
+      ),
+    );
   }
 
   Future<void> _copySuggestion(String suggestion) async {

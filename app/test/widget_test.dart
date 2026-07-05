@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +13,7 @@ import 'package:replywise/features/auth/data/auth_repository.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
 import 'package:replywise/features/paywall/paywall_screen.dart';
+import 'package:replywise/features/recent/domain/recent_item.dart';
 import 'package:replywise/features/reply/reply_screen.dart';
 import 'package:replywise/features/settings/application/dev_tools_controller.dart';
 import 'package:replywise/features/entitlement/subscription_repository.dart';
@@ -188,6 +191,72 @@ void main() {
     await tapHomeCard(tester, const Key('home-feature-guidance'));
 
     expect(find.text('Built-in'), findsOneWidget);
+  });
+
+  testWidgets('Home Recent shows the empty state when there is no history', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 3200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await pumpReplyWiseApp(tester);
+
+    expect(find.text('Nothing here yet'), findsOneWidget);
+    expect(find.text('Create your first reply'), findsOneWidget);
+    expect(find.text('View all'), findsNothing);
+  });
+
+  testWidgets('Home Recent shows the latest stored items', (tester) async {
+    tester.view.physicalSize = const Size(1200, 3200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    final now = DateTime.now();
+    final items = [
+      RecentItem(
+        id: '1',
+        type: RecentType.reply,
+        title: 'Reply to: Late delivery',
+        inputText: 'Where is my order?',
+        outputText: 'It ships today.',
+        createdAt: now,
+      ),
+      RecentItem(
+        id: '2',
+        type: RecentType.polish,
+        title: 'Polish: My landlord email',
+        inputText: 'hey can i pay rent late',
+        outputText: 'Polished text.',
+        createdAt: now.subtract(const Duration(hours: 2)),
+      ),
+    ];
+    SharedPreferences.setMockInitialValues({
+      'replywise_recent_items_v1': jsonEncode(
+        items.map((e) => e.toJson()).toList(),
+      ),
+    });
+    _prefs = await SharedPreferences.getInstance();
+
+    await pumpReplyWiseApp(tester);
+
+    expect(find.text('Reply to: Late delivery'), findsOneWidget);
+    expect(find.text('Polish: My landlord email'), findsOneWidget);
+    expect(find.text('View all'), findsOneWidget);
+    expect(find.text('Nothing here yet'), findsNothing);
+  });
+
+  testWidgets('Create your first reply opens the Reply page', (tester) async {
+    tester.view.physicalSize = const Size(1200, 3200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await pumpReplyWiseApp(tester);
+
+    await tester.tap(find.text('Create your first reply'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Message received'), findsOneWidget);
   });
 
   testWidgets('Developer Testing panel is visible in dev Settings', (

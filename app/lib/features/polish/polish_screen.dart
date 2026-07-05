@@ -20,6 +20,8 @@ import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_picker_sheet.dart';
 import '../guidance/presentation/guidance_text_field.dart';
+import '../recent/application/recent_providers.dart';
+import '../recent/domain/recent_item.dart';
 import '../reply/widgets/reply_status_badge.dart';
 
 const _kColor = AppColors.polishColor;
@@ -128,20 +130,38 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     return value.isEmpty ? null : value;
   }
 
-  Future<void> _polish() => ref
-      .read(polishControllerProvider.notifier)
-      .polish(
-        PolishRequest(
-          draft: _draftController.text,
-          direction: 'natural',
+  Future<void> _polish() async {
+    // Capture the draft before the async gap.
+    final draft = _draftController.text;
+    await ref.read(polishControllerProvider.notifier).polish(
+          PolishRequest(
+            draft: draft,
+            direction: 'natural',
+            guidance: _optionalText(_guidanceController),
+            tone: _effectiveTone(),
+            audience: _effectiveAudience(),
+            length: _length == 'Same' ? null : _length,
+            extraInstruction: _optionalText(_extraInstructionController),
+            guidanceLang: 'en',
+          ),
+        );
+    if (!mounted) return;
+    final state = ref.read(polishControllerProvider);
+    final result = state.result;
+    if (state.error == null && !state.isLoading && result != null) {
+      await saveRecentItem(
+        ref,
+        RecentItem.create(
+          type: RecentType.polish,
+          inputText: draft,
+          outputText: result.polished,
           guidance: _optionalText(_guidanceController),
           tone: _effectiveTone(),
-          audience: _effectiveAudience(),
           length: _length == 'Same' ? null : _length,
-          extraInstruction: _optionalText(_extraInstructionController),
-          guidanceLang: 'en',
         ),
       );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -10,6 +10,9 @@ import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
 import '../entitlement/usage_controller.dart';
 import '../reply/widgets/reply_status_badge.dart';
+import '../recent/application/recent_providers.dart';
+import '../recent/domain/recent_item.dart';
+import '../recent/presentation/recent_item_row.dart';
 
 const _homeHorizontalPadding = 20.0;
 const _gridGap = 12.0;
@@ -109,7 +112,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 26),
-                  _RecentSection(onCreate: () => context.go(AppRoutes.reply)),
+                  const _RecentSection(),
                   const SizedBox(height: 18),
                   const _TipOfTheDay(),
                 ],
@@ -427,64 +430,122 @@ class _FeatureCard extends StatelessWidget {
   }
 }
 
-/// "Recent" activity section. History is not stored yet, so this always shows
-/// the empty state with a first-run call to action.
-class _RecentSection extends StatelessWidget {
-  const _RecentSection({required this.onCreate});
+/// "Recent" activity section. Shows the latest two local recent items, or an
+/// empty-state card with a first-run call to action when there are none.
+class _RecentSection extends ConsumerWidget {
+  const _RecentSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final latest = ref.watch(latestRecentItemsProvider);
+    final items = latest.asData?.value ?? const <RecentItem>[];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text('Recent', style: AppTextStyles.sectionTitle),
+            const Spacer(),
+            if (items.isNotEmpty)
+              TextButton(
+                onPressed: () => context.push(AppRoutes.history),
+                child: const Text('View all'),
+              ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        latest.when(
+          data: (items) => items.isEmpty
+              ? _RecentEmpty(onCreate: () => context.go(AppRoutes.reply))
+              : GlassCard(
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < items.length; i++) ...[
+                        if (i > 0)
+                          const Divider(
+                            height: 1,
+                            color: AppColors.cardBorder,
+                          ),
+                        RecentItemRow(
+                          item: items[i],
+                          onTap: () =>
+                              openRecentItem(context, ref, items[i]),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+          loading: () => const GlassCard(
+            child: SizedBox(
+              height: 96,
+              child: Center(
+                child: SizedBox.square(
+                  dimension: 22,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            ),
+          ),
+          error: (_, _) => _RecentEmpty(
+            onCreate: () => context.go(AppRoutes.reply),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Empty-state card shown when there is no recent activity.
+class _RecentEmpty extends StatelessWidget {
+  const _RecentEmpty({required this.onCreate});
 
   final VoidCallback onCreate;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Recent', style: AppTextStyles.sectionTitle),
-        const SizedBox(height: 12),
-        GlassCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  const _CircleBadge(
-                    icon: Icons.history_rounded,
-                    color: AppColors.primaryBlue,
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Nothing here yet', style: AppTextStyles.cardTitle),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Your recent replies, polished text, and '
-                          'explanations will appear here.',
-                          style: AppTextStyles.helper,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              const _CircleBadge(
+                icon: Icons.history_rounded,
+                color: AppColors.primaryBlue,
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primaryBlue,
-                    side: const BorderSide(color: AppColors.primaryBlue),
-                  ),
-                  onPressed: onCreate,
-                  icon: const Icon(Icons.edit_note_rounded, size: 20),
-                  label: const Text('Create your first reply'),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Nothing here yet', style: AppTextStyles.cardTitle),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Your recent replies, polished text, and '
+                      'explanations will appear here.',
+                      style: AppTextStyles.helper,
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primaryBlue,
+                side: const BorderSide(color: AppColors.primaryBlue),
+              ),
+              onPressed: onCreate,
+              icon: const Icon(Icons.edit_note_rounded, size: 20),
+              label: const Text('Create your first reply'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

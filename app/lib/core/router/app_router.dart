@@ -6,6 +6,7 @@ import '../../features/guidance/presentation/guidance_edit_screen.dart';
 import '../../features/guidance/presentation/guidance_library_screen.dart';
 import '../../features/home/home_screen.dart';
 import '../../features/paywall/paywall_screen.dart';
+import '../../features/recent/presentation/history_screen.dart';
 import '../../features/polish/polish_screen.dart';
 import '../../features/reply/explain_screen.dart';
 import '../../features/reply/reply_screen.dart';
@@ -21,6 +22,7 @@ abstract final class AppRoutes {
   static const String polish = '/polish';
   static const String settings = '/settings';
   static const String paywall = '/paywall';
+  static const String history = '/history';
   static const String guidanceLibrary = '/guidance-library';
   static const String guidanceEdit = '/guidance-library/edit';
 }
@@ -34,6 +36,10 @@ GoRouter appRouter(AppRouterRef ref) {
       GoRoute(
         path: AppRoutes.paywall,
         builder: (context, state) => const PaywallScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.history,
+        builder: (context, state) => const HistoryScreen(),
       ),
       GoRoute(
         path: AppRoutes.guidanceLibrary,

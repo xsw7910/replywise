@@ -15,6 +15,8 @@ import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_picker_sheet.dart';
 import '../guidance/presentation/guidance_text_field.dart';
+import '../recent/application/recent_providers.dart';
+import '../recent/domain/recent_item.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import 'widgets/reply_status_badge.dart';
@@ -196,8 +198,33 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     _ => null,
   };
 
-  Future<void> _generate() =>
-      ref.read(replyControllerProvider.notifier).generate(_request());
+  Future<void> _generate() async {
+    // Capture the received message before the async gap.
+    final incoming = _incomingController.text;
+    await ref.read(replyControllerProvider.notifier).generate(_request());
+    if (!mounted) return;
+    final state = ref.read(replyControllerProvider);
+    final result = state.result;
+    // Only record a recent item on a fresh success (no error, has output).
+    if (state.error == null &&
+        !state.isLoading &&
+        result != null &&
+        result.versions.isNotEmpty) {
+      final guidance = _guidanceController.text.trim();
+      await saveRecentItem(
+        ref,
+        RecentItem.create(
+          type: RecentType.reply,
+          inputText: incoming,
+          outputText: result.versions.first.text,
+          guidance: guidance.isEmpty ? null : guidance,
+          tone: _tone == 'Auto' ? null : _tone,
+          channel: _channel == 'Auto' ? null : _channel,
+          length: _length,
+        ),
+      );
+    }
+  }
 
   Future<void> _pasteIncoming() async {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
