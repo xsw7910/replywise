@@ -3,12 +3,13 @@
 Production target:
 
 - Public API: `https://api-reply.novaaistudio.ca`
-- Uvicorn bind: `127.0.0.1:8003`
-- Service: `replywise-backend.service`
-- Runtime: Python 3.12 when available
+- API container bind: `127.0.0.1:8000`
+- Services: Docker Compose `api` + PostgreSQL 16
+- Runtime: Python 3.12 container
 - TLS/reverse proxy: Caddy
 
-This follows the same production pattern used by HairTrack AI and Rental Expense Keeper: application code in `/home/ubuntu/apps`, Uvicorn bound only to localhost, systemd process supervision, and Caddy-managed HTTPS.
+Application code lives in `/home/ubuntu/apps`, PostgreSQL data is stored in a
+named Docker volume, and Caddy terminates HTTPS in front of the API container.
 
 No command in this guide contains a real secret. Enter secrets directly on the VM.
 
@@ -18,14 +19,16 @@ No command in this guide contains a real secret. Enter secrets directly on the V
 /home/ubuntu/apps/replywise/    # Git checkout (full repo)
   backend/                      # FastAPI backend — working directory
     app/                        # Application source
-    .venv/                      # Python virtualenv (not in Git)
+    alembic/                    # Database migrations
+    alembic.ini
     .env                        # Secrets (not in Git, created on VM)
-    replywise.db                # SQLite database (not in Git)
+    docker-compose.yml
     requirements.txt
-    pytest.ini
 ```
 
-The `.env` and `replywise.db` live directly in the backend folder. They are gitignored and survive `git pull`.
+The `.env` lives directly in the backend folder and is gitignored. PostgreSQL
+data lives in the `postgres_data` named volume and survives container rebuilds
+and `git pull`.
 
 ## 2. DNS, firewall, and packages
 
@@ -35,25 +38,15 @@ Create an `A` record:
 api-reply.novaaistudio.ca -> <ORACLE_VM_PUBLIC_IP>
 ```
 
-Oracle Cloud ingress and the VM firewall should allow ports `22`, `80`, and `443`. Do **not** expose port `8003`; Caddy reaches it through localhost.
+Oracle Cloud ingress and the VM firewall should allow ports `22`, `80`, and
+`443`. Do **not** expose the API or PostgreSQL ports publicly.
 
 ```bash
 sudo apt update
-sudo apt install -y git curl jq sqlite3 caddy python3 python3-venv python3-pip
-python3 --version
-```
-
-If Ubuntu provides Python 3.12:
-
-```bash
-sudo apt install -y python3.12 python3.12-venv
-PYTHON_BIN=python3.12
-```
-
-Otherwise:
-
-```bash
-PYTHON_BIN=python3
+sudo apt install -y git curl jq caddy docker.io docker-compose-v2
+sudo systemctl enable --now docker
+docker --version
+docker compose version
 ```
 
 ## 3. Create directories and clone
@@ -64,10 +57,6 @@ Replace `<REPOSITORY_URL>` with the real Git URL. Use an SSH deploy key or anoth
 mkdir -p /home/ubuntu/apps
 git clone <REPOSITORY_URL> /home/ubuntu/apps/replywise
 cd /home/ubuntu/apps/replywise/backend
-
-$PYTHON_BIN -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -r requirements.txt
 ```
 
 For an existing checkout:
@@ -80,7 +69,6 @@ git checkout main
 git pull --ff-only origin main
 
 cd backend
-.venv/bin/python -m pip install -r requirements.txt
 ```
 
 Do not run `git reset --hard` on the VM. Investigate unexpected local changes instead.
@@ -107,7 +95,8 @@ Production template:
 REPLY_ENV=prod
 APP_ENV=prod
 SERVICE_NAME=reply-backend
-DATABASE_URL=sqlite+aiosqlite:////home/ubuntu/apps/replywise/backend/replywise.db
+POSTGRES_PASSWORD=<strong-url-safe-postgres-password>
+DATABASE_URL=postgresql+asyncpg://replywise:<same-url-safe-postgres-password>@postgres:5432/replywise
 
 JWT_SECRET=<64-character-random-hex>
 SERVER_PEPPER=<different-64-character-random-hex>
@@ -122,6 +111,7 @@ REVENUECAT_SECRET_API_KEY=<RevenueCat-v2-compatible-secret-key>
 REVENUECAT_PROJECT_ID=<proj_xxxxxxxxxxxxxxxx>
 REVENUECAT_ENTITLEMENT_ID=premium
 REVENUECAT_SUBSCRIPTION_PRODUCT_ID=premium_yearly:yearly
+REVENUECAT_CREDIT_PRODUCT_MAP=credits_10:10,credits_50:50,credits_100:100
 
 MOCK_AI_ENABLED=false
 DEV_TOOLS_ENABLED=false
@@ -135,52 +125,39 @@ IDEMPOTENCY_TTL_SECONDS=86400
 
 Production startup intentionally fails when:
 
+- `DATABASE_URL` is SQLite or is not `postgresql+asyncpg://`.
 - `OPENAI_API_KEY` is empty.
 - `REVENUECAT_SECRET_API_KEY` is empty.
+- `REVENUECAT_PROJECT_ID` or `REVENUECAT_CREDIT_PRODUCT_MAP` is empty.
 - development JWT/pepper values are used.
 - `MOCK_AI_ENABLED=true`.
 - `DEV_TOOLS_ENABLED=true`.
 
-Do not put `.env`, API keys, the SQLite database, WAL/SHM files, or backups in Git.
+Do not put `.env`, API keys, database dumps, or backups in Git. Direct local
+development and pytest may continue using `sqlite+aiosqlite`; production must
+use PostgreSQL.
 
-## 5. systemd service
+## 5. PostgreSQL migration and API startup
 
-Create `/etc/systemd/system/replywise-backend.service`:
-
-```ini
-[Unit]
-Description=ReplyWise FastAPI Backend
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-Type=simple
-User=ubuntu
-Group=ubuntu
-WorkingDirectory=/home/ubuntu/apps/replywise/backend
-EnvironmentFile=/home/ubuntu/apps/replywise/backend/.env
-Environment=PYTHONUNBUFFERED=1
-ExecStart=/home/ubuntu/apps/replywise/backend/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8003
-Restart=always
-RestartSec=5
-UMask=0077
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Install and start:
+Production never calls `Base.metadata.create_all()`. Apply every migration
+before starting or updating the API:
 
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl enable --now replywise-backend.service
-sudo systemctl status replywise-backend.service --no-pager
+cd /home/ubuntu/apps/replywise/backend
+docker compose build api
+docker compose up -d postgres
+docker compose run --rm api alembic upgrade head
+docker compose up -d api
+docker compose ps
 ```
+
+The migration container's `depends_on` condition waits for PostgreSQL's
+healthcheck. If `alembic upgrade head` fails, do not start the API.
 
 Local VM health check:
 
 ```bash
-curl --fail --silent --show-error http://127.0.0.1:8003/health
+curl --fail --silent --show-error http://127.0.0.1:8000/health
 ```
 
 Expected:
@@ -195,7 +172,7 @@ Edit `/etc/caddy/Caddyfile` and add:
 
 ```caddyfile
 api-reply.novaaistudio.ca {
-    reverse_proxy 127.0.0.1:8003
+    reverse_proxy 127.0.0.1:8000
 }
 ```
 
@@ -298,10 +275,11 @@ These calls consume the configured free usage for the smoke-test identity.
 Backend:
 
 ```bash
-sudo systemctl status replywise-backend.service --no-pager
-sudo journalctl -u replywise-backend.service -f
-sudo journalctl -u replywise-backend.service -n 200 --no-pager
-sudo systemctl restart replywise-backend.service
+cd /home/ubuntu/apps/replywise/backend
+docker compose ps
+docker compose logs -f --tail=200 api
+docker compose logs --tail=200 postgres
+docker compose restart api
 ```
 
 Caddy:
@@ -323,45 +301,54 @@ curl -v https://api-reply.novaaistudio.ca/health
 Listening sockets and firewall:
 
 ```bash
-sudo ss -ltnp | grep -E ':8003|:80|:443'
+sudo ss -ltnp | grep -E ':8000|:80|:443'
 sudo ufw status verbose
 ```
 
 Common failures:
 
 - Startup validation error: check required `.env` variables and ensure both local-only flags are false.
-- `502` from Caddy: check `replywise-backend.service` and verify `127.0.0.1:8003/health`.
+- Migration error: inspect `docker compose run --rm api alembic current` and
+  `docker compose run --rm api alembic history`.
+- `502` from Caddy: check `docker compose ps`, API logs, and
+  `127.0.0.1:8000/health`.
 - OpenAI `MODEL_CONFIGURATION_ERROR`: verify the VM-only key and model access.
 - OpenAI `MODEL_UNAVAILABLE`/`MODEL_RATE_LIMITED`: inspect service status, outbound connectivity, and account limits; raw provider details are intentionally not returned to clients.
-- SQLite write error: verify `ubuntu` can write `/home/ubuntu/apps/replywise/backend` and that the disk is not full.
+- PostgreSQL connection error: verify the `postgres` container is healthy and
+  `POSTGRES_PASSWORD` matches the password encoded in the database URL.
 
 ## 9. Database backup
 
-Use SQLite's online backup command:
+Create a compressed PostgreSQL dump:
 
 ```bash
-BACKUP="/home/ubuntu/apps/replywise/backend/replywise-backup-$(date +%Y%m%d-%H%M%S).db"
-sqlite3 /home/ubuntu/apps/replywise/backend/replywise.db ".backup '$BACKUP'"
+cd /home/ubuntu/apps/replywise/backend
+BACKUP="replywise-backup-$(date +%Y%m%d-%H%M%S).sql.gz"
+docker compose exec -T postgres \
+  pg_dump -U replywise -d replywise --no-owner --no-privileges | gzip > "$BACKUP"
 ls -lh "$BACKUP"
 ```
 
 Copy a backup off the VM from your workstation:
 
 ```bash
-scp -i <SSH_KEY_PATH> ubuntu@<VM_HOST>:/home/ubuntu/apps/replywise/backend/replywise-backup-<DATE>.db .
+scp -i <SSH_KEY_PATH> ubuntu@<VM_HOST>:/home/ubuntu/apps/replywise/backend/replywise-backup-<DATE>.sql.gz .
 ```
 
 ## 10. Safe update
 
-### Automated redeploy (recommended after initial setup)
+### Automated redeploy (disabled until the script supports Alembic)
 
-After pushing code to GitHub, run from your Windows workstation:
+Do not run the legacy redeploy script until it has been updated to build the
+Compose image, apply Alembic migrations, and restart the API container:
 
 ```powershell
 .\scripts\redeploy-backend-oracle.ps1
 ```
 
-The script pulls the latest code, installs dependencies, restarts the service, and verifies the public health endpoint. It fails fast if any step fails.
+Before using this script again, verify that it has been updated for the Docker
+Compose + Alembic deployment flow. A legacy systemd-based redeploy script must
+not be used against this setup.
 
 Default parameters match the production VM. Override when needed:
 
@@ -390,26 +377,28 @@ git checkout main
 git pull --ff-only origin main
 
 cd backend
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m pytest
-
-sudo systemctl restart replywise-backend.service
-sudo systemctl status replywise-backend.service --no-pager
-curl --fail --silent --show-error http://127.0.0.1:8003/health
+docker compose build api
+docker compose up -d postgres
+docker compose run --rm api alembic upgrade head
+docker compose up -d api
+docker compose ps
+curl --fail --silent --show-error http://127.0.0.1:8000/health
 curl --fail --silent --show-error https://api-reply.novaaistudio.ca/health
 ```
 
-The `.env` and `replywise.db` survive because they are gitignored and `git pull` does not touch them.
+The `.env` is gitignored, and PostgreSQL data survives in the named volume.
 
 ## 11. Rollback
 
-Before updating, record the current commit and create a database backup:
+Before updating, record the current commit and create a PostgreSQL backup:
 
 ```bash
 cd /home/ubuntu/apps/replywise
 git rev-parse HEAD
-sqlite3 /home/ubuntu/apps/replywise/backend/replywise.db \
-  ".backup '/home/ubuntu/apps/replywise/backend/replywise-pre-rollback.db'"
+cd backend
+docker compose exec -T postgres \
+  pg_dump -U replywise -d replywise --no-owner --no-privileges \
+  | gzip > "replywise-pre-rollback-$(date +%Y%m%d-%H%M%S).sql.gz"
 ```
 
 To roll back code, replace `<KNOWN_GOOD_COMMIT>`:
@@ -420,9 +409,9 @@ git status --short
 git checkout <KNOWN_GOOD_COMMIT>
 
 cd backend
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m pytest
-sudo systemctl restart replywise-backend.service
+docker compose build api
+docker compose run --rm api alembic upgrade head
+docker compose up -d api
 curl --fail --silent --show-error https://api-reply.novaaistudio.ca/health
 ```
 
@@ -434,7 +423,10 @@ git checkout main
 git pull --ff-only origin main
 ```
 
-Do not restore an older database unless schema/data compatibility requires it and a rollback has been tested.
+Code rollback does not automatically downgrade the database. Only run
+`alembic downgrade` when the target revision and data-loss implications have
+been reviewed and tested. Do not restore an older dump unless compatibility
+requires it and the restore has been rehearsed.
 
 ## 12. Pre-Google-Play manual checklist
 
@@ -444,6 +436,7 @@ Do not restore an older database unless schema/data compatibility requires it an
 - Existing RevenueCat entitlement and product identifiers are verified unchanged.
 - `REVENUECAT_SECRET_API_KEY` is a **v2-compatible** key (v1 keys return HTTP 403 on v2 endpoints).
 - `REVENUECAT_PROJECT_ID` is set to the project ID from the RevenueCat dashboard → Project Settings.
+- `docker compose run --rm api alembic current` reports the expected head revision.
 - Reply, Polish, Explain, entitlement sync, and credits sync pass against production.
 - Service restart preserves auth, usage, entitlement cache, credits, and idempotency records.
 - A database backup is copied off the VM and restore steps are tested.

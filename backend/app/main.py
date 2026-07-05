@@ -25,12 +25,18 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("ReplyWise backend starting — env=%s", settings.runtime_env)
-    async with engine.begin() as conn:
-        if "sqlite" in settings.database_url:
-            await conn.execute(text("PRAGMA journal_mode=WAL"))
-            await conn.execute(text("PRAGMA busy_timeout=10000"))
-            await conn.execute(text("PRAGMA synchronous=NORMAL"))
-        await conn.run_sync(Base.metadata.create_all)
+    if settings.is_dev_or_test:
+        async with engine.begin() as conn:
+            if "sqlite" in settings.database_url:
+                await conn.execute(text("PRAGMA journal_mode=WAL"))
+                await conn.execute(text("PRAGMA busy_timeout=10000"))
+                await conn.execute(text("PRAGMA synchronous=NORMAL"))
+            await conn.run_sync(Base.metadata.create_all)
+    else:
+        logger.info(
+            "Production schema auto-creation is disabled; "
+            "database migrations must be applied with Alembic."
+        )
     yield
 
 
