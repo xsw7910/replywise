@@ -7,11 +7,12 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/glass_card.dart';
 import '../entitlement/usage_controller.dart';
 import '../reply/widgets/reply_status_badge.dart';
 
 const _homeHorizontalPadding = 20.0;
-const _homeCardSpacing = 12.0;
+const _gridGap = 12.0;
 
 const _chevron = AppColors.textDisabled;
 
@@ -48,42 +49,69 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 children: [
                   _HeroCard(onTap: () => context.go(AppRoutes.reply)),
-                  const SizedBox(height: 20),
-                  _FeatureTile(
-                    key: const Key('home-feature-reply'),
-                    imagePath: 'assets/icons/reply.png',
-                    feature: AppFeature.reply,
-                    title: 'Reply',
-                    subtitle: 'Generate natural English replies.',
-                    onTap: () => context.go(AppRoutes.reply),
+                  const SizedBox(height: 22),
+                  // 2 × 2 feature grid.
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: _FeatureCard(
+                            key: const Key('home-feature-reply'),
+                            imagePath: 'assets/icons/reply.png',
+                            feature: AppFeature.reply,
+                            title: 'Reply',
+                            subtitle: 'Generate thoughtful replies instantly.',
+                            onTap: () => context.go(AppRoutes.reply),
+                          ),
+                        ),
+                        const SizedBox(width: _gridGap),
+                        Expanded(
+                          child: _FeatureCard(
+                            key: const Key('home-feature-polish'),
+                            imagePath: 'assets/icons/polish.png',
+                            feature: AppFeature.polish,
+                            title: 'Polish',
+                            subtitle: 'Make your writing clear and natural.',
+                            onTap: () => context.go(AppRoutes.polish),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: _homeCardSpacing),
-                  _FeatureTile(
-                    key: const Key('home-feature-polish'),
-                    imagePath: 'assets/icons/polish.png',
-                    feature: AppFeature.polish,
-                    title: 'Polish',
-                    subtitle: 'Make your English sound more natural.',
-                    onTap: () => context.go(AppRoutes.polish),
+                  const SizedBox(height: _gridGap),
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: _FeatureCard(
+                            key: const Key('home-feature-explain'),
+                            imagePath: 'assets/icons/explain.png',
+                            feature: AppFeature.explain,
+                            title: 'Explain',
+                            subtitle: 'Understand tone and hidden meaning.',
+                            onTap: () => context.go(AppRoutes.explain),
+                          ),
+                        ),
+                        const SizedBox(width: _gridGap),
+                        Expanded(
+                          child: _FeatureCard(
+                            key: const Key('home-feature-guidance'),
+                            imagePath: 'assets/icons/guidance.png',
+                            feature: AppFeature.guidance,
+                            title: 'Templates',
+                            subtitle: 'Reuse your favorite AI instructions.',
+                            onTap: () => context.push(AppRoutes.guidanceLibrary),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: _homeCardSpacing),
-                  _FeatureTile(
-                    key: const Key('home-feature-explain'),
-                    imagePath: 'assets/icons/explain.png',
-                    feature: AppFeature.explain,
-                    title: 'Explain',
-                    subtitle: 'Understand the meaning and tone.',
-                    onTap: () => context.go(AppRoutes.explain),
-                  ),
-                  const SizedBox(height: _homeCardSpacing),
-                  _FeatureTile(
-                    key: const Key('home-feature-guidance'),
-                    imagePath: 'assets/icons/guidance.png',
-                    feature: AppFeature.guidance,
-                    title: 'Guidance Library',
-                    subtitle: 'Save and reuse your guidance.',
-                    onTap: () => context.push(AppRoutes.guidanceLibrary),
-                  ),
+                  const SizedBox(height: 26),
+                  _RecentSection(onCreate: () => context.go(AppRoutes.reply)),
+                  const SizedBox(height: 18),
+                  const _TipOfTheDay(),
                 ],
               ),
             ),
@@ -309,19 +337,19 @@ class _HeroCard extends StatelessWidget {
   }
 }
 
-class _FeatureTile extends StatelessWidget {
-  const _FeatureTile({
+/// A square grid cell for a primary feature: gradient app icon, chevron,
+/// title, and a two-line description. Uses the feature's tinted glass surface.
+class _FeatureCard extends StatelessWidget {
+  const _FeatureCard({
     super.key,
-    this.icon,
-    this.imagePath,
+    required this.imagePath,
     required this.feature,
     required this.title,
     required this.subtitle,
     required this.onTap,
-  }) : assert(icon != null || imagePath != null);
+  });
 
-  final IconData? icon;
-  final String? imagePath;
+  final String imagePath;
   final AppFeature feature;
   final String title;
   final String subtitle;
@@ -329,105 +357,237 @@ class _FeatureTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const radius = 28.0;
+    const radius = 22.0;
     final accent = feature.accentColor;
 
     return Container(
       decoration: feature.glassCardDecoration(borderRadius: radius),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(feature.backgroundImage, fit: BoxFit.cover),
-            ),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(radius),
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Row(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(radius),
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
                     children: [
-                      imagePath != null
-                          ? SizedBox.square(
-                              dimension: 52,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(17),
-                                child: Transform.scale(
-                                  scale: 1.08,
-                                  child: Image.asset(
-                                    imagePath!,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            )
-                          : Container(
-                              width: 52,
-                              height: 52,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    accent,
-                                    Color.lerp(accent, Colors.white, 0.28)!,
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: accent.withAlpha(80),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 6),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(icon, color: Colors.white, size: 26),
-                            ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              title,
-                              style: AppTextStyles.cardTitle.copyWith(
-                                color: accent,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              subtitle,
-                              style: AppTextStyles.body.copyWith(
-                                color: AppColors.textSecondary,
-                                height: 1.25,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                      SizedBox.square(
+                        dimension: 48,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Transform.scale(
+                            scale: 1.08,
+                            child: Image.asset(imagePath, fit: BoxFit.cover),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const Spacer(),
                       const Icon(
                         Icons.chevron_right_rounded,
                         color: _chevron,
-                        size: 24,
+                        size: 22,
                       ),
                     ],
                   ),
+                  const SizedBox(height: 14),
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.cardTitle.copyWith(
+                      color: accent,
+                      fontSize: 16.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.helper.copyWith(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Recent" activity section. History is not stored yet, so this always shows
+/// the empty state with a first-run call to action.
+class _RecentSection extends StatelessWidget {
+  const _RecentSection({required this.onCreate});
+
+  final VoidCallback onCreate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Recent', style: AppTextStyles.sectionTitle),
+        const SizedBox(height: 12),
+        GlassCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const _CircleBadge(
+                    icon: Icons.history_rounded,
+                    color: AppColors.primaryBlue,
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Nothing here yet', style: AppTextStyles.cardTitle),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Your recent replies, polished text, and '
+                          'explanations will appear here.',
+                          style: AppTextStyles.helper,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primaryBlue,
+                    side: const BorderSide(color: AppColors.primaryBlue),
+                  ),
+                  onPressed: onCreate,
+                  icon: const Icon(Icons.edit_note_rounded, size: 20),
+                  label: const Text('Create your first reply'),
                 ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Warm "Tip of the day" card. The tip rotates by day of month.
+class _TipOfTheDay extends StatelessWidget {
+  const _TipOfTheDay();
+
+  static const _tips = <String>[
+    'Keep emails under 120 words for higher response rates.',
+    'Lead with your ask — put the key request in the first line.',
+    "Match the other person's tone to build rapport faster.",
+    'A clear subject line gets more replies than a clever one.',
+    'Read your reply aloud once — it catches awkward phrasing.',
+    'End with one clear next step so the reader knows what to do.',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final tip = _tips[DateTime.now().day % _tips.length];
+    const amber = AppColors.guidanceColor;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.lerp(Colors.white, amber, 0.06)!,
+            Color.lerp(Colors.white, amber, 0.18)!,
+          ],
+        ),
+        border: Border.all(color: amber.withAlpha(45)),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.softBlueShadow,
+            blurRadius: 18,
+            offset: Offset(0, 8),
+            spreadRadius: -6,
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _CircleBadge(
+              icon: Icons.lightbulb_rounded,
+              color: amber,
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Tip of the day',
+                    style: AppTextStyles.cardTitle.copyWith(
+                      color: AppColors.guidanceDark,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(tip, style: AppTextStyles.body),
+                ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Small gradient circle with a white glyph, used as a leading badge.
+class _CircleBadge extends StatelessWidget {
+  const _CircleBadge({required this.icon, required this.color});
+
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [color, Color.lerp(color, Colors.white, 0.32)!],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withAlpha(70),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Icon(icon, color: Colors.white, size: 22),
     );
   }
 }
