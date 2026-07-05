@@ -204,6 +204,10 @@ void main() {
 
     expect(find.text('Nothing here yet'), findsOneWidget);
     expect(find.text('Create your first reply'), findsOneWidget);
+    expect(
+      find.byKey(const Key('home-recent-empty-illustration')),
+      findsOneWidget,
+    );
     expect(find.text('View all'), findsNothing);
   });
 

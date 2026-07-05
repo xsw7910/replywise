@@ -10,6 +10,7 @@ abstract final class AppColors {
   // Backgrounds — near-white with a blue tint
   static const Color backgroundBase = Color(0xFFFBFCFE);
   static const Color backgroundSurface = Color(0xFFFFFFFF);
+  static const Color recentCardBackground = Color(0xFFF1F6FF);
   static const Color cardBorder = Color(0xFFD3DCEC);
   static const Color cardShadow = Color(0x3C49619A);
   static const Color cardSoftShadow = Color(0x1E49619A);

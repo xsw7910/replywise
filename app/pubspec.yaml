@@ -51,6 +51,8 @@ flutter:
     - assets/icons/explain.png
     - assets/icons/guidance.png
     - assets/icons/credites.png
+    - assets/icons/recent.png
+    - assets/icons/tip_of_the_day.png
     - assets/image/hero_card.png
     - assets/image/reply_background.png
     - assets/image/polish_background.png
