@@ -301,6 +301,72 @@ abstract class AppLocalizations {
   /// **'Plans'**
   String get plans;
 
+  /// No description provided for @credits.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get credits;
+
+  /// No description provided for @totalCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Total credits'**
+  String get totalCredits;
+
+  /// No description provided for @watchAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch ad'**
+  String get watchAd;
+
+  /// No description provided for @watchAdReward.
+  ///
+  /// In en, this message translates to:
+  /// **'+1 credit'**
+  String get watchAdReward;
+
+  /// No description provided for @currentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Current plan'**
+  String get currentPlan;
+
+  /// No description provided for @freePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Free plan'**
+  String get freePlan;
+
+  /// No description provided for @freeRepliesPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free replies per day'**
+  String freeRepliesPerDay(int count);
+
+  /// No description provided for @upgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get upgrade;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @supportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Help center / Contact us'**
+  String get supportDescription;
+
+  /// No description provided for @aboutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Version, Privacy, Terms'**
+  String get aboutDescription;
+
   /// No description provided for @guidance.
   ///
   /// In en, this message translates to:

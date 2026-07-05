@@ -305,6 +305,22 @@ void main() {
     expect(find.text('Reset free usage'), findsNothing);
   });
 
+  testWidgets('Settings redesign fits a phone viewport', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await pumpReplyWiseApp(tester);
+    await tester.tap(find.text('Settings').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Credits'), findsOneWidget);
+    expect(find.text('Current plan'), findsOneWidget);
+    expect(find.text('App language'), findsOneWidget);
+    expect(find.text('Support'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('guidance chip fills the Reply guidance field', (
     WidgetTester tester,
   ) async {

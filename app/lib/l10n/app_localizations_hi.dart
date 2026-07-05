@@ -101,6 +101,41 @@ class AppLocalizationsHi extends AppLocalizations {
   String get plans => 'योजनाएँ';
 
   @override
+  String get credits => 'Credits';
+
+  @override
+  String get totalCredits => 'Total credits';
+
+  @override
+  String get watchAd => 'Watch ad';
+
+  @override
+  String get watchAdReward => '+1 credit';
+
+  @override
+  String get currentPlan => 'Current plan';
+
+  @override
+  String get freePlan => 'Free plan';
+
+  @override
+  String freeRepliesPerDay(int count) {
+    return '$count free replies per day';
+  }
+
+  @override
+  String get upgrade => 'Upgrade';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get supportDescription => 'Help center / Contact us';
+
+  @override
+  String get aboutDescription => 'Version, Privacy, Terms';
+
+  @override
   String get guidance => 'मार्गदर्शन';
 
   @override
