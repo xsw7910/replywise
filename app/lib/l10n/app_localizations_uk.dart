@@ -620,7 +620,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get refreshPackages => 'Оновити пакети';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return 'Придбайте $credits кредитів — $price';
   }
 
@@ -882,6 +882,20 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get creditAdded => 'Кредит додано.';
+
+  @override
+  String get outOfCreditsTitle => 'У вас закінчилися кредити';
+
+  @override
+  String get outOfCreditsMessage =>
+      'Перегляньте коротку рекламу, щоб отримати 1 безкоштовний кредит, або перейдіть, щоб отримати більше доступу.';
+
+  @override
+  String get buyCredits => 'Купити кредити';
+
+  @override
+  String get creditAddedTapGenerateAgain =>
+      'Кредит додано. Знову торкніться «Створити».';
 
   @override
   String get adDailyLimitReached =>

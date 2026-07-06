@@ -223,7 +223,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                                 ),
                               )
                             : Text(
-                                context.l10n.buyCredits(
+                                context.l10n.buyCreditPackage(
                                   pkg.credits,
                                   pkg.priceString,
                                 ),

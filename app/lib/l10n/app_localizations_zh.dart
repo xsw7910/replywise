@@ -599,7 +599,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get refreshPackages => '刷新套餐';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return '购买 $credits 积分 — $price';
   }
 
@@ -846,6 +846,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get creditAdded => '已添加积分。';
+
+  @override
+  String get outOfCreditsTitle => '积分已用完';
+
+  @override
+  String get outOfCreditsMessage => '观看一段短广告即可获得 1 个免费积分，或升级以获得更多使用权限。';
+
+  @override
+  String get buyCredits => '购买积分';
+
+  @override
+  String get creditAddedTapGenerateAgain => '已添加积分。请再次点击“生成”。';
 
   @override
   String get adDailyLimitReached => '已达到每日广告奖励上限。';
@@ -1455,7 +1467,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get refreshPackages => '刷新套餐';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return '購買 $credits 積分 — $price';
   }
 
@@ -1702,6 +1714,18 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get creditAdded => '已新增積分。';
+
+  @override
+  String get outOfCreditsTitle => '點數已用完';
+
+  @override
+  String get outOfCreditsMessage => '觀看一段短廣告即可獲得 1 個免費點數，或升級以獲得更多使用權限。';
+
+  @override
+  String get buyCredits => '購買點數';
+
+  @override
+  String get creditAddedTapGenerateAgain => '已新增點數。請再次點選「產生」。';
 
   @override
   String get adDailyLimitReached => '已達到每日廣告獎勵上限。';

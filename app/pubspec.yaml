@@ -68,6 +68,7 @@ flutter:
     - assets/image/guidance_page_backgroud.png
     - assets/image/premium_page_backgroud.png
     - assets/icons/app_icon.png
+    - assets/icons/out_of_credits_gift.png
 
 flutter_launcher_icons:
   android: "ic_launcher"

@@ -623,7 +623,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get refreshPackages => 'Actualiser les packages';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return 'Acheter des crédits $credits — $price';
   }
 
@@ -890,6 +890,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get creditAdded => 'Crédit ajouté.';
+
+  @override
+  String get outOfCreditsTitle => 'Vous n\'avez plus de crédits';
+
+  @override
+  String get outOfCreditsMessage =>
+      'Regardez une courte annonce pour obtenir 1 crédit gratuit, ou effectuez une mise à niveau pour plus d\'accès.';
+
+  @override
+  String get buyCredits => 'Acheter des crédits';
+
+  @override
+  String get creditAddedTapGenerateAgain =>
+      'Crédit ajouté. Appuyez à nouveau sur Générer.';
 
   @override
   String get adDailyLimitReached =>

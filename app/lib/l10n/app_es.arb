@@ -177,7 +177,6 @@
   "builtIn": "Incorporado",
   "refreshPackages": "Actualizar paquetes",
   "restoring": "Restaurando…",
-  "buyCredits": "Comprar créditos {credits} — {price}",
   "unableToExplain": "No se puede explicar este mensaje.",
   "balancesPreserved": "Los saldos libres y de crédito se mantienen",
   "unlimitedPolish": "Mejoras de texto ilimitadas",
@@ -268,11 +267,16 @@
   "guidancePoliteContent": "Responda de manera cortés y respetuosa.",
   "creditsRemaining": "Créditos {count} restantes",
   "dateAt": "{date} · {time}",
-  "todayAt": "Hoy · {time}"
-  ,"adIsLoading": "El anuncio se está cargando. Inténtalo de nuevo."
-  ,"creditAdded": "Crédito añadido."
-  ,"adDailyLimitReached": "Has alcanzado el límite diario de recompensas por anuncios."
-  ,"adLoadFailed": "No se pudo cargar el anuncio. Inténtalo más tarde."
-  ,"adRewardCooldown": "Espera un momento antes de ver otro anuncio."
-  ,"adRewardFailed": "No se pudo añadir tu crédito. Inténtalo de nuevo."
+  "todayAt": "Hoy · {time}",
+  "adIsLoading": "El anuncio se está cargando. Inténtalo de nuevo.",
+  "creditAdded": "Crédito añadido.",
+  "adDailyLimitReached": "Has alcanzado el límite diario de recompensas por anuncios.",
+  "adLoadFailed": "No se pudo cargar el anuncio. Inténtalo más tarde.",
+  "adRewardCooldown": "Espera un momento antes de ver otro anuncio.",
+  "adRewardFailed": "No se pudo añadir tu crédito. Inténtalo de nuevo.",
+  "buyCreditPackage": "Comprar créditos {credits} — {price}",
+  "outOfCreditsTitle": "Te has quedado sin créditos",
+  "outOfCreditsMessage": "Mire un anuncio breve para obtener 1 crédito gratis o actualice para obtener más acceso.",
+  "buyCredits": "Comprar créditos",
+  "creditAddedTapGenerateAgain": "Crédito agregado. Toca Generar nuevamente."
 }

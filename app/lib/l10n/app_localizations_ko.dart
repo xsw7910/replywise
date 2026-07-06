@@ -601,7 +601,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get refreshPackages => '패키지 새로 고침';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return '$credits 크레딧 구매 — $price';
   }
 
@@ -849,6 +849,19 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get creditAdded => '크레딧이 추가되었습니다.';
+
+  @override
+  String get outOfCreditsTitle => '크레딧이 부족합니다.';
+
+  @override
+  String get outOfCreditsMessage =>
+      '짧은 광고를 시청하여 1개의 무료 크레딧을 받거나 업그레이드하여 더 많은 액세스 권한을 얻으세요.';
+
+  @override
+  String get buyCredits => '크레딧 구매';
+
+  @override
+  String get creditAddedTapGenerateAgain => '크레딧이 추가되었습니다. 생성을 다시 탭하세요.';
 
   @override
   String get adDailyLimitReached => '일일 광고 보상 한도에 도달했습니다.';

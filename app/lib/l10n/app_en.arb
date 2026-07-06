@@ -199,8 +199,8 @@
   ,"loadingCreditPackages": "Loading credit packages…"
   ,"creditPackagesUnavailable": "Credit packages are unavailable right now."
   ,"refreshPackages": "Refresh packages"
-  ,"buyCredits": "Buy {credits} Credits — {price}"
-  ,"@buyCredits": {"placeholders": {"credits": {"type": "int"},"price": {"type": "String"}}}
+  ,"buyCreditPackage": "Buy {credits} Credits — {price}"
+  ,"@buyCreditPackage": {"placeholders": {"credits": {"type": "int"},"price": {"type": "String"}}}
   ,"restoring": "Restoring…"
   ,"restorePremium": "Restore Premium subscription"
   ,"purchaseVerification": "Premium and credit purchases are verified by ReplyWise. Credit purchases are reconciled automatically."
@@ -285,6 +285,10 @@
   ,"@creditsRemaining": {"placeholders": {"count": {"type": "String"}}}
   ,"adIsLoading": "Ad is loading. Please try again."
   ,"creditAdded": "Credit added."
+  ,"outOfCreditsTitle": "You're out of credits"
+  ,"outOfCreditsMessage": "Watch a short ad to get 1 free credit, or upgrade for more access."
+  ,"buyCredits": "Buy Credits"
+  ,"creditAddedTapGenerateAgain": "Credit added. Tap Generate again."
   ,"adDailyLimitReached": "Daily ad reward limit reached."
   ,"adLoadFailed": "Unable to load ad. Please try again later."
   ,"adRewardCooldown": "Please wait a moment before watching another ad."

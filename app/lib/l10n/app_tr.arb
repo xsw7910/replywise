@@ -203,7 +203,6 @@
   "deleteGuidance": "Bu kılavuz silinsin mi?",
   "yearlyTerms": "{price}/yıl. İstediğiniz zaman iptal edin.",
   "trialTerms": "3 gün boyunca ücretsiz, ardından yılda {price}. İstediğiniz zaman iptal edin.",
-  "buyCredits": "{credits} Kredi Satın Alın — {price}",
   "restorePremium": "Premium aboneliğini geri yükle",
   "guidanceHint": "Yapay zekanın yanıtı nasıl şekillendirmesi gerektiğini açıklayın…",
   "creditPackagesUnavailable": "Kredi paketleri şu anda kullanılamıyor.",
@@ -268,11 +267,16 @@
   "guidanceThanksContent": "Takdirinizi ve kibar bir teşekkürünüzü ekleyin.",
   "premiumActive": "Premium abonelik aktif",
   "guidanceMoreTimeContent": "Sorumlu ve kibar görünerek daha fazla zaman isteyin.",
-  "guidanceConfidentContent": "Yanıtınızın kendinden emin görünmesini sağlayın ancak agresif olmayın."
-  ,"adIsLoading": "Reklam yükleniyor. Lütfen tekrar deneyin."
-  ,"creditAdded": "Kredi eklendi."
-  ,"adDailyLimitReached": "Günlük reklam ödülü sınırına ulaşıldı."
-  ,"adLoadFailed": "Reklam yüklenemedi. Lütfen daha sonra tekrar deneyin."
-  ,"adRewardCooldown": "Başka bir reklam izlemeden önce lütfen biraz bekleyin."
-  ,"adRewardFailed": "Krediniz eklenemedi. Lütfen tekrar deneyin."
+  "guidanceConfidentContent": "Yanıtınızın kendinden emin görünmesini sağlayın ancak agresif olmayın.",
+  "adIsLoading": "Reklam yükleniyor. Lütfen tekrar deneyin.",
+  "creditAdded": "Kredi eklendi.",
+  "adDailyLimitReached": "Günlük reklam ödülü sınırına ulaşıldı.",
+  "adLoadFailed": "Reklam yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+  "adRewardCooldown": "Başka bir reklam izlemeden önce lütfen biraz bekleyin.",
+  "adRewardFailed": "Krediniz eklenemedi. Lütfen tekrar deneyin.",
+  "buyCreditPackage": "{credits} Kredi Satın Alın — {price}",
+  "outOfCreditsTitle": "Krediniz bitti",
+  "outOfCreditsMessage": "1 ücretsiz kredi kazanmak için kısa bir reklam izleyin veya daha fazla erişim için yükseltme yapın.",
+  "buyCredits": "Kredi Satın Al",
+  "creditAddedTapGenerateAgain": "Kredi eklendi. Tekrar Oluştur'a dokunun."
 }

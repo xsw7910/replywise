@@ -251,7 +251,6 @@
   "makeProfessional": "プロフェッショナルなものにする",
   "makeFriendly": "フレンドリーにしましょう",
   "trialTerms": "3 日間無料、その後は年間{price}。いつでもキャンセルできます。",
-  "buyCredits": "{credits} クレジットを購入 — {price}",
   "askMoreTime": "もう少し時間を聞いてください",
   "soundConfident": "自信があるように聞こえる",
   "yearlyTerms": "{price}/年。いつでもキャンセルできます。",
@@ -268,11 +267,16 @@
   "yesterdayAt": "昨日 · {time}",
   "dateAt": "{date} · {time}",
   "useTemplate": "「{title}」を使用してください",
-  "creditsRemaining": "{count} クレジットが残っています"
-  ,"adIsLoading": "広告を読み込んでいます。もう一度お試しください。"
-  ,"creditAdded": "クレジットを追加しました。"
-  ,"adDailyLimitReached": "広告リワードの1日の上限に達しました。"
-  ,"adLoadFailed": "広告を読み込めませんでした。しばらくしてからもう一度お試しください。"
-  ,"adRewardCooldown": "次の広告を見るまで少しお待ちください。"
-  ,"adRewardFailed": "クレジットを追加できませんでした。もう一度お試しください。"
+  "creditsRemaining": "{count} クレジットが残っています",
+  "adIsLoading": "広告を読み込んでいます。もう一度お試しください。",
+  "creditAdded": "クレジットを追加しました。",
+  "adDailyLimitReached": "広告リワードの1日の上限に達しました。",
+  "adLoadFailed": "広告を読み込めませんでした。しばらくしてからもう一度お試しください。",
+  "adRewardCooldown": "次の広告を見るまで少しお待ちください。",
+  "adRewardFailed": "クレジットを追加できませんでした。もう一度お試しください。",
+  "buyCreditPackage": "{credits} クレジットを購入 — {price}",
+  "outOfCreditsTitle": "クレジットが不足しています",
+  "outOfCreditsMessage": "短い広告を視聴して 1 つの無料クレジットを取得するか、アップグレードしてより多くのアクセスを獲得してください。",
+  "buyCredits": "クレジットを購入する",
+  "creditAddedTapGenerateAgain": "クレジットが追加されました。もう一度「生成」をタップします。"
 }

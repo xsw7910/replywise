@@ -230,7 +230,6 @@
   "instructionFriendly": "让文笔更加温暖、亲切。",
   "instructionConcise": "使写作简洁、直接。",
   "instructionNatural": "使措辞听起来自然、流畅。",
-  "buyCredits": "购买 {credits} 积分 — {price}",
   "instructionGrammar": "纠正语法，同时保留含义。",
   "instructionSpelling": "更正所有拼写错误。",
   "instructionPersuasive": "使文章更具说服力和说服力。",
@@ -268,11 +267,16 @@
   "dateAt": "{date} · {time}",
   "todayAt": "今天·{time}",
   "yesterdayAt": "昨天·{time}",
-  "creditsRemaining": "{count} 剩余积分"
-  ,"adIsLoading": "广告正在加载，请重试。"
-  ,"creditAdded": "已添加积分。"
-  ,"adDailyLimitReached": "已达到每日广告奖励上限。"
-  ,"adLoadFailed": "无法加载广告，请稍后再试。"
-  ,"adRewardCooldown": "请稍候片刻再观看下一个广告。"
-  ,"adRewardFailed": "无法添加积分，请重试。"
+  "creditsRemaining": "{count} 剩余积分",
+  "adIsLoading": "广告正在加载，请重试。",
+  "creditAdded": "已添加积分。",
+  "adDailyLimitReached": "已达到每日广告奖励上限。",
+  "adLoadFailed": "无法加载广告，请稍后再试。",
+  "adRewardCooldown": "请稍候片刻再观看下一个广告。",
+  "adRewardFailed": "无法添加积分，请重试。",
+  "buyCreditPackage": "购买 {credits} 积分 — {price}",
+  "buyCredits": "购买积分",
+  "creditAddedTapGenerateAgain": "已添加积分。请再次点击“生成”。",
+  "outOfCreditsTitle": "积分已用完",
+  "outOfCreditsMessage": "观看一段短广告即可获得 1 个免费积分，或升级以获得更多使用权限。"
 }

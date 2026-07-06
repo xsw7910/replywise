@@ -209,7 +209,6 @@
   "useInPolish": "Utilizzare per il miglioramento del testo",
   "instructionConcise": "Rendi la scrittura concisa e diretta.",
   "creditPackagesUnavailable": "I pacchetti di crediti non sono al momento disponibili.",
-  "buyCredits": "Acquista crediti {credits} — {price}",
   "guidanceTitleHint": "Nome abbreviato per questa guida...",
   "extraPolishHint": "Aggiungi eventuali altre preferenze di miglioramento del testo",
   "couldNotSaveGuidance": "Impossibile salvare questa guida. Per favore riprova.",
@@ -268,11 +267,16 @@
   "yesterdayAt": "Ieri · {time}",
   "todayAt": "Oggi · {time}",
   "creditsRemaining": "{count} crediti rimanenti",
-  "premiumActive": "Abbonamento Premium attivo"
-  ,"adIsLoading": "L’annuncio è in caricamento. Riprova."
-  ,"creditAdded": "Credito aggiunto."
-  ,"adDailyLimitReached": "Hai raggiunto il limite giornaliero di premi per gli annunci."
-  ,"adLoadFailed": "Impossibile caricare l’annuncio. Riprova più tardi."
-  ,"adRewardCooldown": "Attendi un momento prima di guardare un altro annuncio."
-  ,"adRewardFailed": "Impossibile aggiungere il tuo credito. Riprova."
+  "premiumActive": "Abbonamento Premium attivo",
+  "adIsLoading": "L’annuncio è in caricamento. Riprova.",
+  "creditAdded": "Credito aggiunto.",
+  "adDailyLimitReached": "Hai raggiunto il limite giornaliero di premi per gli annunci.",
+  "adLoadFailed": "Impossibile caricare l’annuncio. Riprova più tardi.",
+  "adRewardCooldown": "Attendi un momento prima di guardare un altro annuncio.",
+  "adRewardFailed": "Impossibile aggiungere il tuo credito. Riprova.",
+  "buyCreditPackage": "Acquista crediti {credits} — {price}",
+  "outOfCreditsTitle": "Hai esaurito i crediti",
+  "outOfCreditsMessage": "Guarda un breve annuncio per ottenere 1 credito gratuito o esegui l'upgrade per un maggiore accesso.",
+  "buyCredits": "Acquista crediti",
+  "creditAddedTapGenerateAgain": "Credito aggiunto. Tocca nuovamente Genera."
 }

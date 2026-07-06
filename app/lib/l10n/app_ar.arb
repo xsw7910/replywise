@@ -197,7 +197,6 @@
   "restorePremium": "استعادة الاشتراك المميز",
   "creditPackagesUnavailable": "حزم الائتمان غير متوفرة في الوقت الحالي.",
   "loadingCreditPackages": "جارٍ تحميل حزم الائتمان…",
-  "buyCredits": "شراء رصيد {credits} — {price}",
   "trialTerms": "مجانًا لمدة 3 أيام، ثم {price}/السنة. إلغاء في أي وقت.",
   "purchaseVerification": "يتم التحقق من عمليات الشراء المميزة والائتمانية بواسطة ResponseWise. تتم تسوية مشتريات الائتمان تلقائيا.",
   "useInPolish": "استخدم لتحسين النص",
@@ -268,11 +267,16 @@
   "guidancePoliteContent": "اجعل الرد مهذبا ومحترما.",
   "creditsRemaining": "الاعتمادات المتبقية {count}",
   "guidanceFriendlyContent": "اجعل الرد دافئًا وودودًا.",
-  "guidanceThanksContent": "أضف التقدير والشكر المهذب."
-  ,"adIsLoading": "يتم تحميل الإعلان. يرجى المحاولة مرة أخرى."
-  ,"creditAdded": "تمت إضافة الرصيد."
-  ,"adDailyLimitReached": "تم الوصول إلى الحد اليومي لمكافآت الإعلانات."
-  ,"adLoadFailed": "تعذّر تحميل الإعلان. يرجى المحاولة لاحقًا."
-  ,"adRewardCooldown": "يرجى الانتظار قليلاً قبل مشاهدة إعلان آخر."
-  ,"adRewardFailed": "تعذّرت إضافة رصيدك. يرجى المحاولة مرة أخرى."
+  "guidanceThanksContent": "أضف التقدير والشكر المهذب.",
+  "adIsLoading": "يتم تحميل الإعلان. يرجى المحاولة مرة أخرى.",
+  "creditAdded": "تمت إضافة الرصيد.",
+  "adDailyLimitReached": "تم الوصول إلى الحد اليومي لمكافآت الإعلانات.",
+  "adLoadFailed": "تعذّر تحميل الإعلان. يرجى المحاولة لاحقًا.",
+  "adRewardCooldown": "يرجى الانتظار قليلاً قبل مشاهدة إعلان آخر.",
+  "adRewardFailed": "تعذّرت إضافة رصيدك. يرجى المحاولة مرة أخرى.",
+  "buyCreditPackage": "شراء رصيد {credits} — {price}",
+  "outOfCreditsTitle": "لقد نفدت الاعتمادات",
+  "outOfCreditsMessage": "شاهد إعلانًا قصيرًا لتحصل على رصيد مجاني واحد، أو قم بالترقية للحصول على مزيد من الوصول.",
+  "buyCredits": "شراء الاعتمادات",
+  "creditAddedTapGenerateAgain": "تمت إضافة الائتمان. اضغط على إنشاء مرة أخرى."
 }

@@ -202,7 +202,6 @@
   "writeAnyLanguage": "เขียนเป็นภาษาใดก็ได้",
   "useInReply": "ใช้ในการตอบกลับ",
   "deleteGuidance": "ลบคำแนะนำนี้ใช่ไหม",
-  "buyCredits": "ซื้อเครดิต {credits} — {price}",
   "purchaseVerification": "การซื้อพรีเมี่ยมและเครดิตได้รับการตรวจสอบโดย ReplyWise การซื้อเครดิตจะได้รับการกระทบยอดโดยอัตโนมัติ",
   "guidanceTitleHint": "ชื่อย่อของคำแนะนำนี้...",
   "loadingCreditPackages": "กำลังโหลดแพ็คเกจเครดิต...",
@@ -268,11 +267,16 @@
   "guidanceConfidentContent": "ทำให้คำตอบฟังดูมั่นใจแต่ไม่ก้าวร้าว",
   "guidanceProfessionalContent": "ทำให้การตอบกลับฟังดูเป็นมืออาชีพและเหมาะสมกับการทำงาน",
   "yesterdayAt": "เมื่อวาน · {time}",
-  "dateAt": "{date} · {time}"
-  ,"adIsLoading": "กำลังโหลดโฆษณา โปรดลองอีกครั้ง"
-  ,"creditAdded": "เพิ่มเครดิตแล้ว"
-  ,"adDailyLimitReached": "ถึงขีดจำกัดรางวัลโฆษณารายวันแล้ว"
-  ,"adLoadFailed": "ไม่สามารถโหลดโฆษณาได้ โปรดลองอีกครั้งในภายหลัง"
-  ,"adRewardCooldown": "โปรดรอสักครู่ก่อนดูโฆษณาอื่น"
-  ,"adRewardFailed": "ไม่สามารถเพิ่มเครดิตของคุณได้ โปรดลองอีกครั้ง"
+  "dateAt": "{date} · {time}",
+  "adIsLoading": "กำลังโหลดโฆษณา โปรดลองอีกครั้ง",
+  "creditAdded": "เพิ่มเครดิตแล้ว",
+  "adDailyLimitReached": "ถึงขีดจำกัดรางวัลโฆษณารายวันแล้ว",
+  "adLoadFailed": "ไม่สามารถโหลดโฆษณาได้ โปรดลองอีกครั้งในภายหลัง",
+  "adRewardCooldown": "โปรดรอสักครู่ก่อนดูโฆษณาอื่น",
+  "adRewardFailed": "ไม่สามารถเพิ่มเครดิตของคุณได้ โปรดลองอีกครั้ง",
+  "buyCreditPackage": "ซื้อเครดิต {credits} — {price}",
+  "outOfCreditsTitle": "คุณไม่มีเครดิตแล้ว",
+  "outOfCreditsMessage": "ดูโฆษณาสั้นๆ เพื่อรับ 1 เครดิตฟรี หรืออัปเกรดเพื่อการเข้าถึงที่มากขึ้น",
+  "buyCredits": "ซื้อเครดิต",
+  "creditAddedTapGenerateAgain": "เพิ่มเครดิตแล้ว แตะสร้างอีกครั้ง"
 }

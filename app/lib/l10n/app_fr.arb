@@ -182,7 +182,6 @@
   "builtIn": "Intégré",
   "cannotBeUndone": "Cela ne peut pas être annulé.",
   "restorePremium": "Restaurer l'abonnement Premium",
-  "buyCredits": "Acheter des crédits {credits} — {price}",
   "replyCtaTitle": "Vous souhaitez une réponse qui correspond mieux à votre intention ?",
   "unlimitedPolish": "Améliorations illimitées du texte",
   "loadingSubscriptionOptions": "Chargement des options d'abonnement…",
@@ -268,11 +267,16 @@
   "creditsRemaining": "Crédits {count} restants",
   "guidanceFriendlyContent": "Rendez la réponse chaleureuse et amicale.",
   "premiumActive": "Abonnement Premium actif",
-  "guidanceThanksContent": "Ajoutez de l'appréciation et un remerciement poli."
-  ,"adIsLoading": "L’annonce se charge. Veuillez réessayer."
-  ,"creditAdded": "Crédit ajouté."
-  ,"adDailyLimitReached": "Limite quotidienne de récompenses publicitaires atteinte."
-  ,"adLoadFailed": "Impossible de charger l’annonce. Veuillez réessayer plus tard."
-  ,"adRewardCooldown": "Veuillez patienter un instant avant de regarder une autre annonce."
-  ,"adRewardFailed": "Impossible d’ajouter votre crédit. Veuillez réessayer."
+  "guidanceThanksContent": "Ajoutez de l'appréciation et un remerciement poli.",
+  "adIsLoading": "L’annonce se charge. Veuillez réessayer.",
+  "creditAdded": "Crédit ajouté.",
+  "adDailyLimitReached": "Limite quotidienne de récompenses publicitaires atteinte.",
+  "adLoadFailed": "Impossible de charger l’annonce. Veuillez réessayer plus tard.",
+  "adRewardCooldown": "Veuillez patienter un instant avant de regarder une autre annonce.",
+  "adRewardFailed": "Impossible d’ajouter votre crédit. Veuillez réessayer.",
+  "buyCreditPackage": "Acheter des crédits {credits} — {price}",
+  "outOfCreditsTitle": "Vous n'avez plus de crédits",
+  "outOfCreditsMessage": "Regardez une courte annonce pour obtenir 1 crédit gratuit, ou effectuez une mise à niveau pour plus d'accès.",
+  "buyCredits": "Acheter des crédits",
+  "creditAddedTapGenerateAgain": "Crédit ajouté. Appuyez à nouveau sur Générer."
 }

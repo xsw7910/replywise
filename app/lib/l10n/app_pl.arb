@@ -190,7 +190,6 @@
   "creditPackagesUnavailable": "Pakiety środków są obecnie niedostępne.",
   "refreshPackages": "Odśwież pakiety",
   "unlimitedPolish": "Nieograniczone ulepszenia tekstu",
-  "buyCredits": "Kup {credits} kredytów — {price}",
   "loadingCreditPackages": "Ładowanie pakietów środków…",
   "unlimitedReply": "Nieograniczone pokolenia odpowiedzi",
   "trialTerms": "Bezpłatnie przez 3 dni, następnie {price}/rok. Anuluj w dowolnym momencie.",
@@ -268,11 +267,16 @@
   "yesterdayAt": "Wczoraj · {time}",
   "soundConfident": "Brzmij pewnie",
   "dateAt": "{date} · {time}",
-  "makeProfessional": "Zrób to profesjonalnie"
-  ,"adIsLoading": "Reklama się ładuje. Spróbuj ponownie."
-  ,"creditAdded": "Dodano kredyt."
-  ,"adDailyLimitReached": "Osiągnięto dzienny limit nagród za reklamy."
-  ,"adLoadFailed": "Nie można załadować reklamy. Spróbuj ponownie później."
-  ,"adRewardCooldown": "Poczekaj chwilę przed obejrzeniem kolejnej reklamy."
-  ,"adRewardFailed": "Nie udało się dodać kredytu. Spróbuj ponownie."
+  "makeProfessional": "Zrób to profesjonalnie",
+  "adIsLoading": "Reklama się ładuje. Spróbuj ponownie.",
+  "creditAdded": "Dodano kredyt.",
+  "adDailyLimitReached": "Osiągnięto dzienny limit nagród za reklamy.",
+  "adLoadFailed": "Nie można załadować reklamy. Spróbuj ponownie później.",
+  "adRewardCooldown": "Poczekaj chwilę przed obejrzeniem kolejnej reklamy.",
+  "adRewardFailed": "Nie udało się dodać kredytu. Spróbuj ponownie.",
+  "buyCreditPackage": "Kup {credits} kredytów — {price}",
+  "outOfCreditsTitle": "Skończyły Ci się kredyty",
+  "outOfCreditsMessage": "Obejrzyj krótką reklamę, aby otrzymać 1 darmowy kredyt lub uaktualnij, aby uzyskać większy dostęp.",
+  "buyCredits": "Kup Kredyty",
+  "creditAddedTapGenerateAgain": "Dodano kredyt. Kliknij ponownie opcję Generuj."
 }

@@ -619,7 +619,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get refreshPackages => 'Paketleri yenile';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return '$credits Kredi Satın Alın — $price';
   }
 
@@ -881,6 +881,20 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get creditAdded => 'Kredi eklendi.';
+
+  @override
+  String get outOfCreditsTitle => 'Krediniz bitti';
+
+  @override
+  String get outOfCreditsMessage =>
+      '1 ücretsiz kredi kazanmak için kısa bir reklam izleyin veya daha fazla erişim için yükseltme yapın.';
+
+  @override
+  String get buyCredits => 'Kredi Satın Al';
+
+  @override
+  String get creditAddedTapGenerateAgain =>
+      'Kredi eklendi. Tekrar Oluştur\'a dokunun.';
 
   @override
   String get adDailyLimitReached => 'Günlük reklam ödülü sınırına ulaşıldı.';

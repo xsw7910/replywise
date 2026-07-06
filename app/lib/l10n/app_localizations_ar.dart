@@ -616,7 +616,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get refreshPackages => 'تحديث الحزم';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return 'شراء رصيد $credits — $price';
   }
 
@@ -869,6 +869,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get creditAdded => 'تمت إضافة الرصيد.';
+
+  @override
+  String get outOfCreditsTitle => 'لقد نفدت الاعتمادات';
+
+  @override
+  String get outOfCreditsMessage =>
+      'شاهد إعلانًا قصيرًا لتحصل على رصيد مجاني واحد، أو قم بالترقية للحصول على مزيد من الوصول.';
+
+  @override
+  String get buyCredits => 'شراء الاعتمادات';
+
+  @override
+  String get creditAddedTapGenerateAgain =>
+      'تمت إضافة الائتمان. اضغط على إنشاء مرة أخرى.';
 
   @override
   String get adDailyLimitReached =>

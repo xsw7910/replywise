@@ -29,6 +29,7 @@ class _FakeGateway implements RewardedAdGateway {
   /// When set, [show] awaits this before completing — lets a test hold the ad
   /// on screen to exercise double-tap guarding.
   Completer<void>? showGate;
+  Completer<void>? loadGate;
 
   @override
   bool get isReady => _ready;
@@ -36,6 +37,7 @@ class _FakeGateway implements RewardedAdGateway {
   @override
   Future<bool> load(String adUnitId) async {
     loadCalls++;
+    if (loadGate != null) await loadGate!.future;
     if (!loadSucceeds) {
       _ready = false;
       throw const RewardedAdException('load failed');
@@ -124,8 +126,35 @@ void main() {
 
     expect(repo.claimCalls, 1);
     expect(usage.fetchCount, 1);
-    expect(c.read(adRewardControllerProvider).outcome, AdRewardOutcome.creditAdded);
+    expect(
+      c.read(adRewardControllerProvider).outcome,
+      AdRewardOutcome.creditAdded,
+    );
     expect(c.read(adRewardControllerProvider).status, AdRewardStatus.idle);
+  });
+
+  test('first tap waits for preload and then shows the ad', () async {
+    final gate = Completer<void>();
+    final gateway = _FakeGateway(earns: true)..loadGate = gate;
+    final repo = _FakeAdRewardRepo();
+    final usage = _FakeUsageRepo();
+    final c = _container(gateway, repo, usage);
+
+    final notifier = c.read(adRewardControllerProvider.notifier);
+    await _settle();
+    expect(c.read(adRewardControllerProvider).status, AdRewardStatus.loading);
+
+    final watch = notifier.watchAd();
+    await _settle();
+    expect(gateway.showCalls, 0);
+
+    gate.complete();
+    await watch;
+    await _settle();
+
+    expect(gateway.showCalls, 1);
+    expect(repo.claimCalls, 1);
+    expect(usage.fetchCount, 1);
   });
 
   test('dismissed ad grants nothing', () async {

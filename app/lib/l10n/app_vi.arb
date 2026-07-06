@@ -171,7 +171,6 @@
   "polishAgainUsageNote": "Cải tiến lại tạo ra kết quả mới và sử dụng 1 thế hệ.",
   "loadingSubscriptionOptions": "Đang tải tùy chọn đăng ký…",
   "explainParseError": "Chúng tôi không thể đọc được lời giải thích rõ ràng. Vui lòng thử lại.",
-  "buyCredits": "Mua {credits} Tín dụng — {price}",
   "enterMessageFirst": "Nhập tin nhắn để giải thích đầu tiên.",
   "unlimitedPolish": "Cải tiến văn bản không giới hạn",
   "unableToExplain": "Không thể giải thích tin nhắn này.",
@@ -268,11 +267,16 @@
   "yesterdayAt": "Hôm qua · {time}",
   "makeProfessional": "Làm cho nó trở nên chuyên nghiệp",
   "guidanceConfidentContent": "Hãy đưa ra câu trả lời có vẻ tự tin nhưng không hung hăng.",
-  "guidanceMoreTimeContent": "Yêu cầu thêm thời gian với vẻ có trách nhiệm và lịch sự."
-  ,"adIsLoading": "Quảng cáo đang tải. Vui lòng thử lại."
-  ,"creditAdded": "Đã thêm tín dụng."
-  ,"adDailyLimitReached": "Đã đạt giới hạn phần thưởng quảng cáo hằng ngày."
-  ,"adLoadFailed": "Không thể tải quảng cáo. Vui lòng thử lại sau."
-  ,"adRewardCooldown": "Vui lòng đợi một lát trước khi xem quảng cáo khác."
-  ,"adRewardFailed": "Không thể thêm tín dụng của bạn. Vui lòng thử lại."
+  "guidanceMoreTimeContent": "Yêu cầu thêm thời gian với vẻ có trách nhiệm và lịch sự.",
+  "adIsLoading": "Quảng cáo đang tải. Vui lòng thử lại.",
+  "creditAdded": "Đã thêm tín dụng.",
+  "adDailyLimitReached": "Đã đạt giới hạn phần thưởng quảng cáo hằng ngày.",
+  "adLoadFailed": "Không thể tải quảng cáo. Vui lòng thử lại sau.",
+  "adRewardCooldown": "Vui lòng đợi một lát trước khi xem quảng cáo khác.",
+  "adRewardFailed": "Không thể thêm tín dụng của bạn. Vui lòng thử lại.",
+  "buyCreditPackage": "Mua {credits} Tín dụng — {price}",
+  "outOfCreditsTitle": "Bạn đã hết tín dụng",
+  "outOfCreditsMessage": "Xem một quảng cáo ngắn để nhận 1 tín dụng miễn phí hoặc nâng cấp để có nhiều quyền truy cập hơn.",
+  "buyCredits": "Mua tín dụng",
+  "creditAddedTapGenerateAgain": "Đã thêm tín dụng. Nhấn vào Tạo lại."
 }

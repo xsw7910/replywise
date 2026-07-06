@@ -26,6 +26,7 @@ import 'application/pending_reply_input_provider.dart';
 import 'application/reply_controller.dart';
 import 'domain/reply_models.dart';
 import '../entitlement/usage_controller.dart';
+import '../entitlement/presentation/out_of_credits_dialog.dart';
 
 const _kColor = AppColors.replyColor;
 const _feature = AppFeature.reply;
@@ -200,6 +201,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   };
 
   Future<void> _generate() async {
+    if (!await ensureGenerationAccess(context: context, ref: ref)) return;
     // Capture the received message before the async gap.
     final incoming = _incomingController.text;
     await ref.read(replyControllerProvider.notifier).generate(_request());
@@ -240,6 +242,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   }
 
   Future<void> _explain() async {
+    if (!await ensureGenerationAccess(context: context, ref: ref)) return;
     final result = await ref
         .read(explainControllerProvider.notifier)
         .explain(text: _incomingController.text, explainLang: 'en');

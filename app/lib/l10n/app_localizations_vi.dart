@@ -624,7 +624,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get refreshPackages => 'Làm mới gói';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return 'Mua $credits Tín dụng — $price';
   }
 
@@ -883,6 +883,20 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get creditAdded => 'Đã thêm tín dụng.';
+
+  @override
+  String get outOfCreditsTitle => 'Bạn đã hết tín dụng';
+
+  @override
+  String get outOfCreditsMessage =>
+      'Xem một quảng cáo ngắn để nhận 1 tín dụng miễn phí hoặc nâng cấp để có nhiều quyền truy cập hơn.';
+
+  @override
+  String get buyCredits => 'Mua tín dụng';
+
+  @override
+  String get creditAddedTapGenerateAgain =>
+      'Đã thêm tín dụng. Nhấn vào Tạo lại.';
 
   @override
   String get adDailyLimitReached =>

@@ -61,7 +61,7 @@ class AdRewardState {
 
 class AdRewardController extends Notifier<AdRewardState> {
   final _uuid = const Uuid();
-  bool _loadFailed = false;
+  Future<void>? _preloadFuture;
 
   @override
   AdRewardState build() {
@@ -79,32 +79,53 @@ class AdRewardController extends Notifier<AdRewardState> {
       case AdRewardStatus.submitting:
         return; // A reward is already in flight — ignore extra taps.
       case AdRewardStatus.loading:
-        _emit(AdRewardOutcome.adLoading);
-        return;
+        await _preloadFuture;
+        break;
       case AdRewardStatus.idle:
         break;
     }
 
-    if (gateway.isReady) {
-      await _showAndClaim(gateway);
+    // The dialog can be the first surface that reads this provider. In that
+    // case its first tap must finish the initial load and continue directly to
+    // showing the ad instead of asking the user to tap a second time.
+    if (!gateway.isReady && state.status == AdRewardStatus.idle) {
+      await _preload();
+    }
+
+    // A concurrent tap may have resumed first and started showing the ad.
+    if (state.status != AdRewardStatus.idle) {
       return;
     }
 
-    // Idle but no ad ready: report why, then (re)start a load for next time.
-    _emit(_loadFailed ? AdRewardOutcome.loadFailed : AdRewardOutcome.adLoading);
-    await _preload();
+    if (!gateway.isReady) {
+      _emit(AdRewardOutcome.loadFailed);
+      return;
+    }
+
+    await _showAndClaim(gateway);
   }
 
-  Future<void> _preload() async {
+  Future<void> _preload() {
     final gateway = ref.read(rewardedAdGatewayProvider);
-    if (gateway.isReady || state.status != AdRewardStatus.idle) return;
+    if (gateway.isReady) return Future.value();
 
-    _loadFailed = false;
+    final inFlight = _preloadFuture;
+    if (inFlight != null) return inFlight;
+    if (state.status != AdRewardStatus.idle) return Future.value();
+
+    final future = _runPreload(gateway);
+    _preloadFuture = future;
+    return future.whenComplete(() {
+      if (identical(_preloadFuture, future)) _preloadFuture = null;
+    });
+  }
+
+  Future<void> _runPreload(RewardedAdGateway gateway) async {
     state = state.copyWith(status: AdRewardStatus.loading);
     try {
       await gateway.load(AppConfig.rewardedAdUnitId);
     } catch (_) {
-      _loadFailed = true;
+      // The tap that awaited this load reports the localized failure.
     } finally {
       state = state.copyWith(status: AdRewardStatus.idle);
     }

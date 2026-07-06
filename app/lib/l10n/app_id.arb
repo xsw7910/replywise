@@ -193,7 +193,6 @@
   "creditPackagesUnavailable": "Paket kredit tidak tersedia saat ini.",
   "loadingCreditPackages": "Memuat paket kredit…",
   "trialTerms": "Gratis selama 3 hari, lalu {price}/tahun. Batalkan kapan saja.",
-  "buyCredits": "Beli Kredit {credits} — {price}",
   "restorePremium": "Pulihkan langganan Premium",
   "balancesPreserved": "Saldo gratis dan kredit tetap terjaga",
   "unlimitedPolish": "Peningkatan teks tanpa batas",
@@ -268,11 +267,16 @@
   "guidanceFriendlyContent": "Jadikan balasannya hangat dan ramah.",
   "guidanceThanksContent": "Tambahkan apresiasi dan ucapan terima kasih yang sopan.",
   "creditsRemaining": "Sisa kredit {count}",
-  "premiumActive": "Langganan premium aktif"
-  ,"adIsLoading": "Iklan sedang dimuat. Silakan coba lagi."
-  ,"creditAdded": "Kredit ditambahkan."
-  ,"adDailyLimitReached": "Batas harian hadiah iklan telah tercapai."
-  ,"adLoadFailed": "Tidak dapat memuat iklan. Silakan coba lagi nanti."
-  ,"adRewardCooldown": "Harap tunggu sebentar sebelum menonton iklan lain."
-  ,"adRewardFailed": "Tidak dapat menambahkan kredit Anda. Silakan coba lagi."
+  "premiumActive": "Langganan premium aktif",
+  "adIsLoading": "Iklan sedang dimuat. Silakan coba lagi.",
+  "creditAdded": "Kredit ditambahkan.",
+  "adDailyLimitReached": "Batas harian hadiah iklan telah tercapai.",
+  "adLoadFailed": "Tidak dapat memuat iklan. Silakan coba lagi nanti.",
+  "adRewardCooldown": "Harap tunggu sebentar sebelum menonton iklan lain.",
+  "adRewardFailed": "Tidak dapat menambahkan kredit Anda. Silakan coba lagi.",
+  "buyCreditPackage": "Beli Kredit {credits} — {price}",
+  "outOfCreditsTitle": "Anda kehabisan kredit",
+  "outOfCreditsMessage": "Tonton iklan singkat untuk mendapatkan 1 kredit gratis, atau tingkatkan versi untuk akses lebih lanjut.",
+  "buyCredits": "Beli Kredit",
+  "creditAddedTapGenerateAgain": "Kredit ditambahkan. Ketuk Hasilkan lagi."
 }

@@ -620,7 +620,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get refreshPackages => 'Segarkan paket';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return 'Beli Kredit $credits — $price';
   }
 
@@ -882,6 +882,20 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get creditAdded => 'Kredit ditambahkan.';
+
+  @override
+  String get outOfCreditsTitle => 'Anda kehabisan kredit';
+
+  @override
+  String get outOfCreditsMessage =>
+      'Tonton iklan singkat untuk mendapatkan 1 kredit gratis, atau tingkatkan versi untuk akses lebih lanjut.';
+
+  @override
+  String get buyCredits => 'Beli Kredit';
+
+  @override
+  String get creditAddedTapGenerateAgain =>
+      'Kredit ditambahkan. Ketuk Hasilkan lagi.';
 
   @override
   String get adDailyLimitReached => 'Batas harian hadiah iklan telah tercapai.';

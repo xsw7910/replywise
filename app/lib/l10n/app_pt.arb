@@ -210,7 +210,6 @@
   "moreNatural": "Mais natural",
   "refreshPackages": "Atualizar pacotes",
   "deleteGuidance": "Excluir esta orientação?",
-  "buyCredits": "Compre {credits} Créditos — {price}",
   "guidanceTitleHint": "Nome abreviado para esta orientação…",
   "couldNotSaveGuidance": "Não foi possível salvar esta orientação. Por favor, tente novamente.",
   "restorePremium": "Restaurar assinatura Premium",
@@ -268,11 +267,16 @@
   "makeFriendly": "Torne-o amigável",
   "guidanceMoreTimeContent": "Peça mais tempo parecendo responsável e educado.",
   "guidanceConfidentContent": "Faça a resposta parecer confiante, mas não agressiva.",
-  "guidanceDeclineContent": "Recuse educadamente o pedido, sem parecer rude."
-  ,"adIsLoading": "O anúncio está a carregar. Tente novamente."
-  ,"creditAdded": "Crédito adicionado."
-  ,"adDailyLimitReached": "Limite diário de recompensas por anúncios atingido."
-  ,"adLoadFailed": "Não foi possível carregar o anúncio. Tente novamente mais tarde."
-  ,"adRewardCooldown": "Aguarde um momento antes de ver outro anúncio."
-  ,"adRewardFailed": "Não foi possível adicionar o seu crédito. Tente novamente."
+  "guidanceDeclineContent": "Recuse educadamente o pedido, sem parecer rude.",
+  "adIsLoading": "O anúncio está a carregar. Tente novamente.",
+  "creditAdded": "Crédito adicionado.",
+  "adDailyLimitReached": "Limite diário de recompensas por anúncios atingido.",
+  "adLoadFailed": "Não foi possível carregar o anúncio. Tente novamente mais tarde.",
+  "adRewardCooldown": "Aguarde um momento antes de ver outro anúncio.",
+  "adRewardFailed": "Não foi possível adicionar o seu crédito. Tente novamente.",
+  "buyCreditPackage": "Compre {credits} Créditos — {price}",
+  "outOfCreditsTitle": "Você está sem créditos",
+  "outOfCreditsMessage": "Assista a um pequeno anúncio para obter 1 crédito grátis ou faça upgrade para obter mais acesso.",
+  "buyCredits": "Comprar créditos",
+  "creditAddedTapGenerateAgain": "Crédito adicionado. Toque em Gerar novamente."
 }

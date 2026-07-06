@@ -212,7 +212,6 @@
   "saveGuidance": "Anleitung speichern",
   "myGuidance": "Meine Anleitung",
   "guidanceTitleHint": "Kurzname für diese Anleitung…",
-  "buyCredits": "Kaufen Sie {credits}-Credits – {price}",
   "restorePremium": "Premium-Abonnement wiederherstellen",
   "guidanceHint": "Beschreiben Sie, wie die KI die Antwort gestalten soll ...",
   "couldNotSaveGuidance": "Diese Anleitung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
@@ -268,11 +267,16 @@
   "guidanceThanksContent": "Fügen Sie Wertschätzung und ein höfliches Dankeschön hinzu.",
   "guidanceFriendlyContent": "Gestalten Sie die Antwort warm und freundlich.",
   "creditsRemaining": "Verbleibende {count}-Credits",
-  "premiumActive": "Premium-Abonnement aktiv"
-  ,"adIsLoading": "Anzeige wird geladen. Bitte versuche es erneut."
-  ,"creditAdded": "Guthaben hinzugefügt."
-  ,"adDailyLimitReached": "Tägliches Limit für Anzeigen-Belohnungen erreicht."
-  ,"adLoadFailed": "Anzeige konnte nicht geladen werden. Bitte versuche es später erneut."
-  ,"adRewardCooldown": "Bitte warte einen Moment, bevor du eine weitere Anzeige ansiehst."
-  ,"adRewardFailed": "Dein Guthaben konnte nicht hinzugefügt werden. Bitte versuche es erneut."
+  "premiumActive": "Premium-Abonnement aktiv",
+  "adIsLoading": "Anzeige wird geladen. Bitte versuche es erneut.",
+  "creditAdded": "Guthaben hinzugefügt.",
+  "adDailyLimitReached": "Tägliches Limit für Anzeigen-Belohnungen erreicht.",
+  "adLoadFailed": "Anzeige konnte nicht geladen werden. Bitte versuche es später erneut.",
+  "adRewardCooldown": "Bitte warte einen Moment, bevor du eine weitere Anzeige ansiehst.",
+  "adRewardFailed": "Dein Guthaben konnte nicht hinzugefügt werden. Bitte versuche es erneut.",
+  "buyCreditPackage": "Kaufen Sie {credits}-Credits – {price}",
+  "outOfCreditsTitle": "Ihr Guthaben ist aufgebraucht",
+  "outOfCreditsMessage": "Sehen Sie sich eine kurze Anzeige an, um 1 kostenloses Guthaben zu erhalten, oder führen Sie ein Upgrade durch, um mehr Zugriff zu erhalten.",
+  "buyCredits": "Credits kaufen",
+  "creditAddedTapGenerateAgain": "Gutschrift hinzugefügt. Tippen Sie erneut auf „Generieren“."
 }

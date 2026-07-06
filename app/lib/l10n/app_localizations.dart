@@ -1285,11 +1285,11 @@ abstract class AppLocalizations {
   /// **'Refresh packages'**
   String get refreshPackages;
 
-  /// No description provided for @buyCredits.
+  /// No description provided for @buyCreditPackage.
   ///
   /// In en, this message translates to:
   /// **'Buy {credits} Credits — {price}'**
-  String buyCredits(int credits, String price);
+  String buyCreditPackage(int credits, String price);
 
   /// No description provided for @restoring.
   ///
@@ -1758,6 +1758,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Credit added.'**
   String get creditAdded;
+
+  /// No description provided for @outOfCreditsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re out of credits'**
+  String get outOfCreditsTitle;
+
+  /// No description provided for @outOfCreditsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a short ad to get 1 free credit, or upgrade for more access.'**
+  String get outOfCreditsMessage;
+
+  /// No description provided for @buyCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy Credits'**
+  String get buyCredits;
+
+  /// No description provided for @creditAddedTapGenerateAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit added. Tap Generate again.'**
+  String get creditAddedTapGenerateAgain;
 
   /// No description provided for @adDailyLimitReached.
   ///

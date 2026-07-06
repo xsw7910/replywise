@@ -17,6 +17,7 @@ import '../../core/widgets/labeled_text_field.dart';
 import 'application/polish_controller.dart';
 import 'domain/polish_models.dart';
 import '../entitlement/usage_controller.dart';
+import '../entitlement/presentation/out_of_credits_dialog.dart';
 import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
 import '../guidance/presentation/guidance_picker_sheet.dart';
@@ -132,6 +133,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   }
 
   Future<void> _polish() async {
+    if (!await ensureGenerationAccess(context: context, ref: ref)) return;
     // Capture the draft before the async gap.
     final draft = _draftController.text;
     await ref

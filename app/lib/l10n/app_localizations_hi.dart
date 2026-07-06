@@ -619,7 +619,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get refreshPackages => 'पैकेज ताज़ा करें';
 
   @override
-  String buyCredits(int credits, String price) {
+  String buyCreditPackage(int credits, String price) {
     return '$credits क्रेडिट खरीदें - $price';
   }
 
@@ -879,6 +879,20 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get creditAdded => 'क्रेडिट जोड़ा गया.';
+
+  @override
+  String get outOfCreditsTitle => 'आप क्रेडिट से बाहर हैं';
+
+  @override
+  String get outOfCreditsMessage =>
+      '1 निःशुल्क क्रेडिट पाने के लिए, या अधिक पहुंच के लिए अपग्रेड करने के लिए एक छोटा विज्ञापन देखें।';
+
+  @override
+  String get buyCredits => 'क्रेडिट खरीदें';
+
+  @override
+  String get creditAddedTapGenerateAgain =>
+      'क्रेडिट जोड़ा गया. फिर से जेनरेट पर टैप करें.';
 
   @override
   String get adDailyLimitReached => 'विज्ञापन इनाम की दैनिक सीमा पूरी हो गई.';
