@@ -19,10 +19,10 @@ class _DummyStorage extends TokenStorage {
 }
 
 ApiClient _dummyClient() => ApiClient(
-      rawDio: Dio(),
-      tokenStorage: _DummyStorage(),
-      recoverUnauthorized: () async => false,
-    );
+  rawDio: Dio(),
+  tokenStorage: _DummyStorage(),
+  recoverUnauthorized: () async => false,
+);
 
 // ── Fake repositories ─────────────────────────────────────────────────────────
 
@@ -106,6 +106,9 @@ class _FakeGateway implements RevenueCatGateway {
     purchaseCallCount++;
     if (purchaseError != null) throw purchaseError!;
   }
+
+  @override
+  Future<bool> isEntitlementActive(String entitlementId) async => false;
 }
 
 // ── Container helpers ─────────────────────────────────────────────────────────

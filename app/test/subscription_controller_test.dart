@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -43,6 +45,12 @@ class _FakeSubscriptionRepository implements SubscriptionRepository {
   var purchaseCalls = 0;
   var restoreCalls = 0;
 
+  // Silent sync: null => no active premium (backend not called).
+  EntitlementState? silentResult;
+  Object? silentError;
+  var silentCalls = 0;
+  Completer<void>? silentGate;
+
   @override
   Future<SubscriptionOffer> load(String appUserId) async => _offer;
 
@@ -60,6 +68,74 @@ class _FakeSubscriptionRepository implements SubscriptionRepository {
   Future<EntitlementState> restore(String appUserId) async {
     restoreCalls++;
     return restoreResult;
+  }
+
+  @override
+  Future<EntitlementState?> syncActivePremiumSilently(String appUserId) async {
+    silentCalls++;
+    if (silentGate != null) await silentGate!.future;
+    if (silentError != null) throw silentError!;
+    return silentResult;
+  }
+}
+
+/// Fake gateway used for repository-level silent-sync tests. Only
+/// [isEntitlementActive] and [configure] are exercised.
+class _FakeGateway implements RevenueCatGateway {
+  _FakeGateway(this.active);
+
+  final bool active;
+
+  @override
+  Future<void> configure({
+    required String apiKey,
+    required String appUserId,
+  }) async {}
+
+  @override
+  Future<bool> isEntitlementActive(String entitlementId) async => active;
+
+  @override
+  Future<SubscriptionOffer> loadAnnualOffer() => throw UnimplementedError();
+  @override
+  Future<void> purchase(SubscriptionOffer offer) => throw UnimplementedError();
+  @override
+  Future<void> restore() => throw UnimplementedError();
+  @override
+  Future<List<CreditPackage>> loadCreditPackages() =>
+      throw UnimplementedError();
+  @override
+  Future<void> purchaseCredit(CreditPackage package) =>
+      throw UnimplementedError();
+}
+
+/// ApiClient spy that records POST paths and returns canned JSON without any
+/// network. If the repository calls the backend when it should not, the
+/// recorded [postPaths] make it visible.
+class _SpyApiClient extends ApiClient {
+  _SpyApiClient(this._response)
+    : super(
+        rawDio: Dio(),
+        tokenStorage: _DummyStorage(),
+        recoverUnauthorized: _noRecovery,
+      );
+
+  final Map<String, dynamic> _response;
+  final List<String> postPaths = [];
+
+  static Future<bool> _noRecovery() async => false;
+
+  @override
+  Future<Response<T>> post<T>(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
+    postPaths.add(path);
+    return Response<T>(
+      requestOptions: RequestOptions(path: path),
+      data: _response as T,
+    );
   }
 }
 
@@ -157,5 +233,111 @@ void main() {
       container.read(subscriptionControllerProvider).error,
       'Purchase cancelled.',
     );
+  });
+
+  // ── Silent premium reconciliation (reinstall recovery) ──────────────────────
+
+  group('syncActivePremiumSilently (controller)', () {
+    test('active premium triggers a usage refresh', () async {
+      final subscription = _FakeSubscriptionRepository()
+        ..silentResult = _premium;
+      final usage = _FakeUsageRepository();
+      final container = _container(subscription, usage);
+
+      await container
+          .read(subscriptionControllerProvider.notifier)
+          .syncActivePremiumSilently('reinstalled-user');
+
+      expect(subscription.silentCalls, 1);
+      expect(usage.fetchCalls, 1); // /v1/me refreshed → UI shows premium
+    });
+
+    test('no active premium does not refresh usage', () async {
+      final subscription = _FakeSubscriptionRepository()..silentResult = null;
+      final usage = _FakeUsageRepository();
+      final container = _container(subscription, usage);
+
+      await container
+          .read(subscriptionControllerProvider.notifier)
+          .syncActivePremiumSilently('user');
+
+      expect(subscription.silentCalls, 1);
+      expect(usage.fetchCalls, 0);
+    });
+
+    test('an error is swallowed and never downgrades premium', () async {
+      final subscription = _FakeSubscriptionRepository()
+        ..silentError = Exception('network down');
+      final usage = _FakeUsageRepository();
+      final container = _container(subscription, usage);
+      final controller = container.read(
+        subscriptionControllerProvider.notifier,
+      );
+
+      await expectLater(
+        controller.syncActivePremiumSilently('user'),
+        completes,
+      );
+
+      // No refresh on failure → existing premium/usage state is left untouched,
+      // and nothing is surfaced to the Paywall UI.
+      expect(usage.fetchCalls, 0);
+      expect(container.read(subscriptionControllerProvider).error, isNull);
+    });
+
+    test('concurrent calls share one in-flight run', () async {
+      final gate = Completer<void>();
+      final subscription = _FakeSubscriptionRepository()
+        ..silentResult = _premium
+        ..silentGate = gate;
+      final usage = _FakeUsageRepository();
+      final container = _container(subscription, usage);
+      final controller = container.read(
+        subscriptionControllerProvider.notifier,
+      );
+
+      final first = controller.syncActivePremiumSilently('user');
+      final second = controller.syncActivePremiumSilently('user');
+      gate.complete();
+      await Future.wait([first, second]);
+
+      expect(subscription.silentCalls, 1); // deduped
+      expect(usage.fetchCalls, 1);
+    });
+  });
+
+  group('syncActivePremiumSilently (repository gating)', () {
+    test('calls the backend only when the entitlement is active', () async {
+      final client = _SpyApiClient(const {
+        'isPremium': true,
+        'freeUsesLimit': 5,
+        'freeUsesUsed': 0,
+        'freeUsesLeft': null,
+        'paidCredits': 0,
+        'upgradeRequired': false,
+      });
+      final repo = RevenueCatSubscriptionRepository(_FakeGateway(true), client);
+
+      final result = await repo.syncActivePremiumSilently('user');
+
+      expect(client.postPaths, ['/v1/entitlement/sync']);
+      expect(result?.isPremium, isTrue);
+    });
+
+    test('skips the backend when there is no active entitlement', () async {
+      final client = _SpyApiClient(const {});
+      final repo = RevenueCatSubscriptionRepository(
+        _FakeGateway(false),
+        client,
+      );
+
+      final result = await repo.syncActivePremiumSilently('user');
+
+      expect(
+        client.postPaths,
+        isEmpty,
+      ); // getCustomerInfo only, no backend call
+      expect(result, isNull);
+    });
   });
 }

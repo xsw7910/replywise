@@ -37,6 +37,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           ref.read(creditControllerProvider.notifier).syncCredits();
+          // Also silently reconcile premium so a reinstalled subscriber sees
+          // Premium here without tapping Restore.
+          ref
+              .read(subscriptionControllerProvider.notifier)
+              .syncActivePremiumSilently(appUserId);
         }
       });
     }

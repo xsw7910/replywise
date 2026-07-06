@@ -49,6 +49,11 @@ abstract class RevenueCatGateway {
   Future<void> restore();
   Future<List<CreditPackage>> loadCreditPackages();
   Future<void> purchaseCredit(CreditPackage package);
+
+  /// Silent, read-only check of RevenueCat's current CustomerInfo. Returns true
+  /// when [entitlementId] is active. Uses getCustomerInfo() only — it never
+  /// starts a purchase, shows the store UI, or calls restorePurchases.
+  Future<bool> isEntitlementActive(String entitlementId);
 }
 
 class SdkRevenueCatGateway implements RevenueCatGateway {
@@ -119,8 +124,7 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
   Future<SubscriptionOffer> loadAnnualOffer() async {
     final offerings = await Purchases.getOfferings();
     final offering = offerings.getOffering('default');
-    final package =
-        offering?.getPackage(r'$rc_annual') ?? offering?.annual;
+    final package = offering?.getPackage(r'$rc_annual') ?? offering?.annual;
     if (package == null) {
       throw const SubscriptionException(
         'The annual subscription is currently unavailable.',
@@ -162,6 +166,16 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
     } on PlatformException {
       throw const SubscriptionException('Restore failed. Please try again.');
     }
+  }
+
+  @override
+  Future<bool> isEntitlementActive(String entitlementId) async {
+    // getCustomerInfo() reads the current (already-synced) entitlement state.
+    // Configuring the SDK on a fresh install auto-syncs active Google Play
+    // purchases to the current app user, so this reflects a reinstalled user's
+    // live subscription without a purchase or restore flow.
+    final info = await Purchases.getCustomerInfo();
+    return info.entitlements.active.containsKey(entitlementId);
   }
 
   static const _creditsByProductId = {
@@ -222,6 +236,14 @@ abstract class SubscriptionRepository {
   Future<SubscriptionOffer> load(String appUserId);
   Future<EntitlementState> purchase(String appUserId, SubscriptionOffer offer);
   Future<EntitlementState> restore(String appUserId);
+
+  /// Silently reconciles an already-active premium entitlement.
+  ///
+  /// Configures RevenueCat, checks CustomerInfo via getCustomerInfo(), and only
+  /// if premium is active syncs it with the backend, returning the fresh
+  /// [EntitlementState]. Returns null when there is no active premium (the
+  /// backend is not called). Never starts a purchase or restore flow.
+  Future<EntitlementState?> syncActivePremiumSilently(String appUserId);
 }
 
 class RevenueCatSubscriptionRepository implements SubscriptionRepository {
@@ -255,6 +277,15 @@ class RevenueCatSubscriptionRepository implements SubscriptionRepository {
   Future<EntitlementState> restore(String appUserId) async {
     await _configure(appUserId);
     await _gateway.restore();
+    return _sync();
+  }
+
+  @override
+  Future<EntitlementState?> syncActivePremiumSilently(String appUserId) async {
+    await _configure(appUserId);
+    // Read-only CustomerInfo check — no purchase, no restore, no store UI.
+    final active = await _gateway.isEntitlementActive(AppConfig.entitlementId);
+    if (!active) return null; // No premium → do not touch the backend.
     return _sync();
   }
 

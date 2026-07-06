@@ -8,6 +8,7 @@ import 'core/theme/app_theme.dart';
 import 'features/auth/application/auth_controller.dart';
 import 'features/auth/auth_state.dart';
 import 'features/entitlement/credit_controller.dart';
+import 'features/entitlement/subscription_controller.dart';
 import 'features/entitlement/usage_controller.dart';
 
 class ReplyWiseApp extends ConsumerWidget {
@@ -20,9 +21,17 @@ class ReplyWiseApp extends ConsumerWidget {
     ref.listen(authControllerProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated &&
           previous?.status != AuthStatus.authenticated) {
+        final appUserId = next.appUserId;
         Future.microtask(() {
           ref.read(usageControllerProvider.notifier).refresh();
           ref.read(creditControllerProvider.notifier).syncCredits();
+          // Reinstall recovery: silently restore an already-active premium
+          // subscription (getCustomerInfo only — no purchase/restore UI).
+          if (appUserId != null) {
+            ref
+                .read(subscriptionControllerProvider.notifier)
+                .syncActivePremiumSilently(appUserId);
+          }
         });
       }
     });

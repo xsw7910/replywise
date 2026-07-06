@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/network/api_error.dart';
@@ -27,8 +28,47 @@ class SubscriptionState {
 }
 
 class SubscriptionController extends Notifier<SubscriptionState> {
+  Future<void>? _silentSyncInFlight;
+
   @override
   SubscriptionState build() => const SubscriptionState();
+
+  /// Silently reconciles an already-active premium entitlement from RevenueCat
+  /// (e.g. after a reinstall) and refreshes usage so `/v1/me` and the UI show
+  /// premium automatically. Uses getCustomerInfo() only — it never starts a
+  /// purchase, shows the store UI, or calls restorePurchases.
+  ///
+  /// Safe to call repeatedly from startup, Paywall and Settings: concurrent
+  /// calls share one in-flight run. It does not touch [SubscriptionState] (so it
+  /// never disturbs the Paywall UI) and, on any network/RevenueCat error, it
+  /// leaves everything untouched — premium is never downgraded here.
+  Future<void> syncActivePremiumSilently(String appUserId) {
+    final inFlight = _silentSyncInFlight;
+    if (inFlight != null) return inFlight;
+    final future = _runSilentSync(appUserId);
+    _silentSyncInFlight = future;
+    return future.whenComplete(() {
+      if (identical(_silentSyncInFlight, future)) _silentSyncInFlight = null;
+    });
+  }
+
+  Future<void> _runSilentSync(String appUserId) async {
+    try {
+      final entitlement = await ref
+          .read(subscriptionRepositoryProvider)
+          .syncActivePremiumSilently(appUserId);
+      // null => no active premium entitlement; the backend was not called.
+      if (entitlement != null && entitlement.isPremium) {
+        await ref.read(usageControllerProvider.notifier).refresh();
+      }
+    } catch (error, stackTrace) {
+      // Background reconciliation is non-critical: never surface it and never
+      // downgrade premium because a silent check failed.
+      if (kDebugMode) {
+        debugPrint('Silent premium sync failed: $error\n$stackTrace');
+      }
+    }
+  }
 
   Future<void> load(String appUserId) async {
     if (state.isLoading ||

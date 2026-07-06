@@ -93,6 +93,11 @@ class _FakeGateway implements RevenueCatGateway {
 
   @override
   Future<void> purchaseCredit(CreditPackage creditPackage) async {}
+
+  // The Paywall's silent premium reconciliation must stay a no-op in these UI
+  // tests: no active entitlement → no backend call.
+  @override
+  Future<bool> isEntitlementActive(String entitlementId) async => false;
 }
 
 // ── Credit packages used across tests ─────────────────────────────────────────

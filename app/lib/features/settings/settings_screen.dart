@@ -13,6 +13,7 @@ import '../../core/widgets/inline_error.dart';
 import '../ads/application/ad_reward_controller.dart';
 import '../auth/application/auth_controller.dart';
 import '../auth/auth_state.dart';
+import '../entitlement/subscription_controller.dart';
 import '../entitlement/usage_controller.dart';
 import 'application/dev_tools_controller.dart';
 import 'application/health_controller.dart';
@@ -142,6 +143,7 @@ class SettingsScreen extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 34, 20, 36),
         children: [
+          const _PremiumAutoSync(),
           Text(
             context.l10n.settings,
             style: AppTextStyles.pageTitle.copyWith(
@@ -814,4 +816,34 @@ class _StatusRow extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Invisible one-shot trigger. When Settings opens it silently reconciles an
+/// already-active premium entitlement (e.g. after a reinstall) so Premium shows
+/// without tapping Restore. Uses getCustomerInfo() only — no purchase/store UI.
+/// `initState` fires exactly once per screen open.
+class _PremiumAutoSync extends ConsumerStatefulWidget {
+  const _PremiumAutoSync();
+
+  @override
+  ConsumerState<_PremiumAutoSync> createState() => _PremiumAutoSyncState();
+}
+
+class _PremiumAutoSyncState extends ConsumerState<_PremiumAutoSync> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final appUserId = ref.read(authControllerProvider).appUserId;
+      if (appUserId != null) {
+        ref
+            .read(subscriptionControllerProvider.notifier)
+            .syncActivePremiumSilently(appUserId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }

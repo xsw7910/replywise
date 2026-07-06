@@ -96,6 +96,10 @@ class _FakeSubscriptionRepo implements SubscriptionRepository {
       hasTrial: true,
     ),
   );
+
+  @override
+  Future<EntitlementState?> syncActivePremiumSilently(String appUserId) async =>
+      null;
 }
 
 // ── Guidance fake ──────────────────────────────────────────────────────────
@@ -120,7 +124,15 @@ void main() {
   Future<void> pumpReplyWiseApp(WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [..._authOverrides, ...await _guidanceOverrides()],
+        overrides: [
+          ..._authOverrides,
+          ...await _guidanceOverrides(),
+          // Keep the startup/Settings silent premium reconciliation off the
+          // real RevenueCat SDK: the fake reports no active entitlement.
+          subscriptionRepositoryProvider.overrideWithValue(
+            _FakeSubscriptionRepo(),
+          ),
+        ],
         child: const ReplyWiseApp(),
       ),
     );
@@ -309,6 +321,9 @@ void main() {
           ..._authOverrides,
           ...await _guidanceOverrides(),
           devToolsPanelVisibleProvider.overrideWithValue(false),
+          subscriptionRepositoryProvider.overrideWithValue(
+            _FakeSubscriptionRepo(),
+          ),
         ],
         child: const ReplyWiseApp(),
       ),
