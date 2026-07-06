@@ -80,6 +80,11 @@ android {
 
     buildTypes {
         release {
+            // TODO: Re-enable minification and resource shrinking after adding
+            // verified ProGuard rules for WorkManager/Room/SQLite.
+            isMinifyEnabled = false
+            isShrinkResources = false
+
             if (releaseSigningAvailable) {
                 signingConfig = signingConfigs.getByName("release")
             }
