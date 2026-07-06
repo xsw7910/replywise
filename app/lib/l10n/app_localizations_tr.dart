@@ -21,6 +21,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settings => 'Ayarlar';
 
   @override
+  String get settingsSubtitle =>
+      'Hesabınızı ve uygulama tercihlerinizi yönetin';
+
+  @override
   String get home => 'Ana Sayfa';
 
   @override

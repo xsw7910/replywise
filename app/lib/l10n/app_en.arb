@@ -4,6 +4,7 @@
   "systemDefault": "System default",
   "chooseLanguage": "Choose app language",
   "settings": "Settings",
+  "settingsSubtitle": "Manage your account and app preferences",
   "home": "Home",
   "reply": "Reply",
   "explain": "Explain",

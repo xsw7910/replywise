@@ -21,6 +21,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get settings => 'Pengaturan';
 
   @override
+  String get settingsSubtitle => 'Kelola akun dan preferensi aplikasi Anda';
+
+  @override
   String get home => 'Beranda';
 
   @override

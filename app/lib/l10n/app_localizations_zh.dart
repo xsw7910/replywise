@@ -21,6 +21,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings => '设置';
 
   @override
+  String get settingsSubtitle => '管理你的账户和应用偏好';
+
+  @override
   String get home => '首页';
 
   @override
@@ -893,6 +896,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settings => '設定';
+
+  @override
+  String get settingsSubtitle => '管理你的帳戶與應用程式偏好';
 
   @override
   String get home => '首頁';

@@ -21,6 +21,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settings => 'Ustawienia';
 
   @override
+  String get settingsSubtitle => 'Zarządzaj kontem i preferencjami aplikacji';
+
+  @override
   String get home => 'Strona główna';
 
   @override

@@ -21,6 +21,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings => 'Einstellungen';
 
   @override
+  String get settingsSubtitle =>
+      'Verwalte dein Konto und deine App-Einstellungen';
+
+  @override
   String get home => 'Start';
 
   @override

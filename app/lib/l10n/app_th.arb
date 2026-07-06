@@ -3,6 +3,7 @@
   "systemDefault": "ค่าเริ่มต้นของระบบ",
   "chooseLanguage": "เลือกภาษาของแอป",
   "settings": "การตั้งค่า",
+  "settingsSubtitle": "จัดการบัญชีและการตั้งค่าแอปของคุณ",
   "home": "หน้าหลัก",
   "reply": "ตอบกลับ",
   "explain": "อธิบาย",

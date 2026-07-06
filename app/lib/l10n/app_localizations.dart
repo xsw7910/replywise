@@ -157,6 +157,12 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
+  /// No description provided for @settingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your account and app preferences'**
+  String get settingsSubtitle;
+
   /// No description provided for @home.
   ///
   /// In en, this message translates to:

@@ -3,6 +3,7 @@
   "systemDefault": "Predeterminado del sistema",
   "chooseLanguage": "Elegir idioma de la aplicación",
   "settings": "Ajustes",
+  "settingsSubtitle": "Gestiona tu cuenta y las preferencias de la aplicación",
   "home": "Inicio",
   "reply": "Responder",
   "explain": "Explicar",

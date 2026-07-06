@@ -21,6 +21,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settings => 'Impostazioni';
 
   @override
+  String get settingsSubtitle =>
+      'Gestisci il tuo account e le preferenze dell’app';
+
+  @override
   String get home => 'Home';
 
   @override

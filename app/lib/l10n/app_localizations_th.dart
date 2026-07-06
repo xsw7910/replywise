@@ -21,6 +21,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get settings => 'การตั้งค่า';
 
   @override
+  String get settingsSubtitle => 'จัดการบัญชีและการตั้งค่าแอปของคุณ';
+
+  @override
   String get home => 'หน้าหลัก';
 
   @override

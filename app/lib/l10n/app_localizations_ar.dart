@@ -21,6 +21,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settings => 'الإعدادات';
 
   @override
+  String get settingsSubtitle => 'إدارة حسابك وتفضيلات التطبيق';
+
+  @override
   String get home => 'الرئيسية';
 
   @override

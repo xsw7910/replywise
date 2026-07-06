@@ -21,6 +21,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings => '設定';
 
   @override
+  String get settingsSubtitle => 'アカウントとアプリの設定を管理';
+
+  @override
   String get home => 'ホーム';
 
   @override

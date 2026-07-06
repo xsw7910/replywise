@@ -3,6 +3,7 @@
   "systemDefault": "Systemstandard",
   "chooseLanguage": "App-Sprache auswählen",
   "settings": "Einstellungen",
+  "settingsSubtitle": "Verwalte dein Konto und deine App-Einstellungen",
   "home": "Start",
   "reply": "Antworten",
   "explain": "Erklären",

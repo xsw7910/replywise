@@ -21,6 +21,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get settings => 'Cài đặt';
 
   @override
+  String get settingsSubtitle => 'Quản lý tài khoản và tùy chọn ứng dụng';
+
+  @override
   String get home => 'Trang chủ';
 
   @override

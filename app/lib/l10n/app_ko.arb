@@ -3,6 +3,7 @@
   "systemDefault": "시스템 기본값",
   "chooseLanguage": "앱 언어 선택",
   "settings": "설정",
+  "settingsSubtitle": "계정 및 앱 환경설정 관리",
   "home": "홈",
   "reply": "답장",
   "explain": "설명",

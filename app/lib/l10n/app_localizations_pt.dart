@@ -21,6 +21,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings => 'Configurações';
 
   @override
+  String get settingsSubtitle => 'Gerencie sua conta e as preferências do app';
+
+  @override
   String get home => 'Início';
 
   @override

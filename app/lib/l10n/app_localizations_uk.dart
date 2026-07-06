@@ -21,6 +21,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settings => 'Налаштування';
 
   @override
+  String get settingsSubtitle =>
+      'Керуйте обліковим записом і налаштуваннями застосунку';
+
+  @override
   String get home => 'Головна';
 
   @override

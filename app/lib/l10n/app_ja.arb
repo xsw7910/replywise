@@ -3,6 +3,7 @@
   "systemDefault": "システムのデフォルト",
   "chooseLanguage": "アプリの言語を選択",
   "settings": "設定",
+  "settingsSubtitle": "アカウントとアプリの設定を管理",
   "home": "ホーム",
   "reply": "返信",
   "explain": "解説",

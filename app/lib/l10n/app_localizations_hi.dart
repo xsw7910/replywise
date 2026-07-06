@@ -21,6 +21,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settings => 'सेटिंग्स';
 
   @override
+  String get settingsSubtitle => 'अपना खाता और ऐप प्राथमिकताएँ प्रबंधित करें';
+
+  @override
   String get home => 'होम';
 
   @override

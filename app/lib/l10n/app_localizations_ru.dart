@@ -21,6 +21,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings => 'Настройки';
 
   @override
+  String get settingsSubtitle =>
+      'Управляйте аккаунтом и настройками приложения';
+
+  @override
   String get home => 'Главная';
 
   @override

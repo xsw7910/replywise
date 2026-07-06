@@ -332,6 +332,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Credits'), findsOneWidget);
+    expect(
+      find.text('Manage your account and app preferences'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('settings-credits-card')), findsOneWidget);
+    expect(find.byKey(const Key('settings-options-group')), findsOneWidget);
     expect(find.text('Current plan'), findsOneWidget);
     expect(find.text('App language'), findsOneWidget);
     expect(find.text('Support'), findsOneWidget);

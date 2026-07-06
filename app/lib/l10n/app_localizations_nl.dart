@@ -21,6 +21,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settings => 'Instellingen';
 
   @override
+  String get settingsSubtitle => 'Beheer je account en appvoorkeuren';
+
+  @override
   String get home => 'Home';
 
   @override

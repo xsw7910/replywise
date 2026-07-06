@@ -124,8 +124,7 @@ class SettingsScreen extends ConsumerWidget {
 
     final adRewardState = ref.watch(adRewardControllerProvider);
     ref.listen(adRewardControllerProvider, (previous, next) {
-      if (next.outcome == null ||
-          previous?.outcomeToken == next.outcomeToken) {
+      if (next.outcome == null || previous?.outcomeToken == next.outcomeToken) {
         return;
       }
       ScaffoldMessenger.of(context)
@@ -138,18 +137,31 @@ class SettingsScreen extends ConsumerWidget {
     return AppPage(
       title: context.l10n.settings,
       showAppBar: false,
+      backgroundImagePath: 'assets/image/settings_background.webp',
+      backgroundImageAlignment: Alignment.topCenter,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(18, 30, 18, 32),
+        padding: const EdgeInsets.fromLTRB(20, 34, 20, 36),
         children: [
           Text(
             context.l10n.settings,
-            textAlign: TextAlign.center,
             style: AppTextStyles.pageTitle.copyWith(
               color: AppColors.textPrimary,
-              fontSize: 30,
+              fontSize: 34,
+              height: 1.08,
             ),
           ),
-          const SizedBox(height: 34),
+          const SizedBox(height: 10),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 290),
+            child: Text(
+              context.l10n.settingsSubtitle,
+              style: AppTextStyles.body.copyWith(
+                color: AppColors.textSecondary,
+                height: 1.45,
+              ),
+            ),
+          ),
+          const SizedBox(height: 28),
           _CreditsCard(
             state: usageState,
             isAdBusy: adRewardState.isBusy,
@@ -157,48 +169,68 @@ class SettingsScreen extends ConsumerWidget {
             onWatchAd: () =>
                 ref.read(adRewardControllerProvider.notifier).watchAd(),
           ),
-          const SizedBox(height: 16),
-          _PlanCard(
-            state: usageState,
-            onTap: () => context.push(AppRoutes.paywall),
-          ),
-          const SizedBox(height: 16),
-          _SettingsActionCard(
-            icon: Icons.language_rounded,
-            iconColor: const Color(0xFF377CF6),
-            iconBackground: const Color(0xFFEAF2FF),
-            title: context.l10n.appLanguage,
-            trailing: selectedLocale.code == 'system'
-                ? context.l10n.systemDefault
-                : selectedLocale.nativeName,
-            onTap: () => _showLanguageSelector(context, ref),
-          ),
-          const SizedBox(height: 16),
-          _SettingsActionCard(
-            icon: Icons.headset_mic_rounded,
-            iconColor: const Color(0xFF12A966),
-            iconBackground: const Color(0xFFEAF9F1),
-            title: context.l10n.support,
-            subtitle: context.l10n.supportDescription,
-            onTap: () => _showPreviewMessage(context, context.l10n.support),
-          ),
-          const SizedBox(height: 16),
-          _SettingsActionCard(
-            icon: Icons.info_outline_rounded,
-            iconColor: const Color(0xFF687B9B),
-            iconBackground: const Color(0xFFF1F4F8),
-            title: context.l10n.about,
-            subtitle: context.l10n.aboutDescription,
-            onTap: () => _showPreviewMessage(context, context.l10n.about),
-          ),
-          const SizedBox(height: 16),
-          _SettingsActionCard(
-            icon: Icons.auto_awesome_rounded,
-            iconColor: const Color(0xFF7B3FE4),
-            iconBackground: const Color(0xFFF3ECFF),
-            title: context.l10n.guidance,
-            subtitle: context.l10n.guidanceLibrary,
-            onTap: () => context.push(AppRoutes.guidanceLibrary),
+          const SizedBox(height: 24),
+          _SettingsGroup(
+            children: [
+              _SettingsMenuRow(
+                key: const Key('settings-current-plan-row'),
+                icon: Icons.workspace_premium_outlined,
+                iconColor: Color(0xFF7B3FE4),
+                iconBackground: Color(0xFFF3ECFF),
+                accentColor: Color(0xFFD8C2FF),
+                title: context.l10n.currentPlan,
+                subtitle: usageState.usage.isPremium
+                    ? context.l10n.premium
+                    : context.l10n.freePlan,
+                actionLabel: usageState.usage.isPremium
+                    ? null
+                    : context.l10n.upgrade,
+                onTap: () => context.push(AppRoutes.paywall),
+              ),
+              _SettingsMenuRow(
+                key: const Key('settings-language-row'),
+                icon: Icons.language_rounded,
+                iconColor: Color(0xFF377CF6),
+                iconBackground: Color(0xFFEAF2FF),
+                accentColor: Color(0xFFBFD5FF),
+                title: context.l10n.appLanguage,
+                subtitle: selectedLocale.code == 'system'
+                    ? context.l10n.systemDefault
+                    : selectedLocale.nativeName,
+                onTap: () => _showLanguageSelector(context, ref),
+              ),
+              _SettingsMenuRow(
+                key: const Key('settings-support-row'),
+                icon: Icons.headset_mic_rounded,
+                iconColor: Color(0xFF12A966),
+                iconBackground: Color(0xFFEAF9F1),
+                accentColor: Color(0xFFBCECD7),
+                title: context.l10n.support,
+                subtitle: context.l10n.supportDescription,
+                onTap: () => _showPreviewMessage(context, context.l10n.support),
+              ),
+              _SettingsMenuRow(
+                key: const Key('settings-about-row'),
+                icon: Icons.info_outline_rounded,
+                iconColor: Color(0xFF687B9B),
+                iconBackground: Color(0xFFF1F4F8),
+                accentColor: Color(0xFFD6DFEF),
+                title: context.l10n.about,
+                subtitle: context.l10n.aboutDescription,
+                onTap: () => _showPreviewMessage(context, context.l10n.about),
+              ),
+              _SettingsMenuRow(
+                key: const Key('settings-guidance-row'),
+                icon: Icons.auto_awesome_rounded,
+                iconColor: Color(0xFF7B3FE4),
+                iconBackground: Color(0xFFF3ECFF),
+                accentColor: Color(0xFFD8C2FF),
+                title: context.l10n.guidance,
+                subtitle: context.l10n.guidanceLibrary,
+                showDivider: false,
+                onTap: () => context.push(AppRoutes.guidanceLibrary),
+              ),
+            ],
           ),
           if (showDevTools) ...[
             const SizedBox(height: 24),
@@ -240,16 +272,45 @@ class _CreditsCard extends StatelessWidget {
     final total =
         (usage.freeUsesLeft ?? usage.freeUsesLimit) + usage.paidCredits;
 
-    return _SettingsSurface(
+    return Container(
+      key: const Key('settings-credits-card'),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFFBF3), Color(0xFFF9FCFF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFFFE9C2)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x1C49619A),
+            blurRadius: 22,
+            offset: Offset(0, 10),
+          ),
+        ],
+      ),
       child: Row(
         children: [
-          const _IconPanel(
-            icon: Icons.monetization_on_rounded,
-            color: Color(0xFFF4A51C),
-            background: Color(0xFFFFF5E2),
-            size: 68,
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFFFE9B9), Color(0xFFFFF8E9)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(19),
+            ),
+            child: const Icon(
+              Icons.monetization_on_rounded,
+              color: Color(0xFFF4A51C),
+              size: 38,
+            ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,15 +327,17 @@ class _CreditsCard extends StatelessWidget {
                   Text(
                     '$total',
                     style: AppTextStyles.pageTitle.copyWith(
-                      fontSize: 28,
+                      fontSize: 30,
                       color: AppColors.primaryBlue,
-                      height: 1.15,
+                      height: 1.1,
                     ),
                   ),
                 Text(
                   state.error == null
                       ? context.l10n.totalCredits
                       : context.l10n.balanceUnavailable,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.helper,
                 ),
               ],
@@ -291,8 +354,8 @@ class _CreditsCard extends StatelessWidget {
               onPressed: isAdBusy ? null : onWatchAd,
               icon: isAdBusy
                   ? const SizedBox(
-                      width: 20,
-                      height: 20,
+                      width: 18,
+                      height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2.5),
                     )
                   : const Icon(Icons.play_arrow_rounded, size: 20),
@@ -300,9 +363,15 @@ class _CreditsCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(context.l10n.watchAd),
+                  Text(
+                    context.l10n.watchAd,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   Text(
                     context.l10n.watchAdReward,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.badge.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -310,13 +379,14 @@ class _CreditsCard extends StatelessWidget {
                 ],
               ),
               style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primaryBlue,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
+                  horizontal: 11,
                   vertical: 10,
                 ),
-                side: const BorderSide(color: Color(0xFFDDE5F2)),
+                side: const BorderSide(color: Color(0xFFCDDDF8)),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(17),
                 ),
               ),
             ),
@@ -326,158 +396,152 @@ class _CreditsCard extends StatelessWidget {
   }
 }
 
-class _PlanCard extends StatelessWidget {
-  const _PlanCard({required this.state, required this.onTap});
+class _SettingsGroup extends StatelessWidget {
+  const _SettingsGroup({required this.children});
 
-  final UsageViewState state;
-  final VoidCallback onTap;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    final usage = state.usage;
-
-    return _SettingsSurface(
-      onTap: onTap,
-      child: Row(
-        children: [
-          const _IconPanel(
-            icon: Icons.workspace_premium_outlined,
-            color: Color(0xFF7B3FE4),
-            background: Color(0xFFF3ECFF),
-            size: 68,
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(context.l10n.currentPlan, style: AppTextStyles.cardTitle),
-                const SizedBox(height: 3),
-                Text(
-                  usage.isPremium
-                      ? context.l10n.premium
-                      : context.l10n.freePlan,
-                  style: AppTextStyles.body.copyWith(
-                    color: AppColors.primaryBlue,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (!usage.isPremium)
-            FilledButton(
-              onPressed: onTap,
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22),
-                ),
-              ),
-              child: Text(context.l10n.upgrade),
-            ),
-          const SizedBox(width: 2),
-          const Icon(
-            Icons.chevron_right_rounded,
-            color: AppColors.textMuted,
-            size: 26,
+    return Container(
+      key: const Key('settings-options-group'),
+      decoration: BoxDecoration(
+        color: Colors.white.withAlpha(232),
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(color: Colors.white.withAlpha(225)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x1849619A),
+            blurRadius: 24,
+            offset: Offset(0, 10),
           ),
         ],
       ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(children: children),
     );
   }
 }
 
-class _SettingsActionCard extends StatelessWidget {
-  const _SettingsActionCard({
+class _SettingsMenuRow extends StatelessWidget {
+  const _SettingsMenuRow({
+    super.key,
     required this.icon,
     required this.iconColor,
     required this.iconBackground,
+    required this.accentColor,
     required this.title,
-    this.subtitle,
-    this.trailing,
+    required this.subtitle,
     required this.onTap,
+    this.actionLabel,
+    this.showDivider = true,
   });
 
   final IconData icon;
   final Color iconColor;
   final Color iconBackground;
+  final Color accentColor;
   final String title;
-  final String? subtitle;
-  final String? trailing;
+  final String subtitle;
+  final String? actionLabel;
   final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return _SettingsSurface(
-      onTap: onTap,
-      child: Row(
-        children: [
-          _IconPanel(
-            icon: icon,
-            color: iconColor,
-            background: iconBackground,
-            size: 60,
-          ),
-          const SizedBox(width: 18),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: AppTextStyles.cardTitle),
-                if (subtitle != null) ...[
-                  const SizedBox(height: 4),
-                  Text(subtitle!, style: AppTextStyles.helper),
-                ],
-              ],
-            ),
-          ),
-          if (trailing != null) ...[
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                trailing!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.end,
-                style: AppTextStyles.body.copyWith(color: AppColors.textMuted),
-              ),
-            ),
-          ],
-          const SizedBox(width: 2),
-          const Icon(
-            Icons.chevron_right_rounded,
-            color: AppColors.textMuted,
-            size: 26,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SettingsSurface extends StatelessWidget {
-  const _SettingsSurface({required this.child, this.onTap});
-
-  final Widget child;
-  final VoidCallback? onTap;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(24),
-      clipBehavior: Clip.antiAlias,
-      shadowColor: const Color(0x2449619A),
-      elevation: 8,
+      color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
-          child: child,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 15, 12, 15),
+              child: Row(
+                children: [
+                  _IconPanel(
+                    icon: icon,
+                    color: iconColor,
+                    background: iconBackground,
+                    size: 56,
+                  ),
+                  const SizedBox(width: 11),
+                  Container(
+                    width: 3,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: accentColor,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 13),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.cardTitle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.helper.copyWith(
+                            color: actionLabel != null
+                                ? const Color(0xFF6559E8)
+                                : AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (actionLabel != null) ...[
+                    const SizedBox(width: 8),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 96),
+                      child: FilledButton(
+                        onPressed: onTap,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF7559EE),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
+                          minimumSize: const Size(0, 40),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(22),
+                          ),
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(actionLabel!),
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(width: 3),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.textMuted,
+                    size: 26,
+                  ),
+                ],
+              ),
+            ),
+            if (showDivider)
+              const Padding(
+                padding: EdgeInsets.only(left: 97, right: 16),
+                child: Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Color(0xFFE9EDF5),
+                ),
+              ),
+          ],
         ),
       ),
     );

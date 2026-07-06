@@ -21,6 +21,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings => '설정';
 
   @override
+  String get settingsSubtitle => '계정 및 앱 환경설정 관리';
+
+  @override
   String get home => '홈';
 
   @override
