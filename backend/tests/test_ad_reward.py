@@ -61,31 +61,33 @@ def test_ad_reward_requires_authentication(client: TestClient) -> None:
     assert resp.status_code == 401
 
 
-def test_successful_reward_adds_one_credit(client: TestClient) -> None:
+def test_successful_reward_adds_two_credits(client: TestClient) -> None:
     auth, _ = _auth(client, "success")
     resp = _claim(client, auth, "success-key-1")
     assert resp.status_code == 200
     body = resp.json()
-    assert body["credits"] == 1
-    assert body["awarded"] == 1
+    # A completed rewarded ad grants exactly 2 credits (server-decided amount).
+    assert body["credits"] == 2
+    assert body["awarded"] == 2
+    # The daily cap counts ad views (5/day), not credits — one view remaining=4.
     assert body["dailyRemaining"] == 4
     # Balance is reflected server-side, not just in the response.
-    assert _paid_credits(client, auth) == 1
+    assert _paid_credits(client, auth) == 2
 
 
 def test_duplicate_idempotency_key_does_not_double_add(client: TestClient) -> None:
     auth, user_id = _auth(client, "dup")
     first = _claim(client, auth, "dup-key")
     assert first.status_code == 200
-    assert first.json()["credits"] == 1
+    assert first.json()["credits"] == 2
 
-    # Same key replays without adding a second credit and without tripping the
+    # Same key replays without adding another 2 credits and without tripping the
     # cooldown that a genuinely new claim would hit this quickly.
     replay = _claim(client, auth, "dup-key")
     assert replay.status_code == 200
-    assert replay.json()["credits"] == 1
-    assert replay.json()["awarded"] == 1
-    assert _paid_credits(client, auth) == 1
+    assert replay.json()["credits"] == 2
+    assert replay.json()["awarded"] == 2
+    assert _paid_credits(client, auth) == 2
 
     async def row_count() -> int:
         async with AsyncSessionLocal() as db:
@@ -110,7 +112,8 @@ def test_daily_limit_blocks_after_five(client: TestClient, monkeypatch) -> None:
     blocked = _claim(client, auth, "daily-6")
     assert blocked.status_code == 429
     assert blocked.json()["error"]["code"] == "AD_REWARD_LIMIT"
-    assert _paid_credits(client, auth) == 5
+    # 5 permitted ad views × 2 credits each.
+    assert _paid_credits(client, auth) == 10
 
 
 def test_cooldown_blocks_rapid_repeated_rewards(client: TestClient) -> None:
@@ -123,7 +126,7 @@ def test_cooldown_blocks_rapid_repeated_rewards(client: TestClient) -> None:
     rapid = _claim(client, auth, "cooldown-2")
     assert rapid.status_code == 429
     assert rapid.json()["error"]["code"] == "AD_REWARD_COOLDOWN"
-    assert _paid_credits(client, auth) == 1
+    assert _paid_credits(client, auth) == 2
 
 
 def test_invalid_amount_rejected(client: TestClient) -> None:
@@ -224,7 +227,8 @@ def test_concurrent_distinct_keys_cannot_exceed_daily_limit(
     successes = [r for r in results if r[0] == "ok"]
 
     assert kept <= 3, results  # never more than the cap survives
-    assert credits == kept  # credits and surviving rows stay in lockstep
+    # credits and surviving rows stay in lockstep at 2 credits per reward.
+    assert credits == kept * 2
     assert len(successes) == kept
     assert all(
         r[0] == "ok" or r[1] == "AD_REWARD_LIMIT" for r in results
@@ -262,7 +266,7 @@ def test_concurrent_distinct_keys_cannot_bypass_cooldown(
     successes = [r for r in results if r[0] == "ok"]
 
     assert kept <= 1, results  # cooldown lets at most one of a burst through
-    assert credits == kept
+    assert credits == kept * 2  # 2 credits per surviving reward
     assert len(successes) == kept
     assert all(
         r[0] == "ok" or r[1] == "AD_REWARD_COOLDOWN" for r in results

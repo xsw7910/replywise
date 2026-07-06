@@ -57,7 +57,7 @@
   "simulatePremiumOff": "Mô phỏng Premium Off",
   "yourAiReplyAssistant": "Trợ lý trả lời AI của bạn",
   "secureSession": "Phiên an toàn",
-  "watchAdReward": "+1 điểm",
+  "watchAdReward": "+2 điểm",
   "generateThoughtfulReplies": "Tạo câu trả lời chu đáo ngay lập tức.",
   "makeWritingClear": "Làm cho bài viết của bạn rõ ràng và tự nhiên.",
   "connectingAnonymousSession": "Đang kết nối phiên ẩn danh…",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Không thể thêm tín dụng của bạn. Vui lòng thử lại.",
   "buyCreditPackage": "Mua {credits} Tín dụng — {price}",
   "outOfCreditsTitle": "Bạn đã hết tín dụng",
-  "outOfCreditsMessage": "Xem một quảng cáo ngắn để nhận 1 tín dụng miễn phí hoặc nâng cấp để có nhiều quyền truy cập hơn.",
+  "outOfCreditsMessage": "Xem một quảng cáo ngắn để nhận 2 tín dụng miễn phí hoặc nâng cấp để có nhiều quyền truy cập hơn.",
   "buyCredits": "Mua tín dụng",
   "creditAddedTapGenerateAgain": "Đã thêm tín dụng. Nhấn vào Tạo lại."
   ,"recentDetail": "Chi tiết"

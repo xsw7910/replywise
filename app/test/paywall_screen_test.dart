@@ -251,7 +251,7 @@ void main() {
       expect(find.text(r'$0.12 per credit'), findsOneWidget);
       expect(find.byKey(const Key('paywall-watch-ad')), findsOneWidget);
       expect(find.text('Watch ad'), findsOneWidget);
-      expect(find.text('+1 credit'), findsOneWidget);
+      expect(find.text('+2 credits'), findsOneWidget);
     },
   );
 

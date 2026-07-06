@@ -113,7 +113,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get watchAd => 'Tonton iklan';
 
   @override
-  String get watchAdReward => '+1 kredit';
+  String get watchAdReward => '+2 kredit';
 
   @override
   String get currentPlan => 'Rencana saat ini';
@@ -896,7 +896,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'Tonton iklan singkat untuk mendapatkan 1 kredit gratis, atau tingkatkan versi untuk akses lebih lanjut.';
+      'Tonton iklan singkat untuk mendapatkan 2 kredit gratis, atau tingkatkan versi untuk akses lebih lanjut.';
 
   @override
   String get buyCredits => 'Beli Kredit';

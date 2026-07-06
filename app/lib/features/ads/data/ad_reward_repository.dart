@@ -28,9 +28,12 @@ class AdRewardRepository {
 
   final ApiClient _client;
 
-  /// Claims one ad-reward credit. The server enforces the reward type, amount,
-  /// idempotency, daily cap and cooldown — the client only supplies a unique
-  /// [idempotencyKey] so a retry never double-credits.
+  /// Reports one completed rewarded-ad view and returns the resulting balance.
+  ///
+  /// The `amount: 1` below is the number of completed ad views (always one) —
+  /// NOT the credit payout. The server decides how many credits a view is worth
+  /// and enforces reward type, idempotency, daily cap and cooldown; the client
+  /// only supplies a unique [idempotencyKey] so a retry never double-credits.
   Future<AdRewardResult> claim({required String idempotencyKey}) async {
     try {
       final response = await _client.post<Map<String, dynamic>>(

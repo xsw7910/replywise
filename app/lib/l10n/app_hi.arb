@@ -50,7 +50,7 @@
   "makeWritingClear": "अपने लेखन को स्पष्ट और स्वाभाविक बनाएं।",
   "freeRepliesPerDay": "{count} प्रति दिन निःशुल्क उत्तर",
   "simulatePremiumOn": "प्रीमियम चालू का अनुकरण करें",
-  "watchAdReward": "+1 क्रेडिट",
+  "watchAdReward": "+2 क्रेडिट",
   "voiceGuidanceLanguage": "आवाज मार्गदर्शन भाषा",
   "freePlan": "निःशुल्क योजना",
   "resetFreeUsage": "मुफ़्त उपयोग रीसेट करें",
@@ -279,7 +279,7 @@
   "adRewardFailed": "आपका क्रेडिट नहीं जोड़ा जा सका. कृपया पुनः प्रयास करें.",
   "buyCreditPackage": "{credits} क्रेडिट खरीदें - {price}",
   "outOfCreditsTitle": "आप क्रेडिट से बाहर हैं",
-  "outOfCreditsMessage": "1 निःशुल्क क्रेडिट पाने के लिए, या अधिक पहुंच के लिए अपग्रेड करने के लिए एक छोटा विज्ञापन देखें।",
+  "outOfCreditsMessage": "2 निःशुल्क क्रेडिट पाने के लिए, या अधिक पहुंच के लिए अपग्रेड करने के लिए एक छोटा विज्ञापन देखें।",
   "buyCredits": "क्रेडिट खरीदें",
   "creditAddedTapGenerateAgain": "क्रेडिट जोड़ा गया. फिर से जेनरेट पर टैप करें."
   ,"recentDetail": "विवरण"

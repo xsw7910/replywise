@@ -49,7 +49,7 @@
   "simulatePremiumOff": "Premium Kapalı Simülasyonu",
   "aboutDescription": "Sürüm, Gizlilik, Şartlar",
   "developerTesting": "Geliştirici Testi",
-  "watchAdReward": "+1 kredi",
+  "watchAdReward": "+2 kredi",
   "refreshAccountState": "Hesap durumunu yenile",
   "voiceGuidanceLanguage": "Sesli yönlendirme dili",
   "resetFreeUsage": "Ücretsiz kullanımı sıfırla",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Krediniz eklenemedi. Lütfen tekrar deneyin.",
   "buyCreditPackage": "{credits} Kredi Satın Alın — {price}",
   "outOfCreditsTitle": "Krediniz bitti",
-  "outOfCreditsMessage": "1 ücretsiz kredi kazanmak için kısa bir reklam izleyin veya daha fazla erişim için yükseltme yapın.",
+  "outOfCreditsMessage": "2 ücretsiz kredi kazanmak için kısa bir reklam izleyin veya daha fazla erişim için yükseltme yapın.",
   "buyCredits": "Kredi Satın Al",
   "creditAddedTapGenerateAgain": "Kredi eklendi. Tekrar Oluştur'a dokunun."
   ,"recentDetail": "Ayrıntılar"

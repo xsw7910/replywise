@@ -48,7 +48,7 @@
   "credits": "积分",
   "watchAd": "观看广告",
   "totalCredits": "总积分",
-  "watchAdReward": "+1 积分",
+  "watchAdReward": "+2 积分",
   "currentPlan": "当前方案",
   "freePlan": "免费方案",
   "freeRepliesPerDay": "每天 {count} 次免费回复",
@@ -281,7 +281,7 @@
   "buyCredits": "购买积分",
   "creditAddedTapGenerateAgain": "已添加积分。请再次点击“生成”。",
   "outOfCreditsTitle": "积分已用完",
-  "outOfCreditsMessage": "观看一段短广告即可获得 1 个免费积分，或升级以获得更多使用权限。"
+  "outOfCreditsMessage": "观看一段短广告即可获得 2 个免费积分，或升级以获得更多使用权限。"
   ,"recentDetail": "详情"
   ,"useAgain": "再次使用"
 }

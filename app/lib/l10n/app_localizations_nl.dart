@@ -114,7 +114,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get watchAd => 'Advertentie bekijken';
 
   @override
-  String get watchAdReward => '+1 krediet';
+  String get watchAdReward => '+2 kredieten';
 
   @override
   String get currentPlan => 'Huidig ​​abonnement';
@@ -901,7 +901,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'Bekijk een korte advertentie om 1 gratis tegoed te krijgen, of upgrade voor meer toegang.';
+      'Bekijk een korte advertentie om 2 gratis tegoeden te krijgen, of upgrade voor meer toegang.';
 
   @override
   String get buyCredits => 'Koop tegoeden';

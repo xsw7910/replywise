@@ -35,7 +35,7 @@
   "version": "Версія",
   "environment": "Навколишнє середовище",
   "appTitle": "ReplyWise",
-  "watchAdReward": "+1 кредит",
+  "watchAdReward": "+2 кредити",
   "supportDescription": "Довідковий центр / Зв'язатися з нами",
   "totalCredits": "Всього кредитів",
   "watchAd": "Дивитися рекламу",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Не вдалося додати кредит. Спробуйте ще раз.",
   "buyCreditPackage": "Придбайте {credits} кредитів — {price}",
   "outOfCreditsTitle": "У вас закінчилися кредити",
-  "outOfCreditsMessage": "Перегляньте коротку рекламу, щоб отримати 1 безкоштовний кредит, або перейдіть, щоб отримати більше доступу.",
+  "outOfCreditsMessage": "Перегляньте коротку рекламу, щоб отримати 2 безкоштовні кредити, або перейдіть, щоб отримати більше доступу.",
   "buyCredits": "Купити кредити",
   "creditAddedTapGenerateAgain": "Кредит додано. Знову торкніться «Створити»."
   ,"recentDetail": "Деталі"

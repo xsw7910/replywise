@@ -45,7 +45,7 @@
   "watchAd": "ดูโฆษณา",
   "supportDescription": "ศูนย์ช่วยเหลือ / ติดต่อเรา",
   "yourAiReplyAssistant": "ผู้ช่วยตอบกลับ AI ของคุณ",
-  "watchAdReward": "+1 เครดิต",
+  "watchAdReward": "+2 เครดิต",
   "autoDetect": "ตรวจจับอัตโนมัติ",
   "aboutDescription": "เวอร์ชัน ความเป็นส่วนตัว เงื่อนไข",
   "developerTesting": "การทดสอบนักพัฒนา",
@@ -279,7 +279,7 @@
   "adRewardFailed": "ไม่สามารถเพิ่มเครดิตของคุณได้ โปรดลองอีกครั้ง",
   "buyCreditPackage": "ซื้อเครดิต {credits} — {price}",
   "outOfCreditsTitle": "คุณไม่มีเครดิตแล้ว",
-  "outOfCreditsMessage": "ดูโฆษณาสั้นๆ เพื่อรับ 1 เครดิตฟรี หรืออัปเกรดเพื่อการเข้าถึงที่มากขึ้น",
+  "outOfCreditsMessage": "ดูโฆษณาสั้นๆ เพื่อรับ 2 เครดิตฟรี หรืออัปเกรดเพื่อการเข้าถึงที่มากขึ้น",
   "buyCredits": "ซื้อเครดิต",
   "creditAddedTapGenerateAgain": "เพิ่มเครดิตแล้ว แตะสร้างอีกครั้ง"
   ,"recentDetail": "รายละเอียด"

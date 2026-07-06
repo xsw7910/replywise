@@ -41,7 +41,7 @@
   "autoDetect": "Automatyczne wykrywanie",
   "watchAd": "Obejrzyj reklamę",
   "currentPlan": "Aktualny plan",
-  "watchAdReward": "+1 kredyt",
+  "watchAdReward": "+2 kredyty",
   "totalCredits": "Suma kredytów",
   "developerTesting": "Testowanie programistów",
   "aboutDescription": "Wersja, prywatność, warunki",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Nie udało się dodać kredytu. Spróbuj ponownie.",
   "buyCreditPackage": "Kup {credits} kredytów — {price}",
   "outOfCreditsTitle": "Skończyły Ci się kredyty",
-  "outOfCreditsMessage": "Obejrzyj krótką reklamę, aby otrzymać 1 darmowy kredyt lub uaktualnij, aby uzyskać większy dostęp.",
+  "outOfCreditsMessage": "Obejrzyj krótką reklamę, aby otrzymać 2 darmowe kredyty lub uaktualnij, aby uzyskać większy dostęp.",
   "buyCredits": "Kup Kredyty",
   "creditAddedTapGenerateAgain": "Dodano kredyt. Kliknij ponownie opcję Generuj."
   ,"recentDetail": "Szczegóły"

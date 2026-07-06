@@ -34,7 +34,7 @@
   "freePlan": "Forfait gratuit",
   "yourAiReplyAssistant": "Votre assistant de réponse IA",
   "currentPlan": "Forfait actuel",
-  "watchAdReward": "+1 crédit",
+  "watchAdReward": "+2 crédits",
   "aboutDescription": "Version, confidentialité, conditions",
   "appTitle": "RépondreWise",
   "supportDescription": "Centre d'aide / Contactez-nous",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Impossible d’ajouter votre crédit. Veuillez réessayer.",
   "buyCreditPackage": "Acheter des crédits {credits} — {price}",
   "outOfCreditsTitle": "Vous n'avez plus de crédits",
-  "outOfCreditsMessage": "Regardez une courte annonce pour obtenir 1 crédit gratuit, ou effectuez une mise à niveau pour plus d'accès.",
+  "outOfCreditsMessage": "Regardez une courte annonce pour obtenir 2 crédits gratuits, ou effectuez une mise à niveau pour plus d'accès.",
   "buyCredits": "Acheter des crédits",
   "creditAddedTapGenerateAgain": "Crédit ajouté. Appuyez à nouveau sur Générer."
   ,"recentDetail": "Détails"

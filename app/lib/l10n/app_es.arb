@@ -55,7 +55,7 @@
   "currentPlan": "Plan actual",
   "supportDescription": "Centro de ayuda / Contáctanos",
   "aboutDescription": "Versión, Privacidad, Términos",
-  "watchAdReward": "+1 crédito",
+  "watchAdReward": "+2 créditos",
   "voiceGuidanceLanguage": "Idioma de guía por voz",
   "freePlan": "Plan gratuito",
   "autoDetect": "Detección automática",
@@ -279,7 +279,7 @@
   "adRewardFailed": "No se pudo añadir tu crédito. Inténtalo de nuevo.",
   "buyCreditPackage": "Comprar créditos {credits} — {price}",
   "outOfCreditsTitle": "Te has quedado sin créditos",
-  "outOfCreditsMessage": "Mire un anuncio breve para obtener 1 crédito gratis o actualice para obtener más acceso.",
+  "outOfCreditsMessage": "Mire un anuncio breve para obtener 2 créditos gratis o actualice para obtener más acceso.",
   "buyCredits": "Comprar créditos",
   "creditAddedTapGenerateAgain": "Crédito agregado. Toca Generar nuevamente."
   ,"recentDetail": "Detalles"

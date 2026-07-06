@@ -115,7 +115,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get watchAd => 'Xem quảng cáo';
 
   @override
-  String get watchAdReward => '+1 điểm';
+  String get watchAdReward => '+2 điểm';
 
   @override
   String get currentPlan => 'Gói hiện tại';
@@ -897,7 +897,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'Xem một quảng cáo ngắn để nhận 1 tín dụng miễn phí hoặc nâng cấp để có nhiều quyền truy cập hơn.';
+      'Xem một quảng cáo ngắn để nhận 2 tín dụng miễn phí hoặc nâng cấp để có nhiều quyền truy cập hơn.';
 
   @override
   String get buyCredits => 'Mua tín dụng';

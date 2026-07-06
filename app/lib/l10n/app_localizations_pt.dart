@@ -113,7 +113,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get watchAd => 'Assistir ao anúncio';
 
   @override
-  String get watchAdReward => '+1 crédito';
+  String get watchAdReward => '+2 créditos';
 
   @override
   String get currentPlan => 'Plano atual';
@@ -896,7 +896,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'Assista a um pequeno anúncio para obter 1 crédito grátis ou faça upgrade para obter mais acesso.';
+      'Assista a um pequeno anúncio para obter 2 créditos grátis ou faça upgrade para obter mais acesso.';
 
   @override
   String get buyCredits => 'Comprar créditos';

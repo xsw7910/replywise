@@ -41,7 +41,7 @@
   "currentPlan": "Piano attuale",
   "autoDetect": "Rilevamento automatico",
   "aboutDescription": "Versione, Privacy, Termini",
-  "watchAdReward": "+1 credito",
+  "watchAdReward": "+2 crediti",
   "version": "Versione",
   "tipReadAloud": "Leggi la tua risposta ad alta voce una volta: coglie le frasi imbarazzanti.",
   "tipMatchTone": "Adatta il tono dell'altra persona per costruire un rapporto più velocemente.",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Impossibile aggiungere il tuo credito. Riprova.",
   "buyCreditPackage": "Acquista crediti {credits} — {price}",
   "outOfCreditsTitle": "Hai esaurito i crediti",
-  "outOfCreditsMessage": "Guarda un breve annuncio per ottenere 1 credito gratuito o esegui l'upgrade per un maggiore accesso.",
+  "outOfCreditsMessage": "Guarda un breve annuncio per ottenere 2 crediti gratuiti o esegui l'upgrade per un maggiore accesso.",
   "buyCredits": "Acquista crediti",
   "creditAddedTapGenerateAgain": "Credito aggiunto. Tocca nuovamente Genera."
   ,"recentDetail": "Dettagli"

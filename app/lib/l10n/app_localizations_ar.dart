@@ -112,7 +112,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get watchAd => 'شاهد الإعلان';
 
   @override
-  String get watchAdReward => 'رصيد +1';
+  String get watchAdReward => 'رصيد +2';
 
   @override
   String get currentPlan => 'الخطة الحالية';
@@ -883,7 +883,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'شاهد إعلانًا قصيرًا لتحصل على رصيد مجاني واحد، أو قم بالترقية للحصول على مزيد من الوصول.';
+      'شاهد إعلانًا قصيرًا لتحصل على رصيدين مجانيين، أو قم بالترقية للحصول على مزيد من الوصول.';
 
   @override
   String get buyCredits => 'شراء الاعتمادات';

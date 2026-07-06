@@ -41,7 +41,7 @@
   "totalCredits": "Créditos totais",
   "voiceGuidanceLanguage": "Idioma de orientação por voz",
   "yourAiReplyAssistant": "Seu assistente de resposta de IA",
-  "watchAdReward": "+1 crédito",
+  "watchAdReward": "+2 créditos",
   "freePlan": "Plano grátis",
   "aboutDescription": "Versão, Privacidade, Termos",
   "currentPlan": "Plano atual",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Não foi possível adicionar o seu crédito. Tente novamente.",
   "buyCreditPackage": "Compre {credits} Créditos — {price}",
   "outOfCreditsTitle": "Você está sem créditos",
-  "outOfCreditsMessage": "Assista a um pequeno anúncio para obter 1 crédito grátis ou faça upgrade para obter mais acesso.",
+  "outOfCreditsMessage": "Assista a um pequeno anúncio para obter 2 créditos grátis ou faça upgrade para obter mais acesso.",
   "buyCredits": "Comprar créditos",
   "creditAddedTapGenerateAgain": "Crédito adicionado. Toque em Gerar novamente."
   ,"recentDetail": "Detalhes"

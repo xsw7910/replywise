@@ -33,8 +33,10 @@ class AdRewardRequest(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
     idempotency_key: str = Field(min_length=1, max_length=200)
-    # Server-enforced: only a single rewarded-ad view worth one credit is
-    # creditable. Anything else is a 400 before any credit logic runs.
+    # `amount` is the number of completed ad views claimed (always exactly 1);
+    # it is NOT the credit amount. The credits granted are decided server-side
+    # (ad_reward_service.REWARD_AMOUNT), so the client cannot influence the
+    # payout. Anything other than one admob_rewarded view is a 400.
     reward_type: Literal["admob_rewarded"]
     amount: Literal[1]
 

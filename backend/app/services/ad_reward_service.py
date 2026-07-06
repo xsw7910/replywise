@@ -10,10 +10,11 @@ from app.models.ad_reward import AdReward
 from app.models.usage import UsageSummary
 from app.services.usage_service import ensure_summary
 
-# Only rewarded-ad views are creditable, and each is worth exactly one credit.
-# These are enforced server-side; the client cannot request arbitrary amounts.
+# Only rewarded-ad views are creditable, and each completed view is worth this
+# many credits. The value is decided server-side; the client only reports that
+# an ad finished and can never influence the amount granted.
 REWARD_TYPE = "admob_rewarded"
-REWARD_AMOUNT = 1
+REWARD_AMOUNT = 2
 
 # Rolling 24h window keeps the cap abuse-resistant (no midnight refill gaming)
 # while still meaning "per day" for the user.
@@ -64,7 +65,8 @@ async def grant_ad_reward(
     user_id: int,
     idempotency_key: str,
 ) -> dict:
-    """Grant one ad-reward credit to *user_id*, enforcing all abuse controls.
+    """Grant the ad-reward credits (``REWARD_AMOUNT``) to *user_id*, enforcing
+    all abuse controls.
 
     Race-safe design (insert-first, enforce-after-commit):
 

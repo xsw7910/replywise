@@ -48,7 +48,7 @@
   "tipReadAloud": "Lees je antwoord een keer hardop; er komen ongemakkelijke bewoordingen in voor.",
   "tipShortEmails": "Houd e-mails onder de 120 woorden voor een hoger responspercentage.",
   "totalCredits": "Totaal tegoed",
-  "watchAdReward": "+1 krediet",
+  "watchAdReward": "+2 kredieten",
   "developerTesting": "Testen van ontwikkelaars",
   "voiceGuidanceLanguage": "Taal voor stembegeleiding",
   "autoDetect": "Automatische detectie",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Kan je tegoed niet toevoegen. Probeer het opnieuw.",
   "buyCreditPackage": "Koop {credits} Credits — {price}",
   "outOfCreditsTitle": "Je hebt geen credits meer",
-  "outOfCreditsMessage": "Bekijk een korte advertentie om 1 gratis tegoed te krijgen, of upgrade voor meer toegang.",
+  "outOfCreditsMessage": "Bekijk een korte advertentie om 2 gratis tegoeden te krijgen, of upgrade voor meer toegang.",
   "buyCredits": "Koop tegoeden",
   "creditAddedTapGenerateAgain": "Krediet toegevoegd. Tik nogmaals op Genereren."
   ,"recentDetail": "Details"

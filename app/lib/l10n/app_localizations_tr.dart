@@ -114,7 +114,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get watchAd => 'Reklamı izle';
 
   @override
-  String get watchAdReward => '+1 kredi';
+  String get watchAdReward => '+2 kredi';
 
   @override
   String get currentPlan => 'Mevcut plan';
@@ -896,7 +896,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      '1 ücretsiz kredi kazanmak için kısa bir reklam izleyin veya daha fazla erişim için yükseltme yapın.';
+      '2 ücretsiz kredi kazanmak için kısa bir reklam izleyin veya daha fazla erişim için yükseltme yapın.';
 
   @override
   String get buyCredits => 'Kredi Satın Al';

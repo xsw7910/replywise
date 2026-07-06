@@ -49,7 +49,7 @@
   "support": "支援",
   "supportDescription": "幫助中心/聯絡我們",
   "freeRepliesPerDay": "每天 {count} 次免費回覆",
-  "watchAdReward": "+1 點數",
+  "watchAdReward": "+2 點數",
   "tipClearNextStep": "以明確的下一步結束，讓讀者知道該怎麼做。",
   "tipMatchTone": "配合對方的語氣可以更快建立融洽的關係。",
   "tipLeadWithAsk": "提出你的要求－將關鍵要求放在第一行。",
@@ -281,7 +281,7 @@
   "buyCredits": "購買點數",
   "creditAddedTapGenerateAgain": "已新增點數。請再次點選「產生」。",
   "outOfCreditsTitle": "點數已用完",
-  "outOfCreditsMessage": "觀看一段短廣告即可獲得 1 個免費點數，或升級以獲得更多使用權限。"
+  "outOfCreditsMessage": "觀看一段短廣告即可獲得 2 個免費點數，或升級以獲得更多使用權限。"
   ,"recentDetail": "詳情"
   ,"useAgain": "再次使用"
 }

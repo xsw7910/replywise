@@ -45,7 +45,7 @@
   "reuseInstructions": "أعد استخدام تعليمات الذكاء الاصطناعي المفضلة لديك.",
   "makeWritingClear": "اجعل كتابتك واضحة وطبيعية.",
   "environment": "بيئة",
-  "watchAdReward": "رصيد +1",
+  "watchAdReward": "رصيد +2",
   "yourAiReplyAssistant": "مساعد الرد AI الخاص بك",
   "appTitle": "الرد الحكيم",
   "totalCredits": "إجمالي الرصيد",
@@ -279,7 +279,7 @@
   "adRewardFailed": "تعذّرت إضافة رصيدك. يرجى المحاولة مرة أخرى.",
   "buyCreditPackage": "شراء رصيد {credits} — {price}",
   "outOfCreditsTitle": "لقد نفدت الاعتمادات",
-  "outOfCreditsMessage": "شاهد إعلانًا قصيرًا لتحصل على رصيد مجاني واحد، أو قم بالترقية للحصول على مزيد من الوصول.",
+  "outOfCreditsMessage": "شاهد إعلانًا قصيرًا لتحصل على رصيدين مجانيين، أو قم بالترقية للحصول على مزيد من الوصول.",
   "buyCredits": "شراء الاعتمادات",
   "creditAddedTapGenerateAgain": "تمت إضافة الائتمان. اضغط على إنشاء مرة أخرى."
   ,"recentDetail": "التفاصيل"

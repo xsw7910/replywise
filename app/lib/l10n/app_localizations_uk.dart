@@ -115,7 +115,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get watchAd => 'Дивитися рекламу';
 
   @override
-  String get watchAdReward => '+1 кредит';
+  String get watchAdReward => '+2 кредити';
 
   @override
   String get currentPlan => 'Поточний план';
@@ -897,7 +897,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'Перегляньте коротку рекламу, щоб отримати 1 безкоштовний кредит, або перейдіть, щоб отримати більше доступу.';
+      'Перегляньте коротку рекламу, щоб отримати 2 безкоштовні кредити, або перейдіть, щоб отримати більше доступу.';
 
   @override
   String get buyCredits => 'Купити кредити';

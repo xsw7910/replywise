@@ -328,7 +328,7 @@ abstract class AppLocalizations {
   /// No description provided for @watchAdReward.
   ///
   /// In en, this message translates to:
-  /// **'+1 credit'**
+  /// **'+2 credits'**
   String get watchAdReward;
 
   /// No description provided for @currentPlan.
@@ -1780,7 +1780,7 @@ abstract class AppLocalizations {
   /// No description provided for @outOfCreditsMessage.
   ///
   /// In en, this message translates to:
-  /// **'Watch a short ad to get 1 free credit, or upgrade for more access.'**
+  /// **'Watch a short ad to get 2 free credits, or upgrade for more access.'**
   String get outOfCreditsMessage;
 
   /// No description provided for @buyCredits.

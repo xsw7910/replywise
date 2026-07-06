@@ -105,7 +105,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get watchAd => '观看广告';
 
   @override
-  String get watchAdReward => '+1 积分';
+  String get watchAdReward => '+2 积分';
 
   @override
   String get currentPlan => '当前方案';
@@ -859,7 +859,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get outOfCreditsTitle => '积分已用完';
 
   @override
-  String get outOfCreditsMessage => '观看一段短广告即可获得 1 个免费积分，或升级以获得更多使用权限。';
+  String get outOfCreditsMessage => '观看一段短广告即可获得 2 个免费积分，或升级以获得更多使用权限。';
 
   @override
   String get buyCredits => '购买积分';
@@ -987,7 +987,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get watchAd => '觀看廣告';
 
   @override
-  String get watchAdReward => '+1 點數';
+  String get watchAdReward => '+2 點數';
 
   @override
   String get currentPlan => '目前方案';
@@ -1741,7 +1741,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get outOfCreditsTitle => '點數已用完';
 
   @override
-  String get outOfCreditsMessage => '觀看一段短廣告即可獲得 1 個免費點數，或升級以獲得更多使用權限。';
+  String get outOfCreditsMessage => '觀看一段短廣告即可獲得 2 個免費點數，或升級以獲得更多使用權限。';
 
   @override
   String get buyCredits => '購買點數';

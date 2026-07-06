@@ -115,7 +115,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get watchAd => 'Посмотреть рекламу';
 
   @override
-  String get watchAdReward => '+1 кредит';
+  String get watchAdReward => '+2 кредита';
 
   @override
   String get currentPlan => 'Текущий план';
@@ -900,7 +900,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'Посмотрите короткую рекламу, чтобы получить 1 бесплатный кредит, или обновите версию, чтобы получить больше доступа.';
+      'Посмотрите короткую рекламу, чтобы получить 2 бесплатных кредита, или обновите версию, чтобы получить больше доступа.';
 
   @override
   String get buyCredits => 'Купить кредиты';

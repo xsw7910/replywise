@@ -114,7 +114,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get watchAd => 'Regarder l\'annonce';
 
   @override
-  String get watchAdReward => '+1 crédit';
+  String get watchAdReward => '+2 crédits';
 
   @override
   String get currentPlan => 'Forfait actuel';
@@ -905,7 +905,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'Regardez une courte annonce pour obtenir 1 crédit gratuit, ou effectuez une mise à niveau pour plus d\'accès.';
+      'Regardez une courte annonce pour obtenir 2 crédits gratuits, ou effectuez une mise à niveau pour plus d\'accès.';
 
   @override
   String get buyCredits => 'Acheter des crédits';

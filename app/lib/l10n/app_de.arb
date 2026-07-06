@@ -54,7 +54,7 @@
   "addCredits": "Fügen Sie {count}-Credits hinzu",
   "supportDescription": "Hilfecenter / Kontaktieren Sie uns",
   "autoDetect": "Automatische Erkennung",
-  "watchAdReward": "+1 Kredit",
+  "watchAdReward": "+2 Kredite",
   "tipReadAloud": "Lesen Sie Ihre Antwort einmal laut vor – es fällt Ihnen auf, wenn die Formulierungen umständlich sind.",
   "tipClearSubject": "Eine klare Betreffzeile sorgt für mehr Antworten als eine clevere.",
   "tipLeadWithAsk": "Gehen Sie mit Ihrer Frage voran – geben Sie die Kernfrage in die erste Zeile ein.",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Dein Guthaben konnte nicht hinzugefügt werden. Bitte versuche es erneut.",
   "buyCreditPackage": "Kaufen Sie {credits}-Credits – {price}",
   "outOfCreditsTitle": "Ihr Guthaben ist aufgebraucht",
-  "outOfCreditsMessage": "Sehen Sie sich eine kurze Anzeige an, um 1 kostenloses Guthaben zu erhalten, oder führen Sie ein Upgrade durch, um mehr Zugriff zu erhalten.",
+  "outOfCreditsMessage": "Sehen Sie sich eine kurze Anzeige an, um 2 kostenlose Guthaben zu erhalten, oder führen Sie ein Upgrade durch, um mehr Zugriff zu erhalten.",
   "buyCredits": "Credits kaufen",
   "creditAddedTapGenerateAgain": "Gutschrift hinzugefügt. Tippen Sie erneut auf „Generieren“."
   ,"recentDetail": "Details"

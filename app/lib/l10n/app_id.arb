@@ -60,7 +60,7 @@
   "anonymousSessionReady": "Sesi anonim sudah siap",
   "addCredits": "Tambahkan kredit {count}",
   "simulatePremiumOff": "Simulasikan Diskon Premium",
-  "watchAdReward": "+1 kredit",
+  "watchAdReward": "+2 kredit",
   "supportDescription": "Pusat bantuan / Hubungi kami",
   "secureSession": "Sesi aman",
   "currentPlan": "Rencana saat ini",
@@ -279,7 +279,7 @@
   "adRewardFailed": "Tidak dapat menambahkan kredit Anda. Silakan coba lagi.",
   "buyCreditPackage": "Beli Kredit {credits} — {price}",
   "outOfCreditsTitle": "Anda kehabisan kredit",
-  "outOfCreditsMessage": "Tonton iklan singkat untuk mendapatkan 1 kredit gratis, atau tingkatkan versi untuk akses lebih lanjut.",
+  "outOfCreditsMessage": "Tonton iklan singkat untuk mendapatkan 2 kredit gratis, atau tingkatkan versi untuk akses lebih lanjut.",
   "buyCredits": "Beli Kredit",
   "creditAddedTapGenerateAgain": "Kredit ditambahkan. Ketuk Hasilkan lagi."
   ,"recentDetail": "Detail"

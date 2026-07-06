@@ -105,7 +105,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get watchAd => '광고 보기';
 
   @override
-  String get watchAdReward => '+1 크레딧';
+  String get watchAdReward => '+2 크레딧';
 
   @override
   String get currentPlan => '현재 요금제';
@@ -863,7 +863,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      '짧은 광고를 시청하여 1개의 무료 크레딧을 받거나 업그레이드하여 더 많은 액세스 권한을 얻으세요.';
+      '짧은 광고를 시청하여 2개의 무료 크레딧을 받거나 업그레이드하여 더 많은 액세스 권한을 얻으세요.';
 
   @override
   String get buyCredits => '크레딧 구매';

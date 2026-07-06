@@ -112,7 +112,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get watchAd => 'ดูโฆษณา';
 
   @override
-  String get watchAdReward => '+1 เครดิต';
+  String get watchAdReward => '+2 เครดิต';
 
   @override
   String get currentPlan => 'แผนปัจจุบัน';
@@ -887,7 +887,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get outOfCreditsMessage =>
-      'ดูโฆษณาสั้นๆ เพื่อรับ 1 เครดิตฟรี หรืออัปเกรดเพื่อการเข้าถึงที่มากขึ้น';
+      'ดูโฆษณาสั้นๆ เพื่อรับ 2 เครดิตฟรี หรืออัปเกรดเพื่อการเข้าถึงที่มากขึ้น';
 
   @override
   String get buyCredits => 'ซื้อเครดิต';
