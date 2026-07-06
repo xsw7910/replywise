@@ -392,7 +392,11 @@ class _RecentSection extends ConsumerWidget {
         latest.when(
           data: (items) => items.isEmpty
               ? _RecentEmpty(onCreate: () => context.go(AppRoutes.reply))
-              : _HomeCard(
+              : _RecentCard(
+                  cardKey: const Key('home-recent-populated-card'),
+                  illustrationKey: const Key(
+                    'home-recent-populated-illustration',
+                  ),
                   child: Column(
                     children: [
                       for (var i = 0; i < items.length; i++) ...[
@@ -433,55 +437,37 @@ class _RecentEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _HomeCard(
-      backgroundColor: AppColors.recentCardBackground,
+    return _RecentCard(
+      cardKey: const Key('home-recent-empty-card'),
+      illustrationKey: const Key('home-recent-empty-illustration'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 84),
-            child: Stack(
-              clipBehavior: Clip.none,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  right: -10,
-                  top: -12,
-                  child: Opacity(
-                    opacity: 0.48,
-                    child: Image.asset(
-                      'assets/icons/recent.png',
-                      key: const Key('home-recent-empty-illustration'),
-                      width: 132,
-                      height: 96,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
+                const _CircleBadge(
+                  icon: Icons.history_rounded,
+                  color: AppColors.primaryBlue,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const _CircleBadge(
-                      icon: Icons.history_rounded,
-                      color: AppColors.primaryBlue,
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            context.l10n.nothingHereYet,
-                            style: AppTextStyles.cardTitle,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            context.l10n.recentEmptyMessage,
-                            style: AppTextStyles.helper,
-                          ),
-                        ],
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.l10n.nothingHereYet,
+                        style: AppTextStyles.cardTitle,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        context.l10n.recentEmptyMessage,
+                        style: AppTextStyles.helper,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -500,6 +486,50 @@ class _RecentEmpty extends StatelessWidget {
               label: Text(context.l10n.createFirstReply),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Shared Recent card surface so empty and populated states keep the same
+/// pale-blue background and decorative inbox illustration.
+class _RecentCard extends StatelessWidget {
+  const _RecentCard({
+    required this.cardKey,
+    required this.illustrationKey,
+    required this.child,
+  });
+
+  final Key cardKey;
+  final Key illustrationKey;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return _HomeCard(
+      key: cardKey,
+      backgroundColor: AppColors.recentCardBackground,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            right: -10,
+            top: -12,
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: 0.48,
+                child: Image.asset(
+                  'assets/icons/recent.png',
+                  key: illustrationKey,
+                  width: 132,
+                  height: 96,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+          child,
         ],
       ),
     );
@@ -593,7 +623,11 @@ class _TipOfTheDay extends StatelessWidget {
 /// A plain white Home card carrying the shared [_kHomeCardShadow]. Mirrors the
 /// default GlassCard look (white fill, soft border, 16px padding).
 class _HomeCard extends StatelessWidget {
-  const _HomeCard({required this.child, this.backgroundColor = Colors.white});
+  const _HomeCard({
+    super.key,
+    required this.child,
+    this.backgroundColor = Colors.white,
+  });
 
   final Widget child;
   final Color backgroundColor;

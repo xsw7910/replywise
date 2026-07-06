@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:replywise/app.dart';
+import 'package:replywise/core/theme/app_colors.dart';
 import 'package:replywise/features/auth/data/auth_repository.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
@@ -248,6 +249,22 @@ void main() {
     expect(find.text('Polish: My landlord email'), findsOneWidget);
     expect(find.text('View all'), findsOneWidget);
     expect(find.text('Nothing here yet'), findsNothing);
+    expect(
+      find.byKey(const Key('home-recent-populated-illustration')),
+      findsOneWidget,
+    );
+    final recentCardContainer = tester.widget<Container>(
+      find
+          .descendant(
+            of: find.byKey(const Key('home-recent-populated-card')),
+            matching: find.byType(Container),
+          )
+          .first,
+    );
+    expect(
+      (recentCardContainer.decoration as BoxDecoration).color,
+      AppColors.recentCardBackground,
+    );
   });
 
   testWidgets('Create your first reply opens the Reply page', (tester) async {
