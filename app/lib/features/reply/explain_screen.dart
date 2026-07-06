@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/input_limits.dart';
 import '../../core/localization/localization_extensions.dart';
+import '../../core/localization/locale_controller.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
@@ -78,12 +79,15 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   }
 
   Future<void> _explain() async {
+    final appLocale = resolvedAppLocaleCode(
+      Localizations.maybeLocaleOf(context),
+    );
     if (!await ensureGenerationAccess(context: context, ref: ref)) return;
     // Capture the message before the async gap.
     final input = _messageController.text;
     final result = await ref
         .read(explainControllerProvider.notifier)
-        .explain(text: input, explainLang: 'en');
+        .explain(text: input, explainLang: appLocale, appLocale: appLocale);
     if (!mounted || result == null) return;
     setState(() => _result = result);
     await saveRecentItem(

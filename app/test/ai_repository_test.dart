@@ -112,13 +112,16 @@ void main() {
         const ReplyRequest(
           incoming: 'Hello',
           guidance: 'Respond warmly',
-          guidanceLang: 'en',
+          guidanceLang: 'zh',
+          appLocale: 'zh',
           audience: ReplyAudience(mode: 'auto', formality: 50),
         ),
       );
 
       expect(client.path, '/v1/reply');
       expect(client.payload['outputLang'], 'en');
+      expect(client.payload['appLocale'], 'zh');
+      expect(client.payload['guidanceLang'], 'zh');
       expect(client.payload['guidance'], 'Respond warmly');
       expect(client.options?.headers?['X-Idempotency-Key'], isNotEmpty);
       expect(result.versions, hasLength(3));
@@ -138,12 +141,15 @@ void main() {
         const PolishRequest(
           draft: 'hello there',
           direction: 'natural',
-          guidanceLang: 'en',
+          guidanceLang: 'zh',
+          appLocale: 'zh',
         ),
       );
 
       expect(client.path, '/v1/polish');
       expect(client.payload['direction'], 'natural');
+      expect(client.payload['appLocale'], 'zh');
+      expect(client.payload['guidanceLang'], 'zh');
       expect(client.options?.headers?['X-Idempotency-Key'], isNotEmpty);
       expect(result.polished, 'Hello there.');
     },
@@ -162,10 +168,11 @@ void main() {
 
       final result = await ExplainRepository(
         client,
-      ).explain(text: 'Things are hectic.', explainLang: 'en');
+      ).explain(text: 'Things are hectic.', explainLang: 'zh', appLocale: 'zh');
 
       expect(client.path, '/v1/explain');
-      expect(client.payload['explainLang'], 'en');
+      expect(client.payload['explainLang'], 'zh');
+      expect(client.payload['appLocale'], 'zh');
       expect(result.hiddenMeaning, 'Subtext');
       expect(result.suggestedReplies, hasLength(1));
     },
@@ -191,7 +198,10 @@ void main() {
     'ReplyRepository retries IDEMPOTENCY_CONFLICT/processing and succeeds',
     () async {
       // 2 failures then success → 3 total calls
-      final client = _ConflictClient(failTimes: 2, successResponse: successVersions);
+      final client = _ConflictClient(
+        failTimes: 2,
+        successResponse: successVersions,
+      );
 
       final result = await ReplyRepository(client).generate(replyRequest);
 

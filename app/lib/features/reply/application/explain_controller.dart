@@ -23,6 +23,7 @@ class ExplainController extends _$ExplainController {
   Future<ExplainResult?> explain({
     required String text,
     required String explainLang,
+    String? appLocale,
   }) async {
     final cleaned = text.trim();
     if (cleaned.isEmpty) {
@@ -42,7 +43,11 @@ class ExplainController extends _$ExplainController {
     try {
       final result = await ref
           .read(explainRepositoryProvider)
-          .explain(text: cleaned, explainLang: explainLang);
+          .explain(
+            text: cleaned,
+            explainLang: explainLang,
+            appLocale: appLocale,
+          );
       state = const ExplainState();
       return result;
     } on ApiError catch (error) {

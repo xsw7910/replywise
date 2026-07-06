@@ -20,6 +20,7 @@ class ReplyRequest(ApiModel):
     guidance: str = ""
     guidance_lang: str = "en"
     output_lang: str = "en"
+    app_locale: str | None = None
     tone: str | None = None
     audience: AudienceRequest = Field(default_factory=AudienceRequest)
 
@@ -56,6 +57,7 @@ class PolishRequest(ApiModel):
     length: str | None = None
     extra_instruction: str | None = None
     guidance_lang: str = "en"
+    app_locale: str | None = None
 
 
 class PolishResponse(ApiModel):
@@ -67,6 +69,7 @@ class PolishResponse(ApiModel):
 class ExplainRequest(ApiModel):
     text: str
     explain_lang: str = "en"
+    app_locale: str | None = None
 
 
 class ExplainResponse(ApiModel):

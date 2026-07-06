@@ -24,6 +24,7 @@ class ReplyRequest {
     required this.incoming,
     required this.guidance,
     required this.guidanceLang,
+    this.appLocale,
     this.tone,
     required this.audience,
   });
@@ -31,6 +32,7 @@ class ReplyRequest {
   final String incoming;
   final String guidance;
   final String guidanceLang;
+  final String? appLocale;
   final String? tone;
   final ReplyAudience audience;
 
@@ -38,6 +40,7 @@ class ReplyRequest {
     'incoming': incoming,
     'guidance': guidance,
     'guidanceLang': guidanceLang,
+    if (appLocale != null) 'appLocale': appLocale,
     'outputLang': 'en',
     'tone': tone,
     'audience': audience.toJson(),

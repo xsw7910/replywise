@@ -358,7 +358,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get yourReplies => '您的回复';
 
   @override
-  String get whyThisWorks => '为什么这有效';
+  String get whyThisWorks => '为什么这样回复有效';
 
   @override
   String get regenerateReplies => '重新生成回复';
@@ -382,7 +382,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tone => '语气';
 
   @override
-  String get hiddenMeaning => '隐含含义';
+  String get hiddenMeaning => '潜在含义';
 
   @override
   String get noHiddenMeaning => '未检测到隐藏含义。';
@@ -493,7 +493,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get polishedResult => '润色结果';
 
   @override
-  String get whatChanged => '修改内容';
+  String get whatChanged => '修改了什么';
 
   @override
   String get polishAgain => '再次润色';

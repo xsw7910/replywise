@@ -3,6 +3,7 @@ import json
 from pydantic import ValidationError
 
 from app.errors import ApiException
+from app.locales import normalize_app_locale
 from app.prompts import EXPLAIN_SYSTEM_PROMPT, POLISH_SYSTEM_PROMPT, REPLY_SYSTEM_PROMPT
 from app.schemas.ai import (
     ExplainRequest,
@@ -23,17 +24,49 @@ class AIService:
         payload = request.model_dump(mode="json")
         payload["task"] = "reply"
         payload["output_lang"] = "en"
-        return await self._generate(REPLY_SYSTEM_PROMPT, payload, ReplyResponse)
+        prompt = self._localized_prompt(
+            REPLY_SYSTEM_PROMPT,
+            payload,
+            request.app_locale,
+        )
+        return await self._generate(prompt, payload, ReplyResponse)
 
     async def polish(self, request: PolishRequest) -> PolishResponse:
         payload = request.model_dump(mode="json")
         payload["task"] = "polish"
-        return await self._generate(POLISH_SYSTEM_PROMPT, payload, PolishResponse)
+        prompt = self._localized_prompt(
+            POLISH_SYSTEM_PROMPT,
+            payload,
+            request.app_locale,
+        )
+        return await self._generate(prompt, payload, PolishResponse)
 
     async def explain(self, request: ExplainRequest) -> ExplainResponse:
         payload = request.model_dump(mode="json")
         payload["task"] = "explain"
-        return await self._generate(EXPLAIN_SYSTEM_PROMPT, payload, ExplainResponse)
+        prompt = self._localized_prompt(
+            EXPLAIN_SYSTEM_PROMPT,
+            payload,
+            request.app_locale,
+        )
+        return await self._generate(prompt, payload, ExplainResponse)
+
+    @staticmethod
+    def _localized_prompt(
+        system_prompt: str,
+        payload: dict,
+        app_locale: str | None,
+    ) -> str:
+        locale_code, output_language = normalize_app_locale(app_locale)
+        payload["app_locale"] = locale_code
+        payload["output_language"] = output_language
+        return (
+            f"{system_prompt}\n\n"
+            f"Write the section headings and explanations in: {output_language}.\n"
+            "Do not translate JSON keys or fixed enum labels. "
+            "Keep reply, polished, and suggested-reply content in the language "
+            "required by the task and user context."
+        )
 
     async def _generate(self, system_prompt: str, payload: dict, response_type):
         prompt = system_prompt

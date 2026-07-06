@@ -87,6 +87,18 @@ void main() {
     expect(AppLocalizations.supportedLocales, contains(const Locale('ar')));
   });
 
+  test('resolved app locale uses supported API codes', () {
+    expect(resolvedAppLocaleCode(const Locale('es')), 'es');
+    expect(
+      resolvedAppLocaleCode(
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+      ),
+      'zh_Hant',
+    );
+    expect(resolvedAppLocaleCode(null, deviceLocale: const Locale('ja')), 'ja');
+    expect(resolvedAppLocaleCode(const Locale('sv')), 'en');
+  });
+
   testWidgets('changing locale rebuilds the app immediately', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

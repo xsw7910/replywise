@@ -15,11 +15,16 @@ class ExplainRepository {
   Future<ExplainResult> explain({
     required String text,
     required String explainLang,
+    String? appLocale,
   }) async {
     try {
       final response = await _client.post<Map<String, dynamic>>(
         '/v1/explain',
-        data: {'text': text, 'explainLang': explainLang},
+        data: {
+          'text': text,
+          'explainLang': explainLang,
+          'appLocale': ?appLocale,
+        },
       );
       return ExplainResult.fromJson(response.data!);
     } on DioException catch (error) {

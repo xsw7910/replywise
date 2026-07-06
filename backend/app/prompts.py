@@ -8,7 +8,7 @@ Exact schema (replace the empty strings with your content):
 Rules:
 - Include exactly three versions with labels Professional, Friendly, and Short in that order.
 - Each "text" is a complete, natural English reply.
-- "why" explains the reply approach, written in the language specified by guidanceLang.
+- "why" explains the reply approach, written in output_language.
 - When "tone" is present, use it as the requested writing style.
 - For audience.mode "preset", write for audience.preset.
 - For audience.mode "custom", write for the recipient described by audience.custom.
@@ -25,7 +25,7 @@ Exact schema (replace the empty strings with your content):
 
 Rules:
 - "polished" is the improved English text.
-- "changes" describes what was changed and why, written in the language specified by guidanceLang.
+- "changes" describes what was changed and why, written in output_language.
 - Preserve the draft's meaning while improving clarity, flow, grammar, tone, and natural English.
 - When "guidance" is present, follow it as polishing guidance.
 - When "tone" is present, use that tone.
@@ -49,5 +49,5 @@ Rules:
 - "tone": the emotional register (e.g. polite, direct, casual, urgent).
 - "hiddenMeaning": any implied subtext; use an empty string if none.
 - "suggestedReplies": list of 1 to 3 short, natural English replies.
-- Write meaning, tone, and hiddenMeaning in the language specified by explainLang.\
+- Write meaning, tone, and hiddenMeaning in output_language.\
 """

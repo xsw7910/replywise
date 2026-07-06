@@ -9,6 +9,7 @@ class PolishRequest {
     this.length,
     this.extraInstruction,
     required this.guidanceLang,
+    this.appLocale,
   });
 
   final String draft;
@@ -20,6 +21,7 @@ class PolishRequest {
   final String? length;
   final String? extraInstruction;
   final String guidanceLang;
+  final String? appLocale;
 
   Map<String, dynamic> toJson() => {
     'draft': draft,
@@ -31,6 +33,7 @@ class PolishRequest {
     'length': length,
     'extraInstruction': extraInstruction,
     'guidanceLang': guidanceLang,
+    if (appLocale != null) 'appLocale': appLocale,
   };
 }
 

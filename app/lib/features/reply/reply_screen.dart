@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants/input_limits.dart';
 import '../../core/localization/localization_extensions.dart';
+import '../../core/localization/locale_controller.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
@@ -131,7 +132,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     });
   }
 
-  ReplyRequest _request() {
+  ReplyRequest _request(String appLocale) {
     final String mode;
     String? preset;
     String? custom;
@@ -148,7 +149,8 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     return ReplyRequest(
       incoming: _incomingController.text,
       guidance: _composedGuidance(),
-      guidanceLang: 'en',
+      guidanceLang: appLocale,
+      appLocale: appLocale,
       tone: _effectiveTone(),
       audience: ReplyAudience(
         mode: mode,
@@ -201,10 +203,15 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   };
 
   Future<void> _generate() async {
+    final appLocale = resolvedAppLocaleCode(
+      Localizations.maybeLocaleOf(context),
+    );
     if (!await ensureGenerationAccess(context: context, ref: ref)) return;
     // Capture the received message before the async gap.
     final incoming = _incomingController.text;
-    await ref.read(replyControllerProvider.notifier).generate(_request());
+    await ref
+        .read(replyControllerProvider.notifier)
+        .generate(_request(appLocale));
     if (!mounted) return;
     final state = ref.read(replyControllerProvider);
     final result = state.result;
@@ -242,10 +249,17 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   }
 
   Future<void> _explain() async {
+    final appLocale = resolvedAppLocaleCode(
+      Localizations.maybeLocaleOf(context),
+    );
     if (!await ensureGenerationAccess(context: context, ref: ref)) return;
     final result = await ref
         .read(explainControllerProvider.notifier)
-        .explain(text: _incomingController.text, explainLang: 'en');
+        .explain(
+          text: _incomingController.text,
+          explainLang: appLocale,
+          appLocale: appLocale,
+        );
     if (!mounted) return;
     if (result == null) {
       final error =

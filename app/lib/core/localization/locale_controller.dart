@@ -46,6 +46,30 @@ Locale? localeFromPreference(String code) {
   return Locale(code);
 }
 
+/// Converts Flutter's resolved locale into the stable API locale codes used by
+/// ReplyWise. When MaterialApp follows the system, [locale] is the negotiated
+/// device locale. Unsupported locales fall back to English.
+String resolvedAppLocaleCode(Locale? locale, {Locale? deviceLocale}) {
+  final resolved = locale ?? deviceLocale ?? PlatformDispatcher.instance.locale;
+  final languageCode = resolved.languageCode.toLowerCase();
+
+  if (languageCode == 'zh') {
+    final script = resolved.scriptCode?.toLowerCase();
+    final country = resolved.countryCode?.toUpperCase();
+    if (script == 'hant' ||
+        country == 'TW' ||
+        country == 'HK' ||
+        country == 'MO') {
+      return 'zh_Hant';
+    }
+    return 'zh';
+  }
+
+  return appLocaleOptions.any((option) => option.code == languageCode)
+      ? languageCode
+      : 'en';
+}
+
 class LocaleController extends StateNotifier<String> {
   LocaleController(this._prefs)
     : super(_validCode(_prefs.getString(localePreferenceKey)));

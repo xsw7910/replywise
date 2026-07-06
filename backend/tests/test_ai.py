@@ -230,6 +230,136 @@ class _CapturingPolishProvider:
         )
 
 
+class _CapturingExplainProvider:
+    def __init__(self) -> None:
+        self.system_prompt = ""
+        self.payload: dict = {}
+
+    async def complete(self, system_prompt: str, payload: dict) -> str:
+        self.system_prompt = system_prompt
+        self.payload = payload
+        return json.dumps(
+            {
+                "meaning": "Meaning",
+                "tone": "Tone",
+                "hiddenMeaning": "",
+                "suggestedReplies": ["Thanks for letting me know."],
+            }
+        )
+
+
+def test_reply_zh_locale_adds_chinese_heading_instruction(
+    client: TestClient,
+) -> None:
+    provider = _CapturingReplyProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/reply",
+            json={**_reply_payload(), "appLocale": "zh"},
+            headers=_headers(client, "reply-zh-locale"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert (
+        "Write the section headings and explanations in: Simplified Chinese."
+        in provider.system_prompt
+    )
+    assert provider.payload["output_language"] == "Simplified Chinese"
+
+
+def test_polish_zh_locale_adds_chinese_heading_instruction(
+    client: TestClient,
+) -> None:
+    provider = _CapturingPolishProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/polish",
+            json={
+                "draft": "Please review this.",
+                "direction": "natural",
+                "appLocale": "zh",
+            },
+            headers=_headers(client, "polish-zh-locale"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert (
+        "Write the section headings and explanations in: Simplified Chinese."
+        in provider.system_prompt
+    )
+    assert provider.payload["output_language"] == "Simplified Chinese"
+
+
+def test_explain_zh_locale_adds_chinese_heading_instruction(
+    client: TestClient,
+) -> None:
+    provider = _CapturingExplainProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/explain",
+            json={"text": "Can we reschedule?", "appLocale": "zh"},
+            headers=_headers(client, "explain-zh-locale"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert (
+        "Write the section headings and explanations in: Simplified Chinese."
+        in provider.system_prompt
+    )
+    assert provider.payload["output_language"] == "Simplified Chinese"
+
+
+def test_missing_locale_falls_back_to_english(client: TestClient) -> None:
+    provider = _CapturingReplyProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/reply",
+            json=_reply_payload(),
+            headers=_headers(client, "missing-app-locale"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert (
+        "Write the section headings and explanations in: English."
+        in provider.system_prompt
+    )
+    assert provider.payload["app_locale"] == "en"
+
+
+def test_unsupported_locale_falls_back_to_english(
+    client: TestClient,
+) -> None:
+    provider = _CapturingReplyProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/reply",
+            json={**_reply_payload(), "appLocale": "xx-unknown"},
+            headers=_headers(client, "unsupported-app-locale"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert (
+        "Write the section headings and explanations in: English."
+        in provider.system_prompt
+    )
+    assert provider.payload["app_locale"] == "en"
+
+
 def test_polish_optional_instructions_reach_provider(client: TestClient) -> None:
     provider = _CapturingPolishProvider()
     app.dependency_overrides[get_ai_service] = lambda: AIService(provider)

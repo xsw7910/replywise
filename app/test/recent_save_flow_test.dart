@@ -77,6 +77,7 @@ class _OkExplainRepo extends ExplainRepository {
   Future<ExplainResult> explain({
     required String text,
     required String explainLang,
+    String? appLocale,
   }) async => const ExplainResult(
     meaning: 'They are agreeing.',
     tone: 'Warm.',
@@ -276,10 +277,7 @@ void main() {
       final prefs = await _freshPrefs();
       await _pumpPolish(tester, prefs, _OkPolishRepo());
 
-      await tester.enterText(
-        find.byType(TextField).first,
-        'plz fix my txt',
-      );
+      await tester.enterText(find.byType(TextField).first, 'plz fix my txt');
       await tester.tap(find.text('Polish Text'));
       await tester.pumpAndSettle();
 

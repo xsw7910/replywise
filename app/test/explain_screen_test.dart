@@ -53,6 +53,7 @@ class _FakeExplainRepository extends ExplainRepository {
   Future<ExplainResult> explain({
     required String text,
     required String explainLang,
+    String? appLocale,
   }) async {
     calls++;
     lastText = text;
