@@ -269,4 +269,10 @@
   "makeProfessional": "Làm cho nó trở nên chuyên nghiệp",
   "guidanceConfidentContent": "Hãy đưa ra câu trả lời có vẻ tự tin nhưng không hung hăng.",
   "guidanceMoreTimeContent": "Yêu cầu thêm thời gian với vẻ có trách nhiệm và lịch sự."
+  ,"adIsLoading": "Quảng cáo đang tải. Vui lòng thử lại."
+  ,"creditAdded": "Đã thêm tín dụng."
+  ,"adDailyLimitReached": "Đã đạt giới hạn phần thưởng quảng cáo hằng ngày."
+  ,"adLoadFailed": "Không thể tải quảng cáo. Vui lòng thử lại sau."
+  ,"adRewardCooldown": "Vui lòng đợi một lát trước khi xem quảng cáo khác."
+  ,"adRewardFailed": "Không thể thêm tín dụng của bạn. Vui lòng thử lại."
 }

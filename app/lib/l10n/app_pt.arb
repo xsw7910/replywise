@@ -269,4 +269,10 @@
   "guidanceMoreTimeContent": "Peça mais tempo parecendo responsável e educado.",
   "guidanceConfidentContent": "Faça a resposta parecer confiante, mas não agressiva.",
   "guidanceDeclineContent": "Recuse educadamente o pedido, sem parecer rude."
+  ,"adIsLoading": "O anúncio está a carregar. Tente novamente."
+  ,"creditAdded": "Crédito adicionado."
+  ,"adDailyLimitReached": "Limite diário de recompensas por anúncios atingido."
+  ,"adLoadFailed": "Não foi possível carregar o anúncio. Tente novamente mais tarde."
+  ,"adRewardCooldown": "Aguarde um momento antes de ver outro anúncio."
+  ,"adRewardFailed": "Não foi possível adicionar o seu crédito. Tente novamente."
 }

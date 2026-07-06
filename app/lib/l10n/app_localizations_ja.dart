@@ -844,4 +844,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String creditsRemaining(String count) {
     return '$count クレジットが残っています';
   }
+
+  @override
+  String get adIsLoading => '広告を読み込んでいます。もう一度お試しください。';
+
+  @override
+  String get creditAdded => 'クレジットを追加しました。';
+
+  @override
+  String get adDailyLimitReached => '広告リワードの1日の上限に達しました。';
+
+  @override
+  String get adLoadFailed => '広告を読み込めませんでした。しばらくしてからもう一度お試しください。';
+
+  @override
+  String get adRewardCooldown => '次の広告を見るまで少しお待ちください。';
+
+  @override
+  String get adRewardFailed => 'クレジットを追加できませんでした。もう一度お試しください。';
 }

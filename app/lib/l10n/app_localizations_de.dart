@@ -892,4 +892,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String creditsRemaining(String count) {
     return 'Verbleibende $count-Credits';
   }
+
+  @override
+  String get adIsLoading => 'Anzeige wird geladen. Bitte versuche es erneut.';
+
+  @override
+  String get creditAdded => 'Guthaben hinzugefügt.';
+
+  @override
+  String get adDailyLimitReached =>
+      'Tägliches Limit für Anzeigen-Belohnungen erreicht.';
+
+  @override
+  String get adLoadFailed =>
+      'Anzeige konnte nicht geladen werden. Bitte versuche es später erneut.';
+
+  @override
+  String get adRewardCooldown =>
+      'Bitte warte einen Moment, bevor du eine weitere Anzeige ansiehst.';
+
+  @override
+  String get adRewardFailed =>
+      'Dein Guthaben konnte nicht hinzugefügt werden. Bitte versuche es erneut.';
 }

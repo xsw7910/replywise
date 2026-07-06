@@ -283,4 +283,10 @@
   ,"premiumActive": "Premium subscription active"
   ,"creditsRemaining": "{count} credits remaining"
   ,"@creditsRemaining": {"placeholders": {"count": {"type": "String"}}}
+  ,"adIsLoading": "Ad is loading. Please try again."
+  ,"creditAdded": "Credit added."
+  ,"adDailyLimitReached": "Daily ad reward limit reached."
+  ,"adLoadFailed": "Unable to load ad. Please try again later."
+  ,"adRewardCooldown": "Please wait a moment before watching another ad."
+  ,"adRewardFailed": "Couldn’t add your credit. Please try again."
 }

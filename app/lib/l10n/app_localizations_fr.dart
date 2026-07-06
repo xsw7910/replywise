@@ -884,4 +884,26 @@ class AppLocalizationsFr extends AppLocalizations {
   String creditsRemaining(String count) {
     return 'Crédits $count restants';
   }
+
+  @override
+  String get adIsLoading => 'L’annonce se charge. Veuillez réessayer.';
+
+  @override
+  String get creditAdded => 'Crédit ajouté.';
+
+  @override
+  String get adDailyLimitReached =>
+      'Limite quotidienne de récompenses publicitaires atteinte.';
+
+  @override
+  String get adLoadFailed =>
+      'Impossible de charger l’annonce. Veuillez réessayer plus tard.';
+
+  @override
+  String get adRewardCooldown =>
+      'Veuillez patienter un instant avant de regarder une autre annonce.';
+
+  @override
+  String get adRewardFailed =>
+      'Impossible d’ajouter votre crédit. Veuillez réessayer.';
 }

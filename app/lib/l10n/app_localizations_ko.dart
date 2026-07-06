@@ -843,4 +843,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String creditsRemaining(String count) {
     return '$count 크레딧 남음';
   }
+
+  @override
+  String get adIsLoading => '광고를 불러오는 중입니다. 다시 시도해 주세요.';
+
+  @override
+  String get creditAdded => '크레딧이 추가되었습니다.';
+
+  @override
+  String get adDailyLimitReached => '일일 광고 보상 한도에 도달했습니다.';
+
+  @override
+  String get adLoadFailed => '광고를 불러올 수 없습니다. 나중에 다시 시도해 주세요.';
+
+  @override
+  String get adRewardCooldown => '다른 광고를 보기 전에 잠시 기다려 주세요.';
+
+  @override
+  String get adRewardFailed => '크레딧을 추가하지 못했습니다. 다시 시도해 주세요.';
 }

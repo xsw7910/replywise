@@ -867,4 +867,22 @@ class AppLocalizationsTh extends AppLocalizations {
   String creditsRemaining(String count) {
     return '$count เครดิตที่เหลืออยู่';
   }
+
+  @override
+  String get adIsLoading => 'กำลังโหลดโฆษณา โปรดลองอีกครั้ง';
+
+  @override
+  String get creditAdded => 'เพิ่มเครดิตแล้ว';
+
+  @override
+  String get adDailyLimitReached => 'ถึงขีดจำกัดรางวัลโฆษณารายวันแล้ว';
+
+  @override
+  String get adLoadFailed => 'ไม่สามารถโหลดโฆษณาได้ โปรดลองอีกครั้งในภายหลัง';
+
+  @override
+  String get adRewardCooldown => 'โปรดรอสักครู่ก่อนดูโฆษณาอื่น';
+
+  @override
+  String get adRewardFailed => 'ไม่สามารถเพิ่มเครดิตของคุณได้ โปรดลองอีกครั้ง';
 }

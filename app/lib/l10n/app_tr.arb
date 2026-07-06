@@ -269,4 +269,10 @@
   "premiumActive": "Premium abonelik aktif",
   "guidanceMoreTimeContent": "Sorumlu ve kibar görünerek daha fazla zaman isteyin.",
   "guidanceConfidentContent": "Yanıtınızın kendinden emin görünmesini sağlayın ancak agresif olmayın."
+  ,"adIsLoading": "Reklam yükleniyor. Lütfen tekrar deneyin."
+  ,"creditAdded": "Kredi eklendi."
+  ,"adDailyLimitReached": "Günlük reklam ödülü sınırına ulaşıldı."
+  ,"adLoadFailed": "Reklam yüklenemedi. Lütfen daha sonra tekrar deneyin."
+  ,"adRewardCooldown": "Başka bir reklam izlemeden önce lütfen biraz bekleyin."
+  ,"adRewardFailed": "Krediniz eklenemedi. Lütfen tekrar deneyin."
 }

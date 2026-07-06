@@ -269,4 +269,10 @@
   "guidanceFriendlyContent": "Gestalten Sie die Antwort warm und freundlich.",
   "creditsRemaining": "Verbleibende {count}-Credits",
   "premiumActive": "Premium-Abonnement aktiv"
+  ,"adIsLoading": "Anzeige wird geladen. Bitte versuche es erneut."
+  ,"creditAdded": "Guthaben hinzugefügt."
+  ,"adDailyLimitReached": "Tägliches Limit für Anzeigen-Belohnungen erreicht."
+  ,"adLoadFailed": "Anzeige konnte nicht geladen werden. Bitte versuche es später erneut."
+  ,"adRewardCooldown": "Bitte warte einen Moment, bevor du eine weitere Anzeige ansiehst."
+  ,"adRewardFailed": "Dein Guthaben konnte nicht hinzugefügt werden. Bitte versuche es erneut."
 }

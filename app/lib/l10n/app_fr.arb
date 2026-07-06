@@ -269,4 +269,10 @@
   "guidanceFriendlyContent": "Rendez la réponse chaleureuse et amicale.",
   "premiumActive": "Abonnement Premium actif",
   "guidanceThanksContent": "Ajoutez de l'appréciation et un remerciement poli."
+  ,"adIsLoading": "L’annonce se charge. Veuillez réessayer."
+  ,"creditAdded": "Crédit ajouté."
+  ,"adDailyLimitReached": "Limite quotidienne de récompenses publicitaires atteinte."
+  ,"adLoadFailed": "Impossible de charger l’annonce. Veuillez réessayer plus tard."
+  ,"adRewardCooldown": "Veuillez patienter un instant avant de regarder une autre annonce."
+  ,"adRewardFailed": "Impossible d’ajouter votre crédit. Veuillez réessayer."
 }

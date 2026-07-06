@@ -269,4 +269,10 @@
   "guidanceThanksContent": "Tambahkan apresiasi dan ucapan terima kasih yang sopan.",
   "creditsRemaining": "Sisa kredit {count}",
   "premiumActive": "Langganan premium aktif"
+  ,"adIsLoading": "Iklan sedang dimuat. Silakan coba lagi."
+  ,"creditAdded": "Kredit ditambahkan."
+  ,"adDailyLimitReached": "Batas harian hadiah iklan telah tercapai."
+  ,"adLoadFailed": "Tidak dapat memuat iklan. Silakan coba lagi nanti."
+  ,"adRewardCooldown": "Harap tunggu sebentar sebelum menonton iklan lain."
+  ,"adRewardFailed": "Tidak dapat menambahkan kredit Anda. Silakan coba lagi."
 }

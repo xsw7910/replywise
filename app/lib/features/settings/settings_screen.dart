@@ -10,6 +10,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
+import '../ads/application/ad_reward_controller.dart';
 import '../auth/application/auth_controller.dart';
 import '../auth/auth_state.dart';
 import '../entitlement/usage_controller.dart';
@@ -26,6 +27,18 @@ class SettingsScreen extends ConsumerWidget {
       ..showSnackBar(
         SnackBar(content: Text(context.l10n.staticPreview(label))),
       );
+  }
+
+  String _adRewardMessage(BuildContext context, AdRewardOutcome outcome) {
+    final l10n = context.l10n;
+    return switch (outcome) {
+      AdRewardOutcome.creditAdded => l10n.creditAdded,
+      AdRewardOutcome.adLoading => l10n.adIsLoading,
+      AdRewardOutcome.loadFailed => l10n.adLoadFailed,
+      AdRewardOutcome.dailyLimitReached => l10n.adDailyLimitReached,
+      AdRewardOutcome.cooldown => l10n.adRewardCooldown,
+      AdRewardOutcome.failed => l10n.adRewardFailed,
+    };
   }
 
   Future<void> _showLanguageSelector(
@@ -109,6 +122,19 @@ class SettingsScreen extends ConsumerWidget {
         ..showSnackBar(SnackBar(content: Text(message ?? error!)));
     });
 
+    final adRewardState = ref.watch(adRewardControllerProvider);
+    ref.listen(adRewardControllerProvider, (previous, next) {
+      if (next.outcome == null ||
+          previous?.outcomeToken == next.outcomeToken) {
+        return;
+      }
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(_adRewardMessage(context, next.outcome!))),
+        );
+    });
+
     return AppPage(
       title: context.l10n.settings,
       showAppBar: false,
@@ -126,8 +152,10 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 34),
           _CreditsCard(
             state: usageState,
+            isAdBusy: adRewardState.isBusy,
             onRetry: () => ref.read(usageControllerProvider.notifier).refresh(),
-            onWatchAd: () => _showPreviewMessage(context, context.l10n.watchAd),
+            onWatchAd: () =>
+                ref.read(adRewardControllerProvider.notifier).watchAd(),
           ),
           const SizedBox(height: 16),
           _PlanCard(
@@ -196,11 +224,13 @@ class SettingsScreen extends ConsumerWidget {
 class _CreditsCard extends StatelessWidget {
   const _CreditsCard({
     required this.state,
+    required this.isAdBusy,
     required this.onRetry,
     required this.onWatchAd,
   });
 
   final UsageViewState state;
+  final bool isAdBusy;
   final VoidCallback onRetry;
   final VoidCallback onWatchAd;
 
@@ -258,8 +288,14 @@ class _CreditsCard extends StatelessWidget {
             )
           else
             OutlinedButton.icon(
-              onPressed: onWatchAd,
-              icon: const Icon(Icons.play_arrow_rounded, size: 20),
+              onPressed: isAdBusy ? null : onWatchAd,
+              icon: isAdBusy
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    )
+                  : const Icon(Icons.play_arrow_rounded, size: 20),
               label: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,

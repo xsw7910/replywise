@@ -269,4 +269,10 @@
   "dateAt": "{date} · {time}",
   "yesterdayAt": "昨天·{time}",
   "creditsRemaining": "{count} 剩餘積分"
+  ,"adIsLoading": "廣告正在載入，請重試。"
+  ,"creditAdded": "已新增積分。"
+  ,"adDailyLimitReached": "已達到每日廣告獎勵上限。"
+  ,"adLoadFailed": "無法載入廣告，請稍後再試。"
+  ,"adRewardCooldown": "請稍候片刻再觀看下一個廣告。"
+  ,"adRewardFailed": "無法新增積分，請重試。"
 }

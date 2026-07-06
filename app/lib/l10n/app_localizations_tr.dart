@@ -875,4 +875,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String creditsRemaining(String count) {
     return '$count kredi kaldı';
   }
+
+  @override
+  String get adIsLoading => 'Reklam yükleniyor. Lütfen tekrar deneyin.';
+
+  @override
+  String get creditAdded => 'Kredi eklendi.';
+
+  @override
+  String get adDailyLimitReached => 'Günlük reklam ödülü sınırına ulaşıldı.';
+
+  @override
+  String get adLoadFailed =>
+      'Reklam yüklenemedi. Lütfen daha sonra tekrar deneyin.';
+
+  @override
+  String get adRewardCooldown =>
+      'Başka bir reklam izlemeden önce lütfen biraz bekleyin.';
+
+  @override
+  String get adRewardFailed => 'Krediniz eklenemedi. Lütfen tekrar deneyin.';
 }

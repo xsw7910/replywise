@@ -877,4 +877,25 @@ class AppLocalizationsVi extends AppLocalizations {
   String creditsRemaining(String count) {
     return '$count tín dụng còn lại';
   }
+
+  @override
+  String get adIsLoading => 'Quảng cáo đang tải. Vui lòng thử lại.';
+
+  @override
+  String get creditAdded => 'Đã thêm tín dụng.';
+
+  @override
+  String get adDailyLimitReached =>
+      'Đã đạt giới hạn phần thưởng quảng cáo hằng ngày.';
+
+  @override
+  String get adLoadFailed => 'Không thể tải quảng cáo. Vui lòng thử lại sau.';
+
+  @override
+  String get adRewardCooldown =>
+      'Vui lòng đợi một lát trước khi xem quảng cáo khác.';
+
+  @override
+  String get adRewardFailed =>
+      'Không thể thêm tín dụng của bạn. Vui lòng thử lại.';
 }

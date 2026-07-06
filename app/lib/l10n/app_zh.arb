@@ -269,4 +269,10 @@
   "todayAt": "今天·{time}",
   "yesterdayAt": "昨天·{time}",
   "creditsRemaining": "{count} 剩余积分"
+  ,"adIsLoading": "广告正在加载，请重试。"
+  ,"creditAdded": "已添加积分。"
+  ,"adDailyLimitReached": "已达到每日广告奖励上限。"
+  ,"adLoadFailed": "无法加载广告，请稍后再试。"
+  ,"adRewardCooldown": "请稍候片刻再观看下一个广告。"
+  ,"adRewardFailed": "无法添加积分，请重试。"
 }

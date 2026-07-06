@@ -269,4 +269,10 @@
   "dateAt": "{date} · {time}",
   "useTemplate": "「{title}」を使用してください",
   "creditsRemaining": "{count} クレジットが残っています"
+  ,"adIsLoading": "広告を読み込んでいます。もう一度お試しください。"
+  ,"creditAdded": "クレジットを追加しました。"
+  ,"adDailyLimitReached": "広告リワードの1日の上限に達しました。"
+  ,"adLoadFailed": "広告を読み込めませんでした。しばらくしてからもう一度お試しください。"
+  ,"adRewardCooldown": "次の広告を見るまで少しお待ちください。"
+  ,"adRewardFailed": "クレジットを追加できませんでした。もう一度お試しください。"
 }

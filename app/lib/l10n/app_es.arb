@@ -269,4 +269,10 @@
   "creditsRemaining": "Créditos {count} restantes",
   "dateAt": "{date} · {time}",
   "todayAt": "Hoy · {time}"
+  ,"adIsLoading": "El anuncio se está cargando. Inténtalo de nuevo."
+  ,"creditAdded": "Crédito añadido."
+  ,"adDailyLimitReached": "Has alcanzado el límite diario de recompensas por anuncios."
+  ,"adLoadFailed": "No se pudo cargar el anuncio. Inténtalo más tarde."
+  ,"adRewardCooldown": "Espera un momento antes de ver otro anuncio."
+  ,"adRewardFailed": "No se pudo añadir tu crédito. Inténtalo de nuevo."
 }

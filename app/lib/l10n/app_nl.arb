@@ -269,4 +269,10 @@
   "dateAt": "{date} · {time}",
   "creditsRemaining": "{count} resterend krediet",
   "premiumActive": "Premium-abonnement actief"
+  ,"adIsLoading": "Advertentie wordt geladen. Probeer het opnieuw."
+  ,"creditAdded": "Tegoed toegevoegd."
+  ,"adDailyLimitReached": "Dagelijkse limiet voor advertentiebeloningen bereikt."
+  ,"adLoadFailed": "Kan advertentie niet laden. Probeer het later opnieuw."
+  ,"adRewardCooldown": "Wacht even voordat je een andere advertentie bekijkt."
+  ,"adRewardFailed": "Kan je tegoed niet toevoegen. Probeer het opnieuw."
 }

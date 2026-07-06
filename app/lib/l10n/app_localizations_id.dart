@@ -876,4 +876,25 @@ class AppLocalizationsId extends AppLocalizations {
   String creditsRemaining(String count) {
     return 'Sisa kredit $count';
   }
+
+  @override
+  String get adIsLoading => 'Iklan sedang dimuat. Silakan coba lagi.';
+
+  @override
+  String get creditAdded => 'Kredit ditambahkan.';
+
+  @override
+  String get adDailyLimitReached => 'Batas harian hadiah iklan telah tercapai.';
+
+  @override
+  String get adLoadFailed =>
+      'Tidak dapat memuat iklan. Silakan coba lagi nanti.';
+
+  @override
+  String get adRewardCooldown =>
+      'Harap tunggu sebentar sebelum menonton iklan lain.';
+
+  @override
+  String get adRewardFailed =>
+      'Tidak dapat menambahkan kredit Anda. Silakan coba lagi.';
 }

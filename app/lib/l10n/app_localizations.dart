@@ -1746,6 +1746,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} credits remaining'**
   String creditsRemaining(String count);
+
+  /// No description provided for @adIsLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad is loading. Please try again.'**
+  String get adIsLoading;
+
+  /// No description provided for @creditAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit added.'**
+  String get creditAdded;
+
+  /// No description provided for @adDailyLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily ad reward limit reached.'**
+  String get adDailyLimitReached;
+
+  /// No description provided for @adLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load ad. Please try again later.'**
+  String get adLoadFailed;
+
+  /// No description provided for @adRewardCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait a moment before watching another ad.'**
+  String get adRewardCooldown;
+
+  /// No description provided for @adRewardFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t add your credit. Please try again.'**
+  String get adRewardFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -3,7 +3,9 @@ param(
     [Parameter(Mandatory)][string]$ReplyBackendBaseUrl,
     [ValidateSet("prod")][string]$ReplyEnv = "prod",
     [Parameter(Mandatory)][string]$RevenueCatAndroidApiKey,
-    [string]$RevenueCatEntitlementId = "premium"
+    [string]$RevenueCatEntitlementId = "premium",
+    [Parameter(Mandatory)][string]$AdMobAppId,
+    [Parameter(Mandatory)][string]$AdMobRewardedAdUnitId
 )
 
 Set-StrictMode -Version Latest
@@ -28,6 +30,8 @@ $BuildParameters = @{
     ReplyEnv = $ReplyEnv
     RevenueCatAndroidApiKey = $RevenueCatAndroidApiKey
     RevenueCatEntitlementId = $RevenueCatEntitlementId
+    AdMobAppId = $AdMobAppId
+    AdMobRewardedAdUnitId = $AdMobRewardedAdUnitId
 }
 if ($Clean) {
     $BuildParameters.Clean = $true
@@ -45,6 +49,7 @@ Write-Host "[ ] Verify RevenueCat Android app and Google service credentials"
 Write-Host "[ ] Verify entitlement premium and offering default"
 Write-Host "[ ] Verify premium_yearly subscription, yearly base plan, and 3-day trial"
 Write-Host "[ ] Verify credits_10, credits_50, and credits_100 are active consumables"
+Write-Host "[ ] Verify AdMob app id and rewarded ad unit id are the production units"
 Write-Host "[ ] Verify store listing, screenshots, privacy policy, and Data Safety"
 Write-Host "[ ] Add internal testers and license-test accounts"
 Write-Host "[ ] Complete the end-to-end purchase matrix in docs/GOOGLE_PLAY_INTERNAL_TESTING.md"

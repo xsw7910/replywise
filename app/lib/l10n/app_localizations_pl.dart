@@ -881,4 +881,25 @@ class AppLocalizationsPl extends AppLocalizations {
   String creditsRemaining(String count) {
     return 'Pozostało $count kredytów';
   }
+
+  @override
+  String get adIsLoading => 'Reklama się ładuje. Spróbuj ponownie.';
+
+  @override
+  String get creditAdded => 'Dodano kredyt.';
+
+  @override
+  String get adDailyLimitReached =>
+      'Osiągnięto dzienny limit nagród za reklamy.';
+
+  @override
+  String get adLoadFailed =>
+      'Nie można załadować reklamy. Spróbuj ponownie później.';
+
+  @override
+  String get adRewardCooldown =>
+      'Poczekaj chwilę przed obejrzeniem kolejnej reklamy.';
+
+  @override
+  String get adRewardFailed => 'Nie udało się dodać kredytu. Spróbuj ponownie.';
 }

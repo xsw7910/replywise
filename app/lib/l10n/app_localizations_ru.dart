@@ -878,4 +878,25 @@ class AppLocalizationsRu extends AppLocalizations {
   String creditsRemaining(String count) {
     return 'Осталось $count кредитов';
   }
+
+  @override
+  String get adIsLoading =>
+      'Реклама загружается. Пожалуйста, попробуйте снова.';
+
+  @override
+  String get creditAdded => 'Кредит добавлен.';
+
+  @override
+  String get adDailyLimitReached =>
+      'Достигнут дневной лимит наград за рекламу.';
+
+  @override
+  String get adLoadFailed => 'Не удалось загрузить рекламу. Попробуйте позже.';
+
+  @override
+  String get adRewardCooldown =>
+      'Подождите немного, прежде чем смотреть другую рекламу.';
+
+  @override
+  String get adRewardFailed => 'Не удалось добавить кредит. Попробуйте снова.';
 }

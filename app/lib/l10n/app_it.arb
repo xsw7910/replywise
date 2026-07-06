@@ -269,4 +269,10 @@
   "todayAt": "Oggi · {time}",
   "creditsRemaining": "{count} crediti rimanenti",
   "premiumActive": "Abbonamento Premium attivo"
+  ,"adIsLoading": "L’annuncio è in caricamento. Riprova."
+  ,"creditAdded": "Credito aggiunto."
+  ,"adDailyLimitReached": "Hai raggiunto il limite giornaliero di premi per gli annunci."
+  ,"adLoadFailed": "Impossibile caricare l’annuncio. Riprova più tardi."
+  ,"adRewardCooldown": "Attendi un momento prima di guardare un altro annuncio."
+  ,"adRewardFailed": "Impossibile aggiungere il tuo credito. Riprova."
 }

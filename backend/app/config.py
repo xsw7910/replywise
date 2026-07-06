@@ -79,6 +79,8 @@ class Settings(BaseSettings):
     free_lifetime_limit: int = 5
     generation_rate_per_minute: int = 8
     idempotency_ttl_seconds: int = 86400
+    ad_reward_daily_limit: int = 5
+    ad_reward_cooldown_seconds: int = 60
     openai_api_key: str = ""
     openai_model: str = "gpt-4o-mini"
     openai_timeout_seconds: int = Field(default=30, ge=1, le=120)

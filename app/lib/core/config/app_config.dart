@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Runtime configuration injected via --dart-define at build time.
 ///
 /// Usage:
@@ -5,9 +7,43 @@
 ///     --dart-define=REPLY_BACKEND_BASE_URL=https://api-reply.novaaistudio.ca \
 ///     --dart-define=REVENUECAT_ANDROID_API_KEY=goog_xxxxxx \
 ///     --dart-define=REVENUECAT_ENTITLEMENT_ID=premium \
+///     --dart-define=REPLY_ADMOB_REWARDED_AD_UNIT_ID=ca-app-pub-xxx/yyy \
 ///     --dart-define=REPLY_ENV=dev
 class AppConfig {
   const AppConfig._();
+
+  /// Google's official Android rewarded **test** ad unit id. Used in debug
+  /// builds so development never serves (or accidentally clicks) live ads.
+  static const String androidRewardedTestAdUnitId =
+      'ca-app-pub-3940256099942544/5224354917';
+
+  /// Production rewarded ad unit id, injected at build time. Must be non-empty
+  /// for release builds — see [rewardedAdUnitId].
+  static const String rewardedAdUnitIdOverride = String.fromEnvironment(
+    'REPLY_ADMOB_REWARDED_AD_UNIT_ID',
+    defaultValue: '',
+  );
+
+  /// Resolves the rewarded ad unit id for the current build.
+  ///
+  /// - Release builds require [rewardedAdUnitIdOverride]; an empty value is a
+  ///   build misconfiguration and throws.
+  /// - Debug/profile builds fall back to Google's test unit when no override is
+  ///   supplied, so ads work without extra setup.
+  static String get rewardedAdUnitId {
+    if (kReleaseMode) {
+      if (rewardedAdUnitIdOverride.isEmpty) {
+        throw StateError(
+          'REPLY_ADMOB_REWARDED_AD_UNIT_ID must be provided via --dart-define '
+          'for release builds.',
+        );
+      }
+      return rewardedAdUnitIdOverride;
+    }
+    return rewardedAdUnitIdOverride.isNotEmpty
+        ? rewardedAdUnitIdOverride
+        : androidRewardedTestAdUnitId;
+  }
 
   static const String backendBaseUrl = String.fromEnvironment(
     'REPLY_BACKEND_BASE_URL',

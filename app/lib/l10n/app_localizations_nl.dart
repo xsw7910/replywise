@@ -881,4 +881,26 @@ class AppLocalizationsNl extends AppLocalizations {
   String creditsRemaining(String count) {
     return '$count resterend krediet';
   }
+
+  @override
+  String get adIsLoading => 'Advertentie wordt geladen. Probeer het opnieuw.';
+
+  @override
+  String get creditAdded => 'Tegoed toegevoegd.';
+
+  @override
+  String get adDailyLimitReached =>
+      'Dagelijkse limiet voor advertentiebeloningen bereikt.';
+
+  @override
+  String get adLoadFailed =>
+      'Kan advertentie niet laden. Probeer het later opnieuw.';
+
+  @override
+  String get adRewardCooldown =>
+      'Wacht even voordat je een andere advertentie bekijkt.';
+
+  @override
+  String get adRewardFailed =>
+      'Kan je tegoed niet toevoegen. Probeer het opnieuw.';
 }

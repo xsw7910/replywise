@@ -863,4 +863,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String creditsRemaining(String count) {
     return 'الاعتمادات المتبقية $count';
   }
+
+  @override
+  String get adIsLoading => 'يتم تحميل الإعلان. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get creditAdded => 'تمت إضافة الرصيد.';
+
+  @override
+  String get adDailyLimitReached =>
+      'تم الوصول إلى الحد اليومي لمكافآت الإعلانات.';
+
+  @override
+  String get adLoadFailed => 'تعذّر تحميل الإعلان. يرجى المحاولة لاحقًا.';
+
+  @override
+  String get adRewardCooldown => 'يرجى الانتظار قليلاً قبل مشاهدة إعلان آخر.';
+
+  @override
+  String get adRewardFailed => 'تعذّرت إضافة رصيدك. يرجى المحاولة مرة أخرى.';
 }

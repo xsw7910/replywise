@@ -51,10 +51,20 @@ android {
         applicationId = "com.novaaistudio.replywise"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // google_mobile_ads requires Android 7.0 (API 24) or higher.
+        minSdk = maxOf(24, flutter.minSdkVersion)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // AdMob application id injected into AndroidManifest.xml. Defaults to
+        // Google's official sample app id so debug builds work out of the box;
+        // release builds override it with -PadmobAppId=... or the
+        // REPLY_ADMOB_APP_ID environment variable.
+        manifestPlaceholders["admobAppId"] =
+            (project.findProperty("admobAppId") as String?)
+                ?: System.getenv("REPLY_ADMOB_APP_ID")
+                ?: "ca-app-pub-3940256099942544~3347511713"
     }
 
     signingConfigs {

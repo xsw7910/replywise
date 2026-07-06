@@ -873,4 +873,25 @@ class AppLocalizationsHi extends AppLocalizations {
   String creditsRemaining(String count) {
     return '$count क्रेडिट शेष';
   }
+
+  @override
+  String get adIsLoading => 'विज्ञापन लोड हो रहा है. कृपया पुनः प्रयास करें.';
+
+  @override
+  String get creditAdded => 'क्रेडिट जोड़ा गया.';
+
+  @override
+  String get adDailyLimitReached => 'विज्ञापन इनाम की दैनिक सीमा पूरी हो गई.';
+
+  @override
+  String get adLoadFailed =>
+      'विज्ञापन लोड नहीं हो सका. कृपया बाद में पुनः प्रयास करें.';
+
+  @override
+  String get adRewardCooldown =>
+      'कृपया दूसरा विज्ञापन देखने से पहले थोड़ा प्रतीक्षा करें.';
+
+  @override
+  String get adRewardFailed =>
+      'आपका क्रेडिट नहीं जोड़ा जा सका. कृपया पुनः प्रयास करें.';
 }

@@ -269,4 +269,10 @@
   "creditsRemaining": "الاعتمادات المتبقية {count}",
   "guidanceFriendlyContent": "اجعل الرد دافئًا وودودًا.",
   "guidanceThanksContent": "أضف التقدير والشكر المهذب."
+  ,"adIsLoading": "يتم تحميل الإعلان. يرجى المحاولة مرة أخرى."
+  ,"creditAdded": "تمت إضافة الرصيد."
+  ,"adDailyLimitReached": "تم الوصول إلى الحد اليومي لمكافآت الإعلانات."
+  ,"adLoadFailed": "تعذّر تحميل الإعلان. يرجى المحاولة لاحقًا."
+  ,"adRewardCooldown": "يرجى الانتظار قليلاً قبل مشاهدة إعلان آخر."
+  ,"adRewardFailed": "تعذّرت إضافة رصيدك. يرجى المحاولة مرة أخرى."
 }

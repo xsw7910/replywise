@@ -840,6 +840,24 @@ class AppLocalizationsZh extends AppLocalizations {
   String creditsRemaining(String count) {
     return '$count 剩余积分';
   }
+
+  @override
+  String get adIsLoading => '广告正在加载，请重试。';
+
+  @override
+  String get creditAdded => '已添加积分。';
+
+  @override
+  String get adDailyLimitReached => '已达到每日广告奖励上限。';
+
+  @override
+  String get adLoadFailed => '无法加载广告，请稍后再试。';
+
+  @override
+  String get adRewardCooldown => '请稍候片刻再观看下一个广告。';
+
+  @override
+  String get adRewardFailed => '无法添加积分，请重试。';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -1678,4 +1696,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String creditsRemaining(String count) {
     return '$count 剩餘積分';
   }
+
+  @override
+  String get adIsLoading => '廣告正在載入，請重試。';
+
+  @override
+  String get creditAdded => '已新增積分。';
+
+  @override
+  String get adDailyLimitReached => '已達到每日廣告獎勵上限。';
+
+  @override
+  String get adLoadFailed => '無法載入廣告，請稍後再試。';
+
+  @override
+  String get adRewardCooldown => '請稍候片刻再觀看下一個廣告。';
+
+  @override
+  String get adRewardFailed => '無法新增積分，請重試。';
 }
