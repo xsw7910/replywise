@@ -911,4 +911,10 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get adRewardFailed =>
       'Tidak dapat menambahkan kredit Anda. Silakan coba lagi.';
+
+  @override
+  String get recentDetail => 'Detail';
+
+  @override
+  String get useAgain => 'Gunakan lagi';
 }

@@ -30,6 +30,14 @@ class RecentRepository {
   Future<List<RecentItem>> getLatest({int limit = 2}) async =>
       _load().take(limit).toList();
 
+  /// Returns the stored item with [id], or null if it is missing or malformed.
+  Future<RecentItem?> byId(String id) async {
+    for (final item in _load()) {
+      if (item.id == id) return item;
+    }
+    return null;
+  }
+
   Future<void> add(RecentItem item) async {
     // Deduplicate by id and by (type + inputText): a regenerate of the same
     // input replaces the previous entry rather than creating a duplicate.

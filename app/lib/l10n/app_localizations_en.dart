@@ -902,4 +902,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adRewardFailed => 'Couldn’t add your credit. Please try again.';
+
+  @override
+  String get recentDetail => 'Details';
+
+  @override
+  String get useAgain => 'Use again';
 }

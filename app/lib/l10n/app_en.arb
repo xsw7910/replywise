@@ -293,4 +293,6 @@
   ,"adLoadFailed": "Unable to load ad. Please try again later."
   ,"adRewardCooldown": "Please wait a moment before watching another ad."
   ,"adRewardFailed": "Couldn’t add your credit. Please try again."
+  ,"recentDetail": "Details"
+  ,"useAgain": "Use again"
 }

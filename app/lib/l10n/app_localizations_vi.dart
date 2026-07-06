@@ -912,4 +912,10 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get adRewardFailed =>
       'Không thể thêm tín dụng của bạn. Vui lòng thử lại.';
+
+  @override
+  String get recentDetail => 'Chi tiết';
+
+  @override
+  String get useAgain => 'Dùng lại';
 }

@@ -14,6 +14,7 @@ import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
+import 'application/pending_polish_input_provider.dart';
 import 'application/polish_controller.dart';
 import 'domain/polish_models.dart';
 import '../entitlement/usage_controller.dart';
@@ -105,6 +106,23 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     });
   }
 
+  /// Applies a draft handed over from a recent item ("Use again"). Consumed
+  /// exactly once so it does not overwrite later edits.
+  void _consumePendingInput() {
+    if (ref.watch(pendingPolishInputProvider) == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final draft = ref.read(pendingPolishInputProvider.notifier).take();
+      if (draft == null) return;
+      _draftController.text = draft.length > 4000
+          ? draft.substring(0, 4000)
+          : draft;
+      _draftController.selection = TextSelection.collapsed(
+        offset: _draftController.text.length,
+      );
+    });
+  }
+
   Future<void> _pasteDraft() async {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
     final text = data?.text;
@@ -173,6 +191,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     final polishState = ref.watch(polishControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
     _consumePendingGuidance();
+    _consumePendingInput();
 
     return AppPage(
       title: context.l10n.polish,

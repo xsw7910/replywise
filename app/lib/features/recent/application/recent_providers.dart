@@ -13,6 +13,15 @@ final latestRecentItemsProvider = FutureProvider<List<RecentItem>>((ref) async {
   return ref.watch(recentRepositoryProvider).getLatest(limit: 2);
 });
 
+/// A single stored recent item by id (used by the Recent Detail page when it is
+/// opened without a handed-over item, e.g. a deep link). Null when not found.
+final recentItemByIdProvider = FutureProvider.family<RecentItem?, String>((
+  ref,
+  id,
+) async {
+  return ref.watch(recentRepositoryProvider).byId(id);
+});
+
 /// Saves [item] and refreshes the recent providers so any watching UI updates.
 /// Never throws — saving recent activity must not affect the result flow.
 Future<void> saveRecentItem(WidgetRef ref, RecentItem item) async {

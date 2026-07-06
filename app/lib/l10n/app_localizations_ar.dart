@@ -896,4 +896,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adRewardFailed => 'تعذّرت إضافة رصيدك. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get recentDetail => 'التفاصيل';
+
+  @override
+  String get useAgain => 'استخدام مرة أخرى';
 }

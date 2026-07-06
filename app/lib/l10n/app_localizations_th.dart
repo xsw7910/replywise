@@ -898,4 +898,10 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get adRewardFailed => 'ไม่สามารถเพิ่มเครดิตของคุณได้ โปรดลองอีกครั้ง';
+
+  @override
+  String get recentDetail => 'รายละเอียด';
+
+  @override
+  String get useAgain => 'ใช้อีกครั้ง';
 }

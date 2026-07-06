@@ -400,7 +400,7 @@ class _RecentSection extends ConsumerWidget {
                           const Divider(height: 1, color: AppColors.cardBorder),
                         RecentItemRow(
                           item: items[i],
-                          onTap: () => openRecentItem(context, ref, items[i]),
+                          onTap: () => openRecentItem(context, items[i]),
                         ),
                       ],
                     ],

@@ -911,4 +911,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get adRewardFailed => 'Не вдалося додати кредит. Спробуйте ще раз.';
+
+  @override
+  String get recentDetail => 'Деталі';
+
+  @override
+  String get useAgain => 'Використати знову';
 }

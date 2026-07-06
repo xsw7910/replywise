@@ -279,4 +279,6 @@
   "outOfCreditsMessage": "ดูโฆษณาสั้นๆ เพื่อรับ 1 เครดิตฟรี หรืออัปเกรดเพื่อการเข้าถึงที่มากขึ้น",
   "buyCredits": "ซื้อเครดิต",
   "creditAddedTapGenerateAgain": "เพิ่มเครดิตแล้ว แตะสร้างอีกครั้ง"
+  ,"recentDetail": "รายละเอียด"
+  ,"useAgain": "ใช้อีกครั้ง"
 }

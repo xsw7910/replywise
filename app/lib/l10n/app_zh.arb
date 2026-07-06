@@ -279,4 +279,6 @@
   "creditAddedTapGenerateAgain": "已添加积分。请再次点击“生成”。",
   "outOfCreditsTitle": "积分已用完",
   "outOfCreditsMessage": "观看一段短广告即可获得 1 个免费积分，或升级以获得更多使用权限。"
+  ,"recentDetail": "详情"
+  ,"useAgain": "再次使用"
 }

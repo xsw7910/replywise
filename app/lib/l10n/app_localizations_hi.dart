@@ -908,4 +908,10 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get adRewardFailed =>
       'आपका क्रेडिट नहीं जोड़ा जा सका. कृपया पुनः प्रयास करें.';
+
+  @override
+  String get recentDetail => 'विवरण';
+
+  @override
+  String get useAgain => 'फिर से उपयोग करें';
 }

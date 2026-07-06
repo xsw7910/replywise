@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/localization/localization_extensions.dart';
+import '../../polish/application/pending_polish_input_provider.dart';
+import '../../reply/application/pending_explain_input_provider.dart';
 import '../../reply/application/pending_reply_input_provider.dart';
 import '../domain/recent_item.dart';
 
@@ -81,7 +84,12 @@ class RecentItemRow extends StatelessWidget {
   }
 }
 
-String _localizedTimestamp(BuildContext context, DateTime dt) {
+String _localizedTimestamp(BuildContext context, DateTime dt) =>
+    localizedRecentTimestamp(context, dt);
+
+/// Localized `Today · 2:30 PM` / `Yesterday · 9:15 AM` / `Jul 4 · 3:20 PM`
+/// timestamp, shared by the Recent row and the Recent Detail page.
+String localizedRecentTimestamp(BuildContext context, DateTime dt) {
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
   final that = DateTime(dt.year, dt.month, dt.day);
@@ -112,13 +120,24 @@ class _TypePill extends StatelessWidget {
   }
 }
 
-/// Opens the screen that produced [item]. For Reply, the original message is
-/// pre-filled via the pending-input handoff Reply already consumes on entry.
-// TODO: pre-fill Polish/Explain inputs once those screens support a pending
-// initial value (no such mechanism exists today).
-void openRecentItem(BuildContext context, WidgetRef ref, RecentItem item) {
-  if (item.type == RecentType.reply) {
-    ref.read(pendingReplyInputProvider.notifier).set(item.inputText);
+/// Opens the Recent Detail page for [item]. The item is handed over via `extra`
+/// so the page renders instantly; it also falls back to loading by id (deep
+/// links) via [recentItemByIdProvider].
+void openRecentItem(BuildContext context, RecentItem item) {
+  context.push(AppRoutes.recentDetailPath(item.id), extra: item);
+}
+
+/// Re-opens the feature screen that produced [item] with its original input
+/// pre-filled, then leaves the detail page. Each feature consumes its pending
+/// input exactly once on entry.
+void useRecentItemAgain(BuildContext context, WidgetRef ref, RecentItem item) {
+  switch (item.type) {
+    case RecentType.reply:
+      ref.read(pendingReplyInputProvider.notifier).set(item.inputText);
+    case RecentType.polish:
+      ref.read(pendingPolishInputProvider.notifier).set(item.inputText);
+    case RecentType.explain:
+      ref.read(pendingExplainInputProvider.notifier).set(item.inputText);
   }
   context.go(item.type.routePath);
 }

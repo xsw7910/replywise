@@ -875,4 +875,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get adRewardFailed => 'クレジットを追加できませんでした。もう一度お試しください。';
+
+  @override
+  String get recentDetail => '詳細';
+
+  @override
+  String get useAgain => 'もう一度使う';
 }

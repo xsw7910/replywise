@@ -18,6 +18,7 @@ import '../entitlement/presentation/out_of_credits_dialog.dart';
 import '../recent/application/recent_providers.dart';
 import '../recent/domain/recent_item.dart';
 import 'application/explain_controller.dart';
+import 'application/pending_explain_input_provider.dart';
 import 'application/pending_reply_input_provider.dart';
 import 'domain/reply_models.dart';
 import 'widgets/reply_status_badge.dart';
@@ -44,6 +45,24 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   void dispose() {
     _messageController.dispose();
     super.dispose();
+  }
+
+  /// Applies a message handed over from a recent item ("Use again"). Consumed
+  /// exactly once so it does not overwrite later edits.
+  void _consumePendingInput() {
+    if (ref.watch(pendingExplainInputProvider) == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final message = ref.read(pendingExplainInputProvider.notifier).take();
+      if (message == null) return;
+      _messageController.text =
+          message.length > InputLimits.explainMessageMaxLength
+          ? message.substring(0, InputLimits.explainMessageMaxLength)
+          : message;
+      _messageController.selection = TextSelection.collapsed(
+        offset: _messageController.text.length,
+      );
+    });
   }
 
   Future<void> _pasteMessage() async {
@@ -101,6 +120,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(explainControllerProvider);
     final usage = ref.watch(usageControllerProvider).usage;
+    _consumePendingInput();
 
     return AppPage(
       title: context.l10n.explain,

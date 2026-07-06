@@ -80,7 +80,7 @@ class HistoryScreen extends ConsumerWidget {
                   final item = items[index];
                   return RecentItemRow(
                     item: item,
-                    onTap: () => openRecentItem(context, ref, item),
+                    onTap: () => openRecentItem(context, item),
                     trailing: IconButton(
                       tooltip: context.l10n.delete,
                       color: AppColors.textMuted,

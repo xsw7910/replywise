@@ -917,4 +917,10 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get adRewardFailed =>
       'Kan je tegoed niet toevoegen. Probeer het opnieuw.';
+
+  @override
+  String get recentDetail => 'Details';
+
+  @override
+  String get useAgain => 'Opnieuw gebruiken';
 }

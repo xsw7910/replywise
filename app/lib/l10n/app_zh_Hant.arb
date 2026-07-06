@@ -279,4 +279,6 @@
   "creditAddedTapGenerateAgain": "已新增點數。請再次點選「產生」。",
   "outOfCreditsTitle": "點數已用完",
   "outOfCreditsMessage": "觀看一段短廣告即可獲得 1 個免費點數，或升級以獲得更多使用權限。"
+  ,"recentDetail": "詳情"
+  ,"useAgain": "再次使用"
 }

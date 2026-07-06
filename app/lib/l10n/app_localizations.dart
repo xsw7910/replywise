@@ -1806,6 +1806,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn’t add your credit. Please try again.'**
   String get adRewardFailed;
+
+  /// No description provided for @recentDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get recentDetail;
+
+  /// No description provided for @useAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Use again'**
+  String get useAgain;
 }
 
 class _AppLocalizationsDelegate

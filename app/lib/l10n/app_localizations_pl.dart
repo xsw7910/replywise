@@ -916,4 +916,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get adRewardFailed => 'Nie udało się dodać kredytu. Spróbuj ponownie.';
+
+  @override
+  String get recentDetail => 'Szczegóły';
+
+  @override
+  String get useAgain => 'Użyj ponownie';
 }

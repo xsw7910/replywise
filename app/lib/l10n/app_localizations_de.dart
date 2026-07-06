@@ -928,4 +928,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get adRewardFailed =>
       'Dein Guthaben konnte nicht hinzugefügt werden. Bitte versuche es erneut.';
+
+  @override
+  String get recentDetail => 'Details';
+
+  @override
+  String get useAgain => 'Erneut verwenden';
 }

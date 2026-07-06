@@ -870,6 +870,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get adRewardFailed => '无法添加积分，请重试。';
+
+  @override
+  String get recentDetail => '详情';
+
+  @override
+  String get useAgain => '再次使用';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -1738,4 +1744,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get adRewardFailed => '無法新增積分，請重試。';
+
+  @override
+  String get recentDetail => '詳情';
+
+  @override
+  String get useAgain => '再次使用';
 }

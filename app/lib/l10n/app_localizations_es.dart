@@ -916,4 +916,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get adRewardFailed =>
       'No se pudo añadir tu crédito. Inténtalo de nuevo.';
+
+  @override
+  String get recentDetail => 'Detalles';
+
+  @override
+  String get useAgain => 'Usar de nuevo';
 }

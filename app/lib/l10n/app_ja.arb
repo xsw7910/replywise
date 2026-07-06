@@ -279,4 +279,6 @@
   "outOfCreditsMessage": "短い広告を視聴して 1 つの無料クレジットを取得するか、アップグレードしてより多くのアクセスを獲得してください。",
   "buyCredits": "クレジットを購入する",
   "creditAddedTapGenerateAgain": "クレジットが追加されました。もう一度「生成」をタップします。"
+  ,"recentDetail": "詳細"
+  ,"useAgain": "もう一度使う"
 }

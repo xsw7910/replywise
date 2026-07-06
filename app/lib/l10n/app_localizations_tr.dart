@@ -909,4 +909,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get adRewardFailed => 'Krediniz eklenemedi. Lütfen tekrar deneyin.';
+
+  @override
+  String get recentDetail => 'Ayrıntılar';
+
+  @override
+  String get useAgain => 'Tekrar kullan';
 }

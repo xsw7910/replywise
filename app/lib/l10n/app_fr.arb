@@ -279,4 +279,6 @@
   "outOfCreditsMessage": "Regardez une courte annonce pour obtenir 1 crédit gratuit, ou effectuez une mise à niveau pour plus d'accès.",
   "buyCredits": "Acheter des crédits",
   "creditAddedTapGenerateAgain": "Crédit ajouté. Appuyez à nouveau sur Générer."
+  ,"recentDetail": "Détails"
+  ,"useAgain": "Réutiliser"
 }

@@ -874,4 +874,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get adRewardFailed => '크레딧을 추가하지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get recentDetail => '세부정보';
+
+  @override
+  String get useAgain => '다시 사용';
 }
