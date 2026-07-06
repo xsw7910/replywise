@@ -149,6 +149,12 @@ class AuthController extends _$AuthController {
           accessToken: result.accessToken,
           refreshToken: result.refreshToken,
         );
+        // The backend may restore the device's pre-reinstall anonymous user.
+        // Persist that canonical ID so RevenueCat and future auth calls keep
+        // using the original purchase identity.
+        if (result.me.appUserId != appUserId) {
+          await storage.saveAppUserId(result.me.appUserId);
+        }
         state = _authenticated(result.me);
         return true;
       } catch (_) {

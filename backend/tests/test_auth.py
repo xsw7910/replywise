@@ -1,10 +1,13 @@
 import asyncio
 
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from app.database import AsyncSessionLocal
+from app.database import AsyncSessionLocal, Base
+from app.models.usage import UsageSummary
 from app.models.user import User
+from app.services.auth_service import resolve_anonymous_user
 from app.services.token_service import decode_token, hash_device
 
 
@@ -146,24 +149,133 @@ def test_tokens_include_required_identity_and_security_claims(client: TestClient
     assert refresh_claims["device_hash"] == hash_device("claims-device")
 
 
-def test_reauth_binds_existing_user_to_current_device(client: TestClient) -> None:
+def test_same_app_user_id_cannot_move_credits_to_another_device(
+    client: TestClient,
+) -> None:
     first = client.post(
         "/v1/auth/anonymous",
         json=_anonymous_payload("rebind-user", "old-device"),
-    ).json()
+    )
     second = client.post(
         "/v1/auth/anonymous",
         json=_anonymous_payload("rebind-user", "current-device"),
+    )
+
+    assert first.status_code == 200
+    assert second.status_code == 409
+    old_me = client.get(
+        "/v1/me",
+        headers={"Authorization": f"Bearer {first.json()['accessToken']}"},
+    )
+    assert old_me.status_code == 200
+
+
+def test_reinstall_reuses_existing_user_and_paid_credits(
+    client: TestClient,
+) -> None:
+    first = client.post(
+        "/v1/auth/anonymous",
+        json=_anonymous_payload("paid-owner-before-reinstall", "paid-device"),
+    ).json()
+    user_id = first["me"]["userId"]
+
+    async def grant_credits() -> None:
+        async with AsyncSessionLocal() as session:
+            summary = await session.get(UsageSummary, user_id)
+            summary.paid_credits = 50
+            await session.commit()
+
+    asyncio.run(grant_credits())
+
+    restored = client.post(
+        "/v1/auth/anonymous",
+        json=_anonymous_payload("new-install-app-user-id", "paid-device"),
+    )
+    assert restored.status_code == 200
+    assert restored.json()["me"] == first["me"]
+
+    me = client.get(
+        "/v1/me",
+        headers={"Authorization": f"Bearer {restored.json()['accessToken']}"},
+    )
+    assert me.status_code == 200
+    assert me.json()["paidCredits"] == 50
+
+
+def test_new_device_hash_creates_a_different_user(client: TestClient) -> None:
+    first = client.post(
+        "/v1/auth/anonymous",
+        json=_anonymous_payload("new-device-a", "physical-device-a"),
+    ).json()
+    second = client.post(
+        "/v1/auth/anonymous",
+        json=_anonymous_payload("new-device-b", "physical-device-b"),
+    ).json()
+    assert first["me"]["userId"] != second["me"]["userId"]
+
+
+def test_blocked_device_cannot_bypass_block_with_new_app_user_id(
+    client: TestClient,
+) -> None:
+    first = client.post(
+        "/v1/auth/anonymous",
+        json=_anonymous_payload("blocked-owner", "blocked-device"),
     ).json()
 
-    assert first["me"]["userId"] == second["me"]["userId"]
-    second_claims = decode_token(second["accessToken"])
-    assert second_claims["device_hash"] == hash_device("current-device")
+    async def block() -> None:
+        async with AsyncSessionLocal() as session:
+            user = await session.get(User, first["me"]["userId"])
+            user.is_blocked = True
+            user.token_version += 1
+            await session.commit()
 
-    old_me = client.get(
-        "/v1/me", headers={"Authorization": f"Bearer {first['accessToken']}"}
+    asyncio.run(block())
+    restored = client.post(
+        "/v1/auth/anonymous",
+        json=_anonymous_payload("blocked-reinstall", "blocked-device"),
     )
-    assert old_me.status_code == 401
+    assert restored.status_code == 403
+
+
+def test_concurrent_anonymous_auth_same_device_creates_one_user(tmp_path) -> None:
+    async def run_race() -> tuple[list[int], int]:
+        database = tmp_path / "anonymous-auth-race.db"
+        engine = create_async_engine(
+            f"sqlite+aiosqlite:///{database.as_posix()}",
+            connect_args={"timeout": 30},
+        )
+        sessions = async_sessionmaker(engine, expire_on_commit=False)
+        try:
+            async with engine.begin() as connection:
+                await connection.run_sync(Base.metadata.create_all)
+
+            async def authenticate(index: int) -> int:
+                async with sessions() as session:
+                    user = await resolve_anonymous_user(
+                        session,
+                        app_user_id=f"concurrent-install-{index}",
+                        device_hash="stable-concurrent-device-hash",
+                        platform="android",
+                    )
+                    return user.id
+
+            user_ids = await asyncio.gather(
+                authenticate(1),
+                authenticate(2),
+            )
+            async with sessions() as session:
+                user_count = await session.scalar(
+                    select(func.count(User.id)).where(
+                        User.device_hash == "stable-concurrent-device-hash"
+                    )
+                )
+            return user_ids, int(user_count or 0)
+        finally:
+            await engine.dispose()
+
+    user_ids, user_count = asyncio.run(run_race())
+    assert user_ids[0] == user_ids[1]
+    assert user_count == 1
 
 
 def test_token_version_invalidation_rejects_old_token(client: TestClient) -> None:

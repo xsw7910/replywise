@@ -18,6 +18,7 @@ from app.config import settings
 from app.database import Base, engine
 import app.models.credit  # noqa: F401 — registers CreditPurchase with Base.metadata
 import app.models.ad_reward  # noqa: F401 — registers AdReward with Base.metadata
+import app.models.device_user_binding  # noqa: F401 — stable device ownership
 import app.models.revenuecat_event  # noqa: F401 — registers webhook events
 from app.errors import install_error_handlers
 

@@ -285,12 +285,14 @@ void main() {
         isAndroid: () => true,
       );
       String? firstInstallDeviceId;
+      String? firstInstallAppUserId;
       String? reinstallDeviceId;
 
       // First install: empty storage, anonymous auth mints app + device ids.
       final firstInstallStorage = _MemoryTokenStorage();
       final firstInstallRepo = _FakeAuthRepository()
         ..anonymousHandler = (appUserId, deviceId, platform) async {
+          firstInstallAppUserId = appUserId;
           firstInstallDeviceId = deviceId;
           return AnonymousAuthResult(
             accessToken: 'anonymous-access',
@@ -317,7 +319,7 @@ void main() {
           return AnonymousAuthResult(
             accessToken: 'anonymous-access-2',
             refreshToken: 'anonymous-refresh-2',
-            me: MeData(userId: 2, appUserId: appUserId),
+            me: MeData(userId: 1, appUserId: firstInstallAppUserId!),
           );
         };
       final reinstallContainer = _container(
@@ -332,10 +334,11 @@ void main() {
 
       expect(firstInstallRepo.anonymousCalls, 1);
       expect(reinstallRepo.anonymousCalls, 1);
-      // A new app_user_id is expected (anonymous identity is allowed to
-      // rotate) but the device hash sent to the backend must match, so the
-      // backend's per-device free quota is shared instead of reset.
-      expect(reinstallStorage.appUserId, isNot(firstInstallStorage.appUserId));
+      // The reinstall initially mints a new app_user_id, but the backend
+      // returns the device's original user. Persist that canonical identity so
+      // RevenueCat and later launches keep using the purchase owner.
+      expect(reinstallStorage.appUserId, firstInstallStorage.appUserId);
+      expect(reinstallContainer.read(authControllerProvider).userId, 1);
       expect(reinstallDeviceId, firstInstallDeviceId);
       expect(reinstallDeviceId, hasLength(64));
     },

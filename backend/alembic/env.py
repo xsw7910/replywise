@@ -10,6 +10,7 @@ from app.database import Base
 
 # Import every model module so Base.metadata is complete for autogeneration.
 import app.models.credit  # noqa: F401, E402
+import app.models.device_user_binding  # noqa: F401, E402
 import app.models.explain_event  # noqa: F401, E402
 import app.models.revenuecat_event  # noqa: F401, E402
 import app.models.subscription  # noqa: F401, E402

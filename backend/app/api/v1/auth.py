@@ -1,5 +1,3 @@
-from datetime import datetime, timezone
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from jose import JWTError
 from pydantic import BaseModel, ConfigDict
@@ -10,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.database import get_db
 from app.models.user import User
+from app.services.auth_service import resolve_anonymous_user
 from app.services.usage_service import ensure_device_usage, ensure_summary
 from app.services.token_service import (
     create_access_token,
@@ -57,25 +56,13 @@ async def anonymous(
     body: AnonymousRequest, db: AsyncSession = Depends(get_db)
 ) -> TokenResponse:
     device_hash = hash_device(body.device_id)
-
-    result = await db.execute(select(User).where(User.app_user_id == body.app_user_id))
-    user = result.scalar_one_or_none()
-
-    if user is None:
-        user = User(
-            app_user_id=body.app_user_id,
-            device_hash=device_hash,
-            platform=body.platform,
-        )
-        db.add(user)
-        await db.commit()
-        await db.refresh(user)
-        await ensure_summary(db, user.id)
-    else:
-        user.device_hash = device_hash
-        user.platform = body.platform
-        user.last_seen_at = datetime.now(timezone.utc)
-        await db.commit()
+    user = await resolve_anonymous_user(
+        db,
+        app_user_id=body.app_user_id,
+        device_hash=device_hash,
+        platform=body.platform,
+    )
+    await ensure_summary(db, user.id)
 
     # Free usage is shared per device. Ensuring the row here means a reinstall
     # that mints a new app_user_id immediately inherits the device's remaining

@@ -400,7 +400,7 @@ def test_free_quota_shared_by_device_across_reinstall(client: TestClient) -> Non
 
     # Reinstall: User B is a brand-new app_user_id on the SAME device X.
     auth_b, user_id_b = _auth_device(client, 'reinstall-user-b', device_x)
-    assert user_id_b  # B is a distinct user row
+    assert user_id_b == client.get('/v1/me', headers=auth_a).json()['userId']
 
     # B inherits the device's exhausted allowance: 0 free uses remaining.
     me_b = client.get('/v1/me', headers=auth_b).json()
@@ -476,12 +476,13 @@ def test_event_exhausted_shared_device_blocks_reply_and_polish(
     assert other_me['freeUsesLeft'] == 5
 
 
-def test_paid_credits_remain_user_scoped_on_shared_exhausted_device(
+def test_paid_credits_are_restored_on_same_device_after_reinstall(
     client: TestClient,
 ) -> None:
     device = 'user-scoped-credit-device'
     auth_a, user_a = _auth_device(client, 'credit-owner-a', device)
-    auth_b, _ = _auth_device(client, 'credit-owner-b', device)
+    auth_b, user_b = _auth_device(client, 'credit-owner-b', device)
+    assert user_b == user_a
     _seed_successful_free_events(user_a, 5)
 
     async def grant_only_a() -> None:
@@ -492,14 +493,10 @@ def test_paid_credits_remain_user_scoped_on_shared_exhausted_device(
 
     asyncio.run(grant_only_a())
 
-    blocked_b = _reply(client, auth_b, 'credit-owner-b-blocked')
-    assert blocked_b.status_code == 402
-    assert client.get('/v1/me', headers=auth_b).json()['paidCredits'] == 0
-
-    allowed_a = _reply(client, auth_a, 'credit-owner-a-allowed')
-    assert allowed_a.status_code == 200
-    assert allowed_a.json()['usage']['source'] == 'credit'
-    assert allowed_a.json()['usage']['paidCredits'] == 0
+    restored = _reply(client, auth_b, 'credit-owner-b-restored')
+    assert restored.status_code == 200
+    assert restored.json()['usage']['source'] == 'credit'
+    assert restored.json()['usage']['paidCredits'] == 0
 
 
 def test_concurrent_same_device_requests_cannot_exceed_last_free_use(
