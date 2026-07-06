@@ -183,6 +183,8 @@
   "threeDaysFree": "3 dni za darmo",
   "newGuidanceTooltip": "Nowe wytyczne",
   "topUpCredits": "Doładowania kredytów",
+  "pricePerCredit": "{price} za kredyt",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "displayedPrice": "wyświetlaną cenę",
   "myGuidance": "Moje wskazówki",
   "builtIn": "Wbudowany",

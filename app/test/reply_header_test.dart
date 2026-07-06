@@ -24,12 +24,22 @@ EntitlementState _state({
 );
 
 void main() {
-  Future<void> pumpBadge(WidgetTester tester, EntitlementState usage) async {
+  Future<void> pumpBadge(
+    WidgetTester tester,
+    EntitlementState usage, {
+    String? premiumIconAsset,
+  }) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           appBar: AppBar(
-            actions: [ReplyStatusBadge(usage: usage, onTap: () {})],
+            actions: [
+              ReplyStatusBadge(
+                usage: usage,
+                onTap: () {},
+                premiumIconAsset: premiumIconAsset,
+              ),
+            ],
           ),
         ),
       ),
@@ -45,6 +55,23 @@ void main() {
     expect(find.text('Premium'), findsOneWidget);
     // No credit icon and no number when premium.
     expect(find.byKey(const Key('credits-status-icon')), findsNothing);
+  });
+
+  testWidgets('premium badge supports the Home premium image asset', (
+    tester,
+  ) async {
+    await pumpBadge(
+      tester,
+      _state(isPremium: true, freeUsesLeft: null),
+      premiumIconAsset: 'assets/icons/premium.png',
+    );
+
+    final image = tester.widget<Image>(
+      find.byKey(const Key('premium-status-image')),
+    );
+    expect((image.image as AssetImage).assetName, 'assets/icons/premium.png');
+    expect(image.width, 24);
+    expect(image.height, 18);
   });
 
   testWidgets('non-premium user sees credit icon and total credits', (

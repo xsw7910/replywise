@@ -620,6 +620,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get topUpCredits => 'Aufladeguthaben';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price pro Credit';
+  }
+
+  @override
   String get creditDescription =>
       'Jeder Kredit umfasst eine Antwort oder eine Textverbesserung. Credits verfallen nie.';
 

@@ -193,6 +193,8 @@
   "saveChanges": "บันทึกการเปลี่ยนแปลง",
   "restoring": "กำลังคืนค่า...",
   "topUpCredits": "เครดิตเติมเงิน",
+  "pricePerCredit": "{price} ต่อเครดิต",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "newGuidance": "คำแนะนำใหม่",
   "creditDescription": "เครดิตแต่ละรายการครอบคลุมหนึ่งคำตอบหรือการปรับปรุงข้อความหนึ่งรายการ เครดิตไม่มีวันหมดอายุ",
   "displayedPrice": "ราคาที่แสดง",

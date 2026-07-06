@@ -186,6 +186,8 @@
   "startFreeTrial": "开始 3 天免费试用",
   "displayedPrice": "显示的价格",
   "topUpCredits": "充值积分",
+  "pricePerCredit": "{price}/积分",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "creditDescription": "每个积分可用于生成一次回复或润色一次。积分永不过期。",
   "loadingCreditPackages": "正在加载积分包...",
   "creditPackagesUnavailable": "积分套餐暂时不可用。",

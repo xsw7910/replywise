@@ -609,6 +609,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get topUpCredits => 'Kredit Isi Ulang';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price per kredit';
+  }
+
+  @override
   String get creditDescription =>
       'Setiap kredit mencakup satu balasan atau satu perbaikan teks. Kredit tidak pernah kedaluwarsa.';
 

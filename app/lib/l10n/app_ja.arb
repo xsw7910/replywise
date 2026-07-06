@@ -189,6 +189,8 @@
   "displayedPrice": "表示価格",
   "creditDescription": "各クレジットには、1 つの返信または 1 つのテキストの改善が含まれます。クレジットに有効期限はありません。",
   "topUpCredits": "トップアップクレジット",
+  "pricePerCredit": "1クレジットあたり{price}",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "refreshPackages": "パッケージを更新する",
   "creditPackagesUnavailable": "現在、クレジット パッケージはご利用いただけません。",
   "purchaseVerification": "プレミアムおよびクレジットの購入は ReplyWise によって検証されます。クレジットの購入は自動的に調整されます。",

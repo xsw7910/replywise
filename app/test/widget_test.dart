@@ -217,10 +217,11 @@ void main() {
 
     expect(find.text('Nothing here yet'), findsOneWidget);
     expect(find.text('Create your first reply'), findsOneWidget);
-    expect(
+    final emptyIllustration = tester.widget<Image>(
       find.byKey(const Key('home-recent-empty-illustration')),
-      findsOneWidget,
     );
+    expect(emptyIllustration.width, 84);
+    expect(emptyIllustration.height, 62);
     expect(find.text('View all'), findsNothing);
   });
 
@@ -263,7 +264,7 @@ void main() {
     expect(find.text('Nothing here yet'), findsNothing);
     expect(
       find.byKey(const Key('home-recent-populated-illustration')),
-      findsOneWidget,
+      findsNothing,
     );
     final recentCardContainer = tester.widget<Container>(
       find
@@ -277,6 +278,20 @@ void main() {
       (recentCardContainer.decoration as BoxDecoration).color,
       AppColors.recentCardBackground,
     );
+  });
+
+  testWidgets('Home tip uses a small right-side illustration', (tester) async {
+    tester.view.physicalSize = const Size(1200, 3200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await pumpReplyWiseApp(tester);
+
+    final illustration = tester.widget<Image>(
+      find.byKey(const Key('home-tip-illustration')),
+    );
+    expect(illustration.width, 88);
+    expect(illustration.height, 66);
   });
 
   testWidgets('Create your first reply opens the Reply page', (tester) async {

@@ -592,6 +592,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get topUpCredits => 'トップアップクレジット';
 
   @override
+  String pricePerCredit(String price) {
+    return '1クレジットあたり$price';
+  }
+
+  @override
   String get creditDescription =>
       '各クレジットには、1 つの返信または 1 つのテキストの改善が含まれます。クレジットに有効期限はありません。';
 

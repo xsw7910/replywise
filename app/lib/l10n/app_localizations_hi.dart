@@ -609,6 +609,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get topUpCredits => 'टॉप-अप क्रेडिट';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price प्रति क्रेडिट';
+  }
+
+  @override
   String get creditDescription =>
       'प्रत्येक क्रेडिट में एक उत्तर या एक पाठ सुधार शामिल होता है। क्रेडिट कभी समाप्त नहीं होते.';
 

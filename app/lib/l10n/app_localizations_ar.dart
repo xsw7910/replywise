@@ -605,6 +605,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get topUpCredits => 'زيادة الاعتمادات';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price لكل رصيد';
+  }
+
+  @override
   String get creditDescription =>
       'يغطي كل رصيد ردًا واحدًا أو تحسينًا واحدًا للنص. الاعتمادات لا تنتهي أبدا.';
 

@@ -186,6 +186,8 @@
   "yearlyTerms": "{price}/рік. Скасувати будь-коли.",
   "startFreeTrial": "Почніть 3-денну безкоштовну пробну версію",
   "topUpCredits": "Поповнення кредитів",
+  "pricePerCredit": "{price} за кредит",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "startYearlyPlan": "Розпочати річний план",
   "unlimitedPolish": "Необмежені покращення тексту",
   "replyCtaTitle": "Хочете отримати відповідь, яка краще відповідає вашим намірам?",

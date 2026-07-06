@@ -184,6 +184,8 @@
   "yearlyTerms": "{price}/год. Отменить в любое время.",
   "refreshPackages": "Обновить пакеты",
   "topUpCredits": "Пополнения кредитов",
+  "pricePerCredit": "{price} за кредит",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "builtIn": "Встроенный",
   "category": "Категория",
   "cannotBeUndone": "Это невозможно отменить.",

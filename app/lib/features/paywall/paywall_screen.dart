@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/localization/localization_extensions.dart';
@@ -8,8 +9,10 @@ import '../../core/widgets/app_page.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
 import '../auth/application/auth_controller.dart';
+import '../ads/application/ad_reward_controller.dart';
 import '../entitlement/credit_controller.dart';
 import '../entitlement/subscription_controller.dart';
+import '../entitlement/subscription_repository.dart';
 
 class PaywallScreen extends ConsumerStatefulWidget {
   const PaywallScreen({super.key});
@@ -22,11 +25,38 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   String? _scheduledUserId;
   String? _reconciliationScheduledUserId;
 
+  String _adRewardMessage(BuildContext context, AdRewardOutcome outcome) {
+    final l10n = context.l10n;
+    return switch (outcome) {
+      AdRewardOutcome.creditAdded => l10n.creditAdded,
+      AdRewardOutcome.adLoading => l10n.adIsLoading,
+      AdRewardOutcome.loadFailed => l10n.adLoadFailed,
+      AdRewardOutcome.dailyLimitReached => l10n.adDailyLimitReached,
+      AdRewardOutcome.cooldown => l10n.adRewardCooldown,
+      AdRewardOutcome.failed => l10n.adRewardFailed,
+    };
+  }
+
+  String? _pricePerCredit(BuildContext context, CreditPackage package) {
+    final price = package.price;
+    final currencyCode = package.currencyCode;
+    if (price == null || currencyCode == null || package.credits <= 0) {
+      return null;
+    }
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final unitPrice = NumberFormat.simpleCurrency(
+      locale: locale,
+      name: currencyCode,
+    ).format(price / package.credits);
+    return context.l10n.pricePerCredit(unitPrice);
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
     final subscription = ref.watch(subscriptionControllerProvider);
     final credits = ref.watch(creditControllerProvider);
+    final adReward = ref.watch(adRewardControllerProvider);
     final appUserId = auth.appUserId;
 
     // A new PaywallScreen state is created for every open. Reconcile exactly
@@ -64,6 +94,16 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           ..showSnackBar(SnackBar(content: Text(next.message!)));
       }
     });
+    ref.listen(adRewardControllerProvider, (previous, next) {
+      if (next.outcome == null || previous?.outcomeToken == next.outcomeToken) {
+        return;
+      }
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(_adRewardMessage(context, next.outcome!))),
+        );
+    });
 
     final price =
         subscription.offer?.priceString ?? context.l10n.displayedPrice;
@@ -97,9 +137,12 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               children: [
                 Row(
                   children: [
-                    const Icon(
-                      Icons.workspace_premium_rounded,
-                      color: AppColors.primaryBlue,
+                    Image.asset(
+                      'assets/icons/premium.png',
+                      key: const Key('paywall-premium-icon'),
+                      width: 32,
+                      height: 24,
+                      fit: BoxFit.contain,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -175,9 +218,12 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               children: [
                 Row(
                   children: [
-                    const Icon(
-                      Icons.toll_rounded,
-                      color: AppColors.primaryBlue,
+                    Image.asset(
+                      'assets/icons/credites.png',
+                      key: const Key('paywall-top-up-credits-icon'),
+                      width: 30,
+                      height: 30,
+                      fit: BoxFit.contain,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -191,6 +237,33 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 const SizedBox(height: 6),
                 Text(context.l10n.creditDescription, style: AppTextStyles.body),
                 const SizedBox(height: 14),
+                OutlinedButton.icon(
+                  key: const Key('paywall-watch-ad'),
+                  onPressed: adReward.isBusy
+                      ? null
+                      : () => ref
+                            .read(adRewardControllerProvider.notifier)
+                            .watchAd(),
+                  icon: adReward.isBusy
+                      ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.play_arrow_rounded),
+                  label: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(context.l10n.watchAd),
+                      Text(
+                        context.l10n.watchAdReward,
+                        style: AppTextStyles.badge.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
                 if (credits.isLoading)
                   _LoadingStatus(message: context.l10n.loadingCreditPackages)
                 else if (credits.packages.isEmpty && credits.error == null)
@@ -227,11 +300,24 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : Text(
-                                context.l10n.buyCreditPackage(
-                                  pkg.credits,
-                                  pkg.priceString,
-                                ),
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    context.l10n.buyCreditPackage(
+                                      pkg.credits,
+                                      pkg.priceString,
+                                    ),
+                                  ),
+                                  if (_pricePerCredit(context, pkg)
+                                      case final perCredit?)
+                                    Text(
+                                      perCredit,
+                                      style: AppTextStyles.badge.copyWith(
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                ],
                               ),
                       ),
                     ),

@@ -614,6 +614,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get topUpCredits => 'Tín dụng nạp tiền';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price mỗi tín dụng';
+  }
+
+  @override
   String get creditDescription =>
       'Mỗi khoản tín dụng bao gồm một câu trả lời hoặc một cải tiến văn bản. Tín dụng không bao giờ hết hạn.';
 

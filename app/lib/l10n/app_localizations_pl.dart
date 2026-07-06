@@ -611,6 +611,11 @@ class AppLocalizationsPl extends AppLocalizations {
   String get topUpCredits => 'Doładowania kredytów';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price za kredyt';
+  }
+
+  @override
   String get creditDescription =>
       'Każdy kredyt obejmuje jedną odpowiedź lub jedno ulepszenie tekstu. Kredyty nigdy nie wygasają.';
 

@@ -196,6 +196,8 @@
   ,"@yearlyTerms": {"placeholders": {"price": {"type": "String"}}}
   ,"displayedPrice": "the displayed price"
   ,"topUpCredits": "Top-up Credits"
+  ,"pricePerCredit": "{price} per credit"
+  ,"@pricePerCredit": {"placeholders": {"price": {"type": "String"}}}
   ,"creditDescription": "Each credit covers one Reply or Polish. Credits never expire."
   ,"loadingCreditPackages": "Loading credit packages…"
   ,"creditPackagesUnavailable": "Credit packages are unavailable right now."

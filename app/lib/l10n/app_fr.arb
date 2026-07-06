@@ -196,6 +196,8 @@
   "newGuidanceTooltip": "Nouvelles directives",
   "newGuidance": "Nouvelle orientation",
   "topUpCredits": "Crédits de recharge",
+  "pricePerCredit": "{price} par crédit",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "restoring": "Restauration…",
   "refreshPackages": "Actualiser les packages",
   "myGuidance": "Mes conseils",

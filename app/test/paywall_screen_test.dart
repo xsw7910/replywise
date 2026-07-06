@@ -108,18 +108,24 @@ const _allCreditPackages = [
     productIdentifier: 'credits_10',
     credits: 10,
     priceString: r'$1.99',
+    price: 1.99,
+    currencyCode: 'USD',
   ),
   CreditPackage(
     packageIdentifier: 'credits_50',
     productIdentifier: 'credits_50',
     credits: 50,
     priceString: r'$6.99',
+    price: 6.99,
+    currencyCode: 'USD',
   ),
   CreditPackage(
     packageIdentifier: 'credits_100',
     productIdentifier: 'credits_100',
     credits: 100,
     priceString: r'$11.99',
+    price: 11.99,
+    currencyCode: 'USD',
   ),
 ];
 
@@ -173,6 +179,13 @@ void main() {
     expect(find.byTooltip('Back'), findsOneWidget);
     expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
     expect(find.text('Write with confidence'), findsNothing);
+    final premiumIcon = tester.widget<Image>(
+      find.byKey(const Key('paywall-premium-icon')),
+    );
+    expect(
+      (premiumIcon.image as AssetImage).assetName,
+      'assets/icons/premium.png',
+    );
     expect(
       find.text(
         'Unlimited Reply and Polish generations while Premium is active.',
@@ -186,6 +199,13 @@ void main() {
     await _pumpPaywall(tester);
 
     expect(find.text('ReplyWise Premium'), findsWidgets);
+    final creditsIcon = tester.widget<Image>(
+      find.byKey(const Key('paywall-top-up-credits-icon')),
+    );
+    expect(
+      (creditsIcon.image as AssetImage).assetName,
+      'assets/icons/credites.png',
+    );
     expect(find.text('Start 3-day Free Trial'), findsOneWidget);
     expect(find.text('3 days free'), findsOneWidget);
     expect(find.textContaining(r'$59.99/year'), findsOneWidget);
@@ -226,6 +246,12 @@ void main() {
       expect(find.textContaining(r'$1.99'), findsOneWidget);
       expect(find.textContaining(r'$6.99'), findsOneWidget);
       expect(find.textContaining(r'$11.99'), findsOneWidget);
+      expect(find.text(r'$0.20 per credit'), findsOneWidget);
+      expect(find.text(r'$0.14 per credit'), findsOneWidget);
+      expect(find.text(r'$0.12 per credit'), findsOneWidget);
+      expect(find.byKey(const Key('paywall-watch-ad')), findsOneWidget);
+      expect(find.text('Watch ad'), findsOneWidget);
+      expect(find.text('+1 credit'), findsOneWidget);
     },
   );
 

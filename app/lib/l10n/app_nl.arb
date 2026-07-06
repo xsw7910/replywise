@@ -191,6 +191,8 @@
   "newGuidanceTooltip": "Nieuwe begeleiding",
   "displayedPrice": "de weergegeven prijs",
   "topUpCredits": "Opwaardeerkredieten",
+  "pricePerCredit": "{price} per krediet",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "startFreeTrial": "Start een gratis proefperiode van 3 dagen",
   "useInPolish": "Gebruik voor tekstverbetering",
   "cannotBeUndone": "Dit kan niet ongedaan worden gemaakt.",

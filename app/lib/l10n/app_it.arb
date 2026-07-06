@@ -197,6 +197,8 @@
   "useInReply": "Utilizzare in risposta",
   "myGuidance": "La mia guida",
   "topUpCredits": "Ricarica crediti",
+  "pricePerCredit": "{price} per credito",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "builtIn": "Integrato",
   "newGuidance": "Nuova guida",
   "restoring": "Ripristino…",

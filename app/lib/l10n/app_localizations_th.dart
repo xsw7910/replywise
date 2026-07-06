@@ -610,6 +610,11 @@ class AppLocalizationsTh extends AppLocalizations {
   String get topUpCredits => 'เครดิตเติมเงิน';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price ต่อเครดิต';
+  }
+
+  @override
   String get creditDescription =>
       'เครดิตแต่ละรายการครอบคลุมหนึ่งคำตอบหรือการปรับปรุงข้อความหนึ่งรายการ เครดิตไม่มีวันหมดอายุ';
 

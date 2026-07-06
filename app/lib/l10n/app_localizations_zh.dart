@@ -590,6 +590,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get topUpCredits => '充值积分';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price/积分';
+  }
+
+  @override
   String get creditDescription => '每个积分可用于生成一次回复或润色一次。积分永不过期。';
 
   @override
@@ -1465,6 +1470,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get topUpCredits => '儲值積分';
+
+  @override
+  String pricePerCredit(String price) {
+    return '$price/點數';
+  }
 
   @override
   String get creditDescription => '每個點數可用於產生一次回覆或潤飾一次。點數永不過期。';

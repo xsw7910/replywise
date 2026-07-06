@@ -13,10 +13,16 @@ import '../../entitlement/entitlement_state.dart';
 ///
 /// Tapping opens the paywall / plans screen via [onTap].
 class ReplyStatusBadge extends StatelessWidget {
-  const ReplyStatusBadge({required this.usage, required this.onTap, super.key});
+  const ReplyStatusBadge({
+    required this.usage,
+    required this.onTap,
+    this.premiumIconAsset,
+    super.key,
+  });
 
   final EntitlementState usage;
   final VoidCallback onTap;
+  final String? premiumIconAsset;
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +55,20 @@ class ReplyStatusBadge extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isPremium)
-                    Icon(
-                      Icons.workspace_premium_rounded,
-                      key: const Key('premium-status-icon'),
-                      size: 17,
-                      color: color,
-                    )
+                    premiumIconAsset == null
+                        ? Icon(
+                            Icons.workspace_premium_rounded,
+                            key: const Key('premium-status-icon'),
+                            size: 17,
+                            color: color,
+                          )
+                        : Image.asset(
+                            premiumIconAsset!,
+                            key: const Key('premium-status-image'),
+                            width: 24,
+                            height: 18,
+                            fit: BoxFit.contain,
+                          )
                   else
                     Image.asset(
                       'assets/icons/credites.png',

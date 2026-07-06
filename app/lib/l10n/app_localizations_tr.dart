@@ -609,6 +609,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get topUpCredits => 'Yükleme Kredileri';
 
   @override
+  String pricePerCredit(String price) {
+    return 'Kredi başına $price';
+  }
+
+  @override
   String get creditDescription =>
       'Her kredi bir yanıtı veya bir metin iyileştirmesini kapsar. Kredilerin süresi asla dolmaz.';
 

@@ -58,6 +58,7 @@ class HomeScreen extends ConsumerWidget {
               trailing: ReplyStatusBadge(
                 usage: usage,
                 onTap: () => context.push(AppRoutes.paywall),
+                premiumIconAsset: 'assets/icons/premium.png',
               ),
             ),
             Expanded(
@@ -394,9 +395,6 @@ class _RecentSection extends ConsumerWidget {
               ? _RecentEmpty(onCreate: () => context.go(AppRoutes.reply))
               : _RecentCard(
                   cardKey: const Key('home-recent-populated-card'),
-                  illustrationKey: const Key(
-                    'home-recent-populated-illustration',
-                  ),
                   child: Column(
                     children: [
                       for (var i = 0; i < items.length; i++) ...[
@@ -492,17 +490,17 @@ class _RecentEmpty extends StatelessWidget {
   }
 }
 
-/// Shared Recent card surface so empty and populated states keep the same
-/// pale-blue background and decorative inbox illustration.
+/// Shared Recent card surface. The decorative illustration is reserved for
+/// the empty state so it does not compete with real recent items.
 class _RecentCard extends StatelessWidget {
   const _RecentCard({
     required this.cardKey,
-    required this.illustrationKey,
+    this.illustrationKey,
     required this.child,
   });
 
   final Key cardKey;
-  final Key illustrationKey;
+  final Key? illustrationKey;
   final Widget child;
 
   @override
@@ -513,22 +511,23 @@ class _RecentCard extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Positioned(
-            right: -10,
-            top: -12,
-            child: IgnorePointer(
-              child: Opacity(
-                opacity: 0.48,
-                child: Image.asset(
-                  'assets/icons/recent.png',
-                  key: illustrationKey,
-                  width: 132,
-                  height: 96,
-                  fit: BoxFit.contain,
+          if (illustrationKey != null)
+            Positioned(
+              right: -4,
+              top: -4,
+              child: IgnorePointer(
+                child: Opacity(
+                  opacity: 0.48,
+                  child: Image.asset(
+                    'assets/icons/recent.png',
+                    key: illustrationKey,
+                    width: 84,
+                    height: 62,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
-          ),
           child,
         ],
       ),
@@ -572,15 +571,15 @@ class _TipOfTheDay extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              right: -12,
-              top: -6,
+              right: -4,
+              top: 0,
               child: Opacity(
                 opacity: 0.44,
                 child: Image.asset(
                   'assets/icons/tip_of_the_day.png',
                   key: const Key('home-tip-illustration'),
-                  width: 140,
-                  height: 106,
+                  width: 88,
+                  height: 66,
                   fit: BoxFit.contain,
                 ),
               ),

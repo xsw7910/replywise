@@ -175,6 +175,8 @@
   "yearlyTerms": "{price}/ano. Cancele a qualquer momento.",
   "startYearlyPlan": "Iniciar plano anual",
   "topUpCredits": "Créditos de recarga",
+  "pricePerCredit": "{price} por crédito",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "displayedPrice": "o preço exibido",
   "threeDaysFree": "3 dias grátis",
   "creditDescription": "Cada crédito cobre uma resposta ou uma melhoria de texto. Os créditos nunca expiram.",

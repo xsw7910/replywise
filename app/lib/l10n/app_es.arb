@@ -191,6 +191,8 @@
   "yearlyTerms": "{price}/año. Cancele en cualquier momento.",
   "startYearlyPlan": "Iniciar plan anual",
   "topUpCredits": "Créditos de recarga",
+  "pricePerCredit": "{price} por crédito",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "displayedPrice": "el precio mostrado",
   "startFreeTrial": "Comience la prueba gratuita de 3 días",
   "useInPolish": "Usar para mejorar el texto",

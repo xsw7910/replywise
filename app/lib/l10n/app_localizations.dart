@@ -1267,6 +1267,12 @@ abstract class AppLocalizations {
   /// **'Top-up Credits'**
   String get topUpCredits;
 
+  /// No description provided for @pricePerCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} per credit'**
+  String pricePerCredit(String price);
+
   /// No description provided for @creditDescription.
   ///
   /// In en, this message translates to:

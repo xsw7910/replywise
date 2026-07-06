@@ -186,6 +186,8 @@
   "threeDaysFree": "3 ngày miễn phí",
   "premiumTitle": "Trả lờiWise Premium",
   "topUpCredits": "Tín dụng nạp tiền",
+  "pricePerCredit": "{price} mỗi tín dụng",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "startFreeTrial": "Bắt đầu dùng thử miễn phí 3 ngày",
   "refreshPackages": "Làm mới gói",
   "restoring": "Đang khôi phục…",

@@ -609,6 +609,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get topUpCredits => 'Opwaardeerkredieten';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price per krediet';
+  }
+
+  @override
   String get creditDescription =>
       'Elke credit omvat één antwoord of één tekstverbetering. Tegoeden verlopen nooit.';
 

@@ -34,12 +34,16 @@ class CreditPackage {
     required this.productIdentifier,
     required this.credits,
     required this.priceString,
+    this.price,
+    this.currencyCode,
   });
 
   final String packageIdentifier;
   final String productIdentifier;
   final int credits;
   final String priceString;
+  final double? price;
+  final String? currencyCode;
 }
 
 abstract class RevenueCatGateway {
@@ -202,6 +206,8 @@ class SdkRevenueCatGateway implements RevenueCatGateway {
           productIdentifier: product.identifier,
           credits: credits,
           priceString: product.priceString,
+          price: product.price,
+          currencyCode: product.currencyCode,
         ),
       );
     }

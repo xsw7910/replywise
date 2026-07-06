@@ -611,6 +611,11 @@ class AppLocalizationsUk extends AppLocalizations {
   String get topUpCredits => 'Поповнення кредитів';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price за кредит';
+  }
+
+  @override
   String get creditDescription =>
       'Кожен кредит покриває одну відповідь або одне покращення тексту. Термін дії кредитів не закінчується.';
 

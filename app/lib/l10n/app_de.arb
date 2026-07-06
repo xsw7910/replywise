@@ -191,6 +191,8 @@
   "startYearlyPlan": "Starten Sie den Jahresplan",
   "yearlyTerms": "{price}/Jahr. Jederzeit kündbar.",
   "topUpCredits": "Aufladeguthaben",
+  "pricePerCredit": "{price} pro Credit",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "newGuidanceTooltip": "Neue Anleitung",
   "refreshPackages": "Pakete aktualisieren",
   "restoring": "Wiederherstellung…",

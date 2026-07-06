@@ -613,6 +613,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get topUpCredits => 'Crédits de recharge';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price par crédit';
+  }
+
+  @override
   String get creditDescription =>
       'Chaque crédit couvre une réponse ou une amélioration de texte. Les crédits n\'expirent jamais.';
 

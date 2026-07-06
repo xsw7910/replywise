@@ -607,6 +607,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topUpCredits => 'Top-up Credits';
 
   @override
+  String pricePerCredit(String price) {
+    return '$price per credit';
+  }
+
+  @override
   String get creditDescription =>
       'Each credit covers one Reply or Polish. Credits never expire.';
 

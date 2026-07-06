@@ -196,6 +196,8 @@
   "useInPolish": "Metin iyileştirme için kullanın",
   "restoring": "Geri yükleniyor…",
   "topUpCredits": "Yükleme Kredileri",
+  "pricePerCredit": "Kredi başına {price}",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "displayedPrice": "görüntülenen fiyat",
   "builtIn": "Yerleşik",
   "writeAnyLanguage": "Herhangi bir dilde yazın",

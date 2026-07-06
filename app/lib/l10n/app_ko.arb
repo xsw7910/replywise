@@ -187,6 +187,8 @@
   "balancesPreserved": "무료 및 크레딧 잔액이 유지됩니다.",
   "refreshPackages": "패키지 새로 고침",
   "topUpCredits": "충전 크레딧",
+  "pricePerCredit": "크레딧당 {price}",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "yearlyTerms": "{price}/년. 언제든지 취소하세요.",
   "startFreeTrial": "3일 무료 평가판 시작",
   "startYearlyPlan": "연간 요금제 시작",

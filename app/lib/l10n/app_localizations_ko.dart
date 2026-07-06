@@ -591,6 +591,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get topUpCredits => '충전 크레딧';
 
   @override
+  String pricePerCredit(String price) {
+    return '크레딧당 $price';
+  }
+
+  @override
   String get creditDescription =>
       '각 크레딧에는 하나의 답변 또는 하나의 텍스트 개선이 포함됩니다. 크레딧은 만료되지 않습니다.';
 

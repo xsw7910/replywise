@@ -187,6 +187,8 @@
   "myGuidance": "توجيهاتي",
   "yearlyTerms": "{price}/سنة. إلغاء في أي وقت.",
   "topUpCredits": "زيادة الاعتمادات",
+  "pricePerCredit": "{price} لكل رصيد",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "premiumTitle": "الرد الحكيم بريميوم",
   "restoring": "جارٍ الاستعادة…",
   "displayedPrice": "السعر المعروض",

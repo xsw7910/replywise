@@ -182,6 +182,8 @@
   "useInReply": "Gunakan di Balasan",
   "displayedPrice": "harga yang ditampilkan",
   "topUpCredits": "Kredit Isi Ulang",
+  "pricePerCredit": "{price} per kredit",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "refreshPackages": "Segarkan paket",
   "yearlyTerms": "{price}/tahun. Batalkan kapan saja.",
   "threeDaysFree": "3 hari gratis",

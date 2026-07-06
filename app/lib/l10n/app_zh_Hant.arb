@@ -185,6 +185,8 @@
   "balancesPreserved": "免費次數與點數餘額將保留",
   "loadingSubscriptionOptions": "正在載入訂閱選項...",
   "topUpCredits": "儲值積分",
+  "pricePerCredit": "{price}/點數",
+  "@pricePerCredit": {"placeholders": {"price": {"type": "String"}}},
   "refreshPackages": "刷新套餐",
   "loadingCreditPackages": "正在加載積分包...",
   "restoring": "正在恢復…",
