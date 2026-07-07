@@ -426,7 +426,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get describeRelationship => 'Describe the relationship';
 
   @override
-  String get relationshipHint => 'For example: my landlord';
+  String get relationshipHint => 'e.g. my friend';
 
   @override
   String get customizeStyleToneFormat => 'Customize style, tone and format';
@@ -717,7 +717,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get describeAudience => 'Describe the audience';
 
   @override
-  String get audienceHint => 'e.g. my manager';
+  String get audienceHint => 'e.g. my friend';
 
   @override
   String get extraInstruction => 'Extra instruction';

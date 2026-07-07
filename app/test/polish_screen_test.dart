@@ -133,6 +133,23 @@ void main() {
     );
   });
 
+  testWidgets('Polish Extra instruction header matches option styling', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpPolish(tester);
+
+    await tester.tap(find.text('More options'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Extra instruction'), findsOneWidget);
+    expect(find.byIcon(Icons.edit_note_rounded), findsWidgets);
+    expect(
+      find.byKey(const Key('polish-extra-instruction-field')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('selected guidance is sent in Polish request', (tester) async {
     _useTallView(tester);
     final repository = await _pumpPolish(tester);
@@ -140,16 +157,36 @@ void main() {
 
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Professional'));
+    await tester.tap(find.text('Improve grammar'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Polish Text'));
     await tester.pump();
 
     expect(
       repository.lastRequest?.guidance,
-      'Make the writing sound professional.',
+      'Correct the grammar while preserving the meaning.',
     );
   });
+
+  testWidgets(
+    'Polish quick guidance starts with Use template and hides base items',
+    (tester) async {
+      _useTallView(tester);
+      await _pumpPolish(tester);
+      await tester.tap(find.text('Guidance'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Use template'), findsOneWidget);
+      expect(find.text('Professional'), findsNothing);
+      expect(find.text('Friendly'), findsNothing);
+      expect(find.text('Concise'), findsNothing);
+      expect(find.text('More natural'), findsNothing);
+      expect(find.text('Improve grammar'), findsOneWidget);
+      expect(find.text('Fix spelling'), findsOneWidget);
+      expect(find.text('Shorter'), findsNothing);
+      expect(find.text('Longer'), findsNothing);
+    },
+  );
 
   testWidgets('custom tone input is shown and sent in Polish request', (
     tester,
@@ -163,6 +200,17 @@ void main() {
     await tester.tap(find.text('Custom').at(0));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('polish-custom-tone-field')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('polish-custom-tone-field')),
+        matching: find.byIcon(Icons.menu_book_rounded),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      tester.getSize(find.byKey(const Key('polish-custom-tone-field'))).height,
+      lessThan(70),
+    );
     await tester.enterText(
       _editableIn(const Key('polish-custom-tone-field')),
       ' warm but direct ',
@@ -171,6 +219,26 @@ void main() {
     await tester.pump();
 
     expect(repository.lastRequest?.tone, 'warm but direct');
+  });
+
+  testWidgets('Auto is the first and default Polish tone option', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    final repository = await _pumpPolish(tester);
+    await _enterDraft(tester);
+
+    await tester.tap(find.text('More options'));
+    await tester.pumpAndSettle();
+
+    final auto = find.text('Auto').first;
+    final natural = find.text('Natural');
+    expect(tester.getTopLeft(auto).dx, lessThan(tester.getTopLeft(natural).dx));
+
+    await tester.tap(find.text('Polish Text'));
+    await tester.pump();
+
+    expect(repository.lastRequest?.tone, isNull);
   });
 
   testWidgets('custom audience input is shown and sent in Polish request', (
@@ -187,6 +255,19 @@ void main() {
     expect(
       find.byKey(const Key('polish-custom-audience-field')),
       findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('polish-custom-audience-field')),
+        matching: find.byIcon(Icons.menu_book_rounded),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .getSize(find.byKey(const Key('polish-custom-audience-field')))
+          .height,
+      lessThan(70),
     );
     await tester.enterText(
       _editableIn(const Key('polish-custom-audience-field')),
@@ -225,6 +306,20 @@ void main() {
       expect(repository.lastRequest?.guidance, isNull);
     },
   );
+
+  testWidgets('Polish quick Use template chip opens Guidance Library', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpPolish(tester);
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Use template'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Choose guidance'), findsOneWidget);
+  });
 
   testWidgets('Polish Guidance Library action inserts a selected template', (
     tester,

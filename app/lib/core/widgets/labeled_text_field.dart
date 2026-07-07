@@ -60,6 +60,10 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
   @override
   Widget build(BuildContext context) {
     final accent = widget.feature?.accentColor ?? AppColors.primaryBlue;
+    final compactFieldActions =
+        widget.fieldActions != null &&
+        widget.maxLines == 1 &&
+        !widget.showCounter;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,6 +105,8 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
                   counterText: widget.showCounter ? null : '',
                   contentPadding: widget.fieldActions == null
                       ? null
+                      : compactFieldActions
+                      ? const EdgeInsets.fromLTRB(16, 12, 48, 12)
                       : EdgeInsets.fromLTRB(
                           16,
                           14,
@@ -116,11 +122,19 @@ class _LabeledTextFieldState extends State<LabeledTextField> {
                 ),
               ),
               if (widget.fieldActions != null)
-                Positioned(
-                  right: 8,
-                  bottom: widget.showCounter ? 28 : 8,
-                  child: widget.fieldActions!,
-                ),
+                if (compactFieldActions)
+                  Positioned(
+                    right: 12,
+                    top: 0,
+                    bottom: 0,
+                    child: Center(child: widget.fieldActions!),
+                  )
+                else
+                  Positioned(
+                    right: 8,
+                    bottom: widget.showCounter ? 28 : 8,
+                    child: widget.fieldActions!,
+                  ),
             ],
           ),
         ),

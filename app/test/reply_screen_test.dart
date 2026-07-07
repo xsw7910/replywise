@@ -181,6 +181,17 @@ void main() {
     await tester.tap(find.text('Custom').at(0));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('reply-custom-tone-field')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('reply-custom-tone-field')),
+        matching: find.byIcon(Icons.menu_book_rounded),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      tester.getSize(find.byKey(const Key('reply-custom-tone-field'))).height,
+      lessThan(70),
+    );
     await tester.enterText(
       _editableIn(const Key('reply-custom-tone-field')),
       ' warm but professional ',
@@ -205,6 +216,19 @@ void main() {
     expect(
       find.byKey(const Key('reply-custom-audience-field')),
       findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('reply-custom-audience-field')),
+        matching: find.byIcon(Icons.menu_book_rounded),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .getSize(find.byKey(const Key('reply-custom-audience-field')))
+          .height,
+      lessThan(70),
     );
     await tester.enterText(
       _editableIn(const Key('reply-custom-audience-field')),
@@ -245,6 +269,13 @@ void main() {
     expect(find.text('Guidance'), findsOneWidget);
     expect(find.text('Help AI understand your intent'), findsOneWidget);
     expect(find.byIcon(Icons.lightbulb_outline_rounded), findsWidgets);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('reply-message-card')),
+        matching: find.byIcon(Icons.lightbulb_outline_rounded),
+      ),
+      findsNothing,
+    );
     expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsWidgets);
     expect(find.text('Add guidance'), findsNothing);
     expect(
@@ -391,7 +422,7 @@ void main() {
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Template'), findsOneWidget);
+    expect(find.text('Use template'), findsOneWidget);
     expect(find.text('Firm'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -404,7 +435,7 @@ void main() {
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Template'), findsOneWidget);
+    expect(find.text('Use template'), findsOneWidget);
     expect(find.text('Firm'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -419,7 +450,7 @@ void main() {
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Template'), findsOneWidget);
+    expect(find.text('Use template'), findsOneWidget);
     expect(find.text('Firm'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

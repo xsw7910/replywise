@@ -928,7 +928,7 @@ abstract class AppLocalizations {
   /// No description provided for @relationshipHint.
   ///
   /// In en, this message translates to:
-  /// **'For example: my landlord'**
+  /// **'e.g. my friend'**
   String get relationshipHint;
 
   /// No description provided for @customizeStyleToneFormat.
@@ -1474,7 +1474,7 @@ abstract class AppLocalizations {
   /// No description provided for @audienceHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g. my manager'**
+  /// **'e.g. my friend'**
   String get audienceHint;
 
   /// No description provided for @extraInstruction.

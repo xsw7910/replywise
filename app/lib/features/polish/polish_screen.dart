@@ -50,11 +50,17 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   final _extraInstructionController = TextEditingController();
   bool _guidanceExpanded = false;
   bool _moreOptionsExpanded = false;
-  String _tone = 'Natural';
+  String _tone = 'Auto';
   String _audience = 'Auto';
   String _length = 'Same';
 
-  static const _tones = ['Natural', 'Professional', 'Friendly', 'Custom'];
+  static const _tones = [
+    'Auto',
+    'Natural',
+    'Professional',
+    'Friendly',
+    'Custom',
+  ];
   static const _audiences = [
     'Auto',
     'Friend',
@@ -136,7 +142,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
 
   String? _effectiveTone() {
     final value = _tone == 'Custom' ? _customToneController.text.trim() : _tone;
-    return value.isEmpty ? null : value;
+    return value == 'Auto' || value.isEmpty ? null : value;
   }
 
   String? _effectiveAudience() {
@@ -534,109 +540,81 @@ class _PolishExpandButton extends StatelessWidget {
 }
 
 class _PolishQuickGuidanceChips extends StatelessWidget {
-  const _PolishQuickGuidanceChips({required this.onAppend});
+  const _PolishQuickGuidanceChips({
+    required this.onAppend,
+    required this.onOpenLibrary,
+  });
 
   final ValueChanged<String> onAppend;
-
-  static const _items = [
-    (
-      label: 'Professional',
-      instruction: 'Make the writing sound professional.',
-      icon: Icons.business_center_outlined,
-    ),
-    (
-      label: 'Friendly',
-      instruction: 'Make the writing warmer and friendlier.',
-      icon: Icons.sentiment_satisfied_alt_rounded,
-    ),
-    (
-      label: 'Concise',
-      instruction: 'Make the writing concise and direct.',
-      icon: Icons.short_text_rounded,
-    ),
-    (
-      label: 'More natural',
-      instruction: 'Make the wording sound natural and fluent.',
-      icon: Icons.auto_awesome_rounded,
-    ),
-    (
-      label: 'Improve grammar',
-      instruction: 'Correct the grammar while preserving the meaning.',
-      icon: Icons.spellcheck_rounded,
-    ),
-    (
-      label: 'Fix spelling',
-      instruction: 'Correct all spelling errors.',
-      icon: Icons.abc_rounded,
-    ),
-    (
-      label: 'More persuasive',
-      instruction: 'Make the writing more persuasive and compelling.',
-      icon: Icons.campaign_outlined,
-    ),
-    (
-      label: 'More confident',
-      instruction: 'Make the writing sound clear and confident.',
-      icon: Icons.shield_outlined,
-    ),
-    (
-      label: 'Simplify wording',
-      instruction: 'Use simpler, easier-to-read wording.',
-      icon: Icons.filter_alt_off_rounded,
-    ),
-    (
-      label: 'Better flow',
-      instruction: 'Improve sentence flow and transitions.',
-      icon: Icons.water_rounded,
-    ),
-  ];
+  final VoidCallback onOpenLibrary;
 
   @override
   Widget build(BuildContext context) {
-    final labels = {
-      'Professional': context.l10n.professional,
-      'Friendly': context.l10n.friendly,
-      'Concise': context.l10n.concise,
-      'More natural': context.l10n.moreNatural,
-      'Improve grammar': context.l10n.improveGrammar,
-      'Fix spelling': context.l10n.fixSpelling,
-      'More persuasive': context.l10n.morePersuasive,
-      'More confident': context.l10n.moreConfident,
-      'Simplify wording': context.l10n.simplifyWording,
-      'Better flow': context.l10n.betterFlow,
-    };
-    final instructions = {
-      'Professional': context.l10n.instructionProfessional,
-      'Friendly': context.l10n.instructionFriendly,
-      'Concise': context.l10n.instructionConcise,
-      'More natural': context.l10n.instructionNatural,
-      'Improve grammar': context.l10n.instructionGrammar,
-      'Fix spelling': context.l10n.instructionSpelling,
-      'More persuasive': context.l10n.instructionPersuasive,
-      'More confident': context.l10n.instructionConfident,
-      'Simplify wording': context.l10n.instructionSimple,
-      'Better flow': context.l10n.instructionFlow,
-    };
+    final l10n = context.l10n;
+    final items = <(String, IconData, VoidCallback)>[
+      (
+        '${l10n.use} ${l10n.useATemplate.toLowerCase()}',
+        Icons.menu_book_rounded,
+        onOpenLibrary,
+      ),
+      (
+        l10n.improveGrammar,
+        Icons.spellcheck_rounded,
+        () => onAppend(l10n.instructionGrammar),
+      ),
+      (
+        l10n.fixSpelling,
+        Icons.abc_rounded,
+        () => onAppend(l10n.instructionSpelling),
+      ),
+      (
+        l10n.morePersuasive,
+        Icons.campaign_outlined,
+        () => onAppend(l10n.instructionPersuasive),
+      ),
+      (
+        l10n.moreConfident,
+        Icons.shield_outlined,
+        () => onAppend(l10n.instructionConfident),
+      ),
+      (
+        l10n.simplifyWording,
+        Icons.filter_alt_off_rounded,
+        () => onAppend(l10n.instructionSimple),
+      ),
+      (
+        l10n.betterFlow,
+        Icons.water_rounded,
+        () => onAppend(l10n.instructionFlow),
+      ),
+      (
+        l10n.explainTheReason,
+        Icons.info_outline,
+        () => onAppend('Make the reasoning clearer and easier to follow.'),
+      ),
+      (
+        l10n.showAppreciation,
+        Icons.volunteer_activism_outlined,
+        () => onAppend('Add polite appreciation where appropriate.'),
+      ),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(context.l10n.quickGuidance, style: AppTextStyles.badge),
+        Text(l10n.quickGuidance, style: AppTextStyles.badge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (final item in _items)
+            for (final (label, icon, onPressed) in items)
               ActionChip(
                 backgroundColor: _feature.selectedChipColor,
                 side: const BorderSide(color: AppColors.glassEdgeStrong),
-                avatar: Icon(item.icon, size: 15, color: _kColor),
-                label: Text(
-                  labels[item.label] ?? item.label,
-                  style: const TextStyle(color: _kColor),
-                ),
-                onPressed: () =>
-                    onAppend(instructions[item.label] ?? item.instruction),
+                avatar: Icon(icon, size: 15, color: _kColor),
+                label: Text(label, style: const TextStyle(color: _kColor)),
+                onPressed: onPressed,
               ),
           ],
         ),
@@ -790,7 +768,10 @@ class _PolishGuidanceCard extends StatelessWidget {
                     onOpenLibrary: onOpenLibrary,
                   ),
                   const SizedBox(height: 14),
-                  _PolishQuickGuidanceChips(onAppend: onQuickGuidance),
+                  _PolishQuickGuidanceChips(
+                    onAppend: onQuickGuidance,
+                    onOpenLibrary: onOpenLibrary,
+                  ),
                 ],
               ),
             ),
@@ -891,6 +872,8 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                 children: [
                   _PolishOptionGroup(
                     label: context.l10n.tone,
+                    groupIcon: Icons.record_voice_over_outlined,
+                    accentColor: _kColor,
                     options: tones,
                     selected: tone,
                     onSelected: onTone,
@@ -907,11 +890,18 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                       hintText: context.l10n.toneHint,
                       maxLines: 1,
                       maxLength: 500,
+                      fieldActions: const Icon(
+                        Icons.menu_book_rounded,
+                        size: 20,
+                        color: _kColor,
+                      ),
                     ),
                   ],
-                  const Divider(height: 28, color: AppColors.cardBorder),
+                  const _PolishOptionDivider(),
                   _PolishOptionGroup(
                     label: context.l10n.audience,
+                    groupIcon: Icons.groups_outlined,
+                    accentColor: _kColor,
                     options: audiences,
                     selected: audience,
                     onSelected: onAudience,
@@ -928,20 +918,34 @@ class _PolishMoreOptionsCard extends StatelessWidget {
                       hintText: context.l10n.audienceHint,
                       maxLines: 1,
                       maxLength: 500,
+                      fieldActions: const Icon(
+                        Icons.menu_book_rounded,
+                        size: 20,
+                        color: _kColor,
+                      ),
                     ),
                   ],
-                  const Divider(height: 28, color: AppColors.cardBorder),
+                  const _PolishOptionDivider(),
                   _PolishOptionGroup(
                     label: context.l10n.length,
+                    groupIcon: Icons.format_size_rounded,
+                    accentColor: _kColor,
                     options: lengths,
                     selected: length,
                     onSelected: onLength,
                   ),
-                  const SizedBox(height: 14),
+                  const _PolishOptionDivider(),
+                  _PolishOptionHeader(
+                    label: context.l10n.extraInstruction,
+                    groupIcon: Icons.edit_note_rounded,
+                    accentColor: _kColor,
+                  ),
+                  const SizedBox(height: 8),
                   LabeledTextField(
                     key: const Key('polish-extra-instruction-field'),
                     label: context.l10n.extraInstruction,
                     feature: _feature,
+                    showHeader: false,
                     controller: extraInstructionController,
                     hintText: context.l10n.extraPolishHint,
                     showCounter: false,
@@ -961,12 +965,16 @@ class _PolishMoreOptionsCard extends StatelessWidget {
 class _PolishOptionGroup extends StatelessWidget {
   const _PolishOptionGroup({
     required this.label,
+    required this.groupIcon,
+    required this.accentColor,
     required this.options,
     required this.selected,
     required this.onSelected,
   });
 
   final String label;
+  final IconData groupIcon;
+  final Color accentColor;
   final List<String> options;
   final String selected;
   final ValueChanged<String> onSelected;
@@ -976,31 +984,91 @@ class _PolishOptionGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.cardTitle.copyWith(fontSize: 14)),
+        _PolishOptionHeader(
+          label: label,
+          groupIcon: groupIcon,
+          accentColor: accentColor,
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: options
-              .map(
-                (option) => ChoiceChip(
-                  label: Text(_localizedPolishOption(context, option)),
-                  selected: option == selected,
-                  selectedColor: _feature.selectedChipColor,
-                  checkmarkColor: _kColor,
-                  labelStyle: AppTextStyles.body.copyWith(
+          children: [
+            for (final option in options)
+              ChoiceChip(
+                backgroundColor: Colors.white.withAlpha(110),
+                avatar: Icon(
+                  _polishOptionIcon(option),
+                  size: 16,
+                  color: option == selected
+                      ? accentColor
+                      : AppColors.textSecondary,
+                ),
+                label: Text(
+                  _localizedPolishOption(context, option),
+                  style: TextStyle(
                     color: option == selected
-                        ? _kColor
+                        ? accentColor
                         : AppColors.textSecondary,
                   ),
-                  onSelected: (_) => onSelected(option),
                 ),
-              )
-              .toList(),
+                selected: option == selected,
+                selectedColor: Color.lerp(Colors.white, accentColor, 0.14),
+                showCheckmark: false,
+                side: BorderSide(
+                  color: option == selected
+                      ? accentColor.withAlpha(65)
+                      : AppColors.cardBorder.withAlpha(150),
+                ),
+                onSelected: (_) => onSelected(option),
+              ),
+          ],
         ),
       ],
     );
   }
+}
+
+class _PolishOptionHeader extends StatelessWidget {
+  const _PolishOptionHeader({
+    required this.label,
+    required this.groupIcon,
+    required this.accentColor,
+  });
+
+  final String label;
+  final IconData groupIcon;
+  final Color accentColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(groupIcon, size: 17, color: accentColor),
+        const SizedBox(width: 5),
+        Text(label, style: AppTextStyles.cardTitle.copyWith(fontSize: 15)),
+      ],
+    );
+  }
+}
+
+IconData _polishOptionIcon(String option) {
+  return switch (option) {
+    'Auto' => Icons.auto_awesome_rounded,
+    'Natural' => Icons.spa_outlined,
+    'Professional' => Icons.business_center_outlined,
+    'Friendly' => Icons.sentiment_satisfied_alt_rounded,
+    'Custom' => Icons.edit_outlined,
+    'Friend' => Icons.person_outline_rounded,
+    'Customer' => Icons.storefront_outlined,
+    'Coworker' => Icons.groups_outlined,
+    'Manager' => Icons.supervisor_account_outlined,
+    'Shorter' => Icons.compress_rounded,
+    'Same' => Icons.swap_vert_rounded,
+    'Longer' => Icons.expand_rounded,
+    _ => Icons.tune_rounded,
+  };
 }
 
 String _localizedPolishOption(BuildContext context, String option) =>
@@ -1019,3 +1087,15 @@ String _localizedPolishOption(BuildContext context, String option) =>
       'Longer' => context.l10n.longer,
       _ => option,
     };
+
+class _PolishOptionDivider extends StatelessWidget {
+  const _PolishOptionDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 14),
+      child: Divider(height: 1, color: AppColors.cardBorder),
+    );
+  }
+}

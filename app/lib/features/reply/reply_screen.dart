@@ -22,7 +22,6 @@ import '../recent/domain/recent_item.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import 'widgets/reply_status_badge.dart';
-import 'application/explain_controller.dart';
 import 'application/pending_reply_input_provider.dart';
 import 'application/reply_controller.dart';
 import 'domain/reply_models.dart';
@@ -248,181 +247,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     );
   }
 
-  Future<void> _explain() async {
-    final appLocale = resolvedAppLocaleCode(
-      Localizations.maybeLocaleOf(context),
-    );
-    if (!await ensureGenerationAccess(context: context, ref: ref)) return;
-    final result = await ref
-        .read(explainControllerProvider.notifier)
-        .explain(
-          text: _incomingController.text,
-          explainLang: appLocale,
-          appLocale: appLocale,
-        );
-    if (!mounted) return;
-    if (result == null) {
-      final error =
-          ref.read(explainControllerProvider).error ??
-          'Unable to explain this message. Please try again.';
-      await _showExplainError(error);
-      return;
-    }
-    await _showExplainResult(result);
-  }
-
-  Future<void> _showExplainError(String message) {
-    return showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Icon(
-                Icons.error_outline_rounded,
-                color: AppColors.error,
-                size: 34,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                context.l10n.couldNotExplain,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.cardTitle,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.body,
-              ),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(sheetContext),
-                      child: Text(context.l10n.close),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _feature.primaryButtonColor,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(sheetContext);
-                        _explain();
-                      },
-                      child: Text(context.l10n.tryAgain),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showExplainResult(ExplainResult result) {
-    final copyText = [
-      '${context.l10n.meaning}: ${result.meaning}',
-      '${context.l10n.tone}: ${result.tone}',
-      '${context.l10n.hiddenMeaning}: ${result.hiddenMeaning}',
-    ].join('\n\n');
-
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (sheetContext) => SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      context.l10n.explainMessage,
-                      style: AppTextStyles.sectionTitle,
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: context.l10n.copyExplanation,
-                    onPressed: () async {
-                      await Clipboard.setData(ClipboardData(text: copyText));
-                      if (!sheetContext.mounted) return;
-                      ScaffoldMessenger.of(sheetContext).showSnackBar(
-                        SnackBar(content: Text(sheetContext.l10n.copied)),
-                      );
-                    },
-                    icon: const Icon(Icons.copy_rounded),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              _ExplanationRow(
-                label: context.l10n.meaning,
-                text: result.meaning,
-              ),
-              _ExplanationRow(label: context.l10n.tone, text: result.tone),
-              _ExplanationRow(
-                label: context.l10n.hiddenMeaning,
-                text: result.hiddenMeaning.isEmpty
-                    ? context.l10n.noHiddenMeaning
-                    : result.hiddenMeaning,
-              ),
-              Text(
-                context.l10n.suggestedReplies,
-                style: AppTextStyles.cardTitle,
-              ),
-              const SizedBox(height: 8),
-              for (final suggestion in result.suggestedReplies)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: GlassCard(
-                    feature: _feature,
-                    showFeatureImage: false,
-                    tintStrength: _kCardTintStrength,
-                    tintColor: _kCardTint,
-                    blur: 6,
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(suggestion, style: AppTextStyles.body),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(sheetContext);
-                            _guidanceController.text = suggestion;
-                          },
-                          child: Text(context.l10n.use),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final replyState = ref.watch(replyControllerProvider);
-    final explainState = ref.watch(explainControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
     _consumePendingGuidance();
     _consumePendingReplyInput();
@@ -492,25 +319,6 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                         fieldActions: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
-                              tooltip: context.l10n.explain,
-                              visualDensity: VisualDensity.compact,
-                              color: _kColor,
-                              onPressed: explainState.isLoading
-                                  ? null
-                                  : _explain,
-                              icon: explainState.isLoading
-                                  ? const SizedBox.square(
-                                      dimension: 17,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : const Icon(
-                                      Icons.lightbulb_outline_rounded,
-                                      size: 20,
-                                    ),
-                            ),
                             IconButton(
                               tooltip: context.l10n.paste,
                               visualDensity: VisualDensity.compact,
@@ -930,7 +738,11 @@ class _QuickGuidanceChips extends StatelessWidget {
 
     // The templates picker stays pinned first.
     final items = <(String, IconData, VoidCallback)>[
-      (l10n.useATemplate, Icons.library_books_outlined, onOpenTemplates),
+      (
+        '${l10n.use} ${l10n.useATemplate.toLowerCase()}',
+        Icons.menu_book_rounded,
+        onOpenTemplates,
+      ),
       ...guidance,
     ];
 
@@ -1094,7 +906,7 @@ class _MoreOptionsSection extends StatelessWidget {
                   _OptionGroup(
                     label: context.l10n.tone,
                     groupIcon: Icons.record_voice_over_outlined,
-                    accentColor: AppColors.replyColor,
+                    accentColor: _kColor,
                     options: tones,
                     selected: tone,
                     onSelected: onTone,
@@ -1111,13 +923,18 @@ class _MoreOptionsSection extends StatelessWidget {
                       hintText: context.l10n.toneHint,
                       maxLines: 1,
                       maxLength: 500,
+                      fieldActions: const Icon(
+                        Icons.menu_book_rounded,
+                        size: 20,
+                        color: _kColor,
+                      ),
                     ),
                   ],
                   const _OptionDivider(),
                   _OptionGroup(
                     label: context.l10n.audience,
                     groupIcon: Icons.groups_outlined,
-                    accentColor: AppColors.explainColor,
+                    accentColor: _kColor,
                     options: audiences,
                     selected: audience,
                     onSelected: onAudience,
@@ -1134,13 +951,18 @@ class _MoreOptionsSection extends StatelessWidget {
                       hintText: context.l10n.relationshipHint,
                       maxLines: 1,
                       maxLength: 500,
+                      fieldActions: const Icon(
+                        Icons.menu_book_rounded,
+                        size: 20,
+                        color: _kColor,
+                      ),
                     ),
                   ],
                   const _OptionDivider(),
                   _OptionGroup(
                     label: context.l10n.length,
                     groupIcon: Icons.format_size_rounded,
-                    accentColor: AppColors.polishColor,
+                    accentColor: _kColor,
                     options: lengths,
                     selected: length,
                     onSelected: onLength,
@@ -1149,7 +971,7 @@ class _MoreOptionsSection extends StatelessWidget {
                   _OptionGroup(
                     label: context.l10n.channel,
                     groupIcon: Icons.send_outlined,
-                    accentColor: AppColors.replyColor,
+                    accentColor: _kColor,
                     options: channels,
                     selected: channel,
                     onSelected: onChannel,
@@ -1283,28 +1105,6 @@ class _OptionDivider extends StatelessWidget {
     return const Padding(
       padding: EdgeInsets.symmetric(vertical: 14),
       child: Divider(height: 1, color: AppColors.cardBorder),
-    );
-  }
-}
-
-class _ExplanationRow extends StatelessWidget {
-  const _ExplanationRow({required this.label, required this.text});
-
-  final String label;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: AppTextStyles.cardTitle),
-          const SizedBox(height: 3),
-          Text(text, style: AppTextStyles.body),
-        ],
-      ),
     );
   }
 }
