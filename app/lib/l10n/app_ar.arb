@@ -16,7 +16,7 @@
   "yourPlan": "خطتك",
   "plans": "الخطط",
   "guidance": "الإرشادات",
-  "guidanceLibrary": "مكتبة الإرشادات",
+  "guidanceLibrary": "القوالب",
   "languageAndInput": "اللغة والإدخال",
   "appLanguage": "لغة التطبيق",
   "about": "حول",
@@ -85,7 +85,7 @@
   "checking": "التحقق",
   "viewPlans": "عرض الخطط",
   "quickGuidance": "التوجيه السريع",
-  "manageLibrary": "إدارة المكتبة",
+  "manageLibrary": "إدارة القوالب",
   "history": "تاريخ",
   "paste": "لصق",
   "clear": "واضح",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "تمت إضافة الائتمان. اضغط على إنشاء مرة أخرى."
   ,"recentDetail": "التفاصيل"
   ,"useAgain": "استخدام مرة أخرى"
+  ,"useATemplate": "استخدام قالب"
+  ,"acceptPolitely": "القبول بأدب"
+  ,"askForClarification": "طلب توضيح"
+  ,"explainTheReason": "شرح السبب"
+  ,"offerAnAlternative": "اقتراح بديل"
+  ,"suggestACompromise": "اقتراح حل وسط"
+  ,"showAppreciation": "إظهار التقدير"
+  ,"apologizeBriefly": "الاعتذار بإيجاز"
+  ,"beFirmButKind": "حازم لكن لطيف"
 }

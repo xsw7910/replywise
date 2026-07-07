@@ -16,7 +16,7 @@
   "yourPlan": "你的方案",
   "plans": "方案",
   "guidance": "指引",
-  "guidanceLibrary": "指引库",
+  "guidanceLibrary": "模板",
   "languageAndInput": "语言和输入",
   "appLanguage": "应用语言",
   "voiceGuidanceLanguage": "语音指导语言",
@@ -80,7 +80,7 @@
   "copied": "已复制",
   "close": "关闭",
   "tryAgain": "再试一次",
-  "manageLibrary": "管理指引库",
+  "manageLibrary": "管理模板",
   "quickGuidance": "快速指导",
   "viewPlans": "查看计划",
   "restore": "恢复",
@@ -284,4 +284,13 @@
   "outOfCreditsMessage": "观看一段短广告即可获得 2 个免费积分，或升级以获得更多使用权限。"
   ,"recentDetail": "详情"
   ,"useAgain": "再次使用"
+  ,"useATemplate": "使用模板"
+  ,"acceptPolitely": "礼貌接受"
+  ,"askForClarification": "请求澄清"
+  ,"explainTheReason": "说明原因"
+  ,"offerAnAlternative": "提供备选方案"
+  ,"suggestACompromise": "提出折中方案"
+  ,"showAppreciation": "表达感谢"
+  ,"apologizeBriefly": "简短致歉"
+  ,"beFirmButKind": "坚定而友善"
 }

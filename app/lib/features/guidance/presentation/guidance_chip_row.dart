@@ -62,7 +62,7 @@ class GuidanceChipRow extends ConsumerWidget {
                 color: feature?.accentColor,
               ),
               label: Text(
-                context.l10n.library,
+                context.l10n.useATemplate,
                 style: TextStyle(color: feature?.accentColor),
               ),
               onPressed: () => _openPicker(context),

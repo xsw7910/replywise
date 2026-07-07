@@ -134,7 +134,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get guidance => '가이드';
 
   @override
-  String get guidanceLibrary => '가이드 라이브러리';
+  String get guidanceLibrary => '템플릿';
 
   @override
   String get languageAndInput => '언어 및 입력';
@@ -255,7 +255,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get done => '완료';
 
   @override
-  String get manageLibrary => '라이브러리 관리';
+  String get manageLibrary => '템플릿 관리';
 
   @override
   String get newGuidance => '새로운 지침';
@@ -888,4 +888,31 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get useAgain => '다시 사용';
+
+  @override
+  String get useATemplate => '템플릿 사용';
+
+  @override
+  String get acceptPolitely => '정중히 수락';
+
+  @override
+  String get askForClarification => '설명 요청';
+
+  @override
+  String get explainTheReason => '이유 설명';
+
+  @override
+  String get offerAnAlternative => '대안 제시';
+
+  @override
+  String get suggestACompromise => '절충안 제안';
+
+  @override
+  String get showAppreciation => '감사 표현';
+
+  @override
+  String get apologizeBriefly => '간단히 사과';
+
+  @override
+  String get beFirmButKind => '단호하지만 친절하게';
 }

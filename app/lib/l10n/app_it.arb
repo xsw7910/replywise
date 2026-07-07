@@ -16,7 +16,7 @@
   "yourPlan": "Il tuo piano",
   "plans": "Piani",
   "guidance": "Istruzioni",
-  "guidanceLibrary": "Libreria istruzioni",
+  "guidanceLibrary": "Modelli",
   "languageAndInput": "Lingua e immissione",
   "appLanguage": "Lingua dell’app",
   "about": "Informazioni",
@@ -66,7 +66,7 @@
   "restore": "Ripristinare",
   "loading": "Caricamento…",
   "premium": "Premium",
-  "manageLibrary": "Gestisci libreria",
+  "manageLibrary": "Gestisci modelli",
   "checkingBackend": "Controllo del back-end…",
   "refreshAccountState": "Aggiorna lo stato dell'account",
   "secureSession": "Sessione sicura",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Credito aggiunto. Tocca nuovamente Genera."
   ,"recentDetail": "Dettagli"
   ,"useAgain": "Usa di nuovo"
+  ,"useATemplate": "Usa un modello"
+  ,"acceptPolitely": "Accettare con cortesia"
+  ,"askForClarification": "Chiedere chiarimenti"
+  ,"explainTheReason": "Spiegare il motivo"
+  ,"offerAnAlternative": "Proporre un'alternativa"
+  ,"suggestACompromise": "Proporre un compromesso"
+  ,"showAppreciation": "Mostrare gratitudine"
+  ,"apologizeBriefly": "Scusarsi brevemente"
+  ,"beFirmButKind": "Fermo ma gentile"
 }

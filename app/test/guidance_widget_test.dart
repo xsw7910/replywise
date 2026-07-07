@@ -69,13 +69,12 @@ void main() {
       );
       await tester.pump();
 
-      await tester.tap(find.text('Professional'));
+      await tester.tap(find.text('Accept'));
       await tester.pump();
 
       expect(
         _textOf(tester, const Key('reply-guidance-field')),
-        'My own note\n'
-        'Make the reply sound professional and appropriate for work.',
+        'My own note\nAccept the request politely.',
       );
     });
   });

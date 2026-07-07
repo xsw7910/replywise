@@ -143,7 +143,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get guidance => 'Consignes';
 
   @override
-  String get guidanceLibrary => 'Bibliothèque de consignes';
+  String get guidanceLibrary => 'Modèles';
 
   @override
   String get languageAndInput => 'Langue et saisie';
@@ -265,7 +265,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get done => 'Terminé';
 
   @override
-  String get manageLibrary => 'Gérer la bibliothèque';
+  String get manageLibrary => 'Gérer les modèles';
 
   @override
   String get newGuidance => 'Nouvelle orientation';
@@ -935,4 +935,31 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get useAgain => 'Réutiliser';
+
+  @override
+  String get useATemplate => 'Utiliser un modèle';
+
+  @override
+  String get acceptPolitely => 'Accepter poliment';
+
+  @override
+  String get askForClarification => 'Demander des précisions';
+
+  @override
+  String get explainTheReason => 'Expliquer la raison';
+
+  @override
+  String get offerAnAlternative => 'Proposer une alternative';
+
+  @override
+  String get suggestACompromise => 'Proposer un compromis';
+
+  @override
+  String get showAppreciation => 'Montrer de la gratitude';
+
+  @override
+  String get apologizeBriefly => 'S\'excuser brièvement';
+
+  @override
+  String get beFirmButKind => 'Ferme mais bienveillant';
 }

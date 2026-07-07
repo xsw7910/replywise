@@ -16,7 +16,7 @@
   "yourPlan": "現在のプラン",
   "plans": "プラン",
   "guidance": "ガイダンス",
-  "guidanceLibrary": "ガイダンスライブラリ",
+  "guidanceLibrary": "テンプレート",
   "languageAndInput": "言語と入力",
   "appLanguage": "アプリの言語",
   "about": "アプリについて",
@@ -78,7 +78,7 @@
   "close": "近い",
   "quickGuidance": "クイックガイド",
   "tryAgain": "もう一度やり直してください",
-  "manageLibrary": "ライブラリの管理",
+  "manageLibrary": "テンプレートを管理",
   "viewPlans": "プランを見る",
   "restore": "復元する",
   "loading": "読み込み中…",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "クレジットが追加されました。もう一度「生成」をタップします。"
   ,"recentDetail": "詳細"
   ,"useAgain": "もう一度使う"
+  ,"useATemplate": "テンプレートを使う"
+  ,"acceptPolitely": "丁寧に承諾する"
+  ,"askForClarification": "確認を求める"
+  ,"explainTheReason": "理由を説明する"
+  ,"offerAnAlternative": "代替案を提示する"
+  ,"suggestACompromise": "妥協案を提案する"
+  ,"showAppreciation": "感謝を伝える"
+  ,"apologizeBriefly": "簡潔に謝罪する"
+  ,"beFirmButKind": "毅然かつ丁寧に"
 }

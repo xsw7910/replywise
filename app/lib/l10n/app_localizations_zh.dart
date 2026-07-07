@@ -134,7 +134,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get guidance => '指引';
 
   @override
-  String get guidanceLibrary => '指引库';
+  String get guidanceLibrary => '模板';
 
   @override
   String get languageAndInput => '语言和输入';
@@ -255,7 +255,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get done => '完成';
 
   @override
-  String get manageLibrary => '管理指引库';
+  String get manageLibrary => '管理模板';
 
   @override
   String get newGuidance => '新指南';
@@ -884,6 +884,33 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get useAgain => '再次使用';
+
+  @override
+  String get useATemplate => '使用模板';
+
+  @override
+  String get acceptPolitely => '礼貌接受';
+
+  @override
+  String get askForClarification => '请求澄清';
+
+  @override
+  String get explainTheReason => '说明原因';
+
+  @override
+  String get offerAnAlternative => '提供备选方案';
+
+  @override
+  String get suggestACompromise => '提出折中方案';
+
+  @override
+  String get showAppreciation => '表达感谢';
+
+  @override
+  String get apologizeBriefly => '简短致歉';
+
+  @override
+  String get beFirmButKind => '坚定而友善';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -1016,7 +1043,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get guidance => '指引';
 
   @override
-  String get guidanceLibrary => '指引庫';
+  String get guidanceLibrary => '範本';
 
   @override
   String get languageAndInput => '語言與輸入';
@@ -1137,7 +1164,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get done => '完成';
 
   @override
-  String get manageLibrary => '管理指引庫';
+  String get manageLibrary => '管理範本';
 
   @override
   String get newGuidance => '新指南';
@@ -1766,4 +1793,31 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get useAgain => '再次使用';
+
+  @override
+  String get useATemplate => '使用範本';
+
+  @override
+  String get acceptPolitely => '禮貌接受';
+
+  @override
+  String get askForClarification => '請求澄清';
+
+  @override
+  String get explainTheReason => '說明原因';
+
+  @override
+  String get offerAnAlternative => '提供替代方案';
+
+  @override
+  String get suggestACompromise => '提出折衷方案';
+
+  @override
+  String get showAppreciation => '表達感謝';
+
+  @override
+  String get apologizeBriefly => '簡短致歉';
+
+  @override
+  String get beFirmButKind => '堅定而友善';
 }

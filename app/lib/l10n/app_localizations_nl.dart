@@ -143,7 +143,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get guidance => 'Instructies';
 
   @override
-  String get guidanceLibrary => 'Instructiebibliotheek';
+  String get guidanceLibrary => 'Sjablonen';
 
   @override
   String get languageAndInput => 'Taal en invoer';
@@ -265,7 +265,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get done => 'Gereed';
 
   @override
-  String get manageLibrary => 'Beheer bibliotheek';
+  String get manageLibrary => 'Sjablonen beheren';
 
   @override
   String get newGuidance => 'Nieuwe begeleiding';
@@ -931,4 +931,31 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get useAgain => 'Opnieuw gebruiken';
+
+  @override
+  String get useATemplate => 'Sjabloon gebruiken';
+
+  @override
+  String get acceptPolitely => 'Beleefd accepteren';
+
+  @override
+  String get askForClarification => 'Om verduidelijking vragen';
+
+  @override
+  String get explainTheReason => 'De reden uitleggen';
+
+  @override
+  String get offerAnAlternative => 'Een alternatief bieden';
+
+  @override
+  String get suggestACompromise => 'Een compromis voorstellen';
+
+  @override
+  String get showAppreciation => 'Waardering tonen';
+
+  @override
+  String get apologizeBriefly => 'Kort excuses aanbieden';
+
+  @override
+  String get beFirmButKind => 'Vastberaden maar vriendelijk';
 }

@@ -16,7 +16,7 @@
   "yourPlan": "Gói của bạn",
   "plans": "Các gói",
   "guidance": "Hướng dẫn",
-  "guidanceLibrary": "Thư viện hướng dẫn",
+  "guidanceLibrary": "Mẫu",
   "languageAndInput": "Ngôn ngữ & nhập liệu",
   "appLanguage": "Ngôn ngữ ứng dụng",
   "about": "Giới thiệu",
@@ -86,7 +86,7 @@
   "checkingBackend": "Đang kiểm tra phần phụ trợ…",
   "connectionFailed": "Kết nối không thành công",
   "viewPlans": "Xem kế hoạch",
-  "manageLibrary": "Quản lý thư viện",
+  "manageLibrary": "Quản lý mẫu",
   "freeCount": "{free} miễn phí",
   "clearAll": "Xóa tất cả",
   "paste": "Dán",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Đã thêm tín dụng. Nhấn vào Tạo lại."
   ,"recentDetail": "Chi tiết"
   ,"useAgain": "Dùng lại"
+  ,"useATemplate": "Dùng mẫu"
+  ,"acceptPolitely": "Chấp nhận lịch sự"
+  ,"askForClarification": "Yêu cầu làm rõ"
+  ,"explainTheReason": "Giải thích lý do"
+  ,"offerAnAlternative": "Đưa ra phương án khác"
+  ,"suggestACompromise": "Đề xuất thỏa hiệp"
+  ,"showAppreciation": "Bày tỏ sự cảm kích"
+  ,"apologizeBriefly": "Xin lỗi ngắn gọn"
+  ,"beFirmButKind": "Kiên định nhưng tử tế"
 }

@@ -16,7 +16,7 @@
   "yourPlan": "Dein Tarif",
   "plans": "Tarife",
   "guidance": "Anweisungen",
-  "guidanceLibrary": "Anweisungsbibliothek",
+  "guidanceLibrary": "Vorlagen",
   "languageAndInput": "Sprache und Eingabe",
   "appLanguage": "App-Sprache",
   "about": "Info",
@@ -76,7 +76,7 @@
   "checkingBackend": "Backend wird überprüft…",
   "anonymousSessionReady": "Anonyme Sitzung bereit",
   "balanceUnavailable": "Guthaben nicht verfügbar",
-  "manageLibrary": "Bibliothek verwalten",
+  "manageLibrary": "Vorlagen verwalten",
   "premiumUnlimited": "Premium · Unbegrenzt",
   "quickGuidance": "Schnelle Anleitung",
   "secureSession": "Sichere Sitzung",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Gutschrift hinzugefügt. Tippen Sie erneut auf „Generieren“."
   ,"recentDetail": "Details"
   ,"useAgain": "Erneut verwenden"
+  ,"useATemplate": "Vorlage verwenden"
+  ,"acceptPolitely": "Höflich zusagen"
+  ,"askForClarification": "Um Klärung bitten"
+  ,"explainTheReason": "Den Grund erklären"
+  ,"offerAnAlternative": "Alternative anbieten"
+  ,"suggestACompromise": "Kompromiss vorschlagen"
+  ,"showAppreciation": "Wertschätzung zeigen"
+  ,"apologizeBriefly": "Kurz entschuldigen"
+  ,"beFirmButKind": "Bestimmt, aber freundlich"
 }

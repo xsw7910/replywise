@@ -390,12 +390,12 @@ void main() {
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
-      find.text('Be polite'),
+      find.text('Accept'),
       180,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Be polite'));
+    await tester.tap(find.text('Accept'));
     await tester.pump();
 
     final guidanceField = find.descendant(
@@ -403,8 +403,8 @@ void main() {
       matching: find.byType(TextField),
     );
     final field = tester.widget<TextField>(guidanceField);
-    // Chip now inserts the template content, not the title.
-    expect(field.controller?.text, 'Make the reply polite and respectful.');
+    // Chip inserts the guidance instruction, not the label.
+    expect(field.controller?.text, 'Accept the request politely.');
   });
 
   testWidgets('paywall shows verified annual subscription terms', (

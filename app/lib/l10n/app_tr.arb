@@ -16,7 +16,7 @@
   "yourPlan": "Planın",
   "plans": "Planlar",
   "guidance": "Yönergeler",
-  "guidanceLibrary": "Yönerge Kitaplığı",
+  "guidanceLibrary": "Şablonlar",
   "languageAndInput": "Dil ve giriş",
   "appLanguage": "Uygulama dili",
   "about": "Hakkında",
@@ -84,7 +84,7 @@
   "checkingBackend": "Arka uç kontrol ediliyor…",
   "localBackendConnection": "Yerel arka uç bağlantısı",
   "quickGuidance": "Hızlı rehberlik",
-  "manageLibrary": "Kitaplığı Yönet",
+  "manageLibrary": "Şablonları yönet",
   "developer": "Geliştirici",
   "premiumUnlimited": "Prim · Sınırsız",
   "anonymousSessionReady": "Anonim oturum hazır",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Kredi eklendi. Tekrar Oluştur'a dokunun."
   ,"recentDetail": "Ayrıntılar"
   ,"useAgain": "Tekrar kullan"
+  ,"useATemplate": "Şablon kullan"
+  ,"acceptPolitely": "Kibarca kabul et"
+  ,"askForClarification": "Açıklama iste"
+  ,"explainTheReason": "Nedenini açıkla"
+  ,"offerAnAlternative": "Alternatif sun"
+  ,"suggestACompromise": "Uzlaşma öner"
+  ,"showAppreciation": "Takdir göster"
+  ,"apologizeBriefly": "Kısaca özür dile"
+  ,"beFirmButKind": "Kararlı ama nazik"
 }

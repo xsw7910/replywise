@@ -144,7 +144,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get guidance => 'Hướng dẫn';
 
   @override
-  String get guidanceLibrary => 'Thư viện hướng dẫn';
+  String get guidanceLibrary => 'Mẫu';
 
   @override
   String get languageAndInput => 'Ngôn ngữ & nhập liệu';
@@ -266,7 +266,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get done => 'Xong';
 
   @override
-  String get manageLibrary => 'Quản lý thư viện';
+  String get manageLibrary => 'Quản lý mẫu';
 
   @override
   String get newGuidance => 'Hướng dẫn mới';
@@ -926,4 +926,31 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get useAgain => 'Dùng lại';
+
+  @override
+  String get useATemplate => 'Dùng mẫu';
+
+  @override
+  String get acceptPolitely => 'Chấp nhận lịch sự';
+
+  @override
+  String get askForClarification => 'Yêu cầu làm rõ';
+
+  @override
+  String get explainTheReason => 'Giải thích lý do';
+
+  @override
+  String get offerAnAlternative => 'Đưa ra phương án khác';
+
+  @override
+  String get suggestACompromise => 'Đề xuất thỏa hiệp';
+
+  @override
+  String get showAppreciation => 'Bày tỏ sự cảm kích';
+
+  @override
+  String get apologizeBriefly => 'Xin lỗi ngắn gọn';
+
+  @override
+  String get beFirmButKind => 'Kiên định nhưng tử tế';
 }

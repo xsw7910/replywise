@@ -610,6 +610,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                               const SizedBox(height: 14),
                               _QuickGuidanceChips(
                                 onAppend: _appendGuidanceText,
+                                onOpenTemplates: _openLibrary,
                               ),
                             ],
                           ),
@@ -863,59 +864,130 @@ class _ExpandButton extends StatelessWidget {
   }
 }
 
-/// Fixed one-tap instruction chips. Each shows a short label but appends the
-/// canonical built-in guidance content (sourced by stable id) so the chips stay
-/// in sync with the Guidance Library.
+/// Reply guidance shortcuts. The first chip opens the templates picker; the
+/// rest are one-tap reply intents that append a short guidance instruction.
 class _QuickGuidanceChips extends StatelessWidget {
-  const _QuickGuidanceChips({required this.onAppend});
+  const _QuickGuidanceChips({
+    required this.onAppend,
+    required this.onOpenTemplates,
+  });
 
   final ValueChanged<String> onAppend;
-
-  // (chip label, built-in template id, icon)
-  static const _chips = <(String, String, IconData)>[
-    ('Be polite', 'builtin_be_polite', Icons.sentiment_satisfied_alt_rounded),
-    ('Keep it short', 'builtin_keep_short', Icons.short_text_rounded),
-    ('Professional', 'builtin_professional', Icons.business_center_outlined),
-    ('Friendly', 'builtin_friendly', Icons.waving_hand_outlined),
-    ('Decline politely', 'builtin_decline', Icons.do_not_disturb_alt_outlined),
-    ('Say thank you', 'builtin_thanks', Icons.volunteer_activism_outlined),
-  ];
+  final VoidCallback onOpenTemplates;
 
   @override
   Widget build(BuildContext context) {
-    final labels = {
-      'builtin_be_polite': context.l10n.bePolite,
-      'builtin_keep_short': context.l10n.keepItShort,
-      'builtin_professional': context.l10n.professional,
-      'builtin_friendly': context.l10n.friendly,
-      'builtin_decline': context.l10n.declinePolitely,
-      'builtin_thanks': context.l10n.sayThankYou,
-    };
+    final l10n = context.l10n;
+    // Guidance shortcuts (localized label, icon, tap action), sorted shortest
+    // label first so the grid reads top-down from compact to longer chips.
+    final guidance = <(String, IconData, VoidCallback)>[
+      (
+        l10n.acceptPolitely,
+        Icons.check_circle_outline,
+        () => onAppend('Accept the request politely.'),
+      ),
+      (
+        l10n.declinePolitely,
+        Icons.do_not_disturb_alt_outlined,
+        () => onAppend('Politely decline the request without sounding rude.'),
+      ),
+      (
+        l10n.askForClarification,
+        Icons.help_outline,
+        () => onAppend('Ask for clarification about the details.'),
+      ),
+      (
+        l10n.explainTheReason,
+        Icons.info_outline,
+        () => onAppend('Explain the reason behind the reply.'),
+      ),
+      (
+        l10n.offerAnAlternative,
+        Icons.alt_route_rounded,
+        () => onAppend('Offer an alternative option.'),
+      ),
+      (
+        l10n.suggestACompromise,
+        Icons.handshake_outlined,
+        () => onAppend('Suggest a compromise that works for both sides.'),
+      ),
+      (
+        l10n.showAppreciation,
+        Icons.volunteer_activism_outlined,
+        () => onAppend('Show appreciation and thank them.'),
+      ),
+      (
+        l10n.apologizeBriefly,
+        Icons.sentiment_dissatisfied_outlined,
+        () => onAppend('Apologize briefly and sincerely.'),
+      ),
+      (
+        l10n.beFirmButKind,
+        Icons.shield_outlined,
+        () => onAppend('Be firm but kind in the reply.'),
+      ),
+    ]..sort((a, b) => a.$1.length.compareTo(b.$1.length));
+
+    // The templates picker stays pinned first.
+    final items = <(String, IconData, VoidCallback)>[
+      (l10n.useATemplate, Icons.library_books_outlined, onOpenTemplates),
+      ...guidance,
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(context.l10n.quickGuidance, style: AppTextStyles.badge),
+        Text(l10n.quickGuidance, style: AppTextStyles.badge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (final (label, id, icon) in _chips)
-              ActionChip(
-                backgroundColor: _feature.selectedChipColor,
-                side: const BorderSide(color: AppColors.glassEdgeStrong),
-                avatar: Icon(icon, size: 15, color: _kColor),
-                label: Text(
-                  labels[id] ?? label,
-                  style: const TextStyle(color: _kColor),
-                ),
-                onPressed: () => onAppend(
-                  kBuiltInTemplates.firstWhere((t) => t.id == id).content,
-                ),
-              ),
+            for (final item in items)
+              _chip(item, maxWidth: MediaQuery.sizeOf(context).width - 48),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _chip(
+    (String, IconData, VoidCallback) item, {
+    required double maxWidth,
+  }) {
+    final (label, icon, onTap) = item;
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      child: Material(
+        color: _feature.selectedChipColor,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppColors.glassEdgeStrong),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 15, color: _kColor),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: _kColor),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

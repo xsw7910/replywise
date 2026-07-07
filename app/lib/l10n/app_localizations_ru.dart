@@ -144,7 +144,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get guidance => 'Инструкции';
 
   @override
-  String get guidanceLibrary => 'Библиотека инструкций';
+  String get guidanceLibrary => 'Шаблоны';
 
   @override
   String get languageAndInput => 'Язык и ввод';
@@ -266,7 +266,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get done => 'Готово';
 
   @override
-  String get manageLibrary => 'Управление библиотекой';
+  String get manageLibrary => 'Управление шаблонами';
 
   @override
   String get newGuidance => 'Новое руководство';
@@ -928,4 +928,31 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get useAgain => 'Использовать снова';
+
+  @override
+  String get useATemplate => 'Использовать шаблон';
+
+  @override
+  String get acceptPolitely => 'Вежливо согласиться';
+
+  @override
+  String get askForClarification => 'Попросить уточнить';
+
+  @override
+  String get explainTheReason => 'Объяснить причину';
+
+  @override
+  String get offerAnAlternative => 'Предложить альтернативу';
+
+  @override
+  String get suggestACompromise => 'Предложить компромисс';
+
+  @override
+  String get showAppreciation => 'Выразить благодарность';
+
+  @override
+  String get apologizeBriefly => 'Кратко извиниться';
+
+  @override
+  String get beFirmButKind => 'Твёрдо, но доброжелательно';
 }

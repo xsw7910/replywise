@@ -16,7 +16,7 @@
   "yourPlan": "내 요금제",
   "plans": "요금제",
   "guidance": "가이드",
-  "guidanceLibrary": "가이드 라이브러리",
+  "guidanceLibrary": "템플릿",
   "languageAndInput": "언어 및 입력",
   "appLanguage": "앱 언어",
   "about": "정보",
@@ -87,7 +87,7 @@
   "simulatePremiumOn": "프리미엄 시뮬레이션",
   "refreshBackendStatus": "백엔드 상태 새로 고침",
   "copyPreview": "미리보기 복사",
-  "manageLibrary": "라이브러리 관리",
+  "manageLibrary": "템플릿 관리",
   "checkingBalance": "잔액 확인 중…",
   "checkingBackend": "백엔드 확인 중…",
   "staticPreviewCaption": "정적 미리보기",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "크레딧이 추가되었습니다. 생성을 다시 탭하세요."
   ,"recentDetail": "세부정보"
   ,"useAgain": "다시 사용"
+  ,"useATemplate": "템플릿 사용"
+  ,"acceptPolitely": "정중히 수락"
+  ,"askForClarification": "설명 요청"
+  ,"explainTheReason": "이유 설명"
+  ,"offerAnAlternative": "대안 제시"
+  ,"suggestACompromise": "절충안 제안"
+  ,"showAppreciation": "감사 표현"
+  ,"apologizeBriefly": "간단히 사과"
+  ,"beFirmButKind": "단호하지만 친절하게"
 }

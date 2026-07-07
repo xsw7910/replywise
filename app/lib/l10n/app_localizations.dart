@@ -382,7 +382,7 @@ abstract class AppLocalizations {
   /// No description provided for @guidanceLibrary.
   ///
   /// In en, this message translates to:
-  /// **'Guidance Library'**
+  /// **'Templates'**
   String get guidanceLibrary;
 
   /// No description provided for @languageAndInput.
@@ -616,7 +616,7 @@ abstract class AppLocalizations {
   /// No description provided for @manageLibrary.
   ///
   /// In en, this message translates to:
-  /// **'Manage Library'**
+  /// **'Manage templates'**
   String get manageLibrary;
 
   /// No description provided for @newGuidance.
@@ -964,7 +964,7 @@ abstract class AppLocalizations {
   /// No description provided for @declinePolitely.
   ///
   /// In en, this message translates to:
-  /// **'Decline politely'**
+  /// **'Decline'**
   String get declinePolitely;
 
   /// No description provided for @sayThankYou.
@@ -1830,6 +1830,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use again'**
   String get useAgain;
+
+  /// No description provided for @useATemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Template'**
+  String get useATemplate;
+
+  /// No description provided for @acceptPolitely.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get acceptPolitely;
+
+  /// No description provided for @askForClarification.
+  ///
+  /// In en, this message translates to:
+  /// **'Clarify'**
+  String get askForClarification;
+
+  /// No description provided for @explainTheReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain'**
+  String get explainTheReason;
+
+  /// No description provided for @offerAnAlternative.
+  ///
+  /// In en, this message translates to:
+  /// **'Alternative'**
+  String get offerAnAlternative;
+
+  /// No description provided for @suggestACompromise.
+  ///
+  /// In en, this message translates to:
+  /// **'Compromise'**
+  String get suggestACompromise;
+
+  /// No description provided for @showAppreciation.
+  ///
+  /// In en, this message translates to:
+  /// **'Appreciate'**
+  String get showAppreciation;
+
+  /// No description provided for @apologizeBriefly.
+  ///
+  /// In en, this message translates to:
+  /// **'Apologize'**
+  String get apologizeBriefly;
+
+  /// No description provided for @beFirmButKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Firm'**
+  String get beFirmButKind;
 }
 
 class _AppLocalizationsDelegate

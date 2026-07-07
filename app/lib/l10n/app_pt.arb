@@ -16,7 +16,7 @@
   "yourPlan": "Seu plano",
   "plans": "Planos",
   "guidance": "Orientação",
-  "guidanceLibrary": "Biblioteca de orientações",
+  "guidanceLibrary": "Modelos",
   "languageAndInput": "Idioma e entrada",
   "appLanguage": "Idioma do app",
   "about": "Sobre",
@@ -99,7 +99,7 @@
   "freeCount": "{free} grátis",
   "staticPreviewCaption": "Visualização estática",
   "checkingBalance": "Verificando saldo…",
-  "manageLibrary": "Gerenciar biblioteca",
+  "manageLibrary": "Gerir modelos",
   "meaning": "Significado",
   "helpAiUnderstandIntent": "Ajude a IA a entender sua intenção",
   "usageBalance": "{free} grátis · {credits} créditos",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Crédito adicionado. Toque em Gerar novamente."
   ,"recentDetail": "Detalhes"
   ,"useAgain": "Usar novamente"
+  ,"useATemplate": "Usar um modelo"
+  ,"acceptPolitely": "Aceitar com educação"
+  ,"askForClarification": "Pedir esclarecimento"
+  ,"explainTheReason": "Explicar o motivo"
+  ,"offerAnAlternative": "Oferecer uma alternativa"
+  ,"suggestACompromise": "Sugerir um meio-termo"
+  ,"showAppreciation": "Demonstrar gratidão"
+  ,"apologizeBriefly": "Pedir desculpa brevemente"
+  ,"beFirmButKind": "Firme mas gentil"
 }

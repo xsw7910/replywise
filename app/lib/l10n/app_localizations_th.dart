@@ -141,7 +141,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get guidance => 'คำแนะนำ';
 
   @override
-  String get guidanceLibrary => 'คลังคำแนะนำ';
+  String get guidanceLibrary => 'เทมเพลต';
 
   @override
   String get languageAndInput => 'ภาษาและการป้อนข้อมูล';
@@ -266,7 +266,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get done => 'เสร็จสิ้น';
 
   @override
-  String get manageLibrary => 'จัดการห้องสมุด';
+  String get manageLibrary => 'จัดการเทมเพลต';
 
   @override
   String get newGuidance => 'คำแนะนำใหม่';
@@ -912,4 +912,31 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get useAgain => 'ใช้อีกครั้ง';
+
+  @override
+  String get useATemplate => 'ใช้เทมเพลต';
+
+  @override
+  String get acceptPolitely => 'ตอบรับอย่างสุภาพ';
+
+  @override
+  String get askForClarification => 'ขอคำชี้แจง';
+
+  @override
+  String get explainTheReason => 'อธิบายเหตุผล';
+
+  @override
+  String get offerAnAlternative => 'เสนอทางเลือก';
+
+  @override
+  String get suggestACompromise => 'เสนอการประนีประนอม';
+
+  @override
+  String get showAppreciation => 'แสดงความขอบคุณ';
+
+  @override
+  String get apologizeBriefly => 'ขอโทษสั้นๆ';
+
+  @override
+  String get beFirmButKind => 'หนักแน่นแต่สุภาพ';
 }

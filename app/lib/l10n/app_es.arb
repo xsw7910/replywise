@@ -16,7 +16,7 @@
   "yourPlan": "Tu plan",
   "plans": "Planes",
   "guidance": "Guía",
-  "guidanceLibrary": "Biblioteca de guías",
+  "guidanceLibrary": "Plantillas",
   "languageAndInput": "Idioma y entrada",
   "appLanguage": "Idioma de la aplicación",
   "about": "Acerca de",
@@ -72,7 +72,7 @@
   "secureSession": "Sesión segura",
   "checkingBackend": "Comprobando el backend...",
   "localBackendConnection": "Conexión de back-end local",
-  "manageLibrary": "Administrar biblioteca",
+  "manageLibrary": "Gestionar plantillas",
   "refreshBackendStatus": "Actualizar el estado del backend",
   "refreshAccountState": "Actualizar el estado de la cuenta",
   "anonymousSessionReady": "Sesión anónima lista",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Crédito agregado. Toca Generar nuevamente."
   ,"recentDetail": "Detalles"
   ,"useAgain": "Usar de nuevo"
+  ,"useATemplate": "Usar una plantilla"
+  ,"acceptPolitely": "Aceptar con cortesía"
+  ,"askForClarification": "Pedir aclaración"
+  ,"explainTheReason": "Explicar el motivo"
+  ,"offerAnAlternative": "Ofrecer una alternativa"
+  ,"suggestACompromise": "Proponer un acuerdo"
+  ,"showAppreciation": "Mostrar agradecimiento"
+  ,"apologizeBriefly": "Disculparse brevemente"
+  ,"beFirmButKind": "Firme pero amable"
 }

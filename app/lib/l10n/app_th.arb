@@ -16,7 +16,7 @@
   "yourPlan": "แพ็กเกจของคุณ",
   "plans": "แพ็กเกจ",
   "guidance": "คำแนะนำ",
-  "guidanceLibrary": "คลังคำแนะนำ",
+  "guidanceLibrary": "เทมเพลต",
   "languageAndInput": "ภาษาและการป้อนข้อมูล",
   "appLanguage": "ภาษาของแอป",
   "about": "เกี่ยวกับ",
@@ -73,7 +73,7 @@
   "simulatePremiumOff": "จำลองการปิดพรีเมียม",
   "viewPlans": "ดูแผน",
   "loading": "กำลังโหลด...",
-  "manageLibrary": "จัดการห้องสมุด",
+  "manageLibrary": "จัดการเทมเพลต",
   "secureSession": "เซสชันที่ปลอดภัย",
   "anonymousSessionReady": "เซสชันที่ไม่ระบุชื่อพร้อมแล้ว",
   "localBackendConnection": "การเชื่อมต่อแบ็กเอนด์ในเครื่อง",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "เพิ่มเครดิตแล้ว แตะสร้างอีกครั้ง"
   ,"recentDetail": "รายละเอียด"
   ,"useAgain": "ใช้อีกครั้ง"
+  ,"useATemplate": "ใช้เทมเพลต"
+  ,"acceptPolitely": "ตอบรับอย่างสุภาพ"
+  ,"askForClarification": "ขอคำชี้แจง"
+  ,"explainTheReason": "อธิบายเหตุผล"
+  ,"offerAnAlternative": "เสนอทางเลือก"
+  ,"suggestACompromise": "เสนอการประนีประนอม"
+  ,"showAppreciation": "แสดงความขอบคุณ"
+  ,"apologizeBriefly": "ขอโทษสั้นๆ"
+  ,"beFirmButKind": "หนักแน่นแต่สุภาพ"
 }

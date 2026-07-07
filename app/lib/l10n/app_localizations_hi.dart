@@ -142,7 +142,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get guidance => 'मार्गदर्शन';
 
   @override
-  String get guidanceLibrary => 'मार्गदर्शन लाइब्रेरी';
+  String get guidanceLibrary => 'टेम्पलेट';
 
   @override
   String get languageAndInput => 'भाषा और इनपुट';
@@ -265,7 +265,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get done => 'पूर्ण';
 
   @override
-  String get manageLibrary => 'लाइब्रेरी प्रबंधित करें';
+  String get manageLibrary => 'टेम्पलेट प्रबंधित करें';
 
   @override
   String get newGuidance => 'नया मार्गदर्शन';
@@ -922,4 +922,31 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get useAgain => 'फिर से उपयोग करें';
+
+  @override
+  String get useATemplate => 'टेम्पलेट का उपयोग करें';
+
+  @override
+  String get acceptPolitely => 'विनम्रता से स्वीकार करें';
+
+  @override
+  String get askForClarification => 'स्पष्टीकरण मांगें';
+
+  @override
+  String get explainTheReason => 'कारण बताएं';
+
+  @override
+  String get offerAnAlternative => 'विकल्प सुझाएं';
+
+  @override
+  String get suggestACompromise => 'समझौता सुझाएं';
+
+  @override
+  String get showAppreciation => 'आभार व्यक्त करें';
+
+  @override
+  String get apologizeBriefly => 'संक्षेप में क्षमा करें';
+
+  @override
+  String get beFirmButKind => 'दृढ़ पर विनम्र रहें';
 }

@@ -208,7 +208,7 @@ void main() {
       await tester.pumpAndSettle();
 
       const fieldKey = Key('polish-custom-guidance-field');
-      expect(_actionIn(fieldKey, 'Guidance Library'), findsOneWidget);
+      expect(_actionIn(fieldKey, 'Templates'), findsOneWidget);
       expect(_actionIn(fieldKey, 'Paste'), findsOneWidget);
       expect(_actionIn(fieldKey, 'Clear'), findsOneWidget);
 
@@ -235,7 +235,7 @@ void main() {
     await tester.pumpAndSettle();
 
     const fieldKey = Key('polish-custom-guidance-field');
-    await tester.tap(_actionIn(fieldKey, 'Guidance Library'));
+    await tester.tap(_actionIn(fieldKey, 'Templates'));
     await tester.pumpAndSettle();
     expect(find.text('Choose guidance'), findsOneWidget);
     await tester.tap(find.widgetWithText(FilledButton, 'Use').first);

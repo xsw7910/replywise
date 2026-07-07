@@ -16,7 +16,7 @@
   "yourPlan": "Ваш план",
   "plans": "Планы",
   "guidance": "Инструкции",
-  "guidanceLibrary": "Библиотека инструкций",
+  "guidanceLibrary": "Шаблоны",
   "languageAndInput": "Язык и ввод",
   "appLanguage": "Язык приложения",
   "about": "О приложении",
@@ -75,7 +75,7 @@
   "anonymousSessionReady": "Анонимный сеанс готов",
   "viewPlans": "Посмотреть планы",
   "updating": "Обновление",
-  "manageLibrary": "Управление библиотекой",
+  "manageLibrary": "Управление шаблонами",
   "updatingBalance": "Обновление баланса…",
   "refreshAccountState": "Обновить состояние аккаунта",
   "checkingBackend": "Проверка серверной части…",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Кредит добавлен. Нажмите «Создать» еще раз."
   ,"recentDetail": "Подробности"
   ,"useAgain": "Использовать снова"
+  ,"useATemplate": "Использовать шаблон"
+  ,"acceptPolitely": "Вежливо согласиться"
+  ,"askForClarification": "Попросить уточнить"
+  ,"explainTheReason": "Объяснить причину"
+  ,"offerAnAlternative": "Предложить альтернативу"
+  ,"suggestACompromise": "Предложить компромисс"
+  ,"showAppreciation": "Выразить благодарность"
+  ,"apologizeBriefly": "Кратко извиниться"
+  ,"beFirmButKind": "Твёрдо, но доброжелательно"
 }

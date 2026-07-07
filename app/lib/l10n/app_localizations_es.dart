@@ -144,7 +144,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get guidance => 'Guía';
 
   @override
-  String get guidanceLibrary => 'Biblioteca de guías';
+  String get guidanceLibrary => 'Plantillas';
 
   @override
   String get languageAndInput => 'Idioma y entrada';
@@ -266,7 +266,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get done => 'Listo';
 
   @override
-  String get manageLibrary => 'Administrar biblioteca';
+  String get manageLibrary => 'Gestionar plantillas';
 
   @override
   String get newGuidance => 'Nueva orientación';
@@ -931,4 +931,31 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get useAgain => 'Usar de nuevo';
+
+  @override
+  String get useATemplate => 'Usar una plantilla';
+
+  @override
+  String get acceptPolitely => 'Aceptar con cortesía';
+
+  @override
+  String get askForClarification => 'Pedir aclaración';
+
+  @override
+  String get explainTheReason => 'Explicar el motivo';
+
+  @override
+  String get offerAnAlternative => 'Ofrecer una alternativa';
+
+  @override
+  String get suggestACompromise => 'Proponer un acuerdo';
+
+  @override
+  String get showAppreciation => 'Mostrar agradecimiento';
+
+  @override
+  String get apologizeBriefly => 'Disculparse brevemente';
+
+  @override
+  String get beFirmButKind => 'Firme pero amable';
 }

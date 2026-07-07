@@ -16,7 +16,7 @@
   "yourPlan": "Je abonnement",
   "plans": "Abonnementen",
   "guidance": "Instructies",
-  "guidanceLibrary": "Instructiebibliotheek",
+  "guidanceLibrary": "Sjablonen",
   "languageAndInput": "Taal en invoer",
   "appLanguage": "App-taal",
   "about": "Over",
@@ -83,7 +83,7 @@
   "localBackendConnection": "Lokale backend-verbinding",
   "refreshBackendStatus": "Vernieuw de backend-status",
   "refreshAccountState": "Vernieuw de accountstatus",
-  "manageLibrary": "Beheer bibliotheek",
+  "manageLibrary": "Sjablonen beheren",
   "history": "Geschiedenis",
   "clear": "Duidelijk",
   "paste": "Plakken",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Krediet toegevoegd. Tik nogmaals op Genereren."
   ,"recentDetail": "Details"
   ,"useAgain": "Opnieuw gebruiken"
+  ,"useATemplate": "Sjabloon gebruiken"
+  ,"acceptPolitely": "Beleefd accepteren"
+  ,"askForClarification": "Om verduidelijking vragen"
+  ,"explainTheReason": "De reden uitleggen"
+  ,"offerAnAlternative": "Een alternatief bieden"
+  ,"suggestACompromise": "Een compromis voorstellen"
+  ,"showAppreciation": "Waardering tonen"
+  ,"apologizeBriefly": "Kort excuses aanbieden"
+  ,"beFirmButKind": "Vastberaden maar vriendelijk"
 }

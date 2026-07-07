@@ -142,7 +142,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guidance => 'Guidance';
 
   @override
-  String get guidanceLibrary => 'Guidance Library';
+  String get guidanceLibrary => 'Templates';
 
   @override
   String get languageAndInput => 'Language & input';
@@ -264,7 +264,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get done => 'Done';
 
   @override
-  String get manageLibrary => 'Manage Library';
+  String get manageLibrary => 'Manage templates';
 
   @override
   String get newGuidance => 'New Guidance';
@@ -444,7 +444,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendly => 'Friendly';
 
   @override
-  String get declinePolitely => 'Decline politely';
+  String get declinePolitely => 'Decline';
 
   @override
   String get sayThankYou => 'Say thank you';
@@ -916,4 +916,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get useAgain => 'Use again';
+
+  @override
+  String get useATemplate => 'Template';
+
+  @override
+  String get acceptPolitely => 'Accept';
+
+  @override
+  String get askForClarification => 'Clarify';
+
+  @override
+  String get explainTheReason => 'Explain';
+
+  @override
+  String get offerAnAlternative => 'Alternative';
+
+  @override
+  String get suggestACompromise => 'Compromise';
+
+  @override
+  String get showAppreciation => 'Appreciate';
+
+  @override
+  String get apologizeBriefly => 'Apologize';
+
+  @override
+  String get beFirmButKind => 'Firm';
 }

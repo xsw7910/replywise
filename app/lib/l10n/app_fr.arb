@@ -16,7 +16,7 @@
   "yourPlan": "Votre forfait",
   "plans": "Forfaits",
   "guidance": "Consignes",
-  "guidanceLibrary": "Bibliothèque de consignes",
+  "guidanceLibrary": "Modèles",
   "languageAndInput": "Langue et saisie",
   "appLanguage": "Langue de l’application",
   "about": "À propos",
@@ -101,7 +101,7 @@
   "quickGuidance": "Conseils rapides",
   "balanceUnavailable": "Solde indisponible",
   "premiumUnlimited": "Premium · Illimité",
-  "manageLibrary": "Gérer la bibliothèque",
+  "manageLibrary": "Gérer les modèles",
   "copyPreview": "Copier l'aperçu",
   "clear": "Clair",
   "generating": "Générateur…",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Crédit ajouté. Appuyez à nouveau sur Générer."
   ,"recentDetail": "Détails"
   ,"useAgain": "Réutiliser"
+  ,"useATemplate": "Utiliser un modèle"
+  ,"acceptPolitely": "Accepter poliment"
+  ,"askForClarification": "Demander des précisions"
+  ,"explainTheReason": "Expliquer la raison"
+  ,"offerAnAlternative": "Proposer une alternative"
+  ,"suggestACompromise": "Proposer un compromis"
+  ,"showAppreciation": "Montrer de la gratitude"
+  ,"apologizeBriefly": "S'excuser brièvement"
+  ,"beFirmButKind": "Ferme mais bienveillant"
 }

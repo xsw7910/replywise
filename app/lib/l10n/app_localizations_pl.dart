@@ -142,7 +142,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get guidance => 'Wskazówki';
 
   @override
-  String get guidanceLibrary => 'Biblioteka wskazówek';
+  String get guidanceLibrary => 'Szablony';
 
   @override
   String get languageAndInput => 'Język i wprowadzanie';
@@ -265,7 +265,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get done => 'Gotowe';
 
   @override
-  String get manageLibrary => 'Zarządzaj biblioteką';
+  String get manageLibrary => 'Zarządzaj szablonami';
 
   @override
   String get newGuidance => 'Nowe wytyczne';
@@ -930,4 +930,31 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get useAgain => 'Użyj ponownie';
+
+  @override
+  String get useATemplate => 'Użyj szablonu';
+
+  @override
+  String get acceptPolitely => 'Uprzejmie zaakceptuj';
+
+  @override
+  String get askForClarification => 'Poproś o wyjaśnienie';
+
+  @override
+  String get explainTheReason => 'Wyjaśnij powód';
+
+  @override
+  String get offerAnAlternative => 'Zaproponuj alternatywę';
+
+  @override
+  String get suggestACompromise => 'Zaproponuj kompromis';
+
+  @override
+  String get showAppreciation => 'Okaż wdzięczność';
+
+  @override
+  String get apologizeBriefly => 'Krótko przeproś';
+
+  @override
+  String get beFirmButKind => 'Stanowczo, ale uprzejmie';
 }

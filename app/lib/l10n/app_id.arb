@@ -16,7 +16,7 @@
   "yourPlan": "Paket Anda",
   "plans": "Paket",
   "guidance": "Panduan",
-  "guidanceLibrary": "Pustaka panduan",
+  "guidanceLibrary": "Templat",
   "languageAndInput": "Bahasa & masukan",
   "appLanguage": "Bahasa aplikasi",
   "about": "Tentang",
@@ -84,7 +84,7 @@
   "paste": "Pasta",
   "connectionFailed": "Koneksi gagal",
   "developer": "Pengembang",
-  "manageLibrary": "Kelola Perpustakaan",
+  "manageLibrary": "Kelola templat",
   "checking": "Memeriksa",
   "updating": "Memperbarui",
   "localBackendConnection": "Koneksi backend lokal",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Kredit ditambahkan. Ketuk Hasilkan lagi."
   ,"recentDetail": "Detail"
   ,"useAgain": "Gunakan lagi"
+  ,"useATemplate": "Gunakan templat"
+  ,"acceptPolitely": "Terima dengan sopan"
+  ,"askForClarification": "Minta klarifikasi"
+  ,"explainTheReason": "Jelaskan alasannya"
+  ,"offerAnAlternative": "Tawarkan alternatif"
+  ,"suggestACompromise": "Sarankan kompromi"
+  ,"showAppreciation": "Tunjukkan apresiasi"
+  ,"apologizeBriefly": "Minta maaf singkat"
+  ,"beFirmButKind": "Tegas tapi ramah"
 }

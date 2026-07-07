@@ -42,7 +42,7 @@
   "supportDescription": "Help center / Contact us",
   "aboutDescription": "Version, Privacy, Terms",
   "guidance": "Guidance",
-  "guidanceLibrary": "Guidance Library",
+  "guidanceLibrary": "Templates",
   "languageAndInput": "Language & input",
   "appLanguage": "App language",
   "voiceGuidanceLanguage": "Voice guidance language",
@@ -83,7 +83,7 @@
   "use": "Use",
   "save": "Save",
   "done": "Done",
-  "manageLibrary": "Manage Library",
+  "manageLibrary": "Manage templates",
   "newGuidance": "New Guidance",
   "quickGuidance": "Quick guidance",
   "viewPlans": "View plans",
@@ -143,7 +143,7 @@
   ,"keepItShort": "Keep it short"
   ,"professional": "Professional"
   ,"friendly": "Friendly"
-  ,"declinePolitely": "Decline politely"
+  ,"declinePolitely": "Decline"
   ,"sayThankYou": "Say thank you"
   ,"auto": "Auto"
   ,"natural": "Natural"
@@ -298,4 +298,13 @@
   ,"adRewardFailed": "Couldn’t add your credit. Please try again."
   ,"recentDetail": "Details"
   ,"useAgain": "Use again"
+  ,"useATemplate": "Template"
+  ,"acceptPolitely": "Accept"
+  ,"askForClarification": "Clarify"
+  ,"explainTheReason": "Explain"
+  ,"offerAnAlternative": "Alternative"
+  ,"suggestACompromise": "Compromise"
+  ,"showAppreciation": "Appreciate"
+  ,"apologizeBriefly": "Apologize"
+  ,"beFirmButKind": "Firm"
 }

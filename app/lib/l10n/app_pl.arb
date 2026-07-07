@@ -16,7 +16,7 @@
   "yourPlan": "Twój plan",
   "plans": "Plany",
   "guidance": "Wskazówki",
-  "guidanceLibrary": "Biblioteka wskazówek",
+  "guidanceLibrary": "Szablony",
   "languageAndInput": "Język i wprowadzanie",
   "appLanguage": "Język aplikacji",
   "about": "Informacje",
@@ -70,7 +70,7 @@
   "refreshBackendStatus": "Odśwież stan backendu",
   "localBackendConnection": "Lokalne połączenie z backendem",
   "resetFreeUsage": "Zresetuj bezpłatne użytkowanie",
-  "manageLibrary": "Zarządzaj biblioteką",
+  "manageLibrary": "Zarządzaj szablonami",
   "secureSession": "Bezpieczna sesja",
   "refreshAccountState": "Odśwież stan konta",
   "checkingBackend": "Sprawdzam zaplecze…",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Dodano kredyt. Kliknij ponownie opcję Generuj."
   ,"recentDetail": "Szczegóły"
   ,"useAgain": "Użyj ponownie"
+  ,"useATemplate": "Użyj szablonu"
+  ,"acceptPolitely": "Uprzejmie zaakceptuj"
+  ,"askForClarification": "Poproś o wyjaśnienie"
+  ,"explainTheReason": "Wyjaśnij powód"
+  ,"offerAnAlternative": "Zaproponuj alternatywę"
+  ,"suggestACompromise": "Zaproponuj kompromis"
+  ,"showAppreciation": "Okaż wdzięczność"
+  ,"apologizeBriefly": "Krótko przeproś"
+  ,"beFirmButKind": "Stanowczo, ale uprzejmie"
 }

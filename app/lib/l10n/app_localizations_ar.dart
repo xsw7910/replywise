@@ -141,7 +141,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get guidance => 'الإرشادات';
 
   @override
-  String get guidanceLibrary => 'مكتبة الإرشادات';
+  String get guidanceLibrary => 'القوالب';
 
   @override
   String get languageAndInput => 'اللغة والإدخال';
@@ -263,7 +263,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get done => 'تم';
 
   @override
-  String get manageLibrary => 'إدارة المكتبة';
+  String get manageLibrary => 'إدارة القوالب';
 
   @override
   String get newGuidance => 'إرشادات جديدة';
@@ -910,4 +910,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get useAgain => 'استخدام مرة أخرى';
+
+  @override
+  String get useATemplate => 'استخدام قالب';
+
+  @override
+  String get acceptPolitely => 'القبول بأدب';
+
+  @override
+  String get askForClarification => 'طلب توضيح';
+
+  @override
+  String get explainTheReason => 'شرح السبب';
+
+  @override
+  String get offerAnAlternative => 'اقتراح بديل';
+
+  @override
+  String get suggestACompromise => 'اقتراح حل وسط';
+
+  @override
+  String get showAppreciation => 'إظهار التقدير';
+
+  @override
+  String get apologizeBriefly => 'الاعتذار بإيجاز';
+
+  @override
+  String get beFirmButKind => 'حازم لكن لطيف';
 }

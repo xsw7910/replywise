@@ -1,6 +1,10 @@
 {
   "permissions": {
-    "allow": [],
+    "allow": [
+      "Bash(./.venv/Scripts/python.exe *)",
+      "Bash(./../backend/.venv/Scripts/python.exe *)",
+      "Bash(.venv/Scripts/*)"
+    ]
     "deny": [
       "Bash(git push)",
       "Bash(git push:*)",

@@ -134,7 +134,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guidance => 'ガイダンス';
 
   @override
-  String get guidanceLibrary => 'ガイダンスライブラリ';
+  String get guidanceLibrary => 'テンプレート';
 
   @override
   String get languageAndInput => '言語と入力';
@@ -255,7 +255,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get done => '完了';
 
   @override
-  String get manageLibrary => 'ライブラリの管理';
+  String get manageLibrary => 'テンプレートを管理';
 
   @override
   String get newGuidance => '新しいガイダンス';
@@ -889,4 +889,31 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get useAgain => 'もう一度使う';
+
+  @override
+  String get useATemplate => 'テンプレートを使う';
+
+  @override
+  String get acceptPolitely => '丁寧に承諾する';
+
+  @override
+  String get askForClarification => '確認を求める';
+
+  @override
+  String get explainTheReason => '理由を説明する';
+
+  @override
+  String get offerAnAlternative => '代替案を提示する';
+
+  @override
+  String get suggestACompromise => '妥協案を提案する';
+
+  @override
+  String get showAppreciation => '感謝を伝える';
+
+  @override
+  String get apologizeBriefly => '簡潔に謝罪する';
+
+  @override
+  String get beFirmButKind => '毅然かつ丁寧に';
 }

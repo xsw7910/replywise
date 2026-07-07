@@ -142,7 +142,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get guidance => 'Panduan';
 
   @override
-  String get guidanceLibrary => 'Pustaka panduan';
+  String get guidanceLibrary => 'Templat';
 
   @override
   String get languageAndInput => 'Bahasa & masukan';
@@ -264,7 +264,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get done => 'Selesai';
 
   @override
-  String get manageLibrary => 'Kelola Perpustakaan';
+  String get manageLibrary => 'Kelola templat';
 
   @override
   String get newGuidance => 'Panduan Baru';
@@ -925,4 +925,31 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get useAgain => 'Gunakan lagi';
+
+  @override
+  String get useATemplate => 'Gunakan templat';
+
+  @override
+  String get acceptPolitely => 'Terima dengan sopan';
+
+  @override
+  String get askForClarification => 'Minta klarifikasi';
+
+  @override
+  String get explainTheReason => 'Jelaskan alasannya';
+
+  @override
+  String get offerAnAlternative => 'Tawarkan alternatif';
+
+  @override
+  String get suggestACompromise => 'Sarankan kompromi';
+
+  @override
+  String get showAppreciation => 'Tunjukkan apresiasi';
+
+  @override
+  String get apologizeBriefly => 'Minta maaf singkat';
+
+  @override
+  String get beFirmButKind => 'Tegas tapi ramah';
 }

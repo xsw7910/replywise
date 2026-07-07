@@ -16,7 +16,7 @@
   "yourPlan": "आपकी योजना",
   "plans": "योजनाएँ",
   "guidance": "मार्गदर्शन",
-  "guidanceLibrary": "मार्गदर्शन लाइब्रेरी",
+  "guidanceLibrary": "टेम्पलेट",
   "languageAndInput": "भाषा और इनपुट",
   "appLanguage": "ऐप की भाषा",
   "about": "परिचय",
@@ -86,7 +86,7 @@
   "refreshBackendStatus": "बैकएंड स्थिति ताज़ा करें",
   "checkingBackend": "बैकएंड की जाँच हो रही है...",
   "localBackendConnection": "स्थानीय बैकएंड कनेक्शन",
-  "manageLibrary": "लाइब्रेरी प्रबंधित करें",
+  "manageLibrary": "टेम्पलेट प्रबंधित करें",
   "history": "इतिहास",
   "clearHistory": "इतिहास मिटा दें?",
   "clearAll": "सभी साफ करें",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "क्रेडिट जोड़ा गया. फिर से जेनरेट पर टैप करें."
   ,"recentDetail": "विवरण"
   ,"useAgain": "फिर से उपयोग करें"
+  ,"useATemplate": "टेम्पलेट का उपयोग करें"
+  ,"acceptPolitely": "विनम्रता से स्वीकार करें"
+  ,"askForClarification": "स्पष्टीकरण मांगें"
+  ,"explainTheReason": "कारण बताएं"
+  ,"offerAnAlternative": "विकल्प सुझाएं"
+  ,"suggestACompromise": "समझौता सुझाएं"
+  ,"showAppreciation": "आभार व्यक्त करें"
+  ,"apologizeBriefly": "संक्षेप में क्षमा करें"
+  ,"beFirmButKind": "दृढ़ पर विनम्र रहें"
 }

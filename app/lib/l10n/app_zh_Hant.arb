@@ -16,7 +16,7 @@
   "yourPlan": "你的方案",
   "plans": "方案",
   "guidance": "指引",
-  "guidanceLibrary": "指引庫",
+  "guidanceLibrary": "範本",
   "languageAndInput": "語言與輸入",
   "appLanguage": "應用程式語言",
   "voiceGuidanceLanguage": "語音指引語言",
@@ -87,7 +87,7 @@
   "serviceUnreachable": "我們無法聯繫到該服務。檢查您的連線並重試。",
   "premiumUnlimited": "進階版 · 無限使用",
   "quickGuidance": "快速指導",
-  "manageLibrary": "管理指引庫",
+  "manageLibrary": "管理範本",
   "checkingBalance": "檢查餘額...",
   "freeCount": "免費 {free} 次",
   "balanceUnavailable": "餘額不可用",
@@ -284,4 +284,13 @@
   "outOfCreditsMessage": "觀看一段短廣告即可獲得 2 個免費點數，或升級以獲得更多使用權限。"
   ,"recentDetail": "詳情"
   ,"useAgain": "再次使用"
+  ,"useATemplate": "使用範本"
+  ,"acceptPolitely": "禮貌接受"
+  ,"askForClarification": "請求澄清"
+  ,"explainTheReason": "說明原因"
+  ,"offerAnAlternative": "提供替代方案"
+  ,"suggestACompromise": "提出折衷方案"
+  ,"showAppreciation": "表達感謝"
+  ,"apologizeBriefly": "簡短致歉"
+  ,"beFirmButKind": "堅定而友善"
 }

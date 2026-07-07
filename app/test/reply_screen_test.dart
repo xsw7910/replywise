@@ -92,6 +92,36 @@ Future<void> _pumpReply(
   await tester.pumpAndSettle();
 }
 
+/// Pumps the Reply screen with an overridden text scale, for exercising the
+/// Quick guidance chip grid at large system font sizes.
+Future<void> _pumpReplyScaled(WidgetTester tester, double textScale) async {
+  SharedPreferences.setMockInitialValues({});
+  final prefs = await SharedPreferences.getInstance();
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        guidanceLibraryRepositoryProvider.overrideWith(
+          (ref) =>
+              GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
+        ),
+        replyRepositoryProvider.overrideWith((ref) => _NeverReplyRepository()),
+      ],
+      child: MaterialApp(
+        home: Builder(
+          builder: (context) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: TextScaler.linear(textScale)),
+            child: const ReplyScreen(),
+          ),
+        ),
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets(
     'empty guidance does not block Generate Reply — shows loading instead',
@@ -245,22 +275,19 @@ void main() {
 
     await tester.tap(find.text('Guidance'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Be polite'));
+    await tester.tap(find.text('Accept'));
     await tester.pumpAndSettle();
     expect(
       tester
           .widget<EditableText>(_editableIn(const Key('reply-guidance-field')))
           .controller
           .text,
-      'Make the reply polite and respectful.',
+      'Accept the request politely.',
     );
 
     await tester.tap(find.text('Generate Reply'));
     await tester.pumpAndSettle();
-    expect(
-      repository.lastRequest?.guidance,
-      'Make the reply polite and respectful.',
-    );
+    expect(repository.lastRequest?.guidance, 'Accept the request politely.');
   });
 
   testWidgets('Reply guidance shows Library, Paste, Clear and clears payload', (
@@ -277,7 +304,7 @@ void main() {
     await tester.pumpAndSettle();
 
     const fieldKey = Key('reply-guidance-field');
-    expect(_actionIn(fieldKey, 'Guidance Library'), findsOneWidget);
+    expect(_actionIn(fieldKey, 'Templates'), findsOneWidget);
     expect(_actionIn(fieldKey, 'Paste'), findsOneWidget);
     expect(_actionIn(fieldKey, 'Clear'), findsOneWidget);
 
@@ -303,7 +330,7 @@ void main() {
     await tester.pumpAndSettle();
 
     const fieldKey = Key('reply-guidance-field');
-    await tester.tap(_actionIn(fieldKey, 'Guidance Library'));
+    await tester.tap(_actionIn(fieldKey, 'Templates'));
     await tester.pumpAndSettle();
     expect(find.text('Choose guidance'), findsOneWidget);
     await tester.tap(find.widgetWithText(FilledButton, 'Use').first);
@@ -354,5 +381,46 @@ void main() {
 
     expect(find.text('Enter the message you received.'), findsOneWidget);
     expect(find.text('Generating…'), findsNothing);
+  });
+
+  testWidgets('Quick guidance chips wrap naturally on a normal screen', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpReply(tester);
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Template'), findsOneWidget);
+    expect(find.text('Firm'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Quick guidance chips do not overflow at large text scale', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpReplyScaled(tester, 1.4);
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Template'), findsOneWidget);
+    expect(find.text('Firm'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Quick guidance chips do not overflow on a narrow screen', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 5200); // width < 360
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    await _pumpReply(tester);
+    await tester.tap(find.text('Guidance'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Template'), findsOneWidget);
+    expect(find.text('Firm'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

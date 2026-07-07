@@ -16,7 +16,7 @@
   "yourPlan": "Ваш план",
   "plans": "Плани",
   "guidance": "Інструкції",
-  "guidanceLibrary": "Бібліотека інструкцій",
+  "guidanceLibrary": "Шаблони",
   "languageAndInput": "Мова та введення",
   "appLanguage": "Мова застосунку",
   "about": "Про застосунок",
@@ -73,7 +73,7 @@
   "connectionFailed": "Помилка підключення",
   "developer": "Розробник",
   "simulatePremiumOn": "Simulate Premium On",
-  "manageLibrary": "Керувати бібліотекою",
+  "manageLibrary": "Керувати шаблонами",
   "refreshAccountState": "Оновити стан облікового запису",
   "refreshBackendStatus": "Оновити статус серверної частини",
   "loading": "Завантаження…",
@@ -284,4 +284,13 @@
   "creditAddedTapGenerateAgain": "Кредит додано. Знову торкніться «Створити»."
   ,"recentDetail": "Деталі"
   ,"useAgain": "Використати знову"
+  ,"useATemplate": "Використати шаблон"
+  ,"acceptPolitely": "Ввічливо погодитися"
+  ,"askForClarification": "Попросити уточнення"
+  ,"explainTheReason": "Пояснити причину"
+  ,"offerAnAlternative": "Запропонувати альтернативу"
+  ,"suggestACompromise": "Запропонувати компроміс"
+  ,"showAppreciation": "Висловити вдячність"
+  ,"apologizeBriefly": "Коротко вибачитися"
+  ,"beFirmButKind": "Твердо, але доброзичливо"
 }

@@ -143,7 +143,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get guidance => 'Yönergeler';
 
   @override
-  String get guidanceLibrary => 'Yönerge Kitaplığı';
+  String get guidanceLibrary => 'Şablonlar';
 
   @override
   String get languageAndInput => 'Dil ve giriş';
@@ -265,7 +265,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get done => 'Bitti';
 
   @override
-  String get manageLibrary => 'Kitaplığı Yönet';
+  String get manageLibrary => 'Şablonları yönet';
 
   @override
   String get newGuidance => 'Yeni Rehber';
@@ -924,4 +924,31 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get useAgain => 'Tekrar kullan';
+
+  @override
+  String get useATemplate => 'Şablon kullan';
+
+  @override
+  String get acceptPolitely => 'Kibarca kabul et';
+
+  @override
+  String get askForClarification => 'Açıklama iste';
+
+  @override
+  String get explainTheReason => 'Nedenini açıkla';
+
+  @override
+  String get offerAnAlternative => 'Alternatif sun';
+
+  @override
+  String get suggestACompromise => 'Uzlaşma öner';
+
+  @override
+  String get showAppreciation => 'Takdir göster';
+
+  @override
+  String get apologizeBriefly => 'Kısaca özür dile';
+
+  @override
+  String get beFirmButKind => 'Kararlı ama nazik';
 }
