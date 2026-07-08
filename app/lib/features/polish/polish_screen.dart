@@ -9,8 +9,10 @@ import '../../core/localization/locale_controller.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
+import '../app_status/presentation/app_status_dialogs.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/feature_page_header.dart';
 import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
@@ -162,6 +164,16 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
       Localizations.maybeLocaleOf(context),
     );
     if (!await ensureGenerationAccess(context: context, ref: ref)) return;
+    if (!mounted) return;
+    // Gate against cached app status (maintenance / force update / disabled).
+    if (!await ensureAppStatusAllows(
+      context: context,
+      ref: ref,
+      feature: _feature,
+    )) {
+      return;
+    }
+    if (!mounted) return;
     // Capture the draft before the async gap.
     final draft = _draftController.text;
     await ref
@@ -181,6 +193,11 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
         );
     if (!mounted) return;
     final state = ref.read(polishControllerProvider);
+    // A network/server failure re-checks status: maintenance or fallback UI.
+    if (isNetworkFailure(state.errorCode)) {
+      await handleAiRequestFailure(context: context, ref: ref);
+      return;
+    }
     final result = state.result;
     if (state.error == null && !state.isLoading && result != null) {
       await saveRecentItem(
@@ -224,12 +241,10 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             surfaceTintColor: Colors.transparent,
             elevation: 0,
             scrolledUnderElevation: 0,
-            title: Text(
-              context.l10n.polish,
-              style:
-                  (Theme.of(context).appBarTheme.titleTextStyle ??
-                          const TextStyle())
-                      .copyWith(color: _kColor, fontWeight: FontWeight.w700),
+            title: FeatureHeaderTitle(
+              feature: _feature,
+              title: context.l10n.polish,
+              color: _kColor,
             ),
             actions: [
               ReplyStatusBadge(

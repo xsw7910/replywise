@@ -9,8 +9,10 @@ import '../../core/localization/locale_controller.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
+import '../app_status/presentation/app_status_dialogs.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/feature_page_header.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
@@ -83,12 +85,30 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
       Localizations.maybeLocaleOf(context),
     );
     if (!await ensureGenerationAccess(context: context, ref: ref)) return;
+    if (!mounted) return;
+    // Gate against cached app status (maintenance / force update / disabled).
+    if (!await ensureAppStatusAllows(
+      context: context,
+      ref: ref,
+      feature: _feature,
+    )) {
+      return;
+    }
+    if (!mounted) return;
     // Capture the message before the async gap.
     final input = _messageController.text;
     final result = await ref
         .read(explainControllerProvider.notifier)
         .explain(text: input, explainLang: appLocale, appLocale: appLocale);
-    if (!mounted || result == null) return;
+    if (!mounted) return;
+    if (result == null) {
+      // A network/server failure re-checks status: maintenance or fallback UI.
+      final state = ref.read(explainControllerProvider);
+      if (isNetworkFailure(state.errorCode)) {
+        await handleAiRequestFailure(context: context, ref: ref);
+      }
+      return;
+    }
     setState(() => _result = result);
     await saveRecentItem(
       ref,
@@ -128,6 +148,11 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
 
     return AppPage(
       title: context.l10n.explain,
+      titleWidget: FeatureHeaderTitle(
+        feature: _feature,
+        title: context.l10n.explain,
+        color: _kColor,
+      ),
       accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
       transparentAppBar: true,

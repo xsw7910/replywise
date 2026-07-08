@@ -293,4 +293,13 @@
   ,"showAppreciation": "감사 표현"
   ,"apologizeBriefly": "간단히 사과"
   ,"beFirmButKind": "단호하지만 친절하게"
+  ,"appStatusMaintenanceTitle": "점검 중"
+  ,"appStatusServerUnavailableMessage": "서버에 연결하는 데 문제가 있습니다. 나중에 다시 시도해 주세요."
+  ,"appStatusUpdateRequiredTitle": "업데이트 필요"
+  ,"appStatusUpdateNow": "지금 업데이트"
+  ,"appStatusUpdateAvailableTitle": "업데이트 사용 가능"
+  ,"appStatusUpdate": "업데이트"
+  ,"appStatusLater": "나중에"
+  ,"appStatusFeatureUnavailableTitle": "일시적으로 사용할 수 없음"
+  ,"appStatusFeatureUnavailableMessage": "이 기능은 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
 }

@@ -960,4 +960,34 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Fermo ma gentile';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Manutenzione';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'Si sono verificati problemi di connessione al server. Riprova più tardi.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Aggiornamento necessario';
+
+  @override
+  String get appStatusUpdateNow => 'Aggiorna ora';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Aggiornamento disponibile';
+
+  @override
+  String get appStatusUpdate => 'Aggiorna';
+
+  @override
+  String get appStatusLater => 'Più tardi';
+
+  @override
+  String get appStatusFeatureUnavailableTitle =>
+      'Temporaneamente non disponibile';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'Questa funzione è temporaneamente non disponibile. Riprova più tardi.';
 }

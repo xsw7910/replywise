@@ -953,4 +953,33 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Твердо, але доброзичливо';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Технічні роботи';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'Не вдається підключитися до сервера. Повторіть спробу пізніше.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Потрібне оновлення';
+
+  @override
+  String get appStatusUpdateNow => 'Оновити зараз';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Доступне оновлення';
+
+  @override
+  String get appStatusUpdate => 'Оновити';
+
+  @override
+  String get appStatusLater => 'Пізніше';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'Тимчасово недоступно';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'Ця функція тимчасово недоступна. Повторіть спробу пізніше.';
 }

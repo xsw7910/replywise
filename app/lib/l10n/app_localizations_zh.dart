@@ -911,6 +911,33 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get beFirmButKind => '坚定而友善';
+
+  @override
+  String get appStatusMaintenanceTitle => '系统维护';
+
+  @override
+  String get appStatusServerUnavailableMessage => '连接服务器时遇到问题，请稍后再试。';
+
+  @override
+  String get appStatusUpdateRequiredTitle => '需要更新';
+
+  @override
+  String get appStatusUpdateNow => '立即更新';
+
+  @override
+  String get appStatusUpdateAvailableTitle => '有可用更新';
+
+  @override
+  String get appStatusUpdate => '更新';
+
+  @override
+  String get appStatusLater => '稍后';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => '暂时不可用';
+
+  @override
+  String get appStatusFeatureUnavailableMessage => '此功能暂时不可用，请稍后再试。';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -1820,4 +1847,31 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get beFirmButKind => '堅定而友善';
+
+  @override
+  String get appStatusMaintenanceTitle => '系統維護';
+
+  @override
+  String get appStatusServerUnavailableMessage => '連線至伺服器時發生問題，請稍後再試。';
+
+  @override
+  String get appStatusUpdateRequiredTitle => '需要更新';
+
+  @override
+  String get appStatusUpdateNow => '立即更新';
+
+  @override
+  String get appStatusUpdateAvailableTitle => '有可用更新';
+
+  @override
+  String get appStatusUpdate => '更新';
+
+  @override
+  String get appStatusLater => '稍後';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => '暫時無法使用';
+
+  @override
+  String get appStatusFeatureUnavailableMessage => '此功能暫時無法使用，請稍後再試。';
 }

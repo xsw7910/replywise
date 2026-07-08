@@ -951,4 +951,33 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Kararlı ama nazik';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Bakım';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'Sunucuya bağlanırken sorun yaşıyoruz. Lütfen daha sonra tekrar deneyin.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Güncelleme gerekli';
+
+  @override
+  String get appStatusUpdateNow => 'Şimdi güncelle';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Güncelleme mevcut';
+
+  @override
+  String get appStatusUpdate => 'Güncelle';
+
+  @override
+  String get appStatusLater => 'Daha sonra';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'Geçici olarak kullanılamıyor';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'Bu özellik geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin.';
 }

@@ -1,7 +1,57 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_feature_theme.dart';
 import '../theme/app_text_styles.dart';
+
+/// App-bar title that places the feature's Home-card icon before the title text,
+/// so a page header reads consistently with its Home feature card. Reuses
+/// [AppFeature.iconImage] as the single icon source.
+class FeatureHeaderTitle extends StatelessWidget {
+  const FeatureHeaderTitle({
+    super.key,
+    required this.feature,
+    required this.title,
+    required this.color,
+  });
+
+  final AppFeature feature;
+  final String title;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final titleStyle =
+        (Theme.of(context).appBarTheme.titleTextStyle ?? const TextStyle())
+            .copyWith(color: color, fontWeight: FontWeight.w700);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Same rounded, slightly-zoomed image treatment as the Home card icon,
+        // sized to sit next to the title text.
+        SizedBox.square(
+          dimension: 30,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(9),
+            child: Transform.scale(
+              scale: 1.08,
+              child: Image.asset(feature.iconImage, fit: BoxFit.cover),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Flexible(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: titleStyle,
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 /// Large icon + colored title + subtitle shown at the top of a feature page's
 /// scroll content. Mirrors the style of the Home page feature tiles.

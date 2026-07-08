@@ -293,4 +293,13 @@
   ,"showAppreciation": "แสดงความขอบคุณ"
   ,"apologizeBriefly": "ขอโทษสั้นๆ"
   ,"beFirmButKind": "หนักแน่นแต่สุภาพ"
+  ,"appStatusMaintenanceTitle": "การบำรุงรักษา"
+  ,"appStatusServerUnavailableMessage": "เกิดปัญหาในการเชื่อมต่อกับเซิร์ฟเวอร์ โปรดลองอีกครั้งในภายหลัง"
+  ,"appStatusUpdateRequiredTitle": "ต้องอัปเดต"
+  ,"appStatusUpdateNow": "อัปเดตตอนนี้"
+  ,"appStatusUpdateAvailableTitle": "มีอัปเดตให้ใช้งาน"
+  ,"appStatusUpdate": "อัปเดต"
+  ,"appStatusLater": "ภายหลัง"
+  ,"appStatusFeatureUnavailableTitle": "ใช้งานไม่ได้ชั่วคราว"
+  ,"appStatusFeatureUnavailableMessage": "ฟีเจอร์นี้ใช้งานไม่ได้ชั่วคราว โปรดลองอีกครั้งในภายหลัง"
 }

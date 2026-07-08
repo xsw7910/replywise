@@ -2,9 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'core/config/app_config.dart';
+import 'features/app_status/application/app_status_controller.dart';
 import 'features/guidance/data/guidance_library_repository.dart';
 
 void main() async {
@@ -21,13 +24,26 @@ void main() async {
   }
 
   final prefs = await SharedPreferences.getInstance();
+
+  // Resolve the running app version for force/optional update checks. Reading
+  // package info is cheap; fall back to the compile-time default on failure.
+  var appVersion = AppConfig.appVersion;
+  try {
+    final info = await PackageInfo.fromPlatform();
+    if (info.version.isNotEmpty) appVersion = info.version;
+  } catch (_) {
+    // Keep the default; version comparison degrades gracefully.
+  }
+
   runApp(
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
         guidanceLibraryRepositoryProvider.overrideWith(
-          (ref) => GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
+          (ref) =>
+              GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
         ),
+        currentAppVersionProvider.overrideWithValue(appVersion),
       ],
       child: const ReplyWiseApp(),
     ),

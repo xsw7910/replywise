@@ -949,4 +949,33 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'दृढ़ पर विनम्र रहें';
+
+  @override
+  String get appStatusMaintenanceTitle => 'रखरखाव';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'सर्वर से कनेक्ट करने में समस्या आ रही है। कृपया बाद में पुनः प्रयास करें।';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'अपडेट आवश्यक है';
+
+  @override
+  String get appStatusUpdateNow => 'अभी अपडेट करें';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'अपडेट उपलब्ध है';
+
+  @override
+  String get appStatusUpdate => 'अपडेट करें';
+
+  @override
+  String get appStatusLater => 'बाद में';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'अस्थायी रूप से अनुपलब्ध';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'यह सुविधा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में पुनः प्रयास करें।';
 }

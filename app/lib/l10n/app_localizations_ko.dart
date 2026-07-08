@@ -915,4 +915,33 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get beFirmButKind => '단호하지만 친절하게';
+
+  @override
+  String get appStatusMaintenanceTitle => '점검 중';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      '서버에 연결하는 데 문제가 있습니다. 나중에 다시 시도해 주세요.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => '업데이트 필요';
+
+  @override
+  String get appStatusUpdateNow => '지금 업데이트';
+
+  @override
+  String get appStatusUpdateAvailableTitle => '업데이트 사용 가능';
+
+  @override
+  String get appStatusUpdate => '업데이트';
+
+  @override
+  String get appStatusLater => '나중에';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => '일시적으로 사용할 수 없음';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      '이 기능은 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요.';
 }

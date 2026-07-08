@@ -1884,6 +1884,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Firm'**
   String get beFirmButKind;
+
+  /// No description provided for @appStatusMaintenanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance'**
+  String get appStatusMaintenanceTitle;
+
+  /// No description provided for @appStatusServerUnavailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We’re having trouble connecting to the server. Please try again later.'**
+  String get appStatusServerUnavailableMessage;
+
+  /// No description provided for @appStatusUpdateRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update required'**
+  String get appStatusUpdateRequiredTitle;
+
+  /// No description provided for @appStatusUpdateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get appStatusUpdateNow;
+
+  /// No description provided for @appStatusUpdateAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get appStatusUpdateAvailableTitle;
+
+  /// No description provided for @appStatusUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get appStatusUpdate;
+
+  /// No description provided for @appStatusLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get appStatusLater;
+
+  /// No description provided for @appStatusFeatureUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporarily unavailable'**
+  String get appStatusFeatureUnavailableTitle;
+
+  /// No description provided for @appStatusFeatureUnavailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is temporarily unavailable. Please try again later.'**
+  String get appStatusFeatureUnavailableMessage;
 }
 
 class _AppLocalizationsDelegate

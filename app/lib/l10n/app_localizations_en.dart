@@ -943,4 +943,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Firm';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Maintenance';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'We’re having trouble connecting to the server. Please try again later.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Update required';
+
+  @override
+  String get appStatusUpdateNow => 'Update now';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Update available';
+
+  @override
+  String get appStatusUpdate => 'Update';
+
+  @override
+  String get appStatusLater => 'Later';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'Temporarily unavailable';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'This feature is temporarily unavailable. Please try again later.';
 }

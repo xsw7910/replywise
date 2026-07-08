@@ -937,4 +937,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'حازم لكن لطيف';
+
+  @override
+  String get appStatusMaintenanceTitle => 'صيانة';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'نواجه مشكلة في الاتصال بالخادم. يرجى المحاولة مرة أخرى لاحقًا.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'التحديث مطلوب';
+
+  @override
+  String get appStatusUpdateNow => 'حدّث الآن';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'يتوفر تحديث';
+
+  @override
+  String get appStatusUpdate => 'تحديث';
+
+  @override
+  String get appStatusLater => 'لاحقًا';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'غير متاح مؤقتًا';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'هذه الميزة غير متاحة مؤقتًا. يرجى المحاولة مرة أخرى لاحقًا.';
 }

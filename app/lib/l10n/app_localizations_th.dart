@@ -939,4 +939,33 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'หนักแน่นแต่สุภาพ';
+
+  @override
+  String get appStatusMaintenanceTitle => 'การบำรุงรักษา';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'เกิดปัญหาในการเชื่อมต่อกับเซิร์ฟเวอร์ โปรดลองอีกครั้งในภายหลัง';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'ต้องอัปเดต';
+
+  @override
+  String get appStatusUpdateNow => 'อัปเดตตอนนี้';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'มีอัปเดตให้ใช้งาน';
+
+  @override
+  String get appStatusUpdate => 'อัปเดต';
+
+  @override
+  String get appStatusLater => 'ภายหลัง';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'ใช้งานไม่ได้ชั่วคราว';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'ฟีเจอร์นี้ใช้งานไม่ได้ชั่วคราว โปรดลองอีกครั้งในภายหลัง';
 }

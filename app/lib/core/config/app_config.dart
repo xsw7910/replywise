@@ -50,6 +50,15 @@ class AppConfig {
     defaultValue: 'http://10.0.2.2:8000',
   );
 
+  /// The running app's marketing version (e.g. "1.0.0"), used for force /
+  /// optional update comparisons against `GET /v1/app-status`. Defaults here
+  /// and is overridden at startup with the real value from package_info; a
+  /// release build can also pin it via --dart-define.
+  static const String appVersion = String.fromEnvironment(
+    'REPLY_APP_VERSION',
+    defaultValue: '1.0.0',
+  );
+
   static const String revenueCatAndroidApiKey = String.fromEnvironment(
     'REVENUECAT_ANDROID_API_KEY',
     defaultValue: '',

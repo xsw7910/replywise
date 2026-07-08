@@ -307,4 +307,13 @@
   ,"showAppreciation": "Appreciate"
   ,"apologizeBriefly": "Apologize"
   ,"beFirmButKind": "Firm"
+  ,"appStatusMaintenanceTitle": "Maintenance"
+  ,"appStatusServerUnavailableMessage": "We’re having trouble connecting to the server. Please try again later."
+  ,"appStatusUpdateRequiredTitle": "Update required"
+  ,"appStatusUpdateNow": "Update now"
+  ,"appStatusUpdateAvailableTitle": "Update available"
+  ,"appStatusUpdate": "Update"
+  ,"appStatusLater": "Later"
+  ,"appStatusFeatureUnavailableTitle": "Temporarily unavailable"
+  ,"appStatusFeatureUnavailableMessage": "This feature is temporarily unavailable. Please try again later."
 }

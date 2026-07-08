@@ -293,4 +293,13 @@
   ,"showAppreciation": "Выразить благодарность"
   ,"apologizeBriefly": "Кратко извиниться"
   ,"beFirmButKind": "Твёрдо, но доброжелательно"
+  ,"appStatusMaintenanceTitle": "Технические работы"
+  ,"appStatusServerUnavailableMessage": "Не удаётся подключиться к серверу. Повторите попытку позже."
+  ,"appStatusUpdateRequiredTitle": "Требуется обновление"
+  ,"appStatusUpdateNow": "Обновить сейчас"
+  ,"appStatusUpdateAvailableTitle": "Доступно обновление"
+  ,"appStatusUpdate": "Обновить"
+  ,"appStatusLater": "Позже"
+  ,"appStatusFeatureUnavailableTitle": "Временно недоступно"
+  ,"appStatusFeatureUnavailableMessage": "Эта функция временно недоступна. Повторите попытку позже."
 }

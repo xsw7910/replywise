@@ -90,7 +90,26 @@ void main() {
       find.byKey(const Key('polish-hero-header')),
     );
     expect(hero.expandedHeight, 112);
-    expect((hero.title! as Text).style?.color, AppColors.polishColor);
+    // Title now shows the Polish feature icon before the accent-colored title.
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('polish-hero-header')),
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w is Image &&
+              w.image is AssetImage &&
+              (w.image as AssetImage).assetName == 'assets/icons/polish.png',
+        ),
+      ),
+      findsOneWidget,
+    );
+    final polishTitle = tester.widget<Text>(
+      find.descendant(
+        of: find.byKey(const Key('polish-hero-header')),
+        matching: find.text('Polish'),
+      ),
+    );
+    expect(polishTitle.style?.color, AppColors.polishColor);
     expect(
       AppFeature.polish.pageBackgroundImage,
       'assets/image/polish_page_backgroud.png',

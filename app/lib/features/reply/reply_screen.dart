@@ -9,8 +9,10 @@ import '../../core/localization/locale_controller.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
+import '../app_status/presentation/app_status_dialogs.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/app_page.dart';
+import '../../core/widgets/feature_page_header.dart';
 import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../guidance/application/pending_guidance_provider.dart';
@@ -206,6 +208,16 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       Localizations.maybeLocaleOf(context),
     );
     if (!await ensureGenerationAccess(context: context, ref: ref)) return;
+    if (!mounted) return;
+    // Gate against cached app status (maintenance / force update / disabled).
+    if (!await ensureAppStatusAllows(
+      context: context,
+      ref: ref,
+      feature: _feature,
+    )) {
+      return;
+    }
+    if (!mounted) return;
     // Capture the received message before the async gap.
     final incoming = _incomingController.text;
     await ref
@@ -213,6 +225,11 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
         .generate(_request(appLocale));
     if (!mounted) return;
     final state = ref.read(replyControllerProvider);
+    // A network/server failure re-checks status: maintenance or fallback UI.
+    if (isNetworkFailure(state.errorCode)) {
+      await handleAiRequestFailure(context: context, ref: ref);
+      return;
+    }
     final result = state.result;
     // Only record a recent item on a fresh success (no error, has output).
     if (state.error == null &&
@@ -274,12 +291,10 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
             surfaceTintColor: Colors.transparent,
             elevation: 0,
             scrolledUnderElevation: 0,
-            title: Text(
-              context.l10n.reply,
-              style:
-                  (Theme.of(context).appBarTheme.titleTextStyle ??
-                          const TextStyle())
-                      .copyWith(color: _kColor, fontWeight: FontWeight.w700),
+            title: FeatureHeaderTitle(
+              feature: _feature,
+              title: context.l10n.reply,
+              color: _kColor,
             ),
             actions: [
               ReplyStatusBadge(

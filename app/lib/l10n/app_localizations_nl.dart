@@ -958,4 +958,33 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Vastberaden maar vriendelijk';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Onderhoud';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'We hebben problemen om verbinding te maken met de server. Probeer het later opnieuw.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Update vereist';
+
+  @override
+  String get appStatusUpdateNow => 'Nu bijwerken';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Update beschikbaar';
+
+  @override
+  String get appStatusUpdate => 'Bijwerken';
+
+  @override
+  String get appStatusLater => 'Later';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'Tijdelijk niet beschikbaar';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'Deze functie is tijdelijk niet beschikbaar. Probeer het later opnieuw.';
 }

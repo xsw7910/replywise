@@ -12,6 +12,15 @@ extension AppFeatureTheme on AppFeature {
     AppFeature.guidance => AppColors.guidanceColor,
   };
 
+  /// Icon image shown on the Home feature card and each feature page header.
+  /// Single source so the two stay in sync.
+  String get iconImage => switch (this) {
+    AppFeature.reply => 'assets/icons/reply.png',
+    AppFeature.polish => 'assets/icons/polish.png',
+    AppFeature.explain => 'assets/icons/explain.png',
+    AppFeature.guidance => 'assets/icons/guidance.png',
+  };
+
   /// Texture used as the fill of feature [GlassCard]s and home feature cards.
   String get backgroundImage => switch (this) {
     AppFeature.reply => 'assets/image/reply_background.png',

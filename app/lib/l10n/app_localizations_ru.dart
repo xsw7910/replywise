@@ -955,4 +955,33 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Твёрдо, но доброжелательно';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Технические работы';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'Не удаётся подключиться к серверу. Повторите попытку позже.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Требуется обновление';
+
+  @override
+  String get appStatusUpdateNow => 'Обновить сейчас';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Доступно обновление';
+
+  @override
+  String get appStatusUpdate => 'Обновить';
+
+  @override
+  String get appStatusLater => 'Позже';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'Временно недоступно';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'Эта функция временно недоступна. Повторите попытку позже.';
 }

@@ -953,4 +953,33 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Firme mas gentil';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Manutenção';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'Estamos com problemas para conectar ao servidor. Tente novamente mais tarde.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Atualização necessária';
+
+  @override
+  String get appStatusUpdateNow => 'Atualizar agora';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Atualização disponível';
+
+  @override
+  String get appStatusUpdate => 'Atualizar';
+
+  @override
+  String get appStatusLater => 'Mais tarde';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'Temporariamente indisponível';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'Este recurso está temporariamente indisponível. Tente novamente mais tarde.';
 }

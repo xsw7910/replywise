@@ -293,4 +293,13 @@
   ,"showAppreciation": "إظهار التقدير"
   ,"apologizeBriefly": "الاعتذار بإيجاز"
   ,"beFirmButKind": "حازم لكن لطيف"
+  ,"appStatusMaintenanceTitle": "صيانة"
+  ,"appStatusServerUnavailableMessage": "نواجه مشكلة في الاتصال بالخادم. يرجى المحاولة مرة أخرى لاحقًا."
+  ,"appStatusUpdateRequiredTitle": "التحديث مطلوب"
+  ,"appStatusUpdateNow": "حدّث الآن"
+  ,"appStatusUpdateAvailableTitle": "يتوفر تحديث"
+  ,"appStatusUpdate": "تحديث"
+  ,"appStatusLater": "لاحقًا"
+  ,"appStatusFeatureUnavailableTitle": "غير متاح مؤقتًا"
+  ,"appStatusFeatureUnavailableMessage": "هذه الميزة غير متاحة مؤقتًا. يرجى المحاولة مرة أخرى لاحقًا."
 }

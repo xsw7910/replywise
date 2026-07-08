@@ -293,4 +293,13 @@
   ,"showAppreciation": "感謝を伝える"
   ,"apologizeBriefly": "簡潔に謝罪する"
   ,"beFirmButKind": "毅然かつ丁寧に"
+  ,"appStatusMaintenanceTitle": "メンテナンス"
+  ,"appStatusServerUnavailableMessage": "サーバーに接続できません。しばらくしてからもう一度お試しください。"
+  ,"appStatusUpdateRequiredTitle": "アップデートが必要です"
+  ,"appStatusUpdateNow": "今すぐ更新"
+  ,"appStatusUpdateAvailableTitle": "アップデートがあります"
+  ,"appStatusUpdate": "更新"
+  ,"appStatusLater": "後で"
+  ,"appStatusFeatureUnavailableTitle": "一時的に利用できません"
+  ,"appStatusFeatureUnavailableMessage": "この機能は一時的に利用できません。しばらくしてからもう一度お試しください。"
 }

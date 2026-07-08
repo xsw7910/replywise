@@ -293,4 +293,13 @@
   ,"showAppreciation": "Okaż wdzięczność"
   ,"apologizeBriefly": "Krótko przeproś"
   ,"beFirmButKind": "Stanowczo, ale uprzejmie"
+  ,"appStatusMaintenanceTitle": "Konserwacja"
+  ,"appStatusServerUnavailableMessage": "Mamy problem z połączeniem z serwerem. Spróbuj ponownie później."
+  ,"appStatusUpdateRequiredTitle": "Wymagana aktualizacja"
+  ,"appStatusUpdateNow": "Zaktualizuj teraz"
+  ,"appStatusUpdateAvailableTitle": "Dostępna aktualizacja"
+  ,"appStatusUpdate": "Aktualizuj"
+  ,"appStatusLater": "Później"
+  ,"appStatusFeatureUnavailableTitle": "Tymczasowo niedostępne"
+  ,"appStatusFeatureUnavailableMessage": "Ta funkcja jest tymczasowo niedostępna. Spróbuj ponownie później."
 }

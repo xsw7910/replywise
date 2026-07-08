@@ -80,7 +80,6 @@ class HomeScreen extends ConsumerWidget {
                         Expanded(
                           child: _FeatureCard(
                             key: const Key('home-feature-reply'),
-                            imagePath: 'assets/icons/reply.png',
                             feature: AppFeature.reply,
                             title: context.l10n.reply,
                             subtitle: context.l10n.generateThoughtfulReplies,
@@ -91,7 +90,6 @@ class HomeScreen extends ConsumerWidget {
                         Expanded(
                           child: _FeatureCard(
                             key: const Key('home-feature-polish'),
-                            imagePath: 'assets/icons/polish.png',
                             feature: AppFeature.polish,
                             title: context.l10n.polish,
                             subtitle: context.l10n.makeWritingClear,
@@ -109,7 +107,6 @@ class HomeScreen extends ConsumerWidget {
                         Expanded(
                           child: _FeatureCard(
                             key: const Key('home-feature-explain'),
-                            imagePath: 'assets/icons/explain.png',
                             feature: AppFeature.explain,
                             title: context.l10n.explain,
                             subtitle: context.l10n.understandTone,
@@ -120,7 +117,6 @@ class HomeScreen extends ConsumerWidget {
                         Expanded(
                           child: _FeatureCard(
                             key: const Key('home-feature-guidance'),
-                            imagePath: 'assets/icons/guidance.png',
                             feature: AppFeature.guidance,
                             title: context.l10n.templates,
                             subtitle: context.l10n.reuseInstructions,
@@ -253,14 +249,12 @@ class _HeroCard extends StatelessWidget {
 class _FeatureCard extends StatelessWidget {
   const _FeatureCard({
     super.key,
-    required this.imagePath,
     required this.feature,
     required this.title,
     required this.subtitle,
     required this.onTap,
   });
 
-  final String imagePath;
   final AppFeature feature;
   final String title;
   final String subtitle;
@@ -308,7 +302,7 @@ class _FeatureCard extends StatelessWidget {
                               child: Transform.scale(
                                 scale: 1.08,
                                 child: Image.asset(
-                                  imagePath,
+                                  feature.iconImage,
                                   fit: BoxFit.cover,
                                 ),
                               ),

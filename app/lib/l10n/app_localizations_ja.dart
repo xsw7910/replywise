@@ -916,4 +916,33 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get beFirmButKind => '毅然かつ丁寧に';
+
+  @override
+  String get appStatusMaintenanceTitle => 'メンテナンス';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'サーバーに接続できません。しばらくしてからもう一度お試しください。';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'アップデートが必要です';
+
+  @override
+  String get appStatusUpdateNow => '今すぐ更新';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'アップデートがあります';
+
+  @override
+  String get appStatusUpdate => '更新';
+
+  @override
+  String get appStatusLater => '後で';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => '一時的に利用できません';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'この機能は一時的に利用できません。しばらくしてからもう一度お試しください。';
 }

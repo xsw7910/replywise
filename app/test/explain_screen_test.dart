@@ -125,6 +125,16 @@ void main() {
 
     expect(find.text('Message to understand'), findsOneWidget);
     expect(find.text('Explain this message'), findsOneWidget);
+    // The header shows the Explain feature icon before the title.
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is Image &&
+            w.image is AssetImage &&
+            (w.image as AssetImage).assetName == 'assets/icons/explain.png',
+      ),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('explain-message-field')), findsOneWidget);
     expect(
       tester

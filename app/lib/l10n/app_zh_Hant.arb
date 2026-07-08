@@ -293,4 +293,13 @@
   ,"showAppreciation": "表達感謝"
   ,"apologizeBriefly": "簡短致歉"
   ,"beFirmButKind": "堅定而友善"
+  ,"appStatusMaintenanceTitle": "系統維護"
+  ,"appStatusServerUnavailableMessage": "連線至伺服器時發生問題，請稍後再試。"
+  ,"appStatusUpdateRequiredTitle": "需要更新"
+  ,"appStatusUpdateNow": "立即更新"
+  ,"appStatusUpdateAvailableTitle": "有可用更新"
+  ,"appStatusUpdate": "更新"
+  ,"appStatusLater": "稍後"
+  ,"appStatusFeatureUnavailableTitle": "暫時無法使用"
+  ,"appStatusFeatureUnavailableMessage": "此功能暫時無法使用，請稍後再試。"
 }

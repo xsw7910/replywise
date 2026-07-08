@@ -293,4 +293,13 @@
   ,"showAppreciation": "Takdir göster"
   ,"apologizeBriefly": "Kısaca özür dile"
   ,"beFirmButKind": "Kararlı ama nazik"
+  ,"appStatusMaintenanceTitle": "Bakım"
+  ,"appStatusServerUnavailableMessage": "Sunucuya bağlanırken sorun yaşıyoruz. Lütfen daha sonra tekrar deneyin."
+  ,"appStatusUpdateRequiredTitle": "Güncelleme gerekli"
+  ,"appStatusUpdateNow": "Şimdi güncelle"
+  ,"appStatusUpdateAvailableTitle": "Güncelleme mevcut"
+  ,"appStatusUpdate": "Güncelle"
+  ,"appStatusLater": "Daha sonra"
+  ,"appStatusFeatureUnavailableTitle": "Geçici olarak kullanılamıyor"
+  ,"appStatusFeatureUnavailableMessage": "Bu özellik geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin."
 }

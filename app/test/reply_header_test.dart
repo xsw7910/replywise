@@ -102,7 +102,7 @@ void main() {
   });
 
   testWidgets(
-    'Reply header shows a left-aligned title and drops the old subtitle',
+    'Reply header shows the feature icon before a left-aligned title',
     (tester) async {
       tester.view.physicalSize = const Size(360, 800);
       tester.view.devicePixelRatio = 1;
@@ -129,10 +129,26 @@ void main() {
       // The old large header subtitle is gone.
       expect(find.text('Generate natural English replies.'), findsNothing);
 
-      // Only the header title "Reply" remains, left-aligned near the leading edge.
+      // The header now shows the Reply feature icon at the leading edge.
+      final headerIcon = find.descendant(
+        of: find.byKey(const Key('reply-hero-header')),
+        matching: find.byWidgetPredicate(
+          (w) =>
+              w is Image &&
+              w.image is AssetImage &&
+              (w.image as AssetImage).assetName == 'assets/icons/reply.png',
+        ),
+      );
+      expect(headerIcon, findsOneWidget);
+      expect(tester.getTopLeft(headerIcon).dx, lessThan(60));
+
+      // The title follows the icon, still left-aligned (not centered).
       final title = find.text('Reply');
       expect(title, findsOneWidget);
-      expect(tester.getTopLeft(title).dx, lessThan(60));
+      expect(
+        tester.getTopLeft(headerIcon).dx,
+        lessThan(tester.getTopLeft(title).dx),
+      );
       final titleCenter = tester.getCenter(title).dx;
       final appBarCenter = tester.getCenter(find.byType(AppBar)).dx;
       expect(titleCenter, lessThan(appBarCenter - 80));

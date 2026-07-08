@@ -293,4 +293,13 @@
   ,"showAppreciation": "Tunjukkan apresiasi"
   ,"apologizeBriefly": "Minta maaf singkat"
   ,"beFirmButKind": "Tegas tapi ramah"
+  ,"appStatusMaintenanceTitle": "Pemeliharaan"
+  ,"appStatusServerUnavailableMessage": "Kami mengalami masalah saat menghubungkan ke server. Silakan coba lagi nanti."
+  ,"appStatusUpdateRequiredTitle": "Pembaruan diperlukan"
+  ,"appStatusUpdateNow": "Perbarui sekarang"
+  ,"appStatusUpdateAvailableTitle": "Pembaruan tersedia"
+  ,"appStatusUpdate": "Perbarui"
+  ,"appStatusLater": "Nanti"
+  ,"appStatusFeatureUnavailableTitle": "Sementara tidak tersedia"
+  ,"appStatusFeatureUnavailableMessage": "Fitur ini sementara tidak tersedia. Silakan coba lagi nanti."
 }

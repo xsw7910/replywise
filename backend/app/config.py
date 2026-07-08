@@ -97,6 +97,21 @@ class Settings(BaseSettings):
     # instead of hardcoding them. Merged on top of the in-code store defaults.
     revenuecat_credit_product_map: str = ""
 
+    # App status / remote config (served by GET /v1/app-status via
+    # services/app_status_service.py). Values come from the environment for now;
+    # the service abstraction lets a database table back these later without
+    # touching the API layer. Blank values fall back to the safe defaults in
+    # app_status_service so a missing env var never breaks the client.
+    app_status_maintenance: bool = False
+    app_status_maintenance_message: str = ""
+    app_status_min_supported_version: str = ""
+    app_status_latest_version: str = ""
+    app_status_force_update: bool = False
+    app_status_update_message: str = ""
+    # Comma-separated feature names to disable (e.g. "reply,polish").
+    app_status_disabled_features: str = ""
+    app_status_support_email: str = ""
+
     @property
     def runtime_env(self) -> str:
         return (self.reply_env or self.app_env).lower()

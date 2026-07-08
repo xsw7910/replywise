@@ -953,4 +953,33 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Kiên định nhưng tử tế';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Bảo trì';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'Chúng tôi đang gặp sự cố khi kết nối với máy chủ. Vui lòng thử lại sau.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Cần cập nhật';
+
+  @override
+  String get appStatusUpdateNow => 'Cập nhật ngay';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Đã có bản cập nhật';
+
+  @override
+  String get appStatusUpdate => 'Cập nhật';
+
+  @override
+  String get appStatusLater => 'Để sau';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'Tạm thời không khả dụng';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'Tính năng này tạm thời không khả dụng. Vui lòng thử lại sau.';
 }

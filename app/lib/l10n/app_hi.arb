@@ -293,4 +293,13 @@
   ,"showAppreciation": "आभार व्यक्त करें"
   ,"apologizeBriefly": "संक्षेप में क्षमा करें"
   ,"beFirmButKind": "दृढ़ पर विनम्र रहें"
+  ,"appStatusMaintenanceTitle": "रखरखाव"
+  ,"appStatusServerUnavailableMessage": "सर्वर से कनेक्ट करने में समस्या आ रही है। कृपया बाद में पुनः प्रयास करें।"
+  ,"appStatusUpdateRequiredTitle": "अपडेट आवश्यक है"
+  ,"appStatusUpdateNow": "अभी अपडेट करें"
+  ,"appStatusUpdateAvailableTitle": "अपडेट उपलब्ध है"
+  ,"appStatusUpdate": "अपडेट करें"
+  ,"appStatusLater": "बाद में"
+  ,"appStatusFeatureUnavailableTitle": "अस्थायी रूप से अनुपलब्ध"
+  ,"appStatusFeatureUnavailableMessage": "यह सुविधा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में पुनः प्रयास करें।"
 }

@@ -293,4 +293,13 @@
   ,"showAppreciation": "Waardering tonen"
   ,"apologizeBriefly": "Kort excuses aanbieden"
   ,"beFirmButKind": "Vastberaden maar vriendelijk"
+  ,"appStatusMaintenanceTitle": "Onderhoud"
+  ,"appStatusServerUnavailableMessage": "We hebben problemen om verbinding te maken met de server. Probeer het later opnieuw."
+  ,"appStatusUpdateRequiredTitle": "Update vereist"
+  ,"appStatusUpdateNow": "Nu bijwerken"
+  ,"appStatusUpdateAvailableTitle": "Update beschikbaar"
+  ,"appStatusUpdate": "Bijwerken"
+  ,"appStatusLater": "Later"
+  ,"appStatusFeatureUnavailableTitle": "Tijdelijk niet beschikbaar"
+  ,"appStatusFeatureUnavailableMessage": "Deze functie is tijdelijk niet beschikbaar. Probeer het later opnieuw."
 }

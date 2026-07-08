@@ -94,22 +94,22 @@ void main() {
       await tester.pumpAndSettle();
 
       // First selection fills the dedicated guidance field.
-      await tester.tap(find.text('Professional'));
+      await tester.tap(find.text('Improve grammar'));
       await tester.pumpAndSettle();
 
       expect(
         _textOf(tester, const Key('polish-custom-guidance-field')),
-        'Make the writing sound professional.',
+        'Correct the grammar while preserving the meaning.',
       );
 
       // Second selection appends without overwriting.
-      await tester.tap(find.text('Friendly'));
+      await tester.tap(find.text('Fix spelling'));
       await tester.pumpAndSettle();
 
       expect(
         _textOf(tester, const Key('polish-custom-guidance-field')),
-        'Make the writing sound professional.\n'
-        'Make the writing warmer and friendlier.',
+        'Correct the grammar while preserving the meaning.\n'
+        'Correct all spelling errors.',
       );
       // The guidance field remains available for further edits.
       expect(

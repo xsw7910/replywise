@@ -293,4 +293,13 @@
   ,"showAppreciation": "Bày tỏ sự cảm kích"
   ,"apologizeBriefly": "Xin lỗi ngắn gọn"
   ,"beFirmButKind": "Kiên định nhưng tử tế"
+  ,"appStatusMaintenanceTitle": "Bảo trì"
+  ,"appStatusServerUnavailableMessage": "Chúng tôi đang gặp sự cố khi kết nối với máy chủ. Vui lòng thử lại sau."
+  ,"appStatusUpdateRequiredTitle": "Cần cập nhật"
+  ,"appStatusUpdateNow": "Cập nhật ngay"
+  ,"appStatusUpdateAvailableTitle": "Đã có bản cập nhật"
+  ,"appStatusUpdate": "Cập nhật"
+  ,"appStatusLater": "Để sau"
+  ,"appStatusFeatureUnavailableTitle": "Tạm thời không khả dụng"
+  ,"appStatusFeatureUnavailableMessage": "Tính năng này tạm thời không khả dụng. Vui lòng thử lại sau."
 }

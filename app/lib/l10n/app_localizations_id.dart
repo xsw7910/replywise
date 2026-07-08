@@ -952,4 +952,33 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get beFirmButKind => 'Tegas tapi ramah';
+
+  @override
+  String get appStatusMaintenanceTitle => 'Pemeliharaan';
+
+  @override
+  String get appStatusServerUnavailableMessage =>
+      'Kami mengalami masalah saat menghubungkan ke server. Silakan coba lagi nanti.';
+
+  @override
+  String get appStatusUpdateRequiredTitle => 'Pembaruan diperlukan';
+
+  @override
+  String get appStatusUpdateNow => 'Perbarui sekarang';
+
+  @override
+  String get appStatusUpdateAvailableTitle => 'Pembaruan tersedia';
+
+  @override
+  String get appStatusUpdate => 'Perbarui';
+
+  @override
+  String get appStatusLater => 'Nanti';
+
+  @override
+  String get appStatusFeatureUnavailableTitle => 'Sementara tidak tersedia';
+
+  @override
+  String get appStatusFeatureUnavailableMessage =>
+      'Fitur ini sementara tidak tersedia. Silakan coba lagi nanti.';
 }

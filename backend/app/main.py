@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.api.health import router as health_router
+from app.api.v1.app_status import router as app_status_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.ai import router as ai_router
 from app.api.v1.me import router as me_router
@@ -18,6 +19,7 @@ from app.config import settings
 from app.database import Base, engine
 import app.models.credit  # noqa: F401 — registers CreditPurchase with Base.metadata
 import app.models.ad_reward  # noqa: F401 — registers AdReward with Base.metadata
+import app.models.app_status_config  # noqa: F401 — registers app status configs
 import app.models.device_user_binding  # noqa: F401 — stable device ownership
 import app.models.revenuecat_event  # noqa: F401 — registers webhook events
 from app.errors import install_error_handlers
@@ -60,6 +62,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.include_router(health_router)
+    app.include_router(app_status_router)
     app.include_router(auth_router)
     app.include_router(me_router)
     app.include_router(ai_router)

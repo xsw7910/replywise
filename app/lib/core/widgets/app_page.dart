@@ -8,6 +8,7 @@ class AppPage extends StatelessWidget {
     super.key,
     required this.title,
     required this.child,
+    this.titleWidget,
     this.actions,
     this.showBackButton = false,
     this.showAppBar = true,
@@ -25,6 +26,10 @@ class AppPage extends StatelessWidget {
 
   final String title;
   final Widget child;
+
+  /// Optional custom app-bar title. When set it replaces the plain [title]
+  /// text (e.g. an icon + title row). [title] is still used for semantics.
+  final Widget? titleWidget;
   final List<Widget>? actions;
   final bool showBackButton;
   final bool showAppBar;
@@ -69,15 +74,17 @@ class AppPage extends StatelessWidget {
               toolbarHeight: toolbarHeight,
               centerTitle: centerTitle,
               titleSpacing: showBackButton ? 0 : 16,
-              title: hasFeatureHeader
-                  ? _FeatureNavigationTitle(
-                      title: title,
-                      subtitle: subtitle,
-                      imagePath: headerImagePath,
-                      icon: headerIcon,
-                      color: accentColor ?? AppColors.primaryBlue,
-                    )
-                  : Text(title, style: titleStyle),
+              title:
+                  titleWidget ??
+                  (hasFeatureHeader
+                      ? _FeatureNavigationTitle(
+                          title: title,
+                          subtitle: subtitle,
+                          imagePath: headerImagePath,
+                          icon: headerIcon,
+                          color: accentColor ?? AppColors.primaryBlue,
+                        )
+                      : Text(title, style: titleStyle)),
               actions: actions,
               automaticallyImplyLeading: showBackButton,
               backgroundColor: transparentAppBar
