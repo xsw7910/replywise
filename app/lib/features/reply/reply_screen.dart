@@ -17,6 +17,7 @@ import '../../core/widgets/generated_result_card.dart';
 import '../../core/widgets/glass_card.dart';
 import '../guidance/application/pending_guidance_provider.dart';
 import '../guidance/domain/guidance_template.dart';
+import '../guidance/presentation/guidance_library_screen.dart';
 import '../guidance/presentation/guidance_picker_sheet.dart';
 import '../guidance/presentation/guidance_text_field.dart';
 import '../recent/application/recent_providers.dart';
@@ -107,6 +108,20 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     );
   }
 
+  Future<void> _openTemplatePage(GuidanceInsertionTarget target) async {
+    ref.read(activeGuidanceInsertionTargetProvider.notifier).set(target);
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const GuidanceLibraryScreen()),
+    );
+    if (!mounted) return;
+    ref.read(activeGuidanceInsertionTargetProvider.notifier).clear();
+  }
+
+  void _setControllerText(TextEditingController controller, String text) {
+    controller.text = text;
+    controller.selection = TextSelection.collapsed(offset: text.length);
+  }
+
   /// Applies a guidance template handed over from the standalone Guidance
   /// Library ("Use in Reply"). Consumed exactly once.
   void _consumePendingGuidance() {
@@ -115,6 +130,29 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       if (!mounted) return;
       final template = ref.read(pendingGuidanceProvider.notifier).take();
       if (template != null) _appendGuidance(template);
+    });
+  }
+
+  void _consumePendingTargetedGuidance() {
+    if (ref.watch(pendingTargetedGuidanceProvider) == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final pending = ref.read(pendingTargetedGuidanceProvider.notifier).take();
+      if (pending == null) return;
+      switch (pending.target) {
+        case GuidanceInsertionTarget.replyTone:
+          _setControllerText(_customToneController, pending.template.content);
+          break;
+        case GuidanceInsertionTarget.replyAudience:
+          _setControllerText(
+            _customAudienceController,
+            pending.template.content,
+          );
+          break;
+        case GuidanceInsertionTarget.polishTone:
+        case GuidanceInsertionTarget.polishAudience:
+          break;
+      }
     });
   }
 
@@ -269,6 +307,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     final replyState = ref.watch(replyControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
     _consumePendingGuidance();
+    _consumePendingTargetedGuidance();
     _consumePendingReplyInput();
 
     return AppPage(
@@ -452,6 +491,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                   tones: _tones,
                   tone: _tone,
                   onTone: (v) => setState(() => _tone = v),
+                  onOpenTemplatePage: _openTemplatePage,
                   customToneController: _customToneController,
                   audiences: _audiences,
                   audience: _audience,
@@ -829,6 +869,7 @@ class _MoreOptionsSection extends StatelessWidget {
     required this.tones,
     required this.tone,
     required this.onTone,
+    required this.onOpenTemplatePage,
     required this.customToneController,
     required this.audiences,
     required this.audience,
@@ -847,6 +888,7 @@ class _MoreOptionsSection extends StatelessWidget {
   final List<String> tones;
   final String tone;
   final ValueChanged<String> onTone;
+  final ValueChanged<GuidanceInsertionTarget> onOpenTemplatePage;
   final TextEditingController customToneController;
   final List<String> audiences;
   final String audience;
@@ -938,10 +980,14 @@ class _MoreOptionsSection extends StatelessWidget {
                       hintText: context.l10n.toneHint,
                       maxLines: 1,
                       maxLength: 500,
-                      fieldActions: const Icon(
-                        Icons.menu_book_rounded,
-                        size: 20,
+                      fieldActions: IconButton(
+                        tooltip: context.l10n.templates,
+                        visualDensity: VisualDensity.compact,
                         color: _kColor,
+                        onPressed: () => onOpenTemplatePage(
+                          GuidanceInsertionTarget.replyTone,
+                        ),
+                        icon: const Icon(Icons.menu_book_rounded, size: 20),
                       ),
                     ),
                   ],
@@ -966,10 +1012,14 @@ class _MoreOptionsSection extends StatelessWidget {
                       hintText: context.l10n.relationshipHint,
                       maxLines: 1,
                       maxLength: 500,
-                      fieldActions: const Icon(
-                        Icons.menu_book_rounded,
-                        size: 20,
+                      fieldActions: IconButton(
+                        tooltip: context.l10n.templates,
+                        visualDensity: VisualDensity.compact,
                         color: _kColor,
+                        onPressed: () => onOpenTemplatePage(
+                          GuidanceInsertionTarget.replyAudience,
+                        ),
+                        icon: const Icon(Icons.menu_book_rounded, size: 20),
                       ),
                     ),
                   ],

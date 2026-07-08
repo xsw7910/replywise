@@ -146,6 +146,7 @@ class _GuidanceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(guidanceLibraryControllerProvider.notifier);
+    final insertionTarget = ref.watch(activeGuidanceInsertionTargetProvider);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -208,7 +209,9 @@ class _GuidanceCard extends ConsumerWidget {
                 const Spacer(),
                 TextButton(
                   style: TextButton.styleFrom(foregroundColor: _kColor),
-                  onPressed: () => _showUseSheet(context, ref),
+                  onPressed: insertionTarget == null
+                      ? () => _showUseSheet(context, ref)
+                      : () => _useForTarget(context, ref, insertionTarget),
                   child: Text(context.l10n.use),
                 ),
                 if (!template.isBuiltIn)
@@ -235,6 +238,16 @@ class _GuidanceCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _useForTarget(
+    BuildContext context,
+    WidgetRef ref,
+    GuidanceInsertionTarget target,
+  ) {
+    ref.read(pendingTargetedGuidanceProvider.notifier).set(template, target);
+    ref.read(activeGuidanceInsertionTargetProvider.notifier).clear();
+    Navigator.of(context).pop();
   }
 
   void _showUseSheet(BuildContext context, WidgetRef ref) {

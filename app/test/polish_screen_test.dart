@@ -360,4 +360,49 @@ void main() {
       isNotEmpty,
     );
   });
+
+  testWidgets('Polish custom tone template icon fills the custom tone field', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    await _pumpPolish(tester);
+    await tester.tap(find.text('More options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Custom').first);
+    await tester.pumpAndSettle();
+
+    const fieldKey = Key('polish-custom-tone-field');
+    await tester.tap(_actionIn(fieldKey, 'Templates'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Use').first);
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.widget<EditableText>(_editableIn(fieldKey)).controller.text,
+      isNotEmpty,
+    );
+  });
+
+  testWidgets(
+    'Polish custom audience template icon fills the custom audience field',
+    (tester) async {
+      _useTallView(tester);
+      await _pumpPolish(tester);
+      await tester.tap(find.text('More options'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Custom').last);
+      await tester.pumpAndSettle();
+
+      const fieldKey = Key('polish-custom-audience-field');
+      await tester.tap(_actionIn(fieldKey, 'Templates'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(TextButton, 'Use').first);
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.widget<EditableText>(_editableIn(fieldKey)).controller.text,
+        isNotEmpty,
+      );
+    },
+  );
 }
