@@ -26,6 +26,14 @@ final currentAppVersionProvider = Provider<String>(
   (ref) => AppConfig.appVersion,
 );
 
+/// The running app build number (the `+NN` suffix of the pubspec version),
+/// used together with [currentAppVersionProvider] so two builds sharing a
+/// version name (1.0.0+32 vs 1.0.0+33) compare correctly. `main()` overrides
+/// it with the real value from package_info.
+final currentAppBuildNumberProvider = Provider<int>(
+  (ref) => AppConfig.appBuildNumber,
+);
+
 /// Wall clock used for cache-freshness math. Overridable so tests can advance
 /// time past [appStatusCacheTtl] without waiting.
 final appStatusClockProvider = Provider<DateTime Function()>(
@@ -90,6 +98,8 @@ class AppStatusController extends _$AppStatusController {
 
   String get _currentVersion => ref.read(currentAppVersionProvider);
 
+  int get _currentBuildNumber => ref.read(currentAppBuildNumberProvider);
+
   DateTime _now() => ref.read(appStatusClockProvider)();
 
   bool get isCacheStale {
@@ -133,7 +143,8 @@ class AppStatusController extends _$AppStatusController {
     // triggers a background (or, if it was blocking, a foreground) refresh.
     if (cached != null && isCacheStale) {
       final wasBlocking =
-          cached.maintenance || cached.requiresForceUpdate(_currentVersion);
+          cached.maintenance ||
+          cached.requiresForceUpdate(_currentVersion, _currentBuildNumber);
       if (wasBlocking) {
         await refresh();
       } else {
@@ -144,6 +155,7 @@ class AppStatusController extends _$AppStatusController {
       status: state.status,
       feature: feature,
       currentVersion: _currentVersion,
+      currentBuildNumber: _currentBuildNumber,
     );
   }
 

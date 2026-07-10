@@ -13,7 +13,9 @@ class AppStatus {
     required this.maintenance,
     required this.maintenanceMessage,
     required this.minSupportedVersion,
+    required this.minSupportedBuildNumber,
     required this.latestVersion,
+    required this.latestBuildNumber,
     required this.forceUpdate,
     required this.updateMessage,
     required this.disabledFeatures,
@@ -26,7 +28,9 @@ class AppStatus {
   final bool maintenance;
   final String maintenanceMessage;
   final String minSupportedVersion;
+  final int minSupportedBuildNumber;
   final String latestVersion;
+  final int latestBuildNumber;
   final bool forceUpdate;
   final String updateMessage;
   final List<String> disabledFeatures;
@@ -43,7 +47,9 @@ class AppStatus {
     maintenanceMessage: json['maintenanceMessage'] as String? ?? '',
     minSupportedVersion:
         json['minSupportedVersion'] as String? ?? _defaultVersion,
+    minSupportedBuildNumber: _parseBuildNumber(json['minSupportedBuildNumber']),
     latestVersion: json['latestVersion'] as String? ?? _defaultVersion,
+    latestBuildNumber: _parseBuildNumber(json['latestBuildNumber']),
     forceUpdate: json['forceUpdate'] as bool? ?? false,
     updateMessage: json['updateMessage'] as String? ?? '',
     disabledFeatures:
@@ -63,7 +69,9 @@ class AppStatus {
     'maintenance': maintenance,
     'maintenanceMessage': maintenanceMessage,
     'minSupportedVersion': minSupportedVersion,
+    'minSupportedBuildNumber': minSupportedBuildNumber,
     'latestVersion': latestVersion,
+    'latestBuildNumber': latestBuildNumber,
     'forceUpdate': forceUpdate,
     'updateMessage': updateMessage,
     'disabledFeatures': disabledFeatures,
@@ -75,20 +83,41 @@ class AppStatus {
   bool isFeatureDisabled(AppFeature feature) =>
       disabledFeatures.contains(feature.name.toLowerCase());
 
-  /// True when [currentVersion] is older than [minSupportedVersion], i.e. this
-  /// build is below the supported floor and must update.
-  bool isBelowMinimum(String currentVersion) =>
-      compareVersions(currentVersion, minSupportedVersion) < 0;
+  /// True when the running version+build is older than the supported floor.
+  /// Semantic version is compared first; equal version names (1.0.0+32 vs
+  /// 1.0.0+33) fall back to the numeric build number.
+  bool isBelowMinimum(String currentVersion, int currentBuildNumber) =>
+      compareVersionAndBuild(
+        currentVersion,
+        currentBuildNumber,
+        minSupportedVersion,
+        minSupportedBuildNumber,
+      ) <
+      0;
 
-  /// True when a force update is required — either the backend flag is set or
-  /// the running build is below the minimum supported version.
-  bool requiresForceUpdate(String currentVersion) =>
-      forceUpdate || isBelowMinimum(currentVersion);
+  /// True when a force update is required: the backend flag is set AND the
+  /// running version+build is below the supported floor. A build that is
+  /// already at or above the floor is never blocked, and forceUpdate=false
+  /// clears any previously blocking state.
+  bool requiresForceUpdate(String currentVersion, int currentBuildNumber) =>
+      forceUpdate && isBelowMinimum(currentVersion, currentBuildNumber);
 
-  /// True when a newer build exists but updating is optional (not forced).
-  bool hasOptionalUpdate(String currentVersion) =>
-      !requiresForceUpdate(currentVersion) &&
-      compareVersions(currentVersion, latestVersion) < 0;
+  /// True when a newer version+build exists but updating is optional.
+  bool hasOptionalUpdate(String currentVersion, int currentBuildNumber) =>
+      !requiresForceUpdate(currentVersion, currentBuildNumber) &&
+      compareVersionAndBuild(
+            currentVersion,
+            currentBuildNumber,
+            latestVersion,
+            latestBuildNumber,
+          ) <
+          0;
+}
+
+int _parseBuildNumber(Object? value) {
+  if (value is int) return value >= 0 ? value : 0;
+  final parsed = int.tryParse(value?.toString() ?? '');
+  return parsed != null && parsed >= 0 ? parsed : 0;
 }
 
 /// Decision returned by [evaluateGate] describing whether an AI request may
@@ -104,10 +133,11 @@ AppStatusGate evaluateGate({
   required AppStatus? status,
   required AppFeature feature,
   required String currentVersion,
+  int currentBuildNumber = 0,
 }) {
   if (status == null) return AppStatusGate.allowed;
   if (status.maintenance) return AppStatusGate.maintenance;
-  if (status.requiresForceUpdate(currentVersion)) {
+  if (status.requiresForceUpdate(currentVersion, currentBuildNumber)) {
     return AppStatusGate.forceUpdate;
   }
   if (status.isFeatureDisabled(feature)) return AppStatusGate.featureDisabled;
@@ -129,6 +159,21 @@ int compareVersions(String a, String b) {
     if (x != y) return x < y ? -1 : 1;
   }
   return 0;
+}
+
+/// Compares version+build pairs: semantic version first, and only when the
+/// version names are equal does the numeric build number break the tie. So
+/// `1.0.1+1` is newer than `1.0.0+99`, and `1.0.0+32` is older than
+/// `1.0.0+33`.
+int compareVersionAndBuild(
+  String versionA,
+  int buildA,
+  String versionB,
+  int buildB,
+) {
+  final byVersion = compareVersions(versionA, versionB);
+  if (byVersion != 0) return byVersion;
+  return buildA.compareTo(buildB);
 }
 
 List<int> _parseVersion(String version) => version

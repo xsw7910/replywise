@@ -18,7 +18,9 @@ class AppStatusResponse(BaseModel):
     maintenance: bool
     maintenance_message: str
     min_supported_version: str
+    min_supported_build_number: int
     latest_version: str
+    latest_build_number: int
     force_update: bool
     update_message: str
     disabled_features: list[str]

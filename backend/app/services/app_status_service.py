@@ -12,6 +12,8 @@ from app.schemas.app_status import AppStatusResponse
 
 # Safe fallbacks applied when a DB row or individual value is missing.
 DEFAULT_SUPPORTED_VERSION = "1.0.0"
+# Current Android build number (pubspec `version: 1.0.0+33`).
+DEFAULT_SUPPORTED_BUILD_NUMBER = 33
 DEFAULT_SUPPORT_EMAIL = "support@novaaistudio.ca"
 DEFAULT_MAINTENANCE_MESSAGE = "We are doing maintenance. Please try again later."
 DEFAULT_UPDATE_MESSAGE = (
@@ -28,6 +30,14 @@ def _clean_text(value: str | None, fallback: str) -> str:
         return fallback
     cleaned = value.strip()
     return cleaned or fallback
+
+
+def _clean_build_number(value: object, fallback: int) -> int:
+    try:
+        number = int(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return fallback
+    return number if number >= 0 else fallback
 
 
 def _clean_disabled_features(value: object) -> list[str]:
@@ -48,7 +58,9 @@ def _default_response(app_name: str, platform: str) -> AppStatusResponse:
         maintenance=False,
         maintenance_message=DEFAULT_MAINTENANCE_MESSAGE,
         min_supported_version=DEFAULT_SUPPORTED_VERSION,
+        min_supported_build_number=DEFAULT_SUPPORTED_BUILD_NUMBER,
         latest_version=DEFAULT_SUPPORTED_VERSION,
+        latest_build_number=DEFAULT_SUPPORTED_BUILD_NUMBER,
         force_update=False,
         update_message=DEFAULT_UPDATE_MESSAGE,
         disabled_features=[],
@@ -92,7 +104,15 @@ async def get_app_status(
             row.min_supported_version,
             fallback.min_supported_version,
         ),
+        min_supported_build_number=_clean_build_number(
+            row.min_supported_build_number,
+            fallback.min_supported_build_number,
+        ),
         latest_version=_clean_text(row.latest_version, fallback.latest_version),
+        latest_build_number=_clean_build_number(
+            row.latest_build_number,
+            fallback.latest_build_number,
+        ),
         force_update=row.force_update,
         update_message=_clean_text(row.update_message, fallback.update_message),
         disabled_features=_clean_disabled_features(row.disabled_features),

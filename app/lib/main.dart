@@ -25,14 +25,18 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
 
-  // Resolve the running app version for force/optional update checks. Reading
-  // package info is cheap; fall back to the compile-time default on failure.
+  // Resolve the running app version and build number for force/optional
+  // update checks. Reading package info is cheap; fall back to the
+  // compile-time defaults on failure.
   var appVersion = AppConfig.appVersion;
+  var appBuildNumber = AppConfig.appBuildNumber;
   try {
     final info = await PackageInfo.fromPlatform();
     if (info.version.isNotEmpty) appVersion = info.version;
+    final build = int.tryParse(info.buildNumber);
+    if (build != null && build > 0) appBuildNumber = build;
   } catch (_) {
-    // Keep the default; version comparison degrades gracefully.
+    // Keep the defaults; version comparison degrades gracefully.
   }
 
   runApp(
@@ -44,6 +48,7 @@ void main() async {
               GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
         ),
         currentAppVersionProvider.overrideWithValue(appVersion),
+        currentAppBuildNumberProvider.overrideWithValue(appBuildNumber),
       ],
       child: const ReplyWiseApp(),
     ),

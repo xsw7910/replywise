@@ -29,7 +29,17 @@ class AppStatusConfig(Base):
     )
     maintenance_message: Mapped[str] = mapped_column(String, nullable=False)
     min_supported_version: Mapped[str] = mapped_column(String, nullable=False)
+    min_supported_build_number: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=0,
+    )
     latest_version: Mapped[str] = mapped_column(String, nullable=False)
+    latest_build_number: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=0,
+    )
     force_update: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     update_message: Mapped[str] = mapped_column(String, nullable=False)
     disabled_features: Mapped[list[str]] = mapped_column(

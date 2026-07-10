@@ -10,6 +10,7 @@ from app.models.app_status_config import AppStatusConfig
 from app.services.app_status_service import (
     DEFAULT_MAINTENANCE_MESSAGE,
     DEFAULT_SUPPORT_EMAIL,
+    DEFAULT_SUPPORTED_BUILD_NUMBER,
     DEFAULT_SUPPORTED_VERSION,
     DEFAULT_UPDATE_MESSAGE,
 )
@@ -28,7 +29,9 @@ async def _seed_config(
     maintenance_enabled: bool = False,
     maintenance_message: str = DEFAULT_MAINTENANCE_MESSAGE,
     min_supported_version: str = DEFAULT_SUPPORTED_VERSION,
+    min_supported_build_number: int = DEFAULT_SUPPORTED_BUILD_NUMBER,
     latest_version: str = DEFAULT_SUPPORTED_VERSION,
+    latest_build_number: int = DEFAULT_SUPPORTED_BUILD_NUMBER,
     force_update: bool = False,
     update_message: str = DEFAULT_UPDATE_MESSAGE,
     disabled_features: list[str] | None = None,
@@ -43,7 +46,9 @@ async def _seed_config(
                 maintenance_enabled=maintenance_enabled,
                 maintenance_message=maintenance_message,
                 min_supported_version=min_supported_version,
+                min_supported_build_number=min_supported_build_number,
                 latest_version=latest_version,
+                latest_build_number=latest_build_number,
                 force_update=force_update,
                 update_message=update_message,
                 disabled_features=disabled_features or [],
@@ -87,7 +92,9 @@ def test_app_status_normal_from_database(client: TestClient):
     assert body["maintenanceMessage"] == DEFAULT_MAINTENANCE_MESSAGE
     assert body["forceUpdate"] is False
     assert body["minSupportedVersion"] == "1.0.0"
+    assert body["minSupportedBuildNumber"] == DEFAULT_SUPPORTED_BUILD_NUMBER
     assert body["latestVersion"] == "1.0.0"
+    assert body["latestBuildNumber"] == DEFAULT_SUPPORTED_BUILD_NUMBER
     assert body["disabledFeatures"] == []
     assert body["supportEmail"] == DEFAULT_SUPPORT_EMAIL
     assert body["updatedAt"]
@@ -118,7 +125,9 @@ def test_app_status_unknown_app_platform_returns_safe_defaults(client: TestClien
     assert body["maintenance"] is False
     assert body["forceUpdate"] is False
     assert body["minSupportedVersion"] == DEFAULT_SUPPORTED_VERSION
+    assert body["minSupportedBuildNumber"] == DEFAULT_SUPPORTED_BUILD_NUMBER
     assert body["latestVersion"] == DEFAULT_SUPPORTED_VERSION
+    assert body["latestBuildNumber"] == DEFAULT_SUPPORTED_BUILD_NUMBER
     assert body["maintenanceMessage"] == DEFAULT_MAINTENANCE_MESSAGE
     assert body["updateMessage"] == DEFAULT_UPDATE_MESSAGE
     assert body["disabledFeatures"] == []
@@ -168,6 +177,39 @@ def test_app_status_optional_update_returned(client: TestClient):
     assert body["forceUpdate"] is False
     assert body["latestVersion"] == "1.2.0"
     assert body["minSupportedVersion"] == "1.0.0"
+
+
+def test_app_status_build_numbers_returned(client: TestClient):
+    """Same version name, different build number — the client needs both."""
+    asyncio.run(
+        _seed_config(
+            force_update=True,
+            min_supported_version="1.0.0",
+            min_supported_build_number=33,
+            latest_version="1.0.0",
+            latest_build_number=34,
+        )
+    )
+
+    body = client.get("/v1/app-status").json()
+    assert body["forceUpdate"] is True
+    assert body["minSupportedVersion"] == "1.0.0"
+    assert body["minSupportedBuildNumber"] == 33
+    assert body["latestVersion"] == "1.0.0"
+    assert body["latestBuildNumber"] == 34
+
+
+def test_app_status_negative_build_numbers_use_safe_defaults(client: TestClient):
+    asyncio.run(
+        _seed_config(
+            min_supported_build_number=-1,
+            latest_build_number=-5,
+        )
+    )
+
+    body = client.get("/v1/app-status").json()
+    assert body["minSupportedBuildNumber"] == DEFAULT_SUPPORTED_BUILD_NUMBER
+    assert body["latestBuildNumber"] == DEFAULT_SUPPORTED_BUILD_NUMBER
 
 
 def test_app_status_disabled_features_returned(client: TestClient):

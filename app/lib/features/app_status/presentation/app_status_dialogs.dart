@@ -83,16 +83,51 @@ Future<void> showAppMaintenanceDialog(BuildContext context, WidgetRef ref) =>
       builder: (_) => const _MaintenanceDialog(),
     );
 
-Future<void> showForceUpdateDialog(BuildContext context, WidgetRef ref) {
-  final status = ref.read(appStatusControllerProvider).status;
-  final l10n = context.l10n;
-  final message = (status?.updateMessage.isNotEmpty ?? false)
-      ? status!.updateMessage
-      : l10n.appStatusFeatureUnavailableMessage;
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (dialogContext) => _AppStatusDialog(
+Future<void> showForceUpdateDialog(BuildContext context, WidgetRef ref) =>
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const _ForceUpdateDialog(),
+    );
+
+class _ForceUpdateDialog extends ConsumerStatefulWidget {
+  const _ForceUpdateDialog();
+
+  @override
+  ConsumerState<_ForceUpdateDialog> createState() => _ForceUpdateDialogState();
+}
+
+class _ForceUpdateDialogState extends ConsumerState<_ForceUpdateDialog> {
+  bool _retrying = false;
+
+  /// Re-fetches the status; if forceUpdate is no longer required (flag turned
+  /// off, or the supported floor dropped to this build), dismiss the dialog.
+  Future<void> _retry() async {
+    setState(() => _retrying = true);
+    await ref.read(appStatusControllerProvider.notifier).refresh();
+    if (!mounted) return;
+    final status = ref.read(appStatusControllerProvider).status;
+    final stillRequired =
+        status?.requiresForceUpdate(
+          ref.read(currentAppVersionProvider),
+          ref.read(currentAppBuildNumberProvider),
+        ) ??
+        false;
+    if (!stillRequired) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() => _retrying = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final status = ref.watch(appStatusControllerProvider).status;
+    final message = (status?.updateMessage.isNotEmpty ?? false)
+        ? status!.updateMessage
+        : l10n.appStatusFeatureUnavailableMessage;
+    return _AppStatusDialog(
       dialogKey: const Key('force-update-dialog'),
       icon: Icons.system_update_rounded,
       title: l10n.appStatusUpdateRequiredTitle,
@@ -100,8 +135,12 @@ Future<void> showForceUpdateDialog(BuildContext context, WidgetRef ref) {
       primaryLabel: l10n.appStatusUpdateNow,
       primaryKey: const Key('force-update-now'),
       onPrimary: () => ref.read(storeLauncherProvider)(),
-    ),
-  );
+      secondaryLabel: l10n.retry,
+      secondaryKey: const Key('force-update-retry'),
+      secondaryBusy: _retrying,
+      onSecondary: _retrying ? null : _retry,
+    );
+  }
 }
 
 Future<void> showServerUnavailableDialog(BuildContext context, WidgetRef ref) {
@@ -178,6 +217,10 @@ class _AppStatusDialog extends StatelessWidget {
     required this.primaryKey,
     required this.onPrimary,
     this.primaryBusy = false,
+    this.secondaryLabel,
+    this.secondaryKey,
+    this.onSecondary,
+    this.secondaryBusy = false,
   });
 
   final Key dialogKey;
@@ -188,6 +231,10 @@ class _AppStatusDialog extends StatelessWidget {
   final Key primaryKey;
   final VoidCallback? onPrimary;
   final bool primaryBusy;
+  final String? secondaryLabel;
+  final Key? secondaryKey;
+  final VoidCallback? onSecondary;
+  final bool secondaryBusy;
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +294,26 @@ class _AppStatusDialog extends StatelessWidget {
                       )
                     : Text(primaryLabel),
               ),
+              if (secondaryLabel != null) ...[
+                const SizedBox(height: 6),
+                TextButton(
+                  key: secondaryKey,
+                  onPressed: onSecondary,
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.textPrimary,
+                  ),
+                  child: secondaryBusy
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.2,
+                            color: AppColors.textPrimary,
+                          ),
+                        )
+                      : Text(secondaryLabel!),
+                ),
+              ],
             ],
           ),
         ),

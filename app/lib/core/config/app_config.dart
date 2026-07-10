@@ -59,6 +59,15 @@ class AppConfig {
     defaultValue: '1.0.0',
   );
 
+  /// The running app's numeric build number (the `+NN` part of the pubspec
+  /// version), used to distinguish builds that share a version name (1.0.0+32
+  /// vs 1.0.0+33). Overridden at startup with the real value from
+  /// package_info; a release build can also pin it via --dart-define.
+  static const int appBuildNumber = int.fromEnvironment(
+    'REPLY_APP_BUILD_NUMBER',
+    defaultValue: 33,
+  );
+
   static const String revenueCatAndroidApiKey = String.fromEnvironment(
     'REVENUECAT_ANDROID_API_KEY',
     defaultValue: '',

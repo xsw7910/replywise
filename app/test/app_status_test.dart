@@ -38,7 +38,9 @@ AppStatus buildStatus({
   bool maintenance = false,
   String maintenanceMessage = 'Scheduled maintenance in progress.',
   String minSupportedVersion = '1.0.0',
+  int minSupportedBuildNumber = 0,
   String latestVersion = '1.0.0',
+  int latestBuildNumber = 0,
   bool forceUpdate = false,
   String updateMessage = 'Please update ReplyWise.',
   List<String> disabledFeatures = const <String>[],
@@ -48,7 +50,9 @@ AppStatus buildStatus({
   maintenance: maintenance,
   maintenanceMessage: maintenanceMessage,
   minSupportedVersion: minSupportedVersion,
+  minSupportedBuildNumber: minSupportedBuildNumber,
   latestVersion: latestVersion,
+  latestBuildNumber: latestBuildNumber,
   forceUpdate: forceUpdate,
   updateMessage: updateMessage,
   disabledFeatures: disabledFeatures,
@@ -59,12 +63,14 @@ AppStatus buildStatus({
 ProviderContainer makeContainer({
   required FakeAppStatusService service,
   String version = '1.0.0',
+  int buildNumber = 0,
   DateTime Function()? clock,
 }) {
   final container = ProviderContainer(
     overrides: [
       appStatusServiceProvider.overrideWithValue(service),
       currentAppVersionProvider.overrideWithValue(version),
+      currentAppBuildNumberProvider.overrideWithValue(buildNumber),
       if (clock != null) appStatusClockProvider.overrideWithValue(clock),
     ],
   );
@@ -107,13 +113,73 @@ void main() {
     });
 
     test('requiresForceUpdate / hasOptionalUpdate', () {
-      final force = buildStatus(minSupportedVersion: '2.0.0');
-      expect(force.requiresForceUpdate('1.0.0'), isTrue);
+      final force = buildStatus(
+        forceUpdate: true,
+        minSupportedVersion: '2.0.0',
+      );
+      expect(force.requiresForceUpdate('1.0.0', 0), isTrue);
 
       final optional = buildStatus(latestVersion: '1.5.0');
-      expect(optional.requiresForceUpdate('1.0.0'), isFalse);
-      expect(optional.hasOptionalUpdate('1.0.0'), isTrue);
-      expect(optional.hasOptionalUpdate('1.5.0'), isFalse);
+      expect(optional.requiresForceUpdate('1.0.0', 0), isFalse);
+      expect(optional.hasOptionalUpdate('1.0.0', 0), isTrue);
+      expect(optional.hasOptionalUpdate('1.5.0', 0), isFalse);
+    });
+
+    test('build number breaks ties between equal version names', () {
+      // compareVersionAndBuild: semantic version first, then build number.
+      expect(compareVersionAndBuild('1.0.0', 32, '1.0.0', 33), lessThan(0));
+      expect(compareVersionAndBuild('1.0.0', 33, '1.0.0', 33), 0);
+      // 1.0.1+1 is newer than 1.0.0+99: version wins over build number.
+      expect(compareVersionAndBuild('1.0.1', 1, '1.0.0', 99), greaterThan(0));
+
+      final min33 = buildStatus(
+        forceUpdate: true,
+        minSupportedVersion: '1.0.0',
+        minSupportedBuildNumber: 33,
+      );
+      // 1.0.0+32 requires the update; 1.0.0+33 and newer do not.
+      expect(min33.requiresForceUpdate('1.0.0', 32), isTrue);
+      expect(min33.requiresForceUpdate('1.0.0', 33), isFalse);
+      expect(min33.requiresForceUpdate('1.0.0', 34), isFalse);
+      expect(min33.requiresForceUpdate('1.0.1', 1), isFalse);
+    });
+
+    test('forceUpdate=false never blocks, even below the minimum', () {
+      final status = buildStatus(
+        forceUpdate: false,
+        minSupportedVersion: '1.0.0',
+        minSupportedBuildNumber: 33,
+      );
+      expect(status.requiresForceUpdate('1.0.0', 32), isFalse);
+      expect(
+        evaluateGate(
+          status: status,
+          feature: AppFeature.reply,
+          currentVersion: '1.0.0',
+          currentBuildNumber: 32,
+        ),
+        AppStatusGate.allowed,
+      );
+    });
+
+    test('forceUpdate=true does not block a build at or above the floor', () {
+      final status = buildStatus(
+        forceUpdate: true,
+        minSupportedVersion: '1.0.0',
+        minSupportedBuildNumber: 33,
+      );
+      expect(status.requiresForceUpdate('1.0.0', 33), isFalse);
+      expect(status.requiresForceUpdate('1.0.1', 1), isFalse);
+    });
+
+    test('optional update compares build numbers too', () {
+      final status = buildStatus(
+        latestVersion: '1.0.0',
+        latestBuildNumber: 34,
+      );
+      expect(status.hasOptionalUpdate('1.0.0', 33), isTrue);
+      expect(status.hasOptionalUpdate('1.0.0', 34), isFalse);
+      expect(status.hasOptionalUpdate('1.0.1', 1), isFalse);
     });
 
     test('evaluateGate precedence: maintenance > force > disabled', () {
@@ -226,7 +292,8 @@ void main() {
 
     test('force update (version below minimum) blocks the request', () async {
       final service = FakeAppStatusService(
-        () async => buildStatus(minSupportedVersion: '2.0.0'),
+        () async =>
+            buildStatus(forceUpdate: true, minSupportedVersion: '2.0.0'),
       );
       final container = makeContainer(service: service, version: '1.0.0');
       final notifier = notifierOf(container);
@@ -236,6 +303,89 @@ void main() {
         await notifier.guardFeature(AppFeature.reply),
         AppStatusGate.forceUpdate,
       );
+    });
+
+    test('force update (same version, older build number) blocks the '
+        'request', () async {
+      final service = FakeAppStatusService(
+        () async => buildStatus(
+          forceUpdate: true,
+          minSupportedVersion: '1.0.0',
+          minSupportedBuildNumber: 33,
+        ),
+      );
+      final container = makeContainer(
+        service: service,
+        version: '1.0.0',
+        buildNumber: 32,
+      );
+      final notifier = notifierOf(container);
+
+      await notifier.refresh();
+      expect(
+        await notifier.guardFeature(AppFeature.reply),
+        AppStatusGate.forceUpdate,
+      );
+    });
+
+    test('refresh with forceUpdate=false clears a blocking force-update '
+        'state', () async {
+      var forceUpdate = true;
+      final service = FakeAppStatusService(
+        () async => buildStatus(
+          forceUpdate: forceUpdate,
+          minSupportedVersion: '1.0.0',
+          minSupportedBuildNumber: 33,
+        ),
+      );
+      final container = makeContainer(
+        service: service,
+        version: '1.0.0',
+        buildNumber: 32,
+      );
+      final notifier = notifierOf(container);
+
+      await notifier.refresh();
+      expect(
+        await notifier.guardFeature(AppFeature.reply),
+        AppStatusGate.forceUpdate,
+      );
+
+      // Backend turns the flag off; the next refresh clears the block.
+      forceUpdate = false;
+      await notifier.refresh();
+      expect(
+        await notifier.guardFeature(AppFeature.reply),
+        AppStatusGate.allowed,
+      );
+    });
+
+    test('a stale blocking force-update cache awaits the refresh and unblocks '
+        'when the backend clears the flag', () async {
+      var now = DateTime(2026, 1, 1, 12);
+      var forceUpdate = true;
+      final service = FakeAppStatusService(
+        () async => buildStatus(
+          forceUpdate: forceUpdate,
+          minSupportedVersion: '1.0.0',
+          minSupportedBuildNumber: 33,
+        ),
+      );
+      final container = makeContainer(
+        service: service,
+        version: '1.0.0',
+        buildNumber: 32,
+        clock: () => now,
+      );
+      final notifier = notifierOf(container);
+
+      await notifier.refresh(); // cached: force update required
+      now = now.add(const Duration(minutes: 6)); // stale
+      forceUpdate = false; // backend no longer forces the update
+
+      final gate = await notifier.guardFeature(AppFeature.reply);
+      expect(gate, AppStatusGate.allowed);
+      expect(service.callCount, 2);
     });
 
     test('optional update does not block the request', () async {
@@ -374,13 +524,15 @@ void main() {
     ) async {
       var launched = 0;
       final service = FakeAppStatusService(
-        () async => buildStatus(minSupportedVersion: '2.0.0'),
+        () async =>
+            buildStatus(forceUpdate: true, minSupportedVersion: '2.0.0'),
       );
       await tester.pumpWidget(
         wrap(
           overrides: [
             appStatusServiceProvider.overrideWithValue(service),
             currentAppVersionProvider.overrideWithValue('1.0.0'),
+            currentAppBuildNumberProvider.overrideWithValue(1),
             storeLauncherProvider.overrideWithValue(() async {
               launched++;
               return true;
@@ -404,6 +556,74 @@ void main() {
       expect(launched, 1);
     });
 
+    testWidgets('force update block clears when a retry finds '
+        'forceUpdate=false', (tester) async {
+      var forceUpdate = true;
+      final service = FakeAppStatusService(
+        () async => buildStatus(
+          forceUpdate: forceUpdate,
+          minSupportedVersion: '1.0.0',
+          minSupportedBuildNumber: 33,
+        ),
+      );
+      await tester.pumpWidget(
+        wrap(
+          overrides: [
+            appStatusServiceProvider.overrideWithValue(service),
+            currentAppVersionProvider.overrideWithValue('1.0.0'),
+            currentAppBuildNumberProvider.overrideWithValue(32),
+            storeLauncherProvider.overrideWithValue(() async => true),
+          ],
+          home: const AppStatusBoundary(child: Text('APP BODY')),
+        ),
+      );
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AppStatusBoundary)),
+      );
+      await container.read(appStatusControllerProvider.notifier).refresh();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('force-update-block')), findsOneWidget);
+
+      // Backend stops forcing the update; Retry refreshes and unblocks.
+      forceUpdate = false;
+      await tester.tap(find.byKey(const Key('force-update-block-retry')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('force-update-block')), findsNothing);
+      expect(find.text('APP BODY'), findsOneWidget);
+    });
+
+    testWidgets('force update block does not appear for a build at the '
+        'supported floor', (tester) async {
+      final service = FakeAppStatusService(
+        () async => buildStatus(
+          forceUpdate: true,
+          minSupportedVersion: '1.0.0',
+          minSupportedBuildNumber: 33,
+        ),
+      );
+      await tester.pumpWidget(
+        wrap(
+          overrides: [
+            appStatusServiceProvider.overrideWithValue(service),
+            currentAppVersionProvider.overrideWithValue('1.0.0'),
+            currentAppBuildNumberProvider.overrideWithValue(33),
+            storeLauncherProvider.overrideWithValue(() async => true),
+          ],
+          home: const AppStatusBoundary(child: Text('APP BODY')),
+        ),
+      );
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AppStatusBoundary)),
+      );
+      await container.read(appStatusControllerProvider.notifier).refresh();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('force-update-block')), findsNothing);
+      expect(find.text('APP BODY'), findsOneWidget);
+    });
+
     testWidgets('optional update overlays without blocking the app', (
       tester,
     ) async {
@@ -415,6 +635,7 @@ void main() {
           overrides: [
             appStatusServiceProvider.overrideWithValue(service),
             currentAppVersionProvider.overrideWithValue('1.0.0'),
+            currentAppBuildNumberProvider.overrideWithValue(1),
             storeLauncherProvider.overrideWithValue(() async => true),
           ],
           home: const AppStatusBoundary(child: Text('APP BODY')),
@@ -433,6 +654,36 @@ void main() {
       await tester.tap(find.byKey(const Key('optional-update-later')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('optional-update-prompt')), findsNothing);
+      expect(find.text('APP BODY'), findsOneWidget);
+    });
+
+    testWidgets('optional update triggers on a newer build number alone', (
+      tester,
+    ) async {
+      final service = FakeAppStatusService(
+        () async => buildStatus(
+          latestVersion: '1.0.0',
+          latestBuildNumber: 34,
+        ),
+      );
+      await tester.pumpWidget(
+        wrap(
+          overrides: [
+            appStatusServiceProvider.overrideWithValue(service),
+            currentAppVersionProvider.overrideWithValue('1.0.0'),
+            currentAppBuildNumberProvider.overrideWithValue(33),
+            storeLauncherProvider.overrideWithValue(() async => true),
+          ],
+          home: const AppStatusBoundary(child: Text('APP BODY')),
+        ),
+      );
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AppStatusBoundary)),
+      );
+      await container.read(appStatusControllerProvider.notifier).refresh();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('optional-update-prompt')), findsOneWidget);
       expect(find.text('APP BODY'), findsOneWidget);
     });
 

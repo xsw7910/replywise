@@ -35,18 +35,24 @@ class _AppStatusBoundaryState extends ConsumerState<AppStatusBoundary> {
   Widget build(BuildContext context) {
     final status = ref.watch(appStatusControllerProvider).status;
     final version = ref.watch(currentAppVersionProvider);
+    final buildNumber = ref.watch(currentAppBuildNumberProvider);
 
-    if (status != null && status.requiresForceUpdate(version)) {
+    // Reactive: a refreshed status with forceUpdate=false (or a raised app
+    // version/build) immediately clears the blocking state.
+    if (status != null && status.requiresForceUpdate(version, buildNumber)) {
       return _ForceUpdateBlock(
         message: status.updateMessage,
         onUpdate: () => ref.read(storeLauncherProvider)(),
+        onRetry: () =>
+            ref.read(appStatusControllerProvider.notifier).refresh(),
       );
     }
 
+    final dismissedKey = '${status?.latestVersion}+${status?.latestBuildNumber}';
     final showOptional =
         status != null &&
-        status.hasOptionalUpdate(version) &&
-        _optionalDismissedForVersion != status.latestVersion;
+        status.hasOptionalUpdate(version, buildNumber) &&
+        _optionalDismissedForVersion != dismissedKey;
 
     return Stack(
       children: [
@@ -56,9 +62,9 @@ class _AppStatusBoundaryState extends ConsumerState<AppStatusBoundary> {
             message: status.updateMessage,
             onUpdate: () {
               ref.read(storeLauncherProvider)();
-              _dismissOptional(status.latestVersion);
+              _dismissOptional(dismissedKey);
             },
-            onLater: () => _dismissOptional(status.latestVersion),
+            onLater: () => _dismissOptional(dismissedKey),
           ),
       ],
     );
@@ -69,10 +75,15 @@ class _AppStatusBoundaryState extends ConsumerState<AppStatusBoundary> {
 }
 
 class _ForceUpdateBlock extends StatelessWidget {
-  const _ForceUpdateBlock({required this.message, required this.onUpdate});
+  const _ForceUpdateBlock({
+    required this.message,
+    required this.onUpdate,
+    required this.onRetry,
+  });
 
   final String message;
   final VoidCallback onUpdate;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +131,15 @@ class _ForceUpdateBlock extends StatelessWidget {
                     onPressed: onUpdate,
                     style: _primaryButtonStyle,
                     child: Text(l10n.appStatusUpdateNow),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    key: const Key('force-update-block-retry'),
+                    onPressed: onRetry,
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                    ),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
