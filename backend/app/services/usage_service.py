@@ -68,16 +68,17 @@ async def ensure_device_usage(db: AsyncSession, device_hash: str) -> DeviceUsage
 
     device = await db.get(DeviceUsage, device_hash)
     if device is not None:
-        reconciled_used = min(successful_used, device.free_uses_limit)
-        if device.free_uses_used < reconciled_used:
+        reconciled_used = min(successful_used, limit)
+        next_used = max(device.free_uses_used, reconciled_used)
+        if device.free_uses_limit != limit or device.free_uses_used != next_used:
             await db.execute(
                 update(DeviceUsage)
                 .where(
                     DeviceUsage.device_hash == device_hash,
-                    DeviceUsage.free_uses_used < reconciled_used,
                 )
                 .values(
-                    free_uses_used=reconciled_used,
+                    free_uses_limit=limit,
+                    free_uses_used=next_used,
                     updated_at=datetime.now(timezone.utc),
                 )
             )

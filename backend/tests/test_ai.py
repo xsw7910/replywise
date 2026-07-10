@@ -67,7 +67,7 @@ def test_reply_success_has_three_english_versions(client: TestClient) -> None:
     ]
     assert all(item["text"] for item in body["versions"])
     assert body["why"]
-    assert body["usage"]["freeUsesLeft"] == 4
+    assert body["usage"]["freeUsesLeft"] == 2
 
 
 def test_polish_success_preserves_the_draft(client: TestClient) -> None:
@@ -85,7 +85,7 @@ def test_polish_success_preserves_the_draft(client: TestClient) -> None:
     assert body["polished"] == "I wanted to check on the report."
     assert body["changes"]
     usage = body["usage"]
-    assert usage["freeUsesLeft"] == 4
+    assert usage["freeUsesLeft"] == 2
     assert usage["source"] == "free"
     assert usage["creditsUsed"] == 1
 

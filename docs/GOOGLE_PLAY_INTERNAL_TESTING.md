@@ -73,7 +73,7 @@ Expected artifact: `app/build/app/outputs/bundle/release/app-release.aab`.
 ## Store listing and assets
 
 - [ ] App name, short description, full description, category, contact details, and support URL are complete.
-- [ ] Listing describes Reply, Polish, Explain, five lifetime free uses, Premium trial, restore, and credit packs accurately.
+- [ ] Listing describes Reply, Polish, Explain, three lifetime free uses, Premium trial, restore, and credit packs accurately.
 - [ ] Listing does not claim automatic sending, background clipboard monitoring, overlays, or other unimplemented behavior.
 - [ ] Phone screenshots show the current Play-delivered UI and avoid private message content.
 - [ ] High-resolution icon and feature graphic meet current Play requirements.

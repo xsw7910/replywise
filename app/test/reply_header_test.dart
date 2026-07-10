@@ -16,7 +16,7 @@ EntitlementState _state({
   int paidCredits = 0,
 }) => EntitlementState(
   isPremium: isPremium,
-  freeUsesLimit: 5,
+  freeUsesLimit: 3,
   freeUsesUsed: 0,
   freeUsesLeft: freeUsesLeft,
   paidCredits: paidCredits,

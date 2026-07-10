@@ -137,7 +137,7 @@ def test_inactive_sync_restores_factual_free_semantics(client: TestClient) -> No
         app.dependency_overrides.pop(get_revenuecat_service, None)
     assert response.status_code == 200
     assert response.json()["isPremium"] is False
-    assert response.json()["freeUsesLeft"] == 5
+    assert response.json()["freeUsesLeft"] == 3
 
 
 def test_sync_unavailability_does_not_grant_access(client: TestClient) -> None:

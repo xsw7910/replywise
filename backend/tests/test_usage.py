@@ -99,13 +99,13 @@ async def _attempt_generation(
         return 'success', source or ''
 
 
-def test_free_deduction_and_paywall_after_five_uses(client: TestClient) -> None:
+def test_free_deduction_and_paywall_after_three_uses(client: TestClient) -> None:
     auth, _ = _auth(client, 'free')
-    for index in range(5):
+    for index in range(3):
         response = _reply(client, auth, f'free-{index}')
         assert response.status_code == 200
-        assert response.json()['usage']['freeUsesLeft'] == 4 - index
-    blocked = _reply(client, auth, 'free-sixth')
+        assert response.json()['usage']['freeUsesLeft'] == 2 - index
+    blocked = _reply(client, auth, 'free-fourth')
     assert blocked.status_code == 402
     assert blocked.json()['error']['code'] == 'PAYWALL_REQUIRED'
 
@@ -159,8 +159,8 @@ def test_concurrent_requests_cannot_overdraw_last_paid_credit(
                 db.add(
                     DeviceUsage(
                         device_hash=device_hash,
-                        free_uses_limit=5,
-                        free_uses_used=5,
+                        free_uses_limit=3,
+                        free_uses_used=3,
                     )
                 )
                 db.add(UsageSummary(user_id=user_id, paid_credits=1))
@@ -315,16 +315,16 @@ def test_polish_deduction_matches_reply(client: TestClient) -> None:
     reply_resp = _reply(client, auth, 'polish-deduct-reply')
     assert reply_resp.status_code == 200
     assert reply_resp.json()['usage']['source'] == 'free'
-    assert reply_resp.json()['usage']['freeUsesLeft'] == 4
+    assert reply_resp.json()['usage']['freeUsesLeft'] == 2
 
     polish_resp = _polish(client, auth, 'polish-deduct-polish')
     assert polish_resp.status_code == 200
     assert polish_resp.json()['usage']['source'] == 'free'
-    assert polish_resp.json()['usage']['freeUsesLeft'] == 3
+    assert polish_resp.json()['usage']['freeUsesLeft'] == 1
 
     me = client.get('/v1/me', headers=auth).json()
     assert me['freeUsesUsed'] == 2
-    assert me['freeUsesLeft'] == 3
+    assert me['freeUsesLeft'] == 1
 
 
 def test_concurrent_no_overdraw(tmp_path) -> None:
@@ -351,7 +351,7 @@ def test_concurrent_no_overdraw(tmp_path) -> None:
                 db.add(
                     DeviceUsage(
                         device_hash=device_hash,
-                        free_uses_limit=5,
+                        free_uses_limit=3,
                         free_uses_used=0,
                     )
                 )
@@ -391,12 +391,12 @@ def test_free_quota_shared_by_device_across_reinstall(client: TestClient) -> Non
     genuinely different device still gets its own fresh allowance."""
     device_x = 'shared-device-x'
 
-    # User A on device X exhausts all 5 free uses.
+    # User A on device X exhausts all 3 free uses.
     auth_a, _ = _auth_device(client, 'reinstall-user-a', device_x)
-    for index in range(5):
+    for index in range(3):
         response = _reply(client, auth_a, f'a-{index}')
         assert response.status_code == 200
-        assert response.json()['usage']['freeUsesLeft'] == 4 - index
+        assert response.json()['usage']['freeUsesLeft'] == 2 - index
 
     # Reinstall: User B is a brand-new app_user_id on the SAME device X.
     auth_b, user_id_b = _auth_device(client, 'reinstall-user-b', device_x)
@@ -404,7 +404,7 @@ def test_free_quota_shared_by_device_across_reinstall(client: TestClient) -> Non
 
     # B inherits the device's exhausted allowance: 0 free uses remaining.
     me_b = client.get('/v1/me', headers=auth_b).json()
-    assert me_b['freeUsesUsed'] == 5
+    assert me_b['freeUsesUsed'] == 3
     assert me_b['freeUsesLeft'] == 0
     assert me_b['upgradeRequired'] is True
 
@@ -413,14 +413,36 @@ def test_free_quota_shared_by_device_across_reinstall(client: TestClient) -> Non
     assert blocked.status_code == 402
     assert blocked.json()['error']['code'] == 'PAYWALL_REQUIRED'
 
-    # User C on a DIFFERENT device Y still gets a fresh 5 free uses.
+    # User C on a DIFFERENT device Y still gets a fresh 3 free uses.
     auth_c, _ = _auth_device(client, 'reinstall-user-c', 'different-device-y')
     me_c = client.get('/v1/me', headers=auth_c).json()
     assert me_c['freeUsesUsed'] == 0
-    assert me_c['freeUsesLeft'] == 5
+    assert me_c['freeUsesLeft'] == 3
     first_c = _reply(client, auth_c, 'c-0')
     assert first_c.status_code == 200
-    assert first_c.json()['usage']['freeUsesLeft'] == 4
+    assert first_c.json()['usage']['freeUsesLeft'] == 2
+
+
+def test_existing_device_limit_is_reconciled_without_refill(
+    client: TestClient,
+) -> None:
+    auth, user_id = _auth(client, 'legacy-limit')
+
+    async def seed_legacy_limit() -> None:
+        async with AsyncSessionLocal() as db:
+            user = await db.get(User, user_id)
+            device = await db.get(DeviceUsage, user.device_hash)
+            device.free_uses_limit = 5
+            device.free_uses_used = 5
+            await db.commit()
+
+    asyncio.run(seed_legacy_limit())
+
+    me = client.get('/v1/me', headers=auth).json()
+    assert me['freeUsesLimit'] == 3
+    assert me['freeUsesUsed'] == 5
+    assert me['freeUsesLeft'] == 0
+    assert me['upgradeRequired'] is True
 
 
 def test_me_aggregates_successful_free_events_across_same_device_users(
@@ -436,11 +458,11 @@ def test_me_aggregates_successful_free_events_across_same_device_users(
 
     me_b = client.get('/v1/me', headers=auth_b).json()
     assert me_b['freeUsesUsed'] == 3
-    assert me_b['freeUsesLeft'] == 2
+    assert me_b['freeUsesLeft'] == 0
 
     me_c = client.get('/v1/me', headers=auth_c).json()
     assert me_c['freeUsesUsed'] == 3
-    assert me_c['freeUsesLeft'] == 2
+    assert me_c['freeUsesLeft'] == 0
 
     # The user that owns two events observes the same device total.
     me_a = client.get('/v1/me', headers=auth_a).json()
@@ -452,11 +474,11 @@ def test_event_exhausted_shared_device_blocks_reply_and_polish(
 ) -> None:
     device = 'event-exhausted-device'
     _, user_a = _auth_device(client, 'event-exhaust-a', device)
-    _seed_successful_free_events(user_a, 5)
+    _seed_successful_free_events(user_a, 3)
 
     auth_new, _ = _auth_device(client, 'event-exhaust-new', device)
     me = client.get('/v1/me', headers=auth_new).json()
-    assert me['freeUsesUsed'] == 5
+    assert me['freeUsesUsed'] == 3
     assert me['freeUsesLeft'] == 0
     assert me['upgradeRequired'] is True
 
@@ -473,7 +495,7 @@ def test_event_exhausted_shared_device_blocks_reply_and_polish(
     )
     other_me = client.get('/v1/me', headers=auth_other).json()
     assert other_me['freeUsesUsed'] == 0
-    assert other_me['freeUsesLeft'] == 5
+    assert other_me['freeUsesLeft'] == 3
 
 
 def test_paid_credits_are_restored_on_same_device_after_reinstall(
@@ -483,7 +505,7 @@ def test_paid_credits_are_restored_on_same_device_after_reinstall(
     auth_a, user_a = _auth_device(client, 'credit-owner-a', device)
     auth_b, user_b = _auth_device(client, 'credit-owner-b', device)
     assert user_b == user_a
-    _seed_successful_free_events(user_a, 5)
+    _seed_successful_free_events(user_a, 3)
 
     async def grant_only_a() -> None:
         async with AsyncSessionLocal() as db:
@@ -527,8 +549,8 @@ def test_concurrent_same_device_requests_cannot_exceed_last_free_use(
                         ),
                         DeviceUsage(
                             device_hash=device_hash,
-                            free_uses_limit=5,
-                            free_uses_used=4,
+                            free_uses_limit=3,
+                            free_uses_used=2,
                         ),
                         UsageSummary(user_id=1, paid_credits=0),
                         UsageSummary(user_id=2, paid_credits=0),
@@ -561,7 +583,7 @@ def test_concurrent_same_device_requests_cannot_exceed_last_free_use(
     results, free_uses_used = asyncio.run(run_race())
     assert results.count(('success', 'free')) == 1, results
     assert results.count(('error', 'PAYWALL_REQUIRED')) == 1, results
-    assert free_uses_used == 5
+    assert free_uses_used == 3
 
 
 def test_premium_user_bypasses_exhausted_device_quota(client: TestClient) -> None:
@@ -569,7 +591,7 @@ def test_premium_user_bypasses_exhausted_device_quota(client: TestClient) -> Non
     still generates normally (premium is per-user, not gated by the device)."""
     device = 'premium-shared-device'
     auth_a, _ = _auth_device(client, 'premium-share-a', device)
-    for index in range(5):
+    for index in range(3):
         assert _reply(client, auth_a, f'pa-{index}').status_code == 200
 
     auth_b, user_id_b = _auth_device(client, 'premium-share-b', device)
@@ -597,7 +619,7 @@ def test_credit_user_on_exhausted_device_consumes_credit(client: TestClient) -> 
     spends a credit instead of being blocked (credits are per-user)."""
     device = 'credit-shared-device'
     auth_a, _ = _auth_device(client, 'credit-share-a', device)
-    for index in range(5):
+    for index in range(3):
         assert _reply(client, auth_a, f'ca-{index}').status_code == 200
 
     auth_b, user_id_b = _auth_device(client, 'credit-share-b', device)
@@ -640,7 +662,7 @@ def test_concurrent_rate_limit(tmp_path, monkeypatch) -> None:
                 db.add(
                     DeviceUsage(
                         device_hash=device_hash,
-                        free_uses_limit=5,
+                        free_uses_limit=3,
                         free_uses_used=0,
                     )
                 )

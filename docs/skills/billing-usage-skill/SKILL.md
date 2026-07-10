@@ -60,7 +60,7 @@ When building or reviewing anything that touches `usage_summary`, `usage_events`
 
 ## Acceptance criteria
 
-- Five sequential free uses succeed; sixth returns `PAYWALL_REQUIRED`.
+- Three sequential free uses succeed; fourth returns `PAYWALL_REQUIRED`.
 - Two concurrent requests cannot both overdraw (atomic UPDATE prevents it).
 - Two concurrent requests cannot both succeed when `rate_limit=1`.
 - Model failure restores the correct pool; `freeUsesUsed` returns to its pre-request value.

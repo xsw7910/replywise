@@ -49,9 +49,9 @@ class _FakeUsageRepo extends UsageRepository {
     fetchCount++;
     return const EntitlementState(
       isPremium: false,
-      freeUsesLimit: 5,
+      freeUsesLimit: 3,
       freeUsesUsed: 0,
-      freeUsesLeft: 5,
+      freeUsesLeft: 3,
       paidCredits: 0,
       upgradeRequired: false,
     );

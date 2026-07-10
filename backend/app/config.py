@@ -76,7 +76,7 @@ class Settings(BaseSettings):
     mock_ai_enabled: bool = False
     dev_tools_enabled: bool = False
     explain_daily_limit: int = 10
-    free_lifetime_limit: int = 5
+    free_lifetime_limit: int = 3
     generation_rate_per_minute: int = 8
     idempotency_ttl_seconds: int = 86400
     ad_reward_daily_limit: int = 5

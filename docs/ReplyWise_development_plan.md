@@ -236,7 +236,7 @@ class AppConfig {
 ```dart
 class EntitlementState {
   final bool isPremium;
-  final int freeUsesLimit;     // 5
+  final int freeUsesLimit;     // 3
   final int freeUsesUsed;
   final int? freeUsesLeft;     // premium 时为 null，必须可空
   final int paidCredits;       // 已购买的可用 credit 余额（一次性包累加）
@@ -299,7 +299,7 @@ isPremium == false && freeUsesLeft <= 0 && paidCredits <= 0
 ```json
 {
   "isPremium": true,
-  "freeUsesLimit": 5,
+  "freeUsesLimit": 3,
   "freeUsesUsed": 0,
   "freeUsesLeft": null,
   "paidCredits": 0,
@@ -341,7 +341,7 @@ FREE_LIFETIME_LIMIT = 5
 ```json
 {
   "isPremium": false,
-  "freeUsesLimit": 5,
+  "freeUsesLimit": 3,
   "freeUsesUsed": 2,
   "freeUsesLeft": 3,
   "paidCredits": 50,
@@ -851,9 +851,9 @@ App 首次启动调用，换取设备级匿名 token。
  "expiresIn": 604800,
  "me": {
  "isPremium": false,
- "freeUsesLimit": 5,
+ "freeUsesLimit": 3,
  "freeUsesUsed": 0,
- "freeUsesLeft": 5,
+ "freeUsesLeft": 3,
  "paidCredits": 0,
  "upgradeRequired": false
  }
@@ -903,7 +903,7 @@ Authorization: Bearer <accessToken>
 ```json
 {
  "isPremium": true,
- "freeUsesLimit": 5,
+ "freeUsesLimit": 3,
  "freeUsesUsed": 0,
  "freeUsesLeft": null,
  "paidCredits": 0,
@@ -926,7 +926,7 @@ Authorization: Bearer <accessToken>
 ```json
 {
  "isPremium": false,
- "freeUsesLimit": 5,
+ "freeUsesLimit": 3,
  "freeUsesUsed": 3,
  "freeUsesLeft": 2,
  "paidCredits": 50,
@@ -1585,7 +1585,7 @@ MAX_OUTPUT_TOKENS_EXPLAIN=250
 - Polish English messages
 - Voice input for your intention
 - Copy ready-to-send replies
-- 5 free AI uses
+- 3 free AI uses
 - Premium subscription with 3-day free trial
 - Credit packs available (no subscription needed)
 
@@ -1666,7 +1666,7 @@ MAX_OUTPUT_TOKENS_EXPLAIN=250
 
 Android internal test：
 
-1. 新安装 App，显示 `5 free AI uses left`。
+1. 新安装 App，显示 `3 free AI uses left`。
 2. 生成 1 次 reply，变成 4。
 3. 生成 1 次 polish，变成 3。
 4. 连续用完 5 次。
@@ -1913,7 +1913,7 @@ Android internal test：
 | Flutter + Riverpod + go_router | 同样架构 |
 | RevenueCat entitlement repository | premium entitlement |
 | Paywall 购买 / restore 流程 | 直接改文案和产品 ID |
-| free scan counter | free AI uses counter，limit=5 |
+| free scan counter | free AI uses counter，limit=3 |
 | FastAPI backend | reply backend |
 | Oracle VM + Docker + Caddy | 同样部署方式 |
 | dart-define backend URL | REPLY_BACKEND_BASE_URL |

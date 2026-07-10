@@ -4,7 +4,7 @@ Source of truth: `docs/ReplyWise_development_plan.md`
 
 ## Phase goal
 
-Make backend usage enforcement correct under retries, failures, and concurrency: 5 lifetime free uses, then existing paid credits, otherwise paywall required.
+Make backend usage enforcement correct under retries, failures, and concurrency: 3 lifetime free uses, then existing paid credits, otherwise paywall required.
 
 ## Allowed scope
 
@@ -52,7 +52,7 @@ Make backend usage enforcement correct under retries, failures, and concurrency:
 ## Acceptance criteria
 
 - New user gets exactly five free successful generations across Reply/Polish.
-- Sixth use with no credits returns 402 `PAYWALL_REQUIRED`; existing credits are used only after free uses.
+- Fourth use with no credits returns 402 `PAYWALL_REQUIRED`; existing credits are used only after free uses.
 - Concurrent requests cannot overspend; duplicate requests call the model and deduct at most once.
 - Model failure restores the correct pool; failed idempotency does not strand the user.
 - Premium simulation preserves historical free count and existing credits.

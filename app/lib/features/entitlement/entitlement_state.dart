@@ -10,7 +10,7 @@ class EntitlementState {
 
   const EntitlementState.initial()
     : isPremium = false,
-      freeUsesLimit = 5,
+      freeUsesLimit = 3,
       freeUsesUsed = 0,
       freeUsesLeft = null,
       paidCredits = 0,
@@ -19,7 +19,7 @@ class EntitlementState {
   factory EntitlementState.fromJson(Map<String, dynamic> json) =>
       EntitlementState(
         isPremium: json['isPremium'] as bool? ?? false,
-        freeUsesLimit: json['freeUsesLimit'] as int? ?? 5,
+        freeUsesLimit: json['freeUsesLimit'] as int? ?? 3,
         freeUsesUsed: json['freeUsesUsed'] as int? ?? 0,
         freeUsesLeft: json['freeUsesLeft'] as int?,
         paidCredits: json['paidCredits'] as int? ?? 0,

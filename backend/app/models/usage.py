@@ -10,7 +10,7 @@ class UsageSummary(Base):
     __tablename__ = "usage_summary"
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
-    free_uses_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=5)
+    free_uses_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=3)
     free_uses_used: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     paid_credits: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     updated_at: Mapped[datetime] = mapped_column(
@@ -30,7 +30,7 @@ class DeviceUsage(Base):
     __tablename__ = "device_usage"
 
     device_hash: Mapped[str] = mapped_column(String, primary_key=True)
-    free_uses_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=5)
+    free_uses_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=3)
     free_uses_used: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False

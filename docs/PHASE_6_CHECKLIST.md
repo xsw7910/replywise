@@ -27,7 +27,7 @@ Produce and distribute a correctly configured Android App Bundle through Google 
 - Production backend health is reachable over HTTPS and uses isolated production environment/credentials.
 - Google Play app, internal track, testers, license testers, subscription/base plan/trial, consumables, and active products are configured.
 - RevenueCat Android app, Google credentials, entitlement, offering, subscription, and consumables match production IDs.
-- Store listing accurately describes AI replies, Polish, voice guidance, copy, five free uses, trial subscription, and credit packs.
+- Store listing accurately describes AI replies, Polish, voice guidance, copy, three free uses, trial subscription, and credit packs.
 - Privacy policy covers collected data, purpose, AI processing, body-retention policy, payments, and deletion contact.
 - Data Safety discloses text transmission, identifiers, purchase status, usage, microphone purpose, clipboard behavior, no data sale, and default no-body storage.
 

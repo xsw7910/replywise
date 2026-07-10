@@ -31,7 +31,7 @@ const _offer = SubscriptionOffer(
 
 const _premium = EntitlementState(
   isPremium: true,
-  freeUsesLimit: 5,
+  freeUsesLimit: 3,
   freeUsesUsed: 2,
   freeUsesLeft: null,
   paidCredits: 4,
@@ -189,7 +189,7 @@ void main() {
       final subscription = _FakeSubscriptionRepository()
         ..restoreResult = const EntitlementState(
           isPremium: false,
-          freeUsesLimit: 5,
+          freeUsesLimit: 3,
           freeUsesUsed: 1,
           freeUsesLeft: 4,
           paidCredits: 0,
@@ -310,7 +310,7 @@ void main() {
     test('calls the backend only when the entitlement is active', () async {
       final client = _SpyApiClient(const {
         'isPremium': true,
-        'freeUsesLimit': 5,
+        'freeUsesLimit': 3,
         'freeUsesUsed': 0,
         'freeUsesLeft': null,
         'paidCredits': 0,

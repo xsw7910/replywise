@@ -17,7 +17,7 @@ import 'package:replywise/l10n/app_localizations.dart';
 
 const _outOfCredits = EntitlementState(
   isPremium: false,
-  freeUsesLimit: 5,
+  freeUsesLimit: 3,
   freeUsesUsed: 5,
   freeUsesLeft: 0,
   paidCredits: 0,
@@ -26,7 +26,7 @@ const _outOfCredits = EntitlementState(
 
 const _withCredits = EntitlementState(
   isPremium: false,
-  freeUsesLimit: 5,
+  freeUsesLimit: 3,
   freeUsesUsed: 5,
   freeUsesLeft: 0,
   paidCredits: 1,
@@ -35,7 +35,7 @@ const _withCredits = EntitlementState(
 
 const _premium = EntitlementState(
   isPremium: true,
-  freeUsesLimit: 5,
+  freeUsesLimit: 3,
   freeUsesUsed: 5,
   freeUsesLeft: 0,
   paidCredits: 0,
@@ -301,7 +301,7 @@ void main() {
       hasGenerationAccess(
         const EntitlementState(
           isPremium: false,
-          freeUsesLimit: 5,
+          freeUsesLimit: 3,
           freeUsesUsed: 4,
           freeUsesLeft: 1,
           paidCredits: 0,

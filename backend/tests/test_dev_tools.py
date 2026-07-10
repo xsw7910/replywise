@@ -94,7 +94,7 @@ def test_set_premium_works(client: TestClient, monkeypatch) -> None:
     assert disabled.status_code == 200
     standard_me = client.get("/v1/me", headers=auth).json()
     assert standard_me["isPremium"] is False
-    assert standard_me["freeUsesLeft"] == 5
+    assert standard_me["freeUsesLeft"] == 3
 
 
 def test_dev_premium_override_is_ignored_when_dev_tools_disabled(
@@ -112,4 +112,4 @@ def test_dev_premium_override_is_ignored_when_dev_tools_disabled(
     monkeypatch.setattr(settings, "dev_tools_enabled", False)
     me = client.get("/v1/me", headers=auth).json()
     assert me["isPremium"] is False
-    assert me["freeUsesLeft"] == 5
+    assert me["freeUsesLeft"] == 3

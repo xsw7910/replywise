@@ -79,7 +79,7 @@ class _FakeSubscriptionRepo implements SubscriptionRepository {
     SubscriptionOffer offer,
   ) async => const EntitlementState(
     isPremium: true,
-    freeUsesLimit: 5,
+    freeUsesLimit: 3,
     freeUsesUsed: 0,
     freeUsesLeft: null,
     paidCredits: 0,
