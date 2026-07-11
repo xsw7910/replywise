@@ -966,4 +966,57 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'هذه الميزة غير متاحة مؤقتًا. يرجى المحاولة مرة أخرى لاحقًا.';
+
+  @override
+  String get gotIt => 'حسنًا';
+
+  @override
+  String get getCredits => 'الحصول على اعتمادات';
+
+  @override
+  String get errorEmptyInputTitle => 'أضف رسالة أولاً';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'يرجى إدخال الرسالة التي تريد المساعدة بها.';
+
+  @override
+  String get errorConnectionTitle => 'مشكلة في الاتصال';
+
+  @override
+  String get errorConnectionMessage =>
+      'نواجه مشكلة في الاتصال بالخادم. يرجى التحقق من الإنترنت والمحاولة مرة أخرى.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'الخدمة غير متوفرة';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise غير متوفر مؤقتًا. يرجى المحاولة لاحقًا.';
+
+  @override
+  String get errorCreditsTitle => 'لا توجد اعتمادات متبقية';
+
+  @override
+  String get errorCreditsMessage => 'تحتاج إلى اعتمادات للمتابعة.';
+
+  @override
+  String get errorRateLimitedTitle => 'يرجى الانتظار';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'أنت ترسل الطلبات بسرعة كبيرة. يرجى المحاولة بعد قليل.';
+
+  @override
+  String get errorAiBusyTitle => 'الذكاء الاصطناعي مشغول';
+
+  @override
+  String get errorAiBusyMessage =>
+      'خدمة الذكاء الاصطناعي غير متوفرة مؤقتًا. يرجى المحاولة لاحقًا.';
+
+  @override
+  String get errorUnexpectedTitle => 'حدث خطأ ما';
+
+  @override
+  String get errorUnexpectedMessage => 'يرجى المحاولة مرة أخرى.';
 }

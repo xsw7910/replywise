@@ -984,4 +984,57 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'Эта функция временно недоступна. Повторите попытку позже.';
+
+  @override
+  String get gotIt => 'Понятно';
+
+  @override
+  String get getCredits => 'Получить кредиты';
+
+  @override
+  String get errorEmptyInputTitle => 'Сначала добавьте сообщение';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Введите сообщение, с которым нужна помощь.';
+
+  @override
+  String get errorConnectionTitle => 'Проблема с подключением';
+
+  @override
+  String get errorConnectionMessage =>
+      'Не удаётся подключиться к серверу. Проверьте интернет и попробуйте ещё раз.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Сервис недоступен';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise временно недоступен. Попробуйте позже.';
+
+  @override
+  String get errorCreditsTitle => 'Кредиты закончились';
+
+  @override
+  String get errorCreditsMessage => 'Для продолжения нужны кредиты.';
+
+  @override
+  String get errorRateLimitedTitle => 'Подождите немного';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'Вы отправляете запросы слишком быстро. Попробуйте ещё раз через минуту.';
+
+  @override
+  String get errorAiBusyTitle => 'ИИ занят';
+
+  @override
+  String get errorAiBusyMessage =>
+      'Сервис ИИ временно недоступен. Попробуйте позже.';
+
+  @override
+  String get errorUnexpectedTitle => 'Что-то пошло не так';
+
+  @override
+  String get errorUnexpectedMessage => 'Попробуйте ещё раз.';
 }

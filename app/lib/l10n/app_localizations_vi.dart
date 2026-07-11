@@ -982,4 +982,57 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'Tính năng này tạm thời không khả dụng. Vui lòng thử lại sau.';
+
+  @override
+  String get gotIt => 'Đã hiểu';
+
+  @override
+  String get getCredits => 'Nhận tín dụng';
+
+  @override
+  String get errorEmptyInputTitle => 'Hãy thêm tin nhắn trước';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Vui lòng nhập tin nhắn bạn cần trợ giúp.';
+
+  @override
+  String get errorConnectionTitle => 'Sự cố kết nối';
+
+  @override
+  String get errorConnectionMessage =>
+      'Chúng tôi đang gặp sự cố khi kết nối với máy chủ. Vui lòng kiểm tra internet và thử lại.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Dịch vụ không khả dụng';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise tạm thời không khả dụng. Vui lòng thử lại sau.';
+
+  @override
+  String get errorCreditsTitle => 'Hết tín dụng';
+
+  @override
+  String get errorCreditsMessage => 'Bạn cần tín dụng để tiếp tục.';
+
+  @override
+  String get errorRateLimitedTitle => 'Vui lòng chờ';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'Bạn đang gửi yêu cầu quá nhanh. Vui lòng thử lại sau giây lát.';
+
+  @override
+  String get errorAiBusyTitle => 'AI đang bận';
+
+  @override
+  String get errorAiBusyMessage =>
+      'Dịch vụ AI tạm thời không khả dụng. Vui lòng thử lại sau.';
+
+  @override
+  String get errorUnexpectedTitle => 'Đã xảy ra lỗi';
+
+  @override
+  String get errorUnexpectedMessage => 'Vui lòng thử lại.';
 }

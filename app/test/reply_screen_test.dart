@@ -453,9 +453,12 @@ void main() {
 
     // Tap Generate without entering any incoming text.
     await tester.tap(find.text('Generate Reply'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(find.text('Enter the message you received.'), findsOneWidget);
+    // Empty input is now reported via the shared error bottom sheet and no
+    // request is started.
+    expect(find.byKey(const Key('empty-input-sheet')), findsOneWidget);
+    expect(find.text('Add a message first'), findsOneWidget);
     expect(find.text('Generating…'), findsNothing);
   });
 

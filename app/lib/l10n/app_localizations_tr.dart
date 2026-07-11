@@ -980,4 +980,57 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'Bu özellik geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin.';
+
+  @override
+  String get gotIt => 'Anladım';
+
+  @override
+  String get getCredits => 'Kredi al';
+
+  @override
+  String get errorEmptyInputTitle => 'Önce bir mesaj ekleyin';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Lütfen yardım istediğiniz mesajı girin.';
+
+  @override
+  String get errorConnectionTitle => 'Bağlantı sorunu';
+
+  @override
+  String get errorConnectionMessage =>
+      'Sunucuya bağlanırken sorun yaşıyoruz. Lütfen internetinizi kontrol edip tekrar deneyin.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Hizmet kullanılamıyor';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin.';
+
+  @override
+  String get errorCreditsTitle => 'Krediniz kalmadı';
+
+  @override
+  String get errorCreditsMessage => 'Devam etmek için krediye ihtiyacınız var.';
+
+  @override
+  String get errorRateLimitedTitle => 'Lütfen bekleyin';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'İstekleri çok hızlı gönderiyorsunuz. Lütfen birazdan tekrar deneyin.';
+
+  @override
+  String get errorAiBusyTitle => 'Yapay zeka meşgul';
+
+  @override
+  String get errorAiBusyMessage =>
+      'Yapay zeka hizmeti geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin.';
+
+  @override
+  String get errorUnexpectedTitle => 'Bir şeyler ters gitti';
+
+  @override
+  String get errorUnexpectedMessage => 'Lütfen tekrar deneyin.';
 }

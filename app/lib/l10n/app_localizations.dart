@@ -1938,6 +1938,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This feature is temporarily unavailable. Please try again later.'**
   String get appStatusFeatureUnavailableMessage;
+
+  /// No description provided for @gotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get gotIt;
+
+  /// No description provided for @getCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Get credits'**
+  String get getCredits;
+
+  /// No description provided for @errorEmptyInputTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a message first'**
+  String get errorEmptyInputTitle;
+
+  /// No description provided for @errorEmptyInputMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the message you want help with.'**
+  String get errorEmptyInputMessage;
+
+  /// No description provided for @errorConnectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection problem'**
+  String get errorConnectionTitle;
+
+  /// No description provided for @errorConnectionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We’re having trouble connecting to the server. Please check your internet and try again.'**
+  String get errorConnectionMessage;
+
+  /// No description provided for @errorServiceUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Service unavailable'**
+  String get errorServiceUnavailableTitle;
+
+  /// No description provided for @errorServiceUnavailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'ReplyWise is temporarily unavailable. Please try again later.'**
+  String get errorServiceUnavailableMessage;
+
+  /// No description provided for @errorCreditsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No credits left'**
+  String get errorCreditsTitle;
+
+  /// No description provided for @errorCreditsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You need credits to continue.'**
+  String get errorCreditsMessage;
+
+  /// No description provided for @errorRateLimitedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait'**
+  String get errorRateLimitedTitle;
+
+  /// No description provided for @errorRateLimitedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re sending requests too quickly. Please try again in a moment.'**
+  String get errorRateLimitedMessage;
+
+  /// No description provided for @errorAiBusyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI is busy'**
+  String get errorAiBusyTitle;
+
+  /// No description provided for @errorAiBusyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The AI service is temporarily unavailable. Please try again later.'**
+  String get errorAiBusyMessage;
+
+  /// No description provided for @errorUnexpectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get errorUnexpectedTitle;
+
+  /// No description provided for @errorUnexpectedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again.'**
+  String get errorUnexpectedMessage;
 }
 
 class _AppLocalizationsDelegate

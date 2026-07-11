@@ -28,32 +28,26 @@ final generationAccessProvider = Provider<bool>(
 
 /// Returns true when the caller may continue with generation.
 ///
-/// When access is unavailable, this owns the dialog actions and always returns
-/// false so generation is never started implicitly after an ad or purchase
-/// navigation.
+/// When access is unavailable, this owns the bottom-sheet actions and always
+/// returns false so generation is never started implicitly after an ad or
+/// purchase navigation.
 Future<bool> ensureGenerationAccess({
   required BuildContext context,
   required WidgetRef ref,
 }) async {
   if (ref.read(generationAccessProvider)) return true;
 
-  final action = await showDialog<OutOfCreditsAction>(
+  final action = await showModalBottomSheet<OutOfCreditsAction>(
     context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
     builder: (_) => const OutOfCreditsDialog(),
   );
   if (!context.mounted) return false;
 
   switch (action) {
     case OutOfCreditsAction.watchAd:
-      await ref.read(adRewardControllerProvider.notifier).watchAd();
-      if (!context.mounted) return false;
-      final outcome = ref.read(adRewardControllerProvider).outcome;
-      final message = _messageForOutcome(context, outcome);
-      if (message != null) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(message)));
-      }
+      await runWatchAdFlow(context: context, ref: ref);
       break;
     case OutOfCreditsAction.upgrade:
     case OutOfCreditsAction.buyCredits:
@@ -64,6 +58,23 @@ Future<bool> ensureGenerationAccess({
       break;
   }
   return false;
+}
+
+/// Runs the rewarded-ad flow and reports the outcome in a snackbar. Shared by
+/// the out-of-credits sheet and the credits error sheet.
+Future<void> runWatchAdFlow({
+  required BuildContext context,
+  required WidgetRef ref,
+}) async {
+  await ref.read(adRewardControllerProvider.notifier).watchAd();
+  if (!context.mounted) return;
+  final outcome = ref.read(adRewardControllerProvider).outcome;
+  final message = _messageForOutcome(context, outcome);
+  if (message != null) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
 }
 
 String? _messageForOutcome(BuildContext context, AdRewardOutcome? outcome) {
@@ -86,14 +97,17 @@ class OutOfCreditsDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return Dialog(
+    // Presented as a bottom sheet (see ensureGenerationAccess): rounded top
+    // corners, sliding up from the bottom, matching the shared error sheets.
+    return Container(
       key: const Key('out-of-credits-dialog'),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      backgroundColor: _dialogBackground,
-      surfaceTintColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 410),
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: _dialogBackground,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: SafeArea(
+        top: false,
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 18),
           child: Column(

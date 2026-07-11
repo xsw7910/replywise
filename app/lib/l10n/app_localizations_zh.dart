@@ -938,6 +938,54 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appStatusFeatureUnavailableMessage => '此功能暂时不可用，请稍后再试。';
+
+  @override
+  String get gotIt => '知道了';
+
+  @override
+  String get getCredits => '获取积分';
+
+  @override
+  String get errorEmptyInputTitle => '请先添加消息';
+
+  @override
+  String get errorEmptyInputMessage => '请输入你需要帮助的消息。';
+
+  @override
+  String get errorConnectionTitle => '连接出现问题';
+
+  @override
+  String get errorConnectionMessage => '我们在连接服务器时遇到问题。请检查网络后重试。';
+
+  @override
+  String get errorServiceUnavailableTitle => '服务不可用';
+
+  @override
+  String get errorServiceUnavailableMessage => 'ReplyWise 暂时不可用，请稍后再试。';
+
+  @override
+  String get errorCreditsTitle => '积分不足';
+
+  @override
+  String get errorCreditsMessage => '你需要积分才能继续。';
+
+  @override
+  String get errorRateLimitedTitle => '请稍候';
+
+  @override
+  String get errorRateLimitedMessage => '你发送请求的速度太快了，请稍后再试。';
+
+  @override
+  String get errorAiBusyTitle => 'AI 正忙';
+
+  @override
+  String get errorAiBusyMessage => 'AI 服务暂时不可用，请稍后再试。';
+
+  @override
+  String get errorUnexpectedTitle => '出错了';
+
+  @override
+  String get errorUnexpectedMessage => '请重试。';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -1874,4 +1922,52 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get appStatusFeatureUnavailableMessage => '此功能暫時無法使用，請稍後再試。';
+
+  @override
+  String get gotIt => '知道了';
+
+  @override
+  String get getCredits => '取得點數';
+
+  @override
+  String get errorEmptyInputTitle => '請先新增訊息';
+
+  @override
+  String get errorEmptyInputMessage => '請輸入你需要協助的訊息。';
+
+  @override
+  String get errorConnectionTitle => '連線發生問題';
+
+  @override
+  String get errorConnectionMessage => '我們在連線伺服器時遇到問題。請檢查網路後再試一次。';
+
+  @override
+  String get errorServiceUnavailableTitle => '服務無法使用';
+
+  @override
+  String get errorServiceUnavailableMessage => 'ReplyWise 暫時無法使用，請稍後再試。';
+
+  @override
+  String get errorCreditsTitle => '點數不足';
+
+  @override
+  String get errorCreditsMessage => '你需要點數才能繼續。';
+
+  @override
+  String get errorRateLimitedTitle => '請稍候';
+
+  @override
+  String get errorRateLimitedMessage => '你傳送請求的速度太快了，請稍後再試。';
+
+  @override
+  String get errorAiBusyTitle => 'AI 正忙';
+
+  @override
+  String get errorAiBusyMessage => 'AI 服務暫時無法使用，請稍後再試。';
+
+  @override
+  String get errorUnexpectedTitle => '發生錯誤';
+
+  @override
+  String get errorUnexpectedMessage => '請再試一次。';
 }

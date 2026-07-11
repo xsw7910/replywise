@@ -141,13 +141,22 @@ Future<void> _pumpScreen(
   await tester.pumpAndSettle();
 }
 
+Finder _editableIn(Key fieldKey) => find.descendant(
+  of: find.byKey(fieldKey),
+  matching: find.byType(EditableText),
+);
+
 Future<void> _expectDialogAfterTap(
   WidgetTester tester,
   Widget screen,
-  Finder action,
-) async {
+  Finder action, {
+  required Key inputFieldKey,
+}) async {
   _useTallView(tester);
   await _pumpScreen(tester, screen, hasAccess: false);
+  // The empty-input sheet takes priority over the credits gate, so give the
+  // screen some input first.
+  await tester.enterText(_editableIn(inputFieldKey), 'Some message text.');
   await tester.tap(action);
   await tester.pumpAndSettle();
   expect(find.byKey(const Key('out-of-credits-dialog')), findsOneWidget);
@@ -193,6 +202,7 @@ void main() {
       tester,
       const ReplyScreen(),
       find.text('Generate Reply'),
+      inputFieldKey: const Key('reply-incoming-field'),
     );
   });
 
@@ -201,6 +211,7 @@ void main() {
       tester,
       const ExplainScreen(),
       find.byKey(const Key('explain-submit-button')),
+      inputFieldKey: const Key('explain-message-field'),
     );
   });
 
@@ -209,6 +220,7 @@ void main() {
       tester,
       const PolishScreen(),
       find.text('Polish Text'),
+      inputFieldKey: const Key('polish-draft-field'),
     );
   });
 

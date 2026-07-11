@@ -945,4 +945,54 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'この機能は一時的に利用できません。しばらくしてからもう一度お試しください。';
+
+  @override
+  String get gotIt => 'OK';
+
+  @override
+  String get getCredits => 'クレジットを入手';
+
+  @override
+  String get errorEmptyInputTitle => 'まずメッセージを追加してください';
+
+  @override
+  String get errorEmptyInputMessage => 'サポートが必要なメッセージを入力してください。';
+
+  @override
+  String get errorConnectionTitle => '接続に問題があります';
+
+  @override
+  String get errorConnectionMessage =>
+      'サーバーに接続できません。インターネット接続を確認して、もう一度お試しください。';
+
+  @override
+  String get errorServiceUnavailableTitle => 'サービスを利用できません';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWiseは一時的に利用できません。しばらくしてからもう一度お試しください。';
+
+  @override
+  String get errorCreditsTitle => 'クレジットがありません';
+
+  @override
+  String get errorCreditsMessage => '続けるにはクレジットが必要です。';
+
+  @override
+  String get errorRateLimitedTitle => '少しお待ちください';
+
+  @override
+  String get errorRateLimitedMessage => 'リクエストの送信が早すぎます。少し待ってからもう一度お試しください。';
+
+  @override
+  String get errorAiBusyTitle => 'AIが混み合っています';
+
+  @override
+  String get errorAiBusyMessage => 'AIサービスは一時的に利用できません。しばらくしてからもう一度お試しください。';
+
+  @override
+  String get errorUnexpectedTitle => '問題が発生しました';
+
+  @override
+  String get errorUnexpectedMessage => 'もう一度お試しください。';
 }

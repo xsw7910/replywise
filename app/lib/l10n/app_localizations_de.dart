@@ -1000,4 +1000,57 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'Diese Funktion ist vorübergehend nicht verfügbar. Bitte versuche es später erneut.';
+
+  @override
+  String get gotIt => 'Verstanden';
+
+  @override
+  String get getCredits => 'Credits holen';
+
+  @override
+  String get errorEmptyInputTitle => 'Füge zuerst eine Nachricht hinzu';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Bitte gib die Nachricht ein, bei der du Hilfe möchtest.';
+
+  @override
+  String get errorConnectionTitle => 'Verbindungsproblem';
+
+  @override
+  String get errorConnectionMessage =>
+      'Wir haben Probleme, den Server zu erreichen. Bitte prüfe deine Internetverbindung und versuche es erneut.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Dienst nicht verfügbar';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise ist vorübergehend nicht verfügbar. Bitte versuche es später erneut.';
+
+  @override
+  String get errorCreditsTitle => 'Keine Credits mehr';
+
+  @override
+  String get errorCreditsMessage => 'Du benötigst Credits, um fortzufahren.';
+
+  @override
+  String get errorRateLimitedTitle => 'Bitte warten';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'Du sendest Anfragen zu schnell. Bitte versuche es gleich noch einmal.';
+
+  @override
+  String get errorAiBusyTitle => 'KI ist ausgelastet';
+
+  @override
+  String get errorAiBusyMessage =>
+      'Der KI-Dienst ist vorübergehend nicht verfügbar. Bitte versuche es später erneut.';
+
+  @override
+  String get errorUnexpectedTitle => 'Etwas ist schiefgelaufen';
+
+  @override
+  String get errorUnexpectedMessage => 'Bitte versuche es erneut.';
 }

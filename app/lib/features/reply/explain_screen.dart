@@ -81,6 +81,12 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   }
 
   Future<void> _explain() async {
+    // No API request (and no credit/status gating) for an empty input.
+    if (_messageController.text.trim().isEmpty) {
+      await showEmptyInputSheet(context);
+      return;
+    }
+    if (!mounted) return;
     final appLocale = resolvedAppLocaleCode(
       Localizations.maybeLocaleOf(context),
     );
@@ -105,7 +111,22 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
       // A network/server failure re-checks status: maintenance or fallback UI.
       final state = ref.read(explainControllerProvider);
       if (isNetworkFailure(state.errorCode)) {
-        await handleAiRequestFailure(context: context, ref: ref);
+        await handleAiRequestFailure(
+          context: context,
+          ref: ref,
+          onRetry: _explain,
+        );
+        return;
+      }
+      // Any other failure is routed to the matching error bottom sheet.
+      if (state.error != null) {
+        await showAiErrorSheet(
+          context: context,
+          ref: ref,
+          errorCode: state.errorCode,
+          message: _friendlyError(state),
+          onRetry: _explain,
+        );
       }
       return;
     }

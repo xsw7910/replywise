@@ -981,4 +981,58 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'Fitur ini sementara tidak tersedia. Silakan coba lagi nanti.';
+
+  @override
+  String get gotIt => 'Mengerti';
+
+  @override
+  String get getCredits => 'Dapatkan kredit';
+
+  @override
+  String get errorEmptyInputTitle => 'Tambahkan pesan dulu';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Masukkan pesan yang ingin Anda dapatkan bantuannya.';
+
+  @override
+  String get errorConnectionTitle => 'Masalah koneksi';
+
+  @override
+  String get errorConnectionMessage =>
+      'Kami kesulitan terhubung ke server. Periksa internet Anda dan coba lagi.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Layanan tidak tersedia';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise sementara tidak tersedia. Silakan coba lagi nanti.';
+
+  @override
+  String get errorCreditsTitle => 'Kredit habis';
+
+  @override
+  String get errorCreditsMessage =>
+      'Anda membutuhkan kredit untuk melanjutkan.';
+
+  @override
+  String get errorRateLimitedTitle => 'Mohon tunggu';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'Anda mengirim permintaan terlalu cepat. Coba lagi sebentar lagi.';
+
+  @override
+  String get errorAiBusyTitle => 'AI sedang sibuk';
+
+  @override
+  String get errorAiBusyMessage =>
+      'Layanan AI sementara tidak tersedia. Silakan coba lagi nanti.';
+
+  @override
+  String get errorUnexpectedTitle => 'Terjadi kesalahan';
+
+  @override
+  String get errorUnexpectedMessage => 'Silakan coba lagi.';
 }

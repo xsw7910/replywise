@@ -982,4 +982,57 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'Ця функція тимчасово недоступна. Повторіть спробу пізніше.';
+
+  @override
+  String get gotIt => 'Зрозуміло';
+
+  @override
+  String get getCredits => 'Отримати кредити';
+
+  @override
+  String get errorEmptyInputTitle => 'Спочатку додайте повідомлення';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Введіть повідомлення, з яким потрібна допомога.';
+
+  @override
+  String get errorConnectionTitle => 'Проблема зі з\'єднанням';
+
+  @override
+  String get errorConnectionMessage =>
+      'Не вдається з\'єднатися із сервером. Перевірте інтернет і спробуйте ще раз.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Сервіс недоступний';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise тимчасово недоступний. Спробуйте пізніше.';
+
+  @override
+  String get errorCreditsTitle => 'Кредити закінчилися';
+
+  @override
+  String get errorCreditsMessage => 'Щоб продовжити, потрібні кредити.';
+
+  @override
+  String get errorRateLimitedTitle => 'Зачекайте трохи';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'Ви надсилаєте запити занадто швидко. Спробуйте ще раз за мить.';
+
+  @override
+  String get errorAiBusyTitle => 'ШІ зайнятий';
+
+  @override
+  String get errorAiBusyMessage =>
+      'Сервіс ШІ тимчасово недоступний. Спробуйте пізніше.';
+
+  @override
+  String get errorUnexpectedTitle => 'Щось пішло не так';
+
+  @override
+  String get errorUnexpectedMessage => 'Спробуйте ще раз.';
 }

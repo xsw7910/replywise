@@ -968,4 +968,57 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'ฟีเจอร์นี้ใช้งานไม่ได้ชั่วคราว โปรดลองอีกครั้งในภายหลัง';
+
+  @override
+  String get gotIt => 'เข้าใจแล้ว';
+
+  @override
+  String get getCredits => 'รับเครดิต';
+
+  @override
+  String get errorEmptyInputTitle => 'เพิ่มข้อความก่อน';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'กรุณาใส่ข้อความที่คุณต้องการความช่วยเหลือ';
+
+  @override
+  String get errorConnectionTitle => 'ปัญหาการเชื่อมต่อ';
+
+  @override
+  String get errorConnectionMessage =>
+      'เรากำลังมีปัญหาในการเชื่อมต่อกับเซิร์ฟเวอร์ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองอีกครั้ง';
+
+  @override
+  String get errorServiceUnavailableTitle => 'บริการไม่พร้อมใช้งาน';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise ไม่พร้อมใช้งานชั่วคราว กรุณาลองอีกครั้งภายหลัง';
+
+  @override
+  String get errorCreditsTitle => 'เครดิตหมดแล้ว';
+
+  @override
+  String get errorCreditsMessage => 'คุณต้องมีเครดิตเพื่อดำเนินการต่อ';
+
+  @override
+  String get errorRateLimitedTitle => 'กรุณารอสักครู่';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'คุณส่งคำขอเร็วเกินไป กรุณาลองอีกครั้งในอีกสักครู่';
+
+  @override
+  String get errorAiBusyTitle => 'AI กำลังยุ่งอยู่';
+
+  @override
+  String get errorAiBusyMessage =>
+      'บริการ AI ไม่พร้อมใช้งานชั่วคราว กรุณาลองอีกครั้งภายหลัง';
+
+  @override
+  String get errorUnexpectedTitle => 'เกิดข้อผิดพลาด';
+
+  @override
+  String get errorUnexpectedMessage => 'กรุณาลองอีกครั้ง';
 }

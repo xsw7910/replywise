@@ -198,6 +198,12 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   }
 
   Future<void> _polish() async {
+    // No API request (and no credit/status gating) for an empty input.
+    if (_draftController.text.trim().isEmpty) {
+      await showEmptyInputSheet(context);
+      return;
+    }
+    if (!mounted) return;
     final appLocale = resolvedAppLocaleCode(
       Localizations.maybeLocaleOf(context),
     );
@@ -233,7 +239,18 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     final state = ref.read(polishControllerProvider);
     // A network/server failure re-checks status: maintenance or fallback UI.
     if (isNetworkFailure(state.errorCode)) {
-      await handleAiRequestFailure(context: context, ref: ref);
+      await handleAiRequestFailure(context: context, ref: ref, onRetry: _polish);
+      return;
+    }
+    // Any other failure is routed to the matching error bottom sheet.
+    if (state.error != null) {
+      await showAiErrorSheet(
+        context: context,
+        ref: ref,
+        errorCode: state.errorCode,
+        message: state.error!,
+        onRetry: _polish,
+      );
       return;
     }
     final result = state.result;

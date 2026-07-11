@@ -990,4 +990,57 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'Questa funzione è temporaneamente non disponibile. Riprova più tardi.';
+
+  @override
+  String get gotIt => 'Ho capito';
+
+  @override
+  String get getCredits => 'Ottieni crediti';
+
+  @override
+  String get errorEmptyInputTitle => 'Aggiungi prima un messaggio';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Inserisci il messaggio per cui vuoi aiuto.';
+
+  @override
+  String get errorConnectionTitle => 'Problema di connessione';
+
+  @override
+  String get errorConnectionMessage =>
+      'Stiamo avendo problemi a connetterci al server. Controlla la tua connessione internet e riprova.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Servizio non disponibile';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise è temporaneamente non disponibile. Riprova più tardi.';
+
+  @override
+  String get errorCreditsTitle => 'Crediti esauriti';
+
+  @override
+  String get errorCreditsMessage => 'Ti servono crediti per continuare.';
+
+  @override
+  String get errorRateLimitedTitle => 'Attendi un momento';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'Stai inviando richieste troppo velocemente. Riprova tra un istante.';
+
+  @override
+  String get errorAiBusyTitle => 'L\'IA è occupata';
+
+  @override
+  String get errorAiBusyMessage =>
+      'Il servizio di IA è temporaneamente non disponibile. Riprova più tardi.';
+
+  @override
+  String get errorUnexpectedTitle => 'Qualcosa è andato storto';
+
+  @override
+  String get errorUnexpectedMessage => 'Riprova.';
 }

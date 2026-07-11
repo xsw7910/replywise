@@ -978,4 +978,57 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'यह सुविधा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में पुनः प्रयास करें।';
+
+  @override
+  String get gotIt => 'ठीक है';
+
+  @override
+  String get getCredits => 'क्रेडिट पाएं';
+
+  @override
+  String get errorEmptyInputTitle => 'पहले एक संदेश जोड़ें';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'कृपया वह संदेश दर्ज करें जिसमें आपको मदद चाहिए।';
+
+  @override
+  String get errorConnectionTitle => 'कनेक्शन में समस्या';
+
+  @override
+  String get errorConnectionMessage =>
+      'सर्वर से कनेक्ट करने में समस्या हो रही है। कृपया अपना इंटरनेट जांचें और फिर से कोशिश करें।';
+
+  @override
+  String get errorServiceUnavailableTitle => 'सेवा उपलब्ध नहीं है';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise अस्थायी रूप से उपलब्ध नहीं है। कृपया बाद में फिर से कोशिश करें।';
+
+  @override
+  String get errorCreditsTitle => 'क्रेडिट खत्म हो गए';
+
+  @override
+  String get errorCreditsMessage => 'जारी रखने के लिए आपको क्रेडिट चाहिए।';
+
+  @override
+  String get errorRateLimitedTitle => 'कृपया प्रतीक्षा करें';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'आप बहुत तेज़ी से अनुरोध भेज रहे हैं। कृपया थोड़ी देर में फिर से कोशिश करें।';
+
+  @override
+  String get errorAiBusyTitle => 'AI व्यस्त है';
+
+  @override
+  String get errorAiBusyMessage =>
+      'AI सेवा अस्थायी रूप से उपलब्ध नहीं है। कृपया बाद में फिर से कोशिश करें।';
+
+  @override
+  String get errorUnexpectedTitle => 'कुछ गलत हो गया';
+
+  @override
+  String get errorUnexpectedMessage => 'कृपया फिर से कोशिश करें।';
 }

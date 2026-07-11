@@ -159,7 +159,10 @@ void main() {
     await tester.tap(find.byKey(const Key('explain-submit-button')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Enter a message to explain.'), findsOneWidget);
+    // Empty input is now reported via the shared error bottom sheet and no
+    // request is sent.
+    expect(find.byKey(const Key('empty-input-sheet')), findsOneWidget);
+    expect(find.text('Add a message first'), findsOneWidget);
     expect(repo.calls, 0);
   });
 

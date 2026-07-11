@@ -242,6 +242,12 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   };
 
   Future<void> _generate() async {
+    // No API request (and no credit/status gating) for an empty input.
+    if (_incomingController.text.trim().isEmpty) {
+      await showEmptyInputSheet(context);
+      return;
+    }
+    if (!mounted) return;
     final appLocale = resolvedAppLocaleCode(
       Localizations.maybeLocaleOf(context),
     );
@@ -265,7 +271,18 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     final state = ref.read(replyControllerProvider);
     // A network/server failure re-checks status: maintenance or fallback UI.
     if (isNetworkFailure(state.errorCode)) {
-      await handleAiRequestFailure(context: context, ref: ref);
+      await handleAiRequestFailure(context: context, ref: ref, onRetry: _generate);
+      return;
+    }
+    // Any other failure is routed to the matching error bottom sheet.
+    if (state.error != null) {
+      await showAiErrorSheet(
+        context: context,
+        ref: ref,
+        errorCode: state.errorCode,
+        message: state.error!,
+        onRetry: _generate,
+      );
       return;
     }
     final result = state.result;

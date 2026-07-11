@@ -972,4 +972,57 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'This feature is temporarily unavailable. Please try again later.';
+
+  @override
+  String get gotIt => 'Got it';
+
+  @override
+  String get getCredits => 'Get credits';
+
+  @override
+  String get errorEmptyInputTitle => 'Add a message first';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Please enter the message you want help with.';
+
+  @override
+  String get errorConnectionTitle => 'Connection problem';
+
+  @override
+  String get errorConnectionMessage =>
+      'We’re having trouble connecting to the server. Please check your internet and try again.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Service unavailable';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise is temporarily unavailable. Please try again later.';
+
+  @override
+  String get errorCreditsTitle => 'No credits left';
+
+  @override
+  String get errorCreditsMessage => 'You need credits to continue.';
+
+  @override
+  String get errorRateLimitedTitle => 'Please wait';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'You’re sending requests too quickly. Please try again in a moment.';
+
+  @override
+  String get errorAiBusyTitle => 'AI is busy';
+
+  @override
+  String get errorAiBusyMessage =>
+      'The AI service is temporarily unavailable. Please try again later.';
+
+  @override
+  String get errorUnexpectedTitle => 'Something went wrong';
+
+  @override
+  String get errorUnexpectedMessage => 'Please try again.';
 }

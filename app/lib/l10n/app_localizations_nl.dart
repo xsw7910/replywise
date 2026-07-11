@@ -987,4 +987,57 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       'Deze functie is tijdelijk niet beschikbaar. Probeer het later opnieuw.';
+
+  @override
+  String get gotIt => 'Begrepen';
+
+  @override
+  String get getCredits => 'Credits krijgen';
+
+  @override
+  String get errorEmptyInputTitle => 'Voeg eerst een bericht toe';
+
+  @override
+  String get errorEmptyInputMessage =>
+      'Voer het bericht in waarmee je hulp wilt.';
+
+  @override
+  String get errorConnectionTitle => 'Verbindingsprobleem';
+
+  @override
+  String get errorConnectionMessage =>
+      'We kunnen de server niet bereiken. Controleer je internetverbinding en probeer het opnieuw.';
+
+  @override
+  String get errorServiceUnavailableTitle => 'Service niet beschikbaar';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise is tijdelijk niet beschikbaar. Probeer het later opnieuw.';
+
+  @override
+  String get errorCreditsTitle => 'Geen credits meer';
+
+  @override
+  String get errorCreditsMessage => 'Je hebt credits nodig om door te gaan.';
+
+  @override
+  String get errorRateLimitedTitle => 'Even geduld';
+
+  @override
+  String get errorRateLimitedMessage =>
+      'Je verstuurt aanvragen te snel. Probeer het zo weer.';
+
+  @override
+  String get errorAiBusyTitle => 'AI is bezet';
+
+  @override
+  String get errorAiBusyMessage =>
+      'De AI-service is tijdelijk niet beschikbaar. Probeer het later opnieuw.';
+
+  @override
+  String get errorUnexpectedTitle => 'Er is iets misgegaan';
+
+  @override
+  String get errorUnexpectedMessage => 'Probeer het opnieuw.';
 }

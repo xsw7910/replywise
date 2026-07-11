@@ -944,4 +944,54 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get appStatusFeatureUnavailableMessage =>
       '이 기능은 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요.';
+
+  @override
+  String get gotIt => '확인';
+
+  @override
+  String get getCredits => '크레딧 받기';
+
+  @override
+  String get errorEmptyInputTitle => '먼저 메시지를 추가하세요';
+
+  @override
+  String get errorEmptyInputMessage => '도움이 필요한 메시지를 입력해 주세요.';
+
+  @override
+  String get errorConnectionTitle => '연결 문제';
+
+  @override
+  String get errorConnectionMessage =>
+      '서버에 연결하는 데 문제가 있습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.';
+
+  @override
+  String get errorServiceUnavailableTitle => '서비스를 이용할 수 없음';
+
+  @override
+  String get errorServiceUnavailableMessage =>
+      'ReplyWise를 일시적으로 이용할 수 없습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get errorCreditsTitle => '크레딧이 없습니다';
+
+  @override
+  String get errorCreditsMessage => '계속하려면 크레딧이 필요합니다.';
+
+  @override
+  String get errorRateLimitedTitle => '잠시 기다려 주세요';
+
+  @override
+  String get errorRateLimitedMessage => '요청을 너무 빠르게 보내고 있습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get errorAiBusyTitle => 'AI가 바쁩니다';
+
+  @override
+  String get errorAiBusyMessage => 'AI 서비스를 일시적으로 이용할 수 없습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get errorUnexpectedTitle => '문제가 발생했습니다';
+
+  @override
+  String get errorUnexpectedMessage => '다시 시도해 주세요.';
 }
