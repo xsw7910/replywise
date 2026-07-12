@@ -159,14 +159,13 @@ class _HomeNavBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.asset(
-              'assets/icons/app_icon.png',
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
-            ),
+          // Tightly-cropped transparent bubble: renders larger than the padded
+          // app_icon.png at the same slot size and can never be clipped.
+          Image.asset(
+            'assets/icons/app_icon_tight.png',
+            width: 56,
+            height: 56,
+            fit: BoxFit.contain,
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -73,10 +73,17 @@ flutter:
     - assets/image/premium_page_backgroud.png
     - assets/image/settings_background.webp
     - assets/icons/app_icon.png
+    - assets/icons/app_icon_tight.png
     - assets/icons/out_of_credits_gift.png
 
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: false
-  image_path: "assets/icons/app_icon.png"
+  # Legacy fallback: bubble on a white square (pre-Android 8 launchers).
+  image_path: "assets/icons/launcher_legacy.png"
+  # Adaptive icon (Android 8+): white background + bubble foreground sized to
+  # the 66/108dp safe zone, so circular masks show a large bubble instead of
+  # a shrunken legacy icon.
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/launcher_foreground.png"
   min_sdk_android: 21
