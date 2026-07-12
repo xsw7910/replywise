@@ -23,7 +23,10 @@ class AIService:
     async def reply(self, request: ReplyRequest) -> ReplyResponse:
         payload = request.model_dump(mode="json")
         payload["task"] = "reply"
-        payload["output_lang"] = "en"
+        # The legacy client outputLang field must not steer the reply language:
+        # replies follow the incoming message's language (see prompt), and
+        # explanations follow output_language.
+        payload.pop("output_lang", None)
         prompt = self._localized_prompt(
             REPLY_SYSTEM_PROMPT,
             payload,
@@ -63,9 +66,13 @@ class AIService:
         return (
             f"{system_prompt}\n\n"
             f"Write the section headings and explanations in: {output_language}.\n"
+            "output_language applies ONLY to explanation fields (why, changes, "
+            "meaning, tone, hiddenMeaning). "
             "Do not translate JSON keys or fixed enum labels. "
-            "Keep reply, polished, and suggested-reply content in the language "
-            "required by the task and user context."
+            "User-facing message content (reply versions, polished text, "
+            "suggested replies) must follow the language rules of the task — "
+            f"never translate it into {output_language} because of the app "
+            "language setting."
         )
 
     async def _generate(self, system_prompt: str, payload: dict, response_type):

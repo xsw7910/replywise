@@ -318,6 +318,132 @@ def test_explain_zh_locale_adds_chinese_heading_instruction(
     assert provider.payload["output_language"] == "Simplified Chinese"
 
 
+class _EchoPolishProvider:
+    """Echoes back a fixed polished/changes pair, capturing the prompt.
+
+    Simulates a model that follows the language contract: polished text stays
+    in the draft's language, changes uses output_language. The backend must
+    pass both through untouched (no translation layer).
+    """
+
+    def __init__(self, polished: str, changes: str) -> None:
+        self.polished = polished
+        self.changes = changes
+        self.system_prompt = ""
+        self.payload: dict = {}
+
+    async def complete(self, system_prompt: str, payload: dict) -> str:
+        self.system_prompt = system_prompt
+        self.payload = payload
+        return json.dumps({"polished": self.polished, "changes": self.changes})
+
+
+def _post_polish(client: TestClient, provider, draft: str, app_locale: str, suffix: str):
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        return client.post(
+            "/v1/polish",
+            json={"draft": draft, "direction": "natural", "appLocale": app_locale},
+            headers=_headers(client, suffix),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+
+def test_polish_prompt_pins_polished_text_to_draft_language(
+    client: TestClient,
+) -> None:
+    """English draft + Chinese app language: polished stays English, changes
+    is Chinese; the prompt states the split explicitly."""
+    provider = _EchoPolishProvider(
+        polished="Hi, could you please send me the report today?",
+        changes="语气更礼貌、更自然。",
+    )
+    response = _post_polish(
+        client,
+        provider,
+        draft="Hi, can you send me the report today?",
+        app_locale="zh",
+        suffix="polish-lang-en-draft",
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    # Passed through untouched — polished is NOT translated to the app language.
+    assert body["polished"] == "Hi, could you please send me the report today?"
+    assert body["changes"] == "语气更礼貌、更自然。"
+
+    # The prompt separates the two languages explicitly.
+    assert "SAME language as the input" in provider.system_prompt
+    assert '"changes" describes what was changed and why, written in output_language' in (
+        provider.system_prompt
+    )
+    assert 'Never translate "polished" into output_language' in provider.system_prompt
+    assert provider.payload["output_language"] == "Simplified Chinese"
+
+
+def test_polish_chinese_draft_with_english_app_language(client: TestClient) -> None:
+    provider = _EchoPolishProvider(
+        polished="你好，请问今天能把报告发给我吗？",
+        changes="Softened the request and made it more polite.",
+    )
+    response = _post_polish(
+        client,
+        provider,
+        draft="你好，今天把报告发我。",
+        app_locale="en",
+        suffix="polish-lang-zh-draft",
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["polished"] == "你好，请问今天能把报告发给我吗？"
+    assert body["changes"] == "Softened the request and made it more polite."
+    assert provider.payload["output_language"] == "English"
+
+
+def test_polish_preserves_french_and_spanish_drafts(client: TestClient) -> None:
+    for draft, suffix in [
+        ("Bonjour, pouvez-vous m'envoyer le rapport ?", "polish-lang-fr"),
+        ("Hola, ¿puedes enviarme el informe hoy?", "polish-lang-es"),
+    ]:
+        provider = _EchoPolishProvider(polished=draft, changes="Minor tweaks.")
+        response = _post_polish(
+            client, provider, draft=draft, app_locale="zh", suffix=suffix
+        )
+        assert response.status_code == 200
+        # The polished text keeps the draft's language even with zh app locale.
+        assert response.json()["polished"] == draft
+        assert "SAME language as the input" in provider.system_prompt
+
+
+def test_reply_prompt_pins_reply_text_to_incoming_language(
+    client: TestClient,
+) -> None:
+    provider = _CapturingReplyProvider()
+    app.dependency_overrides[get_ai_service] = lambda: AIService(provider)
+    try:
+        response = client.post(
+            "/v1/reply",
+            json={**_reply_payload(), "appLocale": "zh"},
+            headers=_headers(client, "reply-lang-contract"),
+        )
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+
+    assert response.status_code == 200
+    assert "SAME language as the" in provider.system_prompt
+    assert "incoming message" in provider.system_prompt
+    # The legacy client outputLang value must not reach the model payload.
+    assert "output_lang" not in provider.payload
+    # output_language stays scoped to explanations.
+    assert provider.payload["output_language"] == "Simplified Chinese"
+    assert (
+        "output_language applies ONLY to explanation fields"
+        in provider.system_prompt
+    )
+
+
 def test_missing_locale_falls_back_to_english(client: TestClient) -> None:
     provider = _CapturingReplyProvider()
     app.dependency_overrides[get_ai_service] = lambda: AIService(provider)

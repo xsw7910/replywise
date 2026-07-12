@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      
       "Bash(cd *)",
       "Bash(flutter build *)",
       "Bash(adb install *)",
@@ -18,6 +19,8 @@
       "Bash(rm -rf:*)",
       "Bash(del /s:*)",
       "Bash(rmdir /s:*)"
-    ]
+    ],
+    "defaultMode": "bypassPermissions"
+
   }
 }
