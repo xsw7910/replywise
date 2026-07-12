@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:replywise/core/constants/app_brand.dart';
 import 'package:replywise/core/localization/locale_controller.dart';
 import 'package:replywise/core/localization/localization_extensions.dart';
 import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
@@ -11,6 +12,15 @@ import 'package:replywise/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  test('brand name is fixed across every supported localization', () async {
+    for (final locale in AppLocalizations.supportedLocales) {
+      final localizations = await AppLocalizations.delegate.load(locale);
+
+      expect(localizations.appTitle, appBrandName, reason: locale.toString());
+      expect(localizations.appTitle, 'ReplyWise', reason: locale.toString());
+    }
+  });
+
   test('every advertised locale has a complete message catalog', () {
     final directory = Directory('lib/l10n');
     final english =
@@ -119,6 +129,8 @@ void main() {
                     children: [
                       Text(context.l10n.settings),
                       Text(context.l10n.generateReply),
+                      const Text(appBrandName),
+                      Text(context.l10n.appTitle),
                       Text(context.l10n.premiumTitle),
                       Text(context.l10n.credits),
                     ],
@@ -139,8 +151,10 @@ void main() {
 
     expect(find.text('设置'), findsOneWidget);
     expect(find.text('生成回复'), findsOneWidget);
+    expect(find.text(appBrandName), findsNWidgets(2));
     expect(find.text('ReplyWise 高级版'), findsOneWidget);
     expect(find.text('积分'), findsOneWidget);
+    expect(find.text('ReplyWise'), findsNWidgets(2));
     expect(find.text('Generate Reply'), findsNothing);
     expect(find.text('Credits'), findsNothing);
   });

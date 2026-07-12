@@ -9,7 +9,7 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get appTitle => 'उत्तर बुद्धिमानी से दें';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'सिस्टम डिफ़ॉल्ट';
@@ -566,7 +566,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'क्या आप ऐसा उत्तर चाहते हैं जो आपके इरादे से बेहतर मेल खाता हो?';
 
   @override
-  String get premiumTitle => 'उत्तरवार प्रीमियम';
+  String get premiumTitle => 'ReplyWise प्रीमियम';
 
   @override
   String get back => 'पीछे';

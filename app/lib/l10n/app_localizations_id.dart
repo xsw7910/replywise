@@ -9,7 +9,7 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
-  String get appTitle => 'Balasan Bijaksana';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'Default sistem';
@@ -566,7 +566,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Ingin balasan yang lebih sesuai dengan niat Anda?';
 
   @override
-  String get premiumTitle => 'Balasan Bijaksana Premium';
+  String get premiumTitle => 'ReplyWise Premium';
 
   @override
   String get back => 'Kembali';

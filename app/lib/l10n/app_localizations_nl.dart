@@ -9,7 +9,7 @@ class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
 
   @override
-  String get appTitle => 'Antwoord verstandig';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'Systeemstandaard';

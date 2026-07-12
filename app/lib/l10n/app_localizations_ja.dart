@@ -9,7 +9,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => '返信ワイズ';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'システムのデフォルト';
@@ -549,7 +549,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get replyCtaTitle => '自分の意図にもっと合致する返信が欲しいですか?';
 
   @override
-  String get premiumTitle => 'リプライワイズ プレミアム';
+  String get premiumTitle => 'ReplyWise プレミアム';
 
   @override
   String get back => '戻る';

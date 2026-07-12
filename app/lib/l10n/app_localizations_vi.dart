@@ -9,7 +9,7 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get appTitle => 'Trả lờiKhôn ngoan';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'Mặc định hệ thống';
@@ -571,7 +571,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Bạn muốn một câu trả lời phù hợp hơn với ý định của bạn?';
 
   @override
-  String get premiumTitle => 'Trả lờiWise Premium';
+  String get premiumTitle => 'ReplyWise Premium';
 
   @override
   String get back => 'Mặt sau';

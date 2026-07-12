@@ -9,7 +9,7 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appTitle => 'YanıtlaWise';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'Sistem varsayılanı';

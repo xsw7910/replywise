@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'RépondreWise';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'Langue du système';
@@ -568,7 +568,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vous souhaitez une réponse qui correspond mieux à votre intention ?';
 
   @override
-  String get premiumTitle => 'RépondreWise Premium';
+  String get premiumTitle => 'ReplyWise Premium';
 
   @override
   String get back => 'Dos';

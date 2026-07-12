@@ -9,7 +9,7 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
-  String get appTitle => 'ResponderWise';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'Padrão do sistema';
@@ -566,7 +566,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Quer uma resposta que corresponda melhor à sua intenção?';
 
   @override
-  String get premiumTitle => 'ResponderWise Premium';
+  String get premiumTitle => 'ReplyWise Premium';
 
   @override
   String get back => 'Voltar';

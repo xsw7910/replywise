@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/router/app_router.dart';
+import '../../core/constants/app_brand.dart';
 import '../../core/localization/localization_extensions.dart';
+import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -178,7 +179,7 @@ class _HomeNavBar extends StatelessWidget {
                     colors: [Color(0xFF3D6FFF), Color(0xFF00C2CB)],
                   ).createShader(bounds),
                   child: Text(
-                    context.l10n.appTitle,
+                    appBrandName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.pageTitle.copyWith(

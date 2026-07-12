@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:replywise/l10n/app_localizations.dart';
 
+import 'core/constants/app_brand.dart';
 import 'core/localization/locale_controller.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -77,7 +78,7 @@ class _ReplyWiseAppState extends ConsumerState<ReplyWiseApp>
     final localePreference = ref.watch(localeControllerProvider);
 
     return MaterialApp.router(
-      title: 'ReplyWise',
+      title: appBrandName,
       locale: localeFromPreference(localePreference),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

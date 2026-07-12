@@ -9,7 +9,7 @@ class AppLocalizationsTh extends AppLocalizations {
   AppLocalizationsTh([String locale = 'th']) : super(locale);
 
   @override
-  String get appTitle => 'ตอบกลับWise';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'ค่าเริ่มต้นของระบบ';
@@ -566,7 +566,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get replyCtaTitle => 'ต้องการคำตอบที่ตรงกับความตั้งใจของคุณหรือไม่?';
 
   @override
-  String get premiumTitle => 'รีพลายไวส์ พรีเมียม';
+  String get premiumTitle => 'ReplyWise พรีเมียม';
 
   @override
   String get back => 'กลับ';

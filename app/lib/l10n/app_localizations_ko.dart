@@ -9,7 +9,7 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => '답글 현명하게';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => '시스템 기본값';
@@ -548,7 +548,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get replyCtaTitle => '귀하의 의도에 더 잘 맞는 답변을 원하시나요?';
 
   @override
-  String get premiumTitle => '댓글와이즈 프리미엄';
+  String get premiumTitle => 'ReplyWise 프리미엄';
 
   @override
   String get back => '뒤쪽에';

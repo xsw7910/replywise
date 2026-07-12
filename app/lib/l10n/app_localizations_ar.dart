@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'الرد الحكيم';
+  String get appTitle => 'ReplyWise';
 
   @override
   String get systemDefault => 'إعداد النظام';
@@ -562,7 +562,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get replyCtaTitle => 'هل تريد ردًا يتوافق بشكل أفضل مع نيتك؟';
 
   @override
-  String get premiumTitle => 'الرد الحكيم بريميوم';
+  String get premiumTitle => 'ReplyWise بريميوم';
 
   @override
   String get back => 'خلف';
