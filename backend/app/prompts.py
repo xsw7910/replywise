@@ -27,8 +27,7 @@ Exact schema (replace the empty strings with your content):
 
 Rules:
 - "polished" is the improved draft, written in the SAME language as the input
-  draft: an English draft yields polished English, a Chinese draft yields
-  polished Chinese, a Spanish draft yields polished Spanish, and so on.
+  draft.
 - Never translate "polished" into output_language or any other language,
   regardless of app settings, unless an instruction explicitly asks for a
   translation.

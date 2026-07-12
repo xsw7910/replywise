@@ -8,6 +8,15 @@ import '../theme/app_colors.dart';
 
 const _navInactive = AppColors.navBarUnselected;
 
+/// Navigator key for the ShellRoute hosting the bottom-tab pages.
+///
+/// Modal routes opened from a page (the error bottom sheets, dialogs) live on
+/// this nested navigator and are NOT removed automatically when go_router
+/// swaps the tab's page — [AppShell] pops them off before switching tabs.
+final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: 'app-shell-navigator',
+);
+
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.child});
 
@@ -66,7 +75,15 @@ class AppShell extends StatelessWidget {
       bottomNavigationBar: _SoftNavBar(
         tabs: tabs,
         selectedIndex: selectedIndex,
-        onSelected: (i) => context.go(tabs[i].route),
+        onSelected: (i) {
+          // Dismiss any modal left open on the current page (e.g. the error
+          // bottom sheet) before switching tabs. popUntil stops at the first
+          // PageRoute, so the page route itself is never popped.
+          shellNavigatorKey.currentState?.popUntil(
+            (route) => route is PageRoute,
+          );
+          context.go(tabs[i].route);
+        },
       ),
     );
   }

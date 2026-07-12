@@ -73,6 +73,7 @@ GoRouter appRouter(AppRouterRef ref) {
         ],
       ),
       ShellRoute(
+        navigatorKey: shellNavigatorKey,
         builder: (context, state, child) => AppShell(child: child),
         routes: [
           GoRoute(
