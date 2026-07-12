@@ -10,6 +10,7 @@ import 'package:replywise/core/constants/input_limits.dart';
 import 'package:replywise/core/network/api_client.dart';
 import 'package:replywise/core/network/api_error.dart';
 import 'package:replywise/core/router/app_router.dart';
+import 'package:replywise/core/share/share_helper.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
 import 'package:replywise/features/reply/data/explain_repository.dart';
@@ -77,11 +78,15 @@ void _useTallView(WidgetTester tester) {
 
 Future<void> _pumpExplain(
   WidgetTester tester,
-  _FakeExplainRepository repo,
-) async {
+  _FakeExplainRepository repo, {
+  List<Override> overrides = const [],
+}) async {
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [explainRepositoryProvider.overrideWith((ref) => repo)],
+      overrides: [
+        explainRepositoryProvider.overrideWith((ref) => repo),
+        ...overrides,
+      ],
       child: const MaterialApp(home: ExplainScreen()),
     ),
   );
@@ -224,6 +229,68 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(copied, ['Thanks, let’s revisit after Q3.']);
+    expect(find.text('Copied'), findsOneWidget);
+  });
+
+  testWidgets('Explain result shows share before copy and copy still works', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    final shared = <String>[];
+    final copied = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        if (call.method == 'Clipboard.setData') {
+          final args = call.arguments as Map<dynamic, dynamic>;
+          copied.add(args['text'] as String);
+        }
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+
+    await _pumpExplain(
+      tester,
+      _FakeExplainRepository(),
+      overrides: [
+        generatedTextSharerProvider.overrideWithValue((
+          text, {
+          String? subject,
+        }) async {
+          shared.add(text);
+        }),
+      ],
+    );
+    await tester.enterText(
+      _editableIn(const Key('explain-message-field')),
+      'Sounds good in principle.',
+    );
+    await tester.tap(find.byKey(const Key('explain-submit-button')));
+    await tester.pumpAndSettle();
+
+    final share = find.byKey(const Key('explain-share-button'));
+    final copy = find.byKey(const Key('explain-copy-button'));
+    expect(share, findsOneWidget);
+    expect(copy, findsOneWidget);
+    expect(tester.getTopLeft(share).dx, lessThan(tester.getTopLeft(copy).dx));
+
+    const expected =
+        'Meaning\nThey agree generally, but not yet.\n\n'
+        'Tone\nPositive but cautious.\n\n'
+        'Hidden Meaning\nThey may not have time until later.';
+    await tester.tap(share);
+    await tester.pumpAndSettle();
+    expect(shared, [expected]);
+
+    await tester.tap(copy);
+    await tester.pumpAndSettle();
+    expect(copied, [expected]);
     expect(find.text('Copied'), findsOneWidget);
   });
 

@@ -1035,4 +1035,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Tente novamente.';
+
+  @override
+  String get shareReply => 'Compartilhar resposta';
+
+  @override
+  String get shareExplanation => 'Compartilhar explicação';
+
+  @override
+  String get sharePolishedText => 'Compartilhar texto polido';
 }

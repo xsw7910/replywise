@@ -995,4 +995,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'もう一度お試しください。';
+
+  @override
+  String get shareReply => '返信を共有';
+
+  @override
+  String get shareExplanation => '説明を共有';
+
+  @override
+  String get sharePolishedText => '推敲したテキストを共有';
 }

@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "AIサービスは一時的に利用できません。しばらくしてからもう一度お試しください。"
   ,"errorUnexpectedTitle": "問題が発生しました"
   ,"errorUnexpectedMessage": "もう一度お試しください。"
+  ,"shareReply": "返信を共有"
+  ,"shareExplanation": "説明を共有"
+  ,"sharePolishedText": "推敲したテキストを共有"
 }

@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "Сервіс ШІ тимчасово недоступний. Спробуйте пізніше."
   ,"errorUnexpectedTitle": "Щось пішло не так"
   ,"errorUnexpectedMessage": "Спробуйте ще раз."
+  ,"shareReply": "Поділитися відповіддю"
+  ,"shareExplanation": "Поділитися поясненням"
+  ,"sharePolishedText": "Поділитися покращеним текстом"
 }

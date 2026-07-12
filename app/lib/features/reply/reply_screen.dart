@@ -601,6 +601,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                       label: version.label,
                       text: version.text,
                       feature: _feature,
+                      shareTooltip: context.l10n.shareReply,
                       showFeatureImage: false,
                       tintStrength: _kCardTintStrength,
                       tintColor: _kCardTint,

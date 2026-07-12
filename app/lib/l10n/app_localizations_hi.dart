@@ -1031,4 +1031,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'कृपया फिर से कोशिश करें।';
+
+  @override
+  String get shareReply => 'जवाब साझा करें';
+
+  @override
+  String get shareExplanation => 'व्याख्या साझा करें';
+
+  @override
+  String get sharePolishedText => 'सुधारा गया टेक्स्ट साझा करें';
 }

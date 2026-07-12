@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "خدمة الذكاء الاصطناعي غير متوفرة مؤقتًا. يرجى المحاولة لاحقًا."
   ,"errorUnexpectedTitle": "حدث خطأ ما"
   ,"errorUnexpectedMessage": "يرجى المحاولة مرة أخرى."
+  ,"shareReply": "مشاركة الرد"
+  ,"shareExplanation": "مشاركة الشرح"
+  ,"sharePolishedText": "مشاركة النص المحسّن"
 }

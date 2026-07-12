@@ -1044,4 +1044,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Veuillez réessayer.';
+
+  @override
+  String get shareReply => 'Partager la réponse';
+
+  @override
+  String get shareExplanation => 'Partager l\'explication';
+
+  @override
+  String get sharePolishedText => 'Partager le texte amélioré';
 }

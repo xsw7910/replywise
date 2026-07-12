@@ -1039,4 +1039,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Spróbuj ponownie.';
+
+  @override
+  String get shareReply => 'Udostępnij odpowiedź';
+
+  @override
+  String get shareExplanation => 'Udostępnij wyjaśnienie';
+
+  @override
+  String get sharePolishedText => 'Udostępnij dopracowany tekst';
 }

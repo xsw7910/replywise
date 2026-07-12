@@ -1019,4 +1019,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get shareReply => 'مشاركة الرد';
+
+  @override
+  String get shareExplanation => 'مشاركة الشرح';
+
+  @override
+  String get sharePolishedText => 'مشاركة النص المحسّن';
 }

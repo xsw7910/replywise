@@ -1033,4 +1033,13 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Lütfen tekrar deneyin.';
+
+  @override
+  String get shareReply => 'Yanıtı paylaş';
+
+  @override
+  String get shareExplanation => 'Açıklamayı paylaş';
+
+  @override
+  String get sharePolishedText => 'Düzenlenen metni paylaş';
 }

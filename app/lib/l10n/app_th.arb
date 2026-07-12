@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "บริการ AI ไม่พร้อมใช้งานชั่วคราว กรุณาลองอีกครั้งภายหลัง"
   ,"errorUnexpectedTitle": "เกิดข้อผิดพลาด"
   ,"errorUnexpectedMessage": "กรุณาลองอีกครั้ง"
+  ,"shareReply": "แชร์คำตอบ"
+  ,"shareExplanation": "แชร์คำอธิบาย"
+  ,"sharePolishedText": "แชร์ข้อความที่ปรับแล้ว"
 }

@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "AI 服務暫時無法使用，請稍後再試。"
   ,"errorUnexpectedTitle": "發生錯誤"
   ,"errorUnexpectedMessage": "請再試一次。"
+  ,"shareReply": "分享回覆"
+  ,"shareExplanation": "分享說明"
+  ,"sharePolishedText": "分享潤飾文字"
 }

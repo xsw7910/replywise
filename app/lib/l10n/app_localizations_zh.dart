@@ -986,6 +986,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => '请重试。';
+
+  @override
+  String get shareReply => '分享回复';
+
+  @override
+  String get shareExplanation => '分享解释';
+
+  @override
+  String get sharePolishedText => '分享润色文本';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -1970,4 +1979,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get errorUnexpectedMessage => '請再試一次。';
+
+  @override
+  String get shareReply => '分享回覆';
+
+  @override
+  String get shareExplanation => '分享說明';
+
+  @override
+  String get sharePolishedText => '分享潤飾文字';
 }

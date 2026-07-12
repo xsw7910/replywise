@@ -458,6 +458,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                     label: _tone,
                     text: polishState.result!.polished,
                     feature: _feature,
+                    shareTooltip: context.l10n.sharePolishedText,
                     showFeatureImage: false,
                     tintColor: _kCardTint,
                     tintStrength: _kCardTintStrength,

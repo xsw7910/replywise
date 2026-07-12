@@ -7,6 +7,7 @@ import '../../core/constants/input_limits.dart';
 import '../../core/localization/localization_extensions.dart';
 import '../../core/localization/locale_controller.dart';
 import '../../core/router/app_router.dart';
+import '../../core/share/share_helper.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../app_status/presentation/app_status_dialogs.dart';
@@ -149,8 +150,29 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
     );
   }
 
+  /// The explanation as shown on screen: meaning, tone, and hidden meaning
+  /// sections with their visible titles.
+  String _composedExplanation() {
+    final l10n = context.l10n;
+    final result = _result!;
+    final hidden = result.hiddenMeaning.trim().isEmpty
+        ? l10n.noHiddenMeaning
+        : result.hiddenMeaning;
+    return '${l10n.meaning}\n${result.meaning}\n\n'
+        '${l10n.tone}\n${result.tone}\n\n'
+        '${l10n.hiddenMeaning}\n$hidden';
+  }
+
   Future<void> _copySuggestion(String suggestion) async {
     await Clipboard.setData(ClipboardData(text: suggestion));
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.copied)));
+  }
+
+  Future<void> _copyExplanation() async {
+    await Clipboard.setData(ClipboardData(text: _composedExplanation()));
     if (!mounted) return;
     ScaffoldMessenger.of(
       context,
@@ -284,6 +306,37 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
               title: context.l10n.meaning,
               text: _result!.meaning,
               color: _kColor,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    key: const Key('explain-share-button'),
+                    tooltip: context.l10n.shareExplanation,
+                    style: IconButton.styleFrom(
+                      foregroundColor: _kColor,
+                      backgroundColor: _feature.iconBackgroundColor,
+                    ),
+                    onPressed: () => shareGeneratedText(
+                      context,
+                      ref,
+                      _composedExplanation(),
+                      feature: _feature,
+                    ),
+                    icon: const Icon(Icons.ios_share_outlined, size: 18),
+                  ),
+                  const SizedBox(width: 4),
+                  IconButton(
+                    key: const Key('explain-copy-button'),
+                    tooltip: context.l10n.copyExplanation,
+                    style: IconButton.styleFrom(
+                      foregroundColor: _kColor,
+                      backgroundColor: _feature.iconBackgroundColor,
+                    ),
+                    onPressed: _copyExplanation,
+                    icon: const Icon(Icons.copy_rounded, size: 18),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
             _ResultSection(
@@ -345,12 +398,14 @@ class _ResultSection extends StatelessWidget {
     required this.title,
     required this.text,
     required this.color,
+    this.trailing,
   });
 
   final IconData icon;
   final String title;
   final String text;
   final Color color;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +424,14 @@ class _ResultSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTextStyles.cardTitle),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(title, style: AppTextStyles.cardTitle),
+                    ),
+                    ?trailing,
+                  ],
+                ),
                 const SizedBox(height: 6),
                 Text(text, style: AppTextStyles.body),
               ],

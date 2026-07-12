@@ -1053,4 +1053,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Bitte versuche es erneut.';
+
+  @override
+  String get shareReply => 'Antwort teilen';
+
+  @override
+  String get shareExplanation => 'Erklärung teilen';
+
+  @override
+  String get sharePolishedText => 'Überarbeiteten Text teilen';
 }

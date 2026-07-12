@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "Il servizio di IA è temporaneamente non disponibile. Riprova più tardi."
   ,"errorUnexpectedTitle": "Qualcosa è andato storto"
   ,"errorUnexpectedMessage": "Riprova."
+  ,"shareReply": "Condividi risposta"
+  ,"shareExplanation": "Condividi spiegazione"
+  ,"sharePolishedText": "Condividi testo rifinito"
 }

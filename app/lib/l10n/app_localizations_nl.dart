@@ -1040,4 +1040,13 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Probeer het opnieuw.';
+
+  @override
+  String get shareReply => 'Antwoord delen';
+
+  @override
+  String get shareExplanation => 'Uitleg delen';
+
+  @override
+  String get sharePolishedText => 'Verbeterde tekst delen';
 }

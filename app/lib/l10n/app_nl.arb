@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "De AI-service is tijdelijk niet beschikbaar. Probeer het later opnieuw."
   ,"errorUnexpectedTitle": "Er is iets misgegaan"
   ,"errorUnexpectedMessage": "Probeer het opnieuw."
+  ,"shareReply": "Antwoord delen"
+  ,"shareExplanation": "Uitleg delen"
+  ,"sharePolishedText": "Verbeterde tekst delen"
 }

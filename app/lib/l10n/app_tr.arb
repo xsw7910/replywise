@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "Yapay zeka hizmeti geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin."
   ,"errorUnexpectedTitle": "Bir şeyler ters gitti"
   ,"errorUnexpectedMessage": "Lütfen tekrar deneyin."
+  ,"shareReply": "Yanıtı paylaş"
+  ,"shareExplanation": "Açıklamayı paylaş"
+  ,"sharePolishedText": "Düzenlenen metni paylaş"
 }

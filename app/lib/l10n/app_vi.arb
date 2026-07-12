@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "Dịch vụ AI tạm thời không khả dụng. Vui lòng thử lại sau."
   ,"errorUnexpectedTitle": "Đã xảy ra lỗi"
   ,"errorUnexpectedMessage": "Vui lòng thử lại."
+  ,"shareReply": "Chia sẻ câu trả lời"
+  ,"shareExplanation": "Chia sẻ giải thích"
+  ,"sharePolishedText": "Chia sẻ văn bản đã chỉnh"
 }

@@ -1035,4 +1035,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Vui lòng thử lại.';
+
+  @override
+  String get shareReply => 'Chia sẻ câu trả lời';
+
+  @override
+  String get shareExplanation => 'Chia sẻ giải thích';
+
+  @override
+  String get sharePolishedText => 'Chia sẻ văn bản đã chỉnh';
 }

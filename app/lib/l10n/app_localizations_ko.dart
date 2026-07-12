@@ -994,4 +994,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => '다시 시도해 주세요.';
+
+  @override
+  String get shareReply => '답장 공유';
+
+  @override
+  String get shareExplanation => '설명 공유';
+
+  @override
+  String get sharePolishedText => '다듬은 텍스트 공유';
 }

@@ -332,4 +332,7 @@
   ,"errorAiBusyMessage": "The AI service is temporarily unavailable. Please try again later."
   ,"errorUnexpectedTitle": "Something went wrong"
   ,"errorUnexpectedMessage": "Please try again."
+  ,"shareReply": "Share reply"
+  ,"shareExplanation": "Share explanation"
+  ,"sharePolishedText": "Share polished text"
 }

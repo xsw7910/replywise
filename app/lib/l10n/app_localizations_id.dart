@@ -1035,4 +1035,13 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Silakan coba lagi.';
+
+  @override
+  String get shareReply => 'Bagikan balasan';
+
+  @override
+  String get shareExplanation => 'Bagikan penjelasan';
+
+  @override
+  String get sharePolishedText => 'Bagikan teks yang dipoles';
 }

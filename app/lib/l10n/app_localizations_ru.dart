@@ -1037,4 +1037,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Попробуйте ещё раз.';
+
+  @override
+  String get shareReply => 'Поделиться ответом';
+
+  @override
+  String get shareExplanation => 'Поделиться объяснением';
+
+  @override
+  String get sharePolishedText => 'Поделиться улучшенным текстом';
 }

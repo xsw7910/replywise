@@ -1021,4 +1021,13 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'กรุณาลองอีกครั้ง';
+
+  @override
+  String get shareReply => 'แชร์คำตอบ';
+
+  @override
+  String get shareExplanation => 'แชร์คำอธิบาย';
+
+  @override
+  String get sharePolishedText => 'แชร์ข้อความที่ปรับแล้ว';
 }

@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "Le service d'IA est temporairement indisponible. Veuillez réessayer plus tard."
   ,"errorUnexpectedTitle": "Une erreur s'est produite"
   ,"errorUnexpectedMessage": "Veuillez réessayer."
+  ,"shareReply": "Partager la réponse"
+  ,"shareExplanation": "Partager l'explication"
+  ,"sharePolishedText": "Partager le texte amélioré"
 }

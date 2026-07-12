@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "AI 서비스를 일시적으로 이용할 수 없습니다. 잠시 후 다시 시도해 주세요."
   ,"errorUnexpectedTitle": "문제가 발생했습니다"
   ,"errorUnexpectedMessage": "다시 시도해 주세요."
+  ,"shareReply": "답장 공유"
+  ,"shareExplanation": "설명 공유"
+  ,"sharePolishedText": "다듬은 텍스트 공유"
 }

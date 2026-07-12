@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:replywise/core/network/api_client.dart';
+import 'package:replywise/core/share/share_helper.dart';
 import 'package:replywise/core/theme/app_colors.dart';
 import 'package:replywise/core/theme/app_feature_theme.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
@@ -30,13 +32,16 @@ class _DummyClient extends ApiClient {
 }
 
 class _RecordingPolishRepository extends PolishRepository {
-  _RecordingPolishRepository() : super(_DummyClient());
+  _RecordingPolishRepository({this.result}) : super(_DummyClient());
 
   PolishRequest? lastRequest;
+  final PolishResult? result;
 
   @override
   Future<PolishResult> polish(PolishRequest request) {
     lastRequest = request;
+    final success = result;
+    if (success != null) return Future.value(success);
     return Completer<PolishResult>().future;
   }
 }
@@ -53,10 +58,14 @@ void _useTallView(WidgetTester tester) {
   addTearDown(tester.view.reset);
 }
 
-Future<_RecordingPolishRepository> _pumpPolish(WidgetTester tester) async {
+Future<_RecordingPolishRepository> _pumpPolish(
+  WidgetTester tester, {
+  _RecordingPolishRepository? repository,
+  List<Override> overrides = const [],
+}) async {
   SharedPreferences.setMockInitialValues({});
   final prefs = await SharedPreferences.getInstance();
-  final repository = _RecordingPolishRepository();
+  final repo = repository ?? _RecordingPolishRepository();
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
@@ -65,19 +74,80 @@ Future<_RecordingPolishRepository> _pumpPolish(WidgetTester tester) async {
           (ref) =>
               GuidanceLibraryRepository(ref.watch(sharedPreferencesProvider)),
         ),
-        polishRepositoryProvider.overrideWith((ref) => repository),
+        polishRepositoryProvider.overrideWith((ref) => repo),
+        ...overrides,
       ],
       child: const MaterialApp(home: PolishScreen()),
     ),
   );
   await tester.pumpAndSettle();
-  return repository;
+  return repo;
 }
 
 Future<void> _enterDraft(WidgetTester tester) =>
     tester.enterText(find.byType(TextField).first, 'Please review my draft.');
 
 void main() {
+  testWidgets('Polish result shows share before copy and copy still works', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    final shared = <String>[];
+    final copied = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        if (call.method == 'Clipboard.setData') {
+          final args = call.arguments as Map<dynamic, dynamic>;
+          copied.add(args['text'] as String);
+        }
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+
+    await _pumpPolish(
+      tester,
+      repository: _RecordingPolishRepository(
+        result: const PolishResult(
+          polished: 'Please review my draft.',
+          changes: 'Improved clarity.',
+        ),
+      ),
+      overrides: [
+        generatedTextSharerProvider.overrideWithValue((
+          text, {
+          String? subject,
+        }) async {
+          shared.add(text);
+        }),
+      ],
+    );
+    await _enterDraft(tester);
+    await tester.tap(find.text('Polish Text'));
+    await tester.pumpAndSettle();
+
+    final share = find.byTooltip('Share polished text');
+    final copy = find.byKey(const Key('result-copy-button'));
+    expect(share, findsOneWidget);
+    expect(copy, findsOneWidget);
+    expect(tester.getTopLeft(share).dx, lessThan(tester.getTopLeft(copy).dx));
+
+    await tester.tap(share);
+    await tester.pumpAndSettle();
+    expect(shared, ['Please review my draft.']);
+
+    await tester.tap(copy);
+    await tester.pumpAndSettle();
+    expect(copied, ['Please review my draft.']);
+    expect(find.text('Copied'), findsOneWidget);
+  });
+
   testWidgets('Polish mirrors the Reply compact hero and visual hierarchy', (
     tester,
   ) async {

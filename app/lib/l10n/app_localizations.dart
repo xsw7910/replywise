@@ -2034,6 +2034,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please try again.'**
   String get errorUnexpectedMessage;
+
+  /// No description provided for @shareReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Share reply'**
+  String get shareReply;
+
+  /// No description provided for @shareExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Share explanation'**
+  String get shareExplanation;
+
+  /// No description provided for @sharePolishedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Share polished text'**
+  String get sharePolishedText;
 }
 
 class _AppLocalizationsDelegate

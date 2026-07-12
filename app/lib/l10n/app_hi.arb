@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "AI सेवा अस्थायी रूप से उपलब्ध नहीं है। कृपया बाद में फिर से कोशिश करें।"
   ,"errorUnexpectedTitle": "कुछ गलत हो गया"
   ,"errorUnexpectedMessage": "कृपया फिर से कोशिश करें।"
+  ,"shareReply": "जवाब साझा करें"
+  ,"shareExplanation": "व्याख्या साझा करें"
+  ,"sharePolishedText": "सुधारा गया टेक्स्ट साझा करें"
 }

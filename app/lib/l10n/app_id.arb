@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "Layanan AI sementara tidak tersedia. Silakan coba lagi nanti."
   ,"errorUnexpectedTitle": "Terjadi kesalahan"
   ,"errorUnexpectedMessage": "Silakan coba lagi."
+  ,"shareReply": "Bagikan balasan"
+  ,"shareExplanation": "Bagikan penjelasan"
+  ,"sharePolishedText": "Bagikan teks yang dipoles"
 }

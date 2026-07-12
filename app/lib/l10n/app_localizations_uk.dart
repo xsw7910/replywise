@@ -1035,4 +1035,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Спробуйте ще раз.';
+
+  @override
+  String get shareReply => 'Поділитися відповіддю';
+
+  @override
+  String get shareExplanation => 'Поділитися поясненням';
+
+  @override
+  String get sharePolishedText => 'Поділитися покращеним текстом';
 }

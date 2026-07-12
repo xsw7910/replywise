@@ -318,4 +318,7 @@
   ,"errorAiBusyMessage": "Сервис ИИ временно недоступен. Попробуйте позже."
   ,"errorUnexpectedTitle": "Что-то пошло не так"
   ,"errorUnexpectedMessage": "Попробуйте ещё раз."
+  ,"shareReply": "Поделиться ответом"
+  ,"shareExplanation": "Поделиться объяснением"
+  ,"sharePolishedText": "Поделиться улучшенным текстом"
 }

@@ -1025,4 +1025,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorUnexpectedMessage => 'Please try again.';
+
+  @override
+  String get shareReply => 'Share reply';
+
+  @override
+  String get shareExplanation => 'Share explanation';
+
+  @override
+  String get sharePolishedText => 'Share polished text';
 }

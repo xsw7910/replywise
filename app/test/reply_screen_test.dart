@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:replywise/core/network/api_client.dart';
+import 'package:replywise/core/share/share_helper.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
 import 'package:replywise/features/reply/data/reply_repository.dart';
@@ -71,6 +73,7 @@ void _useTallView(WidgetTester tester) {
 Future<void> _pumpReply(
   WidgetTester tester, {
   ReplyRepository? repository,
+  List<Override> overrides = const [],
 }) async {
   SharedPreferences.setMockInitialValues({});
   final prefs = await SharedPreferences.getInstance();
@@ -85,6 +88,7 @@ Future<void> _pumpReply(
         replyRepositoryProvider.overrideWith(
           (ref) => repository ?? _NeverReplyRepository(),
         ),
+        ...overrides,
       ],
       child: const MaterialApp(home: ReplyScreen()),
     ),
@@ -123,6 +127,63 @@ Future<void> _pumpReplyScaled(WidgetTester tester, double textScale) async {
 }
 
 void main() {
+  testWidgets('Reply result shows share before copy and copy still works', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    final repository = _RecordingReplyRepository();
+    final shared = <String>[];
+    final copied = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        if (call.method == 'Clipboard.setData') {
+          final args = call.arguments as Map<dynamic, dynamic>;
+          copied.add(args['text'] as String);
+        }
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+
+    await _pumpReply(
+      tester,
+      repository: repository,
+      overrides: [
+        generatedTextSharerProvider.overrideWithValue((
+          text, {
+          String? subject,
+        }) async {
+          shared.add(text);
+        }),
+      ],
+    );
+    await tester.enterText(
+      _editableIn(const Key('reply-incoming-field')),
+      'Can you send the report?',
+    );
+    await tester.tap(find.text('Generate Reply'));
+    await tester.pumpAndSettle();
+
+    final share = find.byTooltip('Share reply').first;
+    final copy = find.byKey(const Key('result-copy-button')).first;
+    expect(tester.getTopLeft(share).dx, lessThan(tester.getTopLeft(copy).dx));
+
+    await tester.tap(share);
+    await tester.pumpAndSettle();
+    expect(shared, ['Professional reply']);
+
+    await tester.tap(copy);
+    await tester.pumpAndSettle();
+    expect(copied, ['Professional reply']);
+    expect(find.text('Copied'), findsOneWidget);
+  });
+
   testWidgets(
     'empty guidance does not block Generate Reply — shows loading instead',
     (tester) async {
