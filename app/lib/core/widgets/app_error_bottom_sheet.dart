@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_feature_theme.dart';
 import '../theme/app_text_styles.dart';
 
 /// Shared presentation for user-facing errors on the Reply / Explain / Polish
@@ -14,6 +15,7 @@ import '../theme/app_text_styles.dart';
 /// async work without dismissing the sheet.
 Future<T?> showAppErrorBottomSheet<T>({
   required BuildContext context,
+  required AppFeature feature,
   Key? sheetKey,
   required IconData icon,
   required String title,
@@ -36,6 +38,7 @@ Future<T?> showAppErrorBottomSheet<T>({
     builder: (sheetContext) => AppErrorSheetContainer(
       sheetKey: sheetKey,
       child: AppErrorSheetBody(
+        feature: feature,
         icon: icon,
         title: title,
         message: message,
@@ -105,6 +108,7 @@ class AppErrorSheetBody extends StatelessWidget {
   const AppErrorSheetBody({
     super.key,
     required this.icon,
+    required this.feature,
     required this.title,
     required this.message,
     required this.primaryLabel,
@@ -120,6 +124,7 @@ class AppErrorSheetBody extends StatelessWidget {
   });
 
   final IconData icon;
+  final AppFeature feature;
   final String title;
   final String message;
   final String primaryLabel;
@@ -137,6 +142,7 @@ class AppErrorSheetBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accentColor = feature.accentColor;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -157,13 +163,20 @@ class AppErrorSheetBody extends StatelessWidget {
           const SizedBox(height: 8),
         Center(
           child: Container(
+            key: const Key('app-error-sheet-icon-container'),
             width: 64,
             height: 64,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color.lerp(AppColors.primary, Colors.white, 0.86),
+              color: feature.iconBackgroundColor,
+              border: Border.all(color: feature.selectedChipColor),
             ),
-            child: Icon(icon, size: 32, color: AppColors.primary),
+            child: Icon(
+              icon,
+              key: const Key('app-error-sheet-icon'),
+              size: 32,
+              color: accentColor,
+            ),
           ),
         ),
         const SizedBox(height: 14),
@@ -199,7 +212,7 @@ class AppErrorSheetBody extends StatelessWidget {
           onPressed: primaryBusy ? null : onPrimary,
           style: FilledButton.styleFrom(
             minimumSize: const Size.fromHeight(52),
-            backgroundColor: AppColors.primary,
+            backgroundColor: accentColor,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
@@ -222,14 +235,14 @@ class AppErrorSheetBody extends StatelessWidget {
             onPressed: secondaryBusy ? null : onSecondary,
             style: TextButton.styleFrom(
               minimumSize: const Size.fromHeight(46),
-              foregroundColor: AppColors.primary,
+              foregroundColor: accentColor,
             ),
             child: secondaryBusy
-                ? const SizedBox.square(
+                ? SizedBox.square(
                     dimension: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.2,
-                      color: AppColors.primary,
+                      color: accentColor,
                     ),
                   )
                 : Text(secondaryLabel!),

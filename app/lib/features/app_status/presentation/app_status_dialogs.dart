@@ -29,13 +29,13 @@ Future<bool> ensureAppStatusAllows({
     case AppStatusGate.allowed:
       return true;
     case AppStatusGate.maintenance:
-      await showAppMaintenanceDialog(context, ref);
+      await showAppMaintenanceDialog(context, ref, feature: feature);
       return false;
     case AppStatusGate.forceUpdate:
-      await showForceUpdateDialog(context, ref);
+      await showForceUpdateDialog(context, ref, feature: feature);
       return false;
     case AppStatusGate.featureDisabled:
-      await showFeatureUnavailableSheet(context);
+      await showFeatureUnavailableSheet(context, feature: feature);
       return false;
   }
 }
@@ -49,6 +49,7 @@ Future<bool> ensureAppStatusAllows({
 Future<void> handleAiRequestFailure({
   required BuildContext context,
   required WidgetRef ref,
+  required AppFeature feature,
   VoidCallback? onRetry,
 }) async {
   final outcome = await ref
@@ -57,9 +58,14 @@ Future<void> handleAiRequestFailure({
   if (!context.mounted) return;
   switch (outcome) {
     case AppStatusPostError.maintenance:
-      await showAppMaintenanceDialog(context, ref);
+      await showAppMaintenanceDialog(context, ref, feature: feature);
     case AppStatusPostError.serverUnavailable:
-      await showServerUnavailableDialog(context, ref, onRetry: onRetry);
+      await showServerUnavailableDialog(
+        context,
+        ref,
+        feature: feature,
+        onRetry: onRetry,
+      );
   }
 }
 
@@ -69,10 +75,14 @@ bool isNetworkFailure(String? errorCode) => errorCode == 'NETWORK_ERROR';
 
 /// Shows the empty-input error sheet. The action button only dismisses; no
 /// request is made.
-Future<void> showEmptyInputSheet(BuildContext context) {
+Future<void> showEmptyInputSheet(
+  BuildContext context, {
+  required AppFeature feature,
+}) {
   final l10n = context.l10n;
   return showAppErrorBottomSheet<void>(
     context: context,
+    feature: feature,
     sheetKey: const Key('empty-input-sheet'),
     icon: Icons.edit_note_rounded,
     title: l10n.errorEmptyInputTitle,
@@ -91,6 +101,7 @@ Future<void> showEmptyInputSheet(BuildContext context) {
 Future<void> showAiErrorSheet({
   required BuildContext context,
   required WidgetRef ref,
+  required AppFeature feature,
   required String? errorCode,
   required String message,
   VoidCallback? onRetry,
@@ -100,6 +111,7 @@ Future<void> showAiErrorSheet({
     case 'PAYWALL_REQUIRED':
       return showAppErrorBottomSheet<void>(
         context: context,
+        feature: feature,
         sheetKey: const Key('credits-error-sheet'),
         icon: Icons.monetization_on_outlined,
         title: l10n.errorCreditsTitle,
@@ -114,6 +126,7 @@ Future<void> showAiErrorSheet({
     case 'RATE_LIMITED':
       return showAppErrorBottomSheet<void>(
         context: context,
+        feature: feature,
         sheetKey: const Key('rate-limited-sheet'),
         icon: Icons.hourglass_top_rounded,
         title: l10n.errorRateLimitedTitle,
@@ -126,6 +139,7 @@ Future<void> showAiErrorSheet({
     case 'IDEMPOTENCY_CONFLICT':
       return showAppErrorBottomSheet<void>(
         context: context,
+        feature: feature,
         sheetKey: const Key('ai-busy-sheet'),
         icon: Icons.smart_toy_outlined,
         title: l10n.errorAiBusyTitle,
@@ -141,6 +155,7 @@ Future<void> showAiErrorSheet({
       // way, so the button only dismisses.
       return showAppErrorBottomSheet<void>(
         context: context,
+        feature: feature,
         sheetKey: const Key('unexpected-error-sheet'),
         icon: Icons.error_outline_rounded,
         title: l10n.errorUnexpectedTitle,
@@ -151,6 +166,7 @@ Future<void> showAiErrorSheet({
     default:
       return showAppErrorBottomSheet<void>(
         context: context,
+        feature: feature,
         sheetKey: const Key('unexpected-error-sheet'),
         icon: Icons.error_outline_rounded,
         title: l10n.errorUnexpectedTitle,
@@ -164,10 +180,14 @@ Future<void> showAiErrorSheet({
 }
 
 /// Feature disabled by remote config: dismissible informational sheet.
-Future<void> showFeatureUnavailableSheet(BuildContext context) {
+Future<void> showFeatureUnavailableSheet(
+  BuildContext context, {
+  required AppFeature feature,
+}) {
   final l10n = context.l10n;
   return showAppErrorBottomSheet<void>(
     context: context,
+    feature: feature,
     sheetKey: const Key('feature-unavailable-sheet'),
     icon: Icons.pause_circle_outline_rounded,
     title: l10n.appStatusFeatureUnavailableTitle,
@@ -179,39 +199,47 @@ Future<void> showFeatureUnavailableSheet(BuildContext context) {
 
 /// Blocking maintenance sheet: not dismissible; Retry re-checks app status
 /// and closes the sheet once maintenance is over.
-Future<void> showAppMaintenanceDialog(BuildContext context, WidgetRef ref) =>
-    showModalBottomSheet<void>(
-      context: context,
-      isDismissible: false,
-      enableDrag: false,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const _MaintenanceSheet(),
-    );
+Future<void> showAppMaintenanceDialog(
+  BuildContext context,
+  WidgetRef ref, {
+  required AppFeature feature,
+}) => showModalBottomSheet<void>(
+  context: context,
+  isDismissible: false,
+  enableDrag: false,
+  isScrollControlled: true,
+  backgroundColor: Colors.transparent,
+  builder: (_) => _MaintenanceSheet(feature: feature),
+);
 
 /// Blocking force-update sheet: not dismissible; "Update now" opens the Play
 /// Store listing, and Retry re-checks app status, dismissing only when the
 /// update is no longer required.
-Future<void> showForceUpdateDialog(BuildContext context, WidgetRef ref) =>
-    showModalBottomSheet<void>(
-      context: context,
-      isDismissible: false,
-      enableDrag: false,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const _ForceUpdateSheet(),
-    );
+Future<void> showForceUpdateDialog(
+  BuildContext context,
+  WidgetRef ref, {
+  required AppFeature feature,
+}) => showModalBottomSheet<void>(
+  context: context,
+  isDismissible: false,
+  enableDrag: false,
+  isScrollControlled: true,
+  backgroundColor: Colors.transparent,
+  builder: (_) => _ForceUpdateSheet(feature: feature),
+);
 
 /// Connection-problem sheet shown when the backend is unreachable and not in
 /// maintenance. "Try again" re-runs [onRetry] (or refreshes app status).
 Future<void> showServerUnavailableDialog(
   BuildContext context,
   WidgetRef ref, {
+  required AppFeature feature,
   VoidCallback? onRetry,
 }) {
   final l10n = context.l10n;
   return showAppErrorBottomSheet<void>(
     context: context,
+    feature: feature,
     sheetKey: const Key('server-unavailable-dialog'),
     icon: Icons.cloud_off_rounded,
     title: l10n.errorConnectionTitle,
@@ -225,7 +253,9 @@ Future<void> showServerUnavailableDialog(
 }
 
 class _MaintenanceSheet extends ConsumerStatefulWidget {
-  const _MaintenanceSheet();
+  const _MaintenanceSheet({required this.feature});
+
+  final AppFeature feature;
 
   @override
   ConsumerState<_MaintenanceSheet> createState() => _MaintenanceSheetState();
@@ -257,6 +287,7 @@ class _MaintenanceSheetState extends ConsumerState<_MaintenanceSheet> {
     return AppErrorSheetContainer(
       sheetKey: const Key('maintenance-dialog'),
       child: AppErrorSheetBody(
+        feature: widget.feature,
         icon: Icons.build_rounded,
         title: l10n.appStatusMaintenanceTitle,
         message: message,
@@ -271,7 +302,9 @@ class _MaintenanceSheetState extends ConsumerState<_MaintenanceSheet> {
 }
 
 class _ForceUpdateSheet extends ConsumerStatefulWidget {
-  const _ForceUpdateSheet();
+  const _ForceUpdateSheet({required this.feature});
+
+  final AppFeature feature;
 
   @override
   ConsumerState<_ForceUpdateSheet> createState() => _ForceUpdateSheetState();
@@ -310,6 +343,7 @@ class _ForceUpdateSheetState extends ConsumerState<_ForceUpdateSheet> {
     return AppErrorSheetContainer(
       sheetKey: const Key('force-update-dialog'),
       child: AppErrorSheetBody(
+        feature: widget.feature,
         icon: Icons.system_update_rounded,
         title: l10n.appStatusUpdateRequiredTitle,
         message: message,

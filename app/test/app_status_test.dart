@@ -125,6 +125,28 @@ void main() {
       expect(optional.hasOptionalUpdate('1.5.0', 0), isFalse);
     });
 
+    test(
+      'fromJson parses build-number fields (int, numeric string, missing)',
+      () {
+        final status = AppStatus.fromJson(<String, dynamic>{
+          'minSupportedBuildNumber': 33,
+          'latestBuildNumber': '34',
+        });
+        expect(status.minSupportedBuildNumber, 33);
+        expect(status.latestBuildNumber, 34);
+
+        // A legacy backend payload without the fields parses to 0 — meaning a
+        // deployed backend that has not been migrated can never announce an
+        // update to a newer build.
+        final legacy = AppStatus.fromJson(<String, dynamic>{
+          'latestVersion': '1.0.0',
+        });
+        expect(legacy.minSupportedBuildNumber, 0);
+        expect(legacy.latestBuildNumber, 0);
+        expect(legacy.hasOptionalUpdate('1.0.0', 33), isFalse);
+      },
+    );
+
     test('build number breaks ties between equal version names', () {
       // compareVersionAndBuild: semantic version first, then build number.
       expect(compareVersionAndBuild('1.0.0', 32, '1.0.0', 33), lessThan(0));
@@ -173,10 +195,7 @@ void main() {
     });
 
     test('optional update compares build numbers too', () {
-      final status = buildStatus(
-        latestVersion: '1.0.0',
-        latestBuildNumber: 34,
-      );
+      final status = buildStatus(latestVersion: '1.0.0', latestBuildNumber: 34);
       expect(status.hasOptionalUpdate('1.0.0', 33), isTrue);
       expect(status.hasOptionalUpdate('1.0.0', 34), isFalse);
       expect(status.hasOptionalUpdate('1.0.1', 1), isFalse);
@@ -661,7 +680,64 @@ void main() {
       tester,
     ) async {
       final service = FakeAppStatusService(
+        () async => buildStatus(latestVersion: '1.0.0', latestBuildNumber: 34),
+      );
+      await tester.pumpWidget(
+        wrap(
+          overrides: [
+            appStatusServiceProvider.overrideWithValue(service),
+            currentAppVersionProvider.overrideWithValue('1.0.0'),
+            currentAppBuildNumberProvider.overrideWithValue(33),
+            storeLauncherProvider.overrideWithValue(() async => true),
+          ],
+          home: const AppStatusBoundary(child: Text('APP BODY')),
+        ),
+      );
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AppStatusBoundary)),
+      );
+      await container.read(appStatusControllerProvider.notifier).refresh();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('optional-update-prompt')), findsOneWidget);
+      expect(find.text('APP BODY'), findsOneWidget);
+    });
+
+    testWidgets('no optional update prompt when already on the latest build '
+        '(1.0.0+34 vs latest 1.0.0+34)', (tester) async {
+      final service = FakeAppStatusService(
+        () async => buildStatus(latestVersion: '1.0.0', latestBuildNumber: 34),
+      );
+      await tester.pumpWidget(
+        wrap(
+          overrides: [
+            appStatusServiceProvider.overrideWithValue(service),
+            currentAppVersionProvider.overrideWithValue('1.0.0'),
+            currentAppBuildNumberProvider.overrideWithValue(34),
+            storeLauncherProvider.overrideWithValue(() async => true),
+          ],
+          home: const AppStatusBoundary(child: Text('APP BODY')),
+        ),
+      );
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AppStatusBoundary)),
+      );
+      await container.read(appStatusControllerProvider.notifier).refresh();
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('optional-update-prompt')), findsNothing);
+      expect(find.byKey(const Key('force-update-block')), findsNothing);
+      expect(find.text('APP BODY'), findsOneWidget);
+    });
+
+    testWidgets('forceUpdate with min 1.0.0+34 blocks a 1.0.0+33 build', (
+      tester,
+    ) async {
+      final service = FakeAppStatusService(
         () async => buildStatus(
+          forceUpdate: true,
+          minSupportedVersion: '1.0.0',
+          minSupportedBuildNumber: 34,
           latestVersion: '1.0.0',
           latestBuildNumber: 34,
         ),
@@ -683,7 +759,43 @@ void main() {
       await container.read(appStatusControllerProvider.notifier).refresh();
       await tester.pumpAndSettle();
 
+      // Blocking: the app body is fully replaced, not overlaid.
+      expect(find.byKey(const Key('force-update-block')), findsOneWidget);
+      expect(find.byKey(const Key('optional-update-prompt')), findsNothing);
+      expect(find.text('APP BODY'), findsNothing);
+    });
+
+    testWidgets('Later dismisses the optional prompt for the whole session, '
+        'surviving refreshes of the same latest build', (tester) async {
+      final service = FakeAppStatusService(
+        () async => buildStatus(latestVersion: '1.0.0', latestBuildNumber: 34),
+      );
+      await tester.pumpWidget(
+        wrap(
+          overrides: [
+            appStatusServiceProvider.overrideWithValue(service),
+            currentAppVersionProvider.overrideWithValue('1.0.0'),
+            currentAppBuildNumberProvider.overrideWithValue(33),
+            storeLauncherProvider.overrideWithValue(() async => true),
+          ],
+          home: const AppStatusBoundary(child: Text('APP BODY')),
+        ),
+      );
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(AppStatusBoundary)),
+      );
+      await container.read(appStatusControllerProvider.notifier).refresh();
+      await tester.pumpAndSettle();
       expect(find.byKey(const Key('optional-update-prompt')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('optional-update-later')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('optional-update-prompt')), findsNothing);
+
+      // A later refresh returning the same latest build must not re-prompt.
+      await container.read(appStatusControllerProvider.notifier).refresh();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('optional-update-prompt')), findsNothing);
       expect(find.text('APP BODY'), findsOneWidget);
     });
 
@@ -809,7 +921,11 @@ class _FailureHarness extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
     body: Center(
       child: ElevatedButton(
-        onPressed: () => handleAiRequestFailure(context: context, ref: ref),
+        onPressed: () => handleAiRequestFailure(
+          context: context,
+          ref: ref,
+          feature: AppFeature.reply,
+        ),
         child: const Text('fail'),
       ),
     ),

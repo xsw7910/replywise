@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:replywise/core/theme/app_feature_theme.dart';
 import 'package:replywise/features/ads/data/ad_reward_repository.dart';
 import 'package:replywise/features/ads/data/rewarded_ad_gateway.dart';
 import 'package:replywise/features/entitlement/entitlement_state.dart';
@@ -87,7 +88,9 @@ class _RewardedUsageRepository implements UsageRepository {
 }
 
 class _AccessHarness extends ConsumerWidget {
-  const _AccessHarness();
+  const _AccessHarness({this.feature = AppFeature.reply});
+
+  final AppFeature feature;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,7 +98,11 @@ class _AccessHarness extends ConsumerWidget {
       body: Center(
         child: FilledButton(
           key: const Key('launch-generation'),
-          onPressed: () => ensureGenerationAccess(context: context, ref: ref),
+          onPressed: () => ensureGenerationAccess(
+            context: context,
+            ref: ref,
+            feature: feature,
+          ),
           child: const Text('Launch'),
         ),
       ),
@@ -151,6 +158,7 @@ Future<void> _expectDialogAfterTap(
   Widget screen,
   Finder action, {
   required Key inputFieldKey,
+  required AppFeature feature,
 }) async {
   _useTallView(tester);
   await _pumpScreen(tester, screen, hasAccess: false);
@@ -161,16 +169,58 @@ Future<void> _expectDialogAfterTap(
   await tester.pumpAndSettle();
   expect(find.byKey(const Key('out-of-credits-dialog')), findsOneWidget);
   expect(find.text("You're out of credits"), findsOneWidget);
+  _expectDialogFeatureColor(tester, feature);
+}
+
+void _expectDialogFeatureColor(WidgetTester tester, AppFeature feature) {
+  final watchAd = tester.widget<FilledButton>(
+    find.descendant(
+      of: find.byKey(const Key('out-of-credits-watch-ad')),
+      matching: find.byType(FilledButton),
+    ),
+  );
+  expect(
+    watchAd.style?.backgroundColor?.resolve(<WidgetState>{}),
+    feature.accentColor,
+  );
+  expect(
+    watchAd.style?.foregroundColor?.resolve(<WidgetState>{}),
+    Colors.white,
+  );
+
+  for (final key in const [
+    Key('out-of-credits-upgrade'),
+    Key('out-of-credits-buy-credits'),
+  ]) {
+    final button = tester.widget<OutlinedButton>(
+      find.descendant(
+        of: find.byKey(key),
+        matching: find.byType(OutlinedButton),
+      ),
+    );
+    expect(
+      button.style?.foregroundColor?.resolve(<WidgetState>{}),
+      feature.accentColor,
+    );
+    expect(
+      button.style?.side?.resolve(<WidgetState>{}),
+      BorderSide(color: feature.accentColor, width: 1.4),
+    );
+  }
 }
 
 Future<GoRouter> _pumpRouterHarness(
   WidgetTester tester, {
   List<Override> overrides = const [],
   Locale? locale,
+  AppFeature feature = AppFeature.reply,
 }) async {
   final router = GoRouter(
     routes: [
-      GoRoute(path: '/', builder: (_, _) => const _AccessHarness()),
+      GoRoute(
+        path: '/',
+        builder: (_, _) => _AccessHarness(feature: feature),
+      ),
       GoRoute(
         path: '/paywall',
         builder: (_, _) => const Scaffold(key: Key('paywall-destination')),
@@ -203,6 +253,7 @@ void main() {
       const ReplyScreen(),
       find.text('Generate Reply'),
       inputFieldKey: const Key('reply-incoming-field'),
+      feature: AppFeature.reply,
     );
   });
 
@@ -212,6 +263,7 @@ void main() {
       const ExplainScreen(),
       find.byKey(const Key('explain-submit-button')),
       inputFieldKey: const Key('explain-message-field'),
+      feature: AppFeature.explain,
     );
   });
 
@@ -221,6 +273,7 @@ void main() {
       const PolishScreen(),
       find.text('Polish Text'),
       inputFieldKey: const Key('polish-draft-field'),
+      feature: AppFeature.polish,
     );
   });
 

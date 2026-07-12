@@ -2,7 +2,7 @@ name: replywise
 description: "ReplyWise — AI-powered reply and polish assistant."
 publish_to: 'none'
 
-version: 1.0.0+36
+version: 1.0.0+37
 
 environment:
   sdk: ^3.12.1

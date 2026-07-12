@@ -83,14 +83,20 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   Future<void> _explain() async {
     // No API request (and no credit/status gating) for an empty input.
     if (_messageController.text.trim().isEmpty) {
-      await showEmptyInputSheet(context);
+      await showEmptyInputSheet(context, feature: _feature);
       return;
     }
     if (!mounted) return;
     final appLocale = resolvedAppLocaleCode(
       Localizations.maybeLocaleOf(context),
     );
-    if (!await ensureGenerationAccess(context: context, ref: ref)) return;
+    if (!await ensureGenerationAccess(
+      context: context,
+      ref: ref,
+      feature: _feature,
+    )) {
+      return;
+    }
     if (!mounted) return;
     // Gate against cached app status (maintenance / force update / disabled).
     if (!await ensureAppStatusAllows(
@@ -114,6 +120,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
         await handleAiRequestFailure(
           context: context,
           ref: ref,
+          feature: _feature,
           onRetry: _explain,
         );
         return;
@@ -123,6 +130,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
         await showAiErrorSheet(
           context: context,
           ref: ref,
+          feature: _feature,
           errorCode: state.errorCode,
           message: _friendlyError(state),
           onRetry: _explain,

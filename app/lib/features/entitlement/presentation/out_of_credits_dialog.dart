@@ -5,13 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../../../core/localization/localization_extensions.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_feature_theme.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../ads/application/ad_reward_controller.dart';
 import '../entitlement_state.dart';
 import '../usage_controller.dart';
-
-const _dialogGreen = Color(0xFF38AD49);
-const _dialogBackground = Color(0xFFFFFCF7);
 
 enum OutOfCreditsAction { watchAd, upgrade, buyCredits, cancel }
 
@@ -34,6 +32,7 @@ final generationAccessProvider = Provider<bool>(
 Future<bool> ensureGenerationAccess({
   required BuildContext context,
   required WidgetRef ref,
+  required AppFeature feature,
 }) async {
   if (ref.read(generationAccessProvider)) return true;
 
@@ -41,7 +40,7 @@ Future<bool> ensureGenerationAccess({
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => const OutOfCreditsDialog(),
+    builder: (_) => OutOfCreditsDialog(feature: feature),
   );
   if (!context.mounted) return false;
 
@@ -91,20 +90,23 @@ String? _messageForOutcome(BuildContext context, AdRewardOutcome? outcome) {
 }
 
 class OutOfCreditsDialog extends StatelessWidget {
-  const OutOfCreditsDialog({super.key});
+  const OutOfCreditsDialog({super.key, required this.feature});
+
+  final AppFeature feature;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final accentColor = feature.accentColor;
 
     // Presented as a bottom sheet (see ensureGenerationAccess): rounded top
     // corners, sliding up from the bottom, matching the shared error sheets.
     return Container(
       key: const Key('out-of-credits-dialog'),
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: _dialogBackground,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: Color.lerp(Colors.white, feature.lightTintColor, 0.65),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: SafeArea(
         top: false,
@@ -145,6 +147,7 @@ class OutOfCreditsDialog extends StatelessWidget {
                 key: const Key('out-of-credits-watch-ad'),
                 label: l10n.watchAd,
                 icon: Icons.play_arrow_rounded,
+                accentColor: accentColor,
                 filled: true,
                 onPressed: () =>
                     Navigator.pop(context, OutOfCreditsAction.watchAd),
@@ -154,6 +157,7 @@ class OutOfCreditsDialog extends StatelessWidget {
                 key: const Key('out-of-credits-upgrade'),
                 label: l10n.upgrade,
                 icon: Icons.workspace_premium_rounded,
+                accentColor: accentColor,
                 onPressed: () =>
                     Navigator.pop(context, OutOfCreditsAction.upgrade),
               ),
@@ -162,6 +166,7 @@ class OutOfCreditsDialog extends StatelessWidget {
                 key: const Key('out-of-credits-buy-credits'),
                 label: l10n.buyCredits,
                 icon: Icons.monetization_on_rounded,
+                accentColor: accentColor,
                 onPressed: () =>
                     Navigator.pop(context, OutOfCreditsAction.buyCredits),
               ),
@@ -188,12 +193,14 @@ class _DialogButton extends StatelessWidget {
     super.key,
     required this.label,
     required this.icon,
+    required this.accentColor,
     required this.onPressed,
     this.filled = false,
   });
 
   final String label;
   final IconData icon;
+  final Color accentColor;
   final VoidCallback onPressed;
   final bool filled;
 
@@ -218,7 +225,7 @@ class _DialogButton extends StatelessWidget {
         icon: Icon(icon),
         label: Text(label),
         style: style.copyWith(
-          backgroundColor: const WidgetStatePropertyAll(_dialogGreen),
+          backgroundColor: WidgetStatePropertyAll(accentColor),
           foregroundColor: const WidgetStatePropertyAll(Colors.white),
         ),
       );
@@ -229,9 +236,9 @@ class _DialogButton extends StatelessWidget {
       icon: Icon(icon),
       label: Text(label),
       style: style.copyWith(
-        foregroundColor: const WidgetStatePropertyAll(_dialogGreen),
-        side: const WidgetStatePropertyAll(
-          BorderSide(color: _dialogGreen, width: 1.4),
+        foregroundColor: WidgetStatePropertyAll(accentColor),
+        side: WidgetStatePropertyAll(
+          BorderSide(color: accentColor, width: 1.4),
         ),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:replywise/core/network/api_client.dart';
 import 'package:replywise/core/network/api_error.dart';
+import 'package:replywise/core/theme/app_feature_theme.dart';
 import 'package:replywise/features/app_status/application/app_status_controller.dart';
 import 'package:replywise/features/app_status/data/app_status_service.dart';
 import 'package:replywise/features/app_status/domain/app_status.dart';
@@ -112,6 +113,29 @@ AppStatus _buildStatus({
 Finder _editableIn(Key key) =>
     find.descendant(of: find.byKey(key), matching: find.byType(EditableText));
 
+void _expectErrorSheetFeatureColor(WidgetTester tester, AppFeature feature) {
+  final icon = tester.widget<Icon>(
+    find.byKey(const Key('app-error-sheet-icon')),
+  );
+  expect(icon.color, feature.accentColor);
+
+  final iconContainer = tester.widget<Container>(
+    find.byKey(const Key('app-error-sheet-icon-container')),
+  );
+  final decoration = iconContainer.decoration! as BoxDecoration;
+  expect(decoration.color, feature.iconBackgroundColor);
+  expect(decoration.border, Border.all(color: feature.selectedChipColor));
+
+  final button = tester.widget<FilledButton>(
+    find.byKey(const Key('empty-input-got-it')),
+  );
+  expect(
+    button.style?.backgroundColor?.resolve(<WidgetState>{}),
+    feature.accentColor,
+  );
+  expect(button.style?.foregroundColor?.resolve(<WidgetState>{}), Colors.white);
+}
+
 void _useTallView(WidgetTester tester) {
   tester.view.physicalSize = const Size(1400, 5200);
   tester.view.devicePixelRatio = 1.0;
@@ -169,6 +193,7 @@ void main() {
 
       expect(find.byKey(const Key('empty-input-sheet')), findsOneWidget);
       expect(find.text('Add a message first'), findsOneWidget);
+      _expectErrorSheetFeatureColor(tester, AppFeature.reply);
       expect(repo.calls, 0); // no API request for empty input
 
       // "Got it" only dismisses the sheet.
@@ -187,6 +212,7 @@ void main() {
 
       expect(find.byKey(const Key('empty-input-sheet')), findsOneWidget);
       expect(find.text('Add a message first'), findsOneWidget);
+      _expectErrorSheetFeatureColor(tester, AppFeature.explain);
     });
 
     testWidgets('Polish shows the empty-input bottom sheet', (tester) async {
@@ -206,6 +232,7 @@ void main() {
 
       expect(find.byKey(const Key('empty-input-sheet')), findsOneWidget);
       expect(find.text('Add a message first'), findsOneWidget);
+      _expectErrorSheetFeatureColor(tester, AppFeature.polish);
     });
   });
 
