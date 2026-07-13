@@ -996,6 +996,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get errorUnexpectedMessage => '다시 시도해 주세요.';
 
   @override
+  String get formal => '격식체';
+
+  @override
+  String get casual => '캐주얼';
+
+  @override
   String get shareReply => '답장 공유';
 
   @override

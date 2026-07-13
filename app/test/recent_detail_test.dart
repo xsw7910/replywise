@@ -26,9 +26,9 @@ RecentItem _item({
   String output = 'It ships today.',
   String? guidance,
   String? tone,
-  String? professionalText,
-  String? friendlyText,
-  String? shortText,
+  String? formalText,
+  String? casualText,
+  String? conciseText,
 }) => RecentItem(
   id: id,
   type: type,
@@ -38,9 +38,9 @@ RecentItem _item({
   createdAt: DateTime(2026, 7, 4, 14, 30),
   guidance: guidance,
   tone: tone,
-  professionalText: professionalText,
-  friendlyText: friendlyText,
-  shortText: shortText,
+  formalText: formalText,
+  casualText: casualText,
+  conciseText: conciseText,
 );
 
 Widget _localized(Widget child) => MaterialApp(
@@ -119,19 +119,19 @@ void main() {
         RecentDetailScreen(
           id: 'three',
           initialItem: _item(
-            output: 'Professional reply',
-            professionalText: 'Professional reply',
-            friendlyText: 'Friendly reply',
-            shortText: 'Short reply',
+            output: 'Formal reply',
+            formalText: 'Formal reply',
+            casualText: 'Casual reply',
+            conciseText: 'Concise reply',
           ),
         ),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Professional reply'), findsOneWidget);
-    expect(find.text('Friendly reply'), findsOneWidget);
-    expect(find.text('Short reply'), findsOneWidget);
+    expect(find.text('Formal reply'), findsOneWidget);
+    expect(find.text('Casual reply'), findsOneWidget);
+    expect(find.text('Concise reply'), findsOneWidget);
     expect(find.byKey(const Key('result-copy-button')), findsNWidgets(3));
     expect(find.byTooltip('Share reply'), findsNWidgets(3));
   });

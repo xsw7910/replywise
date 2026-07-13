@@ -1021,6 +1021,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorUnexpectedMessage => 'يرجى المحاولة مرة أخرى.';
 
   @override
+  String get formal => 'رسمي';
+
+  @override
+  String get casual => 'غير رسمي';
+
+  @override
   String get shareReply => 'مشاركة الرد';
 
   @override

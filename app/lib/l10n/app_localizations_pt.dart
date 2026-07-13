@@ -1037,6 +1037,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get errorUnexpectedMessage => 'Tente novamente.';
 
   @override
+  String get formal => 'Formal';
+
+  @override
+  String get casual => 'Descontraído';
+
+  @override
   String get shareReply => 'Compartilhar resposta';
 
   @override

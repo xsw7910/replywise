@@ -1046,6 +1046,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorUnexpectedMessage => 'Veuillez réessayer.';
 
   @override
+  String get formal => 'Formel';
+
+  @override
+  String get casual => 'Décontracté';
+
+  @override
   String get shareReply => 'Partager la réponse';
 
   @override

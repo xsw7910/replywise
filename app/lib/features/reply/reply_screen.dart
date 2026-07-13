@@ -322,18 +322,18 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
         return null;
       }
 
-      final professional = versionText('Professional');
-      final friendly = versionText('Friendly');
-      final short = versionText('Short');
+      final formal = versionText('Formal');
+      final casual = versionText('Casual');
+      final concise = versionText('Concise');
       await saveRecentItem(
         ref,
         RecentItem.create(
           type: RecentType.reply,
           inputText: incoming,
-          outputText: professional ?? result.versions.first.text,
-          professionalText: professional,
-          friendlyText: friendly,
-          shortText: short,
+          outputText: formal ?? result.versions.first.text,
+          formalText: formal,
+          casualText: casual,
+          conciseText: concise,
           guidance: guidance.isEmpty ? null : guidance,
           tone: _tone == 'Auto' ? null : _tone,
           channel: _channel == 'Auto' ? null : _channel,

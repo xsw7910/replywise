@@ -1055,6 +1055,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get errorUnexpectedMessage => 'Bitte versuche es erneut.';
 
   @override
+  String get formal => 'Formell';
+
+  @override
+  String get casual => 'Locker';
+
+  @override
   String get shareReply => 'Antwort teilen';
 
   @override

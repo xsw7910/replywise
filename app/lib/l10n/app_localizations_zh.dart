@@ -988,6 +988,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get errorUnexpectedMessage => '请重试。';
 
   @override
+  String get formal => '正式';
+
+  @override
+  String get casual => '随意';
+
+  @override
   String get shareReply => '分享回复';
 
   @override
@@ -1979,6 +1985,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get errorUnexpectedMessage => '請再試一次。';
+
+  @override
+  String get formal => '正式';
+
+  @override
+  String get casual => '隨意';
 
   @override
   String get shareReply => '分享回覆';

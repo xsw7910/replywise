@@ -46,14 +46,14 @@ class FakeAIProvider:
                 {
                     "versions": [
                         {
-                            "label": "Professional",
+                            "label": "Formal",
                             "text": f"Thank you for your message about: {incoming}",
                         },
                         {
-                            "label": "Friendly",
+                            "label": "Casual",
                             "text": f"Thanks for letting me know about: {incoming}",
                         },
-                        {"label": "Short", "text": "Thanks — that works for me."},
+                        {"label": "Concise", "text": "Thanks — that works for me."},
                     ],
                     "why": "The wording is clear, natural, and appropriate for the audience.",
                 }

@@ -10,7 +10,7 @@ ReplyWise helps non-native English speakers understand messages, express reply i
 
 ## MVP scope
 
-- Reply: generate Professional, Friendly, and Short English versions plus a native-language explanation.
+- Reply: generate Formal, Casual, and Concise versions plus a native-language explanation.
 - Polish: improve an English draft without changing its meaning or inventing facts.
 - Explain: clarify meaning, tone, hidden meaning, and suggested English replies inside Reply.
 - Guidance input, audience controls, voice input, copy flow, and local guidance chips.

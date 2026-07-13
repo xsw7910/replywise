@@ -189,9 +189,13 @@ class _DetailBody extends ConsumerWidget {
 
 String _replyVersionLabel(BuildContext context, String label) =>
     switch (label) {
-      'Professional' => context.l10n.professional,
-      'Friendly' => context.l10n.friendly,
-      'Short' => context.l10n.short,
+      'Formal' => context.l10n.formal,
+      'Casual' => context.l10n.casual,
+      'Concise' => context.l10n.concise,
+      // Legacy labels from records saved before the rename.
+      'Professional' => context.l10n.formal,
+      'Friendly' => context.l10n.casual,
+      'Short' => context.l10n.concise,
       _ => label,
     };
 

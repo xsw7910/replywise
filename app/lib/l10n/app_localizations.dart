@@ -2035,6 +2035,18 @@ abstract class AppLocalizations {
   /// **'Please try again.'**
   String get errorUnexpectedMessage;
 
+  /// No description provided for @formal.
+  ///
+  /// In en, this message translates to:
+  /// **'Formal'**
+  String get formal;
+
+  /// No description provided for @casual.
+  ///
+  /// In en, this message translates to:
+  /// **'Casual'**
+  String get casual;
+
   /// No description provided for @shareReply.
   ///
   /// In en, this message translates to:

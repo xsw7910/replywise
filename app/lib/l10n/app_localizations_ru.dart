@@ -1039,6 +1039,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorUnexpectedMessage => 'Попробуйте ещё раз.';
 
   @override
+  String get formal => 'Официальный';
+
+  @override
+  String get casual => 'Непринуждённый';
+
+  @override
   String get shareReply => 'Поделиться ответом';
 
   @override

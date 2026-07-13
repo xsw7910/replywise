@@ -1041,6 +1041,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorUnexpectedMessage => 'Spróbuj ponownie.';
 
   @override
+  String get formal => 'Formalny';
+
+  @override
+  String get casual => 'Swobodny';
+
+  @override
   String get shareReply => 'Udostępnij odpowiedź';
 
   @override

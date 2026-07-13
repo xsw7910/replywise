@@ -1023,6 +1023,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get errorUnexpectedMessage => 'กรุณาลองอีกครั้ง';
 
   @override
+  String get formal => 'ทางการ';
+
+  @override
+  String get casual => 'เป็นกันเอง';
+
+  @override
   String get shareReply => 'แชร์คำตอบ';
 
   @override

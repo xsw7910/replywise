@@ -48,9 +48,9 @@ class RecentItem {
     this.tone,
     this.channel,
     this.length,
-    this.professionalText,
-    this.friendlyText,
-    this.shortText,
+    this.formalText,
+    this.casualText,
+    this.conciseText,
   });
 
   final String id;
@@ -66,24 +66,23 @@ class RecentItem {
   final String? tone;
   final String? channel;
   final String? length;
-  final String? professionalText;
-  final String? friendlyText;
-  final String? shortText;
+  final String? formalText;
+  final String? casualText;
+  final String? conciseText;
 
   /// Reply variants in their result-screen order. Legacy Reply records only
-  /// have [outputText], which remains available as the Professional fallback.
+  /// have [outputText], which remains available as the Formal fallback.
   List<({String label, String text})> get replyVersions {
     if (type != RecentType.reply) return const [];
-    final professional = professionalText?.trim().isNotEmpty == true
-        ? professionalText!
+    final formal = formalText?.trim().isNotEmpty == true
+        ? formalText!
         : outputText;
     return [
-      if (professional.trim().isNotEmpty)
-        (label: 'Professional', text: professional),
-      if (friendlyText?.trim().isNotEmpty == true)
-        (label: 'Friendly', text: friendlyText!),
-      if (shortText?.trim().isNotEmpty == true)
-        (label: 'Short', text: shortText!),
+      if (formal.trim().isNotEmpty) (label: 'Formal', text: formal),
+      if (casualText?.trim().isNotEmpty == true)
+        (label: 'Casual', text: casualText!),
+      if (conciseText?.trim().isNotEmpty == true)
+        (label: 'Concise', text: conciseText!),
     ];
   }
 
@@ -97,9 +96,9 @@ class RecentItem {
     String? tone,
     String? channel,
     String? length,
-    String? professionalText,
-    String? friendlyText,
-    String? shortText,
+    String? formalText,
+    String? casualText,
+    String? conciseText,
   }) => RecentItem(
     id: const Uuid().v4(),
     type: type,
@@ -111,9 +110,9 @@ class RecentItem {
     tone: tone,
     channel: channel,
     length: length,
-    professionalText: professionalText,
-    friendlyText: friendlyText,
-    shortText: shortText,
+    formalText: formalText,
+    casualText: casualText,
+    conciseText: conciseText,
   );
 
   Map<String, dynamic> toJson() => {
@@ -127,13 +126,17 @@ class RecentItem {
     if (tone != null) 'tone': tone,
     if (channel != null) 'channel': channel,
     if (length != null) 'length': length,
-    if (professionalText != null) 'professionalText': professionalText,
-    if (friendlyText != null) 'friendlyText': friendlyText,
-    if (shortText != null) 'shortText': shortText,
+    if (formalText != null) 'formalText': formalText,
+    if (casualText != null) 'casualText': casualText,
+    if (conciseText != null) 'conciseText': conciseText,
   };
 
   /// Throws if a required field is missing or a value is malformed. The
   /// repository catches this so a single bad row never crashes the app.
+  ///
+  /// Records written before the version rename stored the variants under
+  /// `professionalText` / `friendlyText` / `shortText`; they map onto the
+  /// renamed fields so old history keeps loading.
   factory RecentItem.fromJson(Map<String, dynamic> json) => RecentItem(
     id: json['id'] as String,
     type: RecentType.values.byName(json['type'] as String),
@@ -145,9 +148,12 @@ class RecentItem {
     tone: json['tone'] as String?,
     channel: json['channel'] as String?,
     length: json['length'] as String?,
-    professionalText: json['professionalText'] as String?,
-    friendlyText: json['friendlyText'] as String?,
-    shortText: json['shortText'] as String?,
+    formalText:
+        json['formalText'] as String? ?? json['professionalText'] as String?,
+    casualText:
+        json['casualText'] as String? ?? json['friendlyText'] as String?,
+    conciseText:
+        json['conciseText'] as String? ?? json['shortText'] as String?,
   );
 }
 

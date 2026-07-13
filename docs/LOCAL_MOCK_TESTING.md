@@ -44,7 +44,7 @@ Parameters can be combined:
 
 `MOCK_AI_ENABLED=true` selects deterministic fake AI responses for:
 
-- `POST /v1/reply`: Professional, Friendly, and Short versions
+- `POST /v1/reply`: Formal, Casual, and Concise versions
 - `POST /v1/explain`: meaning, tone, hidden meaning, and suggested replies
 - `POST /v1/polish`: polished text and changes
 
@@ -66,7 +66,7 @@ Use `http://10.0.2.2:8000` for the Android emulator. Use your machine's LAN IP f
 
 ## What To Test
 
-1. Open Reply and generate a reply. The backend returns deterministic Professional, Friendly, and Short versions.
+1. Open Reply and generate a reply. The backend returns deterministic Formal, Casual, and Concise versions.
 2. Open Explain and explain a message. The backend returns deterministic explanation sections.
 3. Open Polish and polish a draft. The backend returns deterministic polished text and changes.
 4. Open Settings, then Developer Testing.

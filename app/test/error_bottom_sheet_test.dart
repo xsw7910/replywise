@@ -57,7 +57,7 @@ class _FlakyReplyRepository extends ReplyRepository {
       throw failure;
     }
     return const ReplyResult(
-      versions: [ReplyVersion(label: 'Friendly', text: 'A friendly reply')],
+      versions: [ReplyVersion(label: 'Casual', text: 'A friendly reply')],
       why: 'Test result',
     );
   }

@@ -98,6 +98,8 @@ void main() {
   test(
     'ReplyRepository sends fixed English output and parses versions',
     () async {
+      // Legacy labels from a not-yet-updated backend: parsing must map them
+      // to the renamed Formal/Casual/Concise labels.
       final client = _RecordingClient()
         ..response = {
           'versions': [
@@ -125,6 +127,11 @@ void main() {
       expect(client.payload['guidance'], 'Respond warmly');
       expect(client.options?.headers?['X-Idempotency-Key'], isNotEmpty);
       expect(result.versions, hasLength(3));
+      expect(result.versions.map((v) => v.label).toList(), [
+        'Formal',
+        'Casual',
+        'Concise',
+      ]);
     },
   );
 
@@ -187,9 +194,9 @@ void main() {
 
   const successVersions = {
     'versions': [
-      {'label': 'Professional', 'text': 'Hi.'},
-      {'label': 'Friendly', 'text': 'Hey!'},
-      {'label': 'Short', 'text': 'Hi!'},
+      {'label': 'Formal', 'text': 'Hi.'},
+      {'label': 'Casual', 'text': 'Hey!'},
+      {'label': 'Concise', 'text': 'Hi!'},
     ],
     'why': 'Clear.',
   };

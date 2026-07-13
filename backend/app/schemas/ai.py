@@ -26,7 +26,7 @@ class ReplyRequest(ApiModel):
 
 
 class ReplyVersion(ApiModel):
-    label: Literal["Professional", "Friendly", "Short"]
+    label: Literal["Formal", "Casual", "Concise"]
     text: str
 
 

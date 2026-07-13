@@ -1042,6 +1042,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorUnexpectedMessage => 'Probeer het opnieuw.';
 
   @override
+  String get formal => 'Formeel';
+
+  @override
+  String get casual => 'Casual';
+
+  @override
   String get shareReply => 'Antwoord delen';
 
   @override

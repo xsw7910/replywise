@@ -35,7 +35,7 @@ class _FakeReplyRepo extends ReplyRepository {
   Future<ReplyResult> generate(ReplyRequest request) async {
     if (error != null) throw error!;
     return const ReplyResult(
-      versions: [ReplyVersion(label: 'Professional', text: 'Hi.')],
+      versions: [ReplyVersion(label: 'Formal', text: 'Hi.')],
       why: 'Clear and concise.',
     );
   }
@@ -159,7 +159,7 @@ void main() {
 
     test('preserves previous result when error occurs', () async {
       const successResult = ReplyResult(
-        versions: [ReplyVersion(label: 'Professional', text: 'Hi.')],
+        versions: [ReplyVersion(label: 'Formal', text: 'Hi.')],
         why: 'Clear.',
       );
       const rateError = ApiError(

@@ -53,10 +53,21 @@ class ReplyVersion {
   final String label;
   final String text;
 
-  factory ReplyVersion.fromJson(Map<String, dynamic> json) => ReplyVersion(
-    label: json['label'] as String,
-    text: json['text'] as String,
-  );
+  /// The version labels were renamed; a not-yet-updated backend (or a cached
+  /// response) may still send the old ones.
+  static const Map<String, String> _legacyLabels = {
+    'Professional': 'Formal',
+    'Friendly': 'Casual',
+    'Short': 'Concise',
+  };
+
+  factory ReplyVersion.fromJson(Map<String, dynamic> json) {
+    final label = json['label'] as String;
+    return ReplyVersion(
+      label: _legacyLabels[label] ?? label,
+      text: json['text'] as String,
+    );
+  }
 }
 
 class ReplyResult {

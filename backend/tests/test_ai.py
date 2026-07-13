@@ -61,9 +61,9 @@ def test_reply_success_has_three_english_versions(client: TestClient) -> None:
     assert response.status_code == 200
     body = response.json()
     assert [item["label"] for item in body["versions"]] == [
-        "Professional",
-        "Friendly",
-        "Short",
+        "Formal",
+        "Casual",
+        "Concise",
     ]
     assert all(item["text"] for item in body["versions"])
     assert body["why"]
@@ -205,9 +205,9 @@ class _CapturingReplyProvider:
         return json.dumps(
             {
                 "versions": [
-                    {"label": "Professional", "text": "Professional reply"},
-                    {"label": "Friendly", "text": "Friendly reply"},
-                    {"label": "Short", "text": "Short reply"},
+                    {"label": "Formal", "text": "Formal reply"},
+                    {"label": "Casual", "text": "Casual reply"},
+                    {"label": "Concise", "text": "Concise reply"},
                 ],
                 "why": "The requested tone and audience were applied.",
             }
@@ -614,9 +614,9 @@ def test_mock_ai_enabled_uses_local_fake_provider(client: TestClient, monkeypatc
     assert response.status_code == 200
     body = response.json()
     assert [item["label"] for item in body["versions"]] == [
-        "Professional",
-        "Friendly",
-        "Short",
+        "Formal",
+        "Casual",
+        "Concise",
     ]
     assert body["usage"]["source"] == "free"
 
@@ -793,9 +793,9 @@ def test_extract_json_object_finds_object_in_leading_prose() -> None:
 
 
 def test_extract_json_object_handles_nested_objects() -> None:
-    text = 'Sure! {"versions":[{"label":"Professional","text":"Hi."}],"why":"Good."}'
+    text = 'Sure! {"versions":[{"label":"Formal","text":"Hi."}],"why":"Good."}'
     parsed = json.loads(_extract_json_object(text))
-    assert parsed["versions"][0]["label"] == "Professional"
+    assert parsed["versions"][0]["label"] == "Formal"
 
 
 def test_extract_json_object_handles_braces_inside_strings() -> None:
@@ -826,7 +826,12 @@ class _ProseWrappedProvider:
 
 
 class _ExplicitSchemaProvider:
-    """Returns the exact JSON schema that OpenAI produces when given the new explicit prompts."""
+    """Returns the exact JSON schema that OpenAI produces when given the new explicit prompts.
+
+    The reply intentionally uses the LEGACY version labels: a drifting model
+    (or an old cached prompt) may still emit them, and the service must
+    normalize them to Formal/Casual/Concise.
+    """
 
     async def complete(self, system_prompt: str, payload: dict) -> str:
         task = payload.get("task")
@@ -880,7 +885,8 @@ def test_openai_schema_compliant_response_parses_reply(client: TestClient) -> No
 
     assert response.status_code == 200
     body = response.json()
-    assert [v["label"] for v in body["versions"]] == ["Professional", "Friendly", "Short"]
+    # Legacy labels from the provider are normalized to the current ones.
+    assert [v["label"] for v in body["versions"]] == ["Formal", "Casual", "Concise"]
     assert all(v["text"] for v in body["versions"])
     assert body["why"]
 

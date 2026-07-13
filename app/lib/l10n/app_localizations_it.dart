@@ -1045,6 +1045,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get errorUnexpectedMessage => 'Riprova.';
 
   @override
+  String get formal => 'Formale';
+
+  @override
+  String get casual => 'Informale';
+
+  @override
   String get shareReply => 'Condividi risposta';
 
   @override

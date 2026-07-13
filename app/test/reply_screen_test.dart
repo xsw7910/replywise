@@ -51,9 +51,9 @@ class _RecordingReplyRepository extends ReplyRepository {
     lastRequest = request;
     return const ReplyResult(
       versions: [
-        ReplyVersion(label: 'Professional', text: 'Professional reply'),
-        ReplyVersion(label: 'Friendly', text: 'Friendly reply'),
-        ReplyVersion(label: 'Short', text: 'Short reply'),
+        ReplyVersion(label: 'Formal', text: 'Formal reply'),
+        ReplyVersion(label: 'Casual', text: 'Casual reply'),
+        ReplyVersion(label: 'Concise', text: 'Concise reply'),
       ],
       why: 'Test result',
     );
@@ -189,11 +189,11 @@ void main() {
 
     await tester.tap(share);
     await tester.pumpAndSettle();
-    expect(shared, ['Professional reply']);
+    expect(shared, ['Formal reply']);
 
     await tester.tap(copy);
     await tester.pumpAndSettle();
-    expect(copied, ['Professional reply']);
+    expect(copied, ['Formal reply']);
     expect(find.text('Copied'), findsOneWidget);
   });
 
@@ -251,10 +251,10 @@ void main() {
     });
 
     final item = history.savedItem!;
-    expect(item.professionalText, 'Professional reply');
-    expect(item.friendlyText, 'Friendly reply');
-    expect(item.shortText, 'Short reply');
-    expect(item.outputText, 'Professional reply');
+    expect(item.formalText, 'Formal reply');
+    expect(item.casualText, 'Casual reply');
+    expect(item.conciseText, 'Concise reply');
+    expect(item.outputText, 'Formal reply');
   });
 
   testWidgets(

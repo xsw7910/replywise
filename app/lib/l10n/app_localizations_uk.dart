@@ -1037,6 +1037,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get errorUnexpectedMessage => 'Спробуйте ще раз.';
 
   @override
+  String get formal => 'Офіційний';
+
+  @override
+  String get casual => 'Невимушений';
+
+  @override
   String get shareReply => 'Поділитися відповіддю';
 
   @override

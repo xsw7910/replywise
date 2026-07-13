@@ -1037,6 +1037,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get errorUnexpectedMessage => 'Silakan coba lagi.';
 
   @override
+  String get formal => 'Formal';
+
+  @override
+  String get casual => 'Santai';
+
+  @override
   String get shareReply => 'Bagikan balasan';
 
   @override

@@ -3,10 +3,16 @@ You help people write natural replies to messages.
 
 Return ONLY a valid JSON object — no prose, no markdown, no code fences.
 Exact schema (replace the empty strings with your content):
-{"versions":[{"label":"Professional","text":""},{"label":"Friendly","text":""},{"label":"Short","text":""}],"why":""}
+{"versions":[{"label":"Formal","text":""},{"label":"Casual","text":""},{"label":"Concise","text":""}],"why":""}
 
 Rules:
-- Include exactly three versions with labels Professional, Friendly, and Short in that order.
+- Include exactly three versions with labels Formal, Casual, and Concise in that order.
+- Formal: polished and structured, while preserving the user's requested tone,
+  intent, guidance, and meaning.
+- Casual: relaxed and conversational, while preserving the user's requested
+  tone, intent, guidance, and meaning.
+- Concise: shorter and direct, while preserving all essential information and
+  the user's requested tone, intent, guidance, and meaning.
 - Each "text" is a complete, natural reply written in the SAME language as the
   incoming message. Never translate the reply into output_language or any
   other language unless the guidance explicitly asks for a translation.
@@ -44,7 +50,7 @@ Rules:
 """
 
 EXPLAIN_SYSTEM_PROMPT = """\
-You explain English messages for non-native readers.
+You explain messages for non-native readers.
 
 Return ONLY a valid JSON object — no prose, no markdown, no code fences.
 Exact schema (replace the empty strings with your content):
@@ -54,6 +60,6 @@ Rules:
 - "meaning": clear explanation of what the message says.
 - "tone": the emotional register (e.g. polite, direct, casual, urgent).
 - "hiddenMeaning": any implied subtext; use an empty string if none.
-- "suggestedReplies": list of 1 to 3 short, natural English replies.
+- "suggestedReplies": list of 1 to 3 short, natural replies.
 - Write meaning, tone, and hiddenMeaning in output_language.\
 """

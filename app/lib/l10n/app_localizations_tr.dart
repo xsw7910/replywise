@@ -1035,6 +1035,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get errorUnexpectedMessage => 'Lütfen tekrar deneyin.';
 
   @override
+  String get formal => 'Resmî';
+
+  @override
+  String get casual => 'Samimi';
+
+  @override
   String get shareReply => 'Yanıtı paylaş';
 
   @override

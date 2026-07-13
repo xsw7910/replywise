@@ -1033,6 +1033,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get errorUnexpectedMessage => 'कृपया फिर से कोशिश करें।';
 
   @override
+  String get formal => 'औपचारिक';
+
+  @override
+  String get casual => 'अनौपचारिक';
+
+  @override
   String get shareReply => 'जवाब साझा करें';
 
   @override

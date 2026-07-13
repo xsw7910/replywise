@@ -103,6 +103,8 @@ class AIService:
                 except json.JSONDecodeError:
                     # Model wrapped JSON in prose despite instructions; extract it.
                     parsed = json.loads(_extract_json_object(stripped))
+                if response_type is ReplyResponse:
+                    _normalize_legacy_reply_labels(parsed)
                 result = response_type.model_validate(parsed)
                 _validate_response_shape(result)
                 return result
@@ -118,6 +120,28 @@ class AIService:
             message="The AI response could not be parsed. Please retry.",
             status_code=502,
         )
+
+
+# Reply version labels were renamed; the model may still emit the old ones.
+_LEGACY_REPLY_LABELS = {
+    "Professional": "Formal",
+    "Friendly": "Casual",
+    "Short": "Concise",
+}
+
+
+def _normalize_legacy_reply_labels(parsed: object) -> None:
+    """Map legacy reply version labels to the current ones, in place."""
+    if not isinstance(parsed, dict):
+        return
+    versions = parsed.get("versions")
+    if not isinstance(versions, list):
+        return
+    for version in versions:
+        if isinstance(version, dict):
+            label = version.get("label")
+            if label in _LEGACY_REPLY_LABELS:
+                version["label"] = _LEGACY_REPLY_LABELS[label]
 
 
 def _strip_json_fence(value: str) -> str:
@@ -173,5 +197,5 @@ def _extract_json_object(text: str) -> str:
 def _validate_response_shape(result) -> None:
     if isinstance(result, ReplyResponse):
         labels = [version.label for version in result.versions]
-        if labels != ["Professional", "Friendly", "Short"]:
+        if labels != ["Formal", "Casual", "Concise"]:
             raise ValueError("Reply must contain exactly three ordered versions")

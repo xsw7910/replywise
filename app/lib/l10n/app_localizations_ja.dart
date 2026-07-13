@@ -997,6 +997,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get errorUnexpectedMessage => 'もう一度お試しください。';
 
   @override
+  String get formal => 'フォーマル';
+
+  @override
+  String get casual => 'カジュアル';
+
+  @override
   String get shareReply => '返信を共有';
 
   @override

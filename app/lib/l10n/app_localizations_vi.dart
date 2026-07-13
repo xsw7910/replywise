@@ -1037,6 +1037,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get errorUnexpectedMessage => 'Vui lòng thử lại.';
 
   @override
+  String get formal => 'Trang trọng';
+
+  @override
+  String get casual => 'Thân mật';
+
+  @override
   String get shareReply => 'Chia sẻ câu trả lời';
 
   @override

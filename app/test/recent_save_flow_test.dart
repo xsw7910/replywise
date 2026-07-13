@@ -43,9 +43,9 @@ class _OkReplyRepo extends ReplyRepository {
   @override
   Future<ReplyResult> generate(ReplyRequest request) async => const ReplyResult(
     versions: [
-      ReplyVersion(label: 'Professional', text: 'Pro reply'),
-      ReplyVersion(label: 'Friendly', text: 'Friendly reply'),
-      ReplyVersion(label: 'Short', text: 'Short reply'),
+      ReplyVersion(label: 'Formal', text: 'Pro reply'),
+      ReplyVersion(label: 'Casual', text: 'Friendly reply'),
+      ReplyVersion(label: 'Concise', text: 'Short reply'),
     ],
     why: 'because it reads naturally',
   );

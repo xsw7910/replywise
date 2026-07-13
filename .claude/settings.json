@@ -8,7 +8,10 @@
       "Bash(./.venv/Scripts/python.exe *)",
       "Bash(./../backend/.venv/Scripts/python.exe *)",
       "Bash(.venv/Scripts/*)",
-      "PowerShell(adb devices)"
+      "PowerShell(adb devices)",
+      "PowerShell(cd c:\\\\sandbox\\\\replywise\\\\app\\\\test; \\(\\(Get-Content controller_usage_test.dart -Raw\\) -replace \"ReplyVersion\\\\\\(label: 'Professional', text: 'Hi\\\\.'\\\\\\)\", \"ReplyVersion\\(label: 'Formal', text: 'Hi.'\\)\"\\) | Set-Content controller_usage_test.dart -Encoding UTF8 -NoNewline)",
+      "PowerShell(cd c:\\\\sandbox\\\\replywise\\\\docs; Select-String -Path AI_CONTEXT.md,LOCAL_MOCK_TESTING.md,ORACLE_VM_BACKEND_DEPLOYMENT.md -Pattern 'Professional' | ForEach-Object { \"{0}:{1}: {2}\" -f $_.Filename, $_.LineNumber, $_.Line.Trim\\(\\) })",
+      "PowerShell(cd c:\\\\sandbox\\\\replywise\\\\docs; \\(Get-Content AI_CONTEXT.md -Raw -Encoding UTF8\\) -replace 'generate Professional, Friendly, and Short English versions', 'generate Formal, Casual, and Concise versions' | Set-Content AI_CONTEXT.md -Encoding UTF8 -NoNewline; $t = Get-Content LOCAL_MOCK_TESTING.md -Raw -Encoding UTF8; $t = $t -replace 'Professional, Friendly, and Short versions', 'Formal, Casual, and Concise versions'; Set-Content LOCAL_MOCK_TESTING.md $t -Encoding UTF8 -NoNewline; \\(Get-Content ORACLE_VM_BACKEND_DEPLOYMENT.md -Raw -Encoding UTF8\\) -replace 'Reply returns exactly `Professional`, `Friendly`, and `Short` versions.', 'Reply returns exactly `Formal`, `Casual`, and `Concise` versions.' | Set-Content ORACLE_VM_BACKEND_DEPLOYMENT.md -Encoding UTF8 -NoNewline; Select-String -Path AI_CONTEXT.md,LOCAL_MOCK_TESTING.md,ORACLE_VM_BACKEND_DEPLOYMENT.md -Pattern 'Formal' | ForEach-Object { \"{0}:{1}\" -f $_.Filename, $_.LineNumber })"
     ],
     "deny": [
       "Bash(git push)",

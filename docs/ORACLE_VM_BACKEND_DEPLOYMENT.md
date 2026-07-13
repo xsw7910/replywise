@@ -344,7 +344,7 @@ curl --fail --silent --show-error \
 
 Confirm that:
 
-- Reply returns exactly `Professional`, `Friendly`, and `Short` versions.
+- Reply returns exactly `Formal`, `Casual`, and `Concise` versions.
 - Polish returns `polished` and `changes`.
 - Explain returns `meaning`, `tone`, `hiddenMeaning`, and `suggestedReplies`.
 - No response contains an OpenAI exception, request ID, API key, or raw provider message.

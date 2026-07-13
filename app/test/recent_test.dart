@@ -67,9 +67,9 @@ void main() {
         tone: 'Friendly',
         channel: 'Email',
         length: 'Short',
-        professionalText: 'Professional reply',
-        friendlyText: 'Friendly reply',
-        shortText: 'Short reply',
+        formalText: 'Formal reply',
+        casualText: 'Casual reply',
+        conciseText: 'Concise reply',
       );
       final decoded = RecentItem.fromJson(
         jsonDecode(jsonEncode(item.toJson())) as Map<String, dynamic>,
@@ -84,12 +84,12 @@ void main() {
       expect(decoded.tone, 'Friendly');
       expect(decoded.channel, 'Email');
       expect(decoded.length, 'Short');
-      expect(decoded.professionalText, 'Professional reply');
-      expect(decoded.friendlyText, 'Friendly reply');
-      expect(decoded.shortText, 'Short reply');
+      expect(decoded.formalText, 'Formal reply');
+      expect(decoded.casualText, 'Casual reply');
+      expect(decoded.conciseText, 'Concise reply');
     });
 
-    test('legacy single-output Reply falls back to Professional', () {
+    test('legacy single-output Reply falls back to Formal', () {
       final legacy = RecentItem.fromJson({
         'id': 'legacy',
         'type': 'reply',
@@ -99,8 +99,30 @@ void main() {
         'createdAt': '2026-07-04T14:30:00.000Z',
       });
 
+      expect(legacy.replyVersions, [(label: 'Formal', text: 'Legacy reply')]);
+    });
+
+    test('records saved with the old professional/friendly/short keys load '
+        'onto the renamed fields', () {
+      final legacy = RecentItem.fromJson({
+        'id': 'legacy-labels',
+        'type': 'reply',
+        'title': 'Reply to: hello',
+        'inputText': 'hello',
+        'outputText': 'Professional reply',
+        'createdAt': '2026-07-04T14:30:00.000Z',
+        'professionalText': 'Professional reply',
+        'friendlyText': 'Friendly reply',
+        'shortText': 'Short reply',
+      });
+
+      expect(legacy.formalText, 'Professional reply');
+      expect(legacy.casualText, 'Friendly reply');
+      expect(legacy.conciseText, 'Short reply');
       expect(legacy.replyVersions, [
-        (label: 'Professional', text: 'Legacy reply'),
+        (label: 'Formal', text: 'Professional reply'),
+        (label: 'Casual', text: 'Friendly reply'),
+        (label: 'Concise', text: 'Short reply'),
       ]);
     });
 
