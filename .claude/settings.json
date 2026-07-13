@@ -1,14 +1,14 @@
 {
   "permissions": {
     "allow": [
-      
       "Bash(cd *)",
       "Bash(flutter build *)",
       "Bash(adb install *)",
       "Bash(Select-Object *)",
       "Bash(./.venv/Scripts/python.exe *)",
       "Bash(./../backend/.venv/Scripts/python.exe *)",
-      "Bash(.venv/Scripts/*)"
+      "Bash(.venv/Scripts/*)",
+      "PowerShell(adb devices)"
     ],
     "deny": [
       "Bash(git push)",
@@ -21,6 +21,5 @@
       "Bash(rmdir /s:*)"
     ],
     "defaultMode": "bypassPermissions"
-
   }
 }

@@ -232,6 +232,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
               hintText: context.l10n.pasteMessageReceived,
               maxLines: 7,
               maxLength: InputLimits.explainMessageMaxLength,
+              showClearButton: true,
               fieldActions: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -241,13 +242,6 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                     color: _kColor,
                     onPressed: state.isLoading ? null : _pasteMessage,
                     icon: const Icon(Icons.content_paste_rounded, size: 20),
-                  ),
-                  IconButton(
-                    tooltip: context.l10n.clear,
-                    visualDensity: VisualDensity.compact,
-                    color: _kColor,
-                    onPressed: _messageController.clear,
-                    icon: const Icon(Icons.close_rounded, size: 21),
                   ),
                 ],
               ),

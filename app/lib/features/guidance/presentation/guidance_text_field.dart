@@ -91,6 +91,7 @@ class _GuidanceTextFieldState extends State<GuidanceTextField> {
       hintText: widget.hintText,
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
+      showClearButton: true,
       fieldActions: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -107,13 +108,6 @@ class _GuidanceTextFieldState extends State<GuidanceTextField> {
             color: accent,
             onPressed: _paste,
             icon: const Icon(Icons.content_paste_rounded, size: 20),
-          ),
-          IconButton(
-            tooltip: context.l10n.clear,
-            visualDensity: VisualDensity.compact,
-            color: accent,
-            onPressed: widget.controller.clear,
-            icon: const Icon(Icons.close_rounded, size: 21),
           ),
         ],
       ),

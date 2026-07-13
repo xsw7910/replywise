@@ -399,6 +399,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                         hintText: context.l10n.pasteOriginalMessage,
                         maxLines: 5,
                         maxLength: 4000,
+                        showClearButton: true,
                         fieldActions: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -411,13 +412,6 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                                 Icons.content_paste_rounded,
                                 size: 20,
                               ),
-                            ),
-                            IconButton(
-                              tooltip: context.l10n.clear,
-                              visualDensity: VisualDensity.compact,
-                              color: _kColor,
-                              onPressed: _incomingController.clear,
-                              icon: const Icon(Icons.close_rounded, size: 21),
                             ),
                           ],
                         ),

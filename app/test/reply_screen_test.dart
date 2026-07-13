@@ -398,9 +398,12 @@ void main() {
     const fieldKey = Key('reply-guidance-field');
     expect(_actionIn(fieldKey, 'Templates'), findsOneWidget);
     expect(_actionIn(fieldKey, 'Paste'), findsOneWidget);
-    expect(_actionIn(fieldKey, 'Clear'), findsOneWidget);
+    // Clear only appears once the field has text.
+    expect(_actionIn(fieldKey, 'Clear'), findsNothing);
 
     await tester.enterText(_editableIn(fieldKey), 'Old guidance');
+    await tester.pump();
+    expect(_actionIn(fieldKey, 'Clear'), findsOneWidget);
     await tester.tap(_actionIn(fieldKey, 'Clear'));
     await tester.pump();
     expect(
