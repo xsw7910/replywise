@@ -33,23 +33,41 @@ class GuidanceTextField extends StatefulWidget {
 
 class _GuidanceTextFieldState extends State<GuidanceTextField> {
   final _scrollController = ScrollController();
+  late TextEditingValue _lastValue;
 
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(_scrollToEnd);
+    _lastValue = widget.controller.value;
+    widget.controller.addListener(_onControllerChanged);
   }
 
   @override
   void didUpdateWidget(covariant GuidanceTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.removeListener(_scrollToEnd);
-      widget.controller.addListener(_scrollToEnd);
+      oldWidget.controller.removeListener(_onControllerChanged);
+      _lastValue = widget.controller.value;
+      widget.controller.addListener(_onControllerChanged);
     }
   }
 
-  void _scrollToEnd() {
+  /// Scrolls to the end only for programmatic appends (Quick Guidance chips,
+  /// templates, paste): the text grows by a whole snippet and the caret lands
+  /// collapsed at the end. Single keystrokes, deletions, and cursor moves
+  /// during manual editing never trigger a scroll, so the caret stays where
+  /// the user is typing.
+  void _onControllerChanged() {
+    final previous = _lastValue;
+    final current = widget.controller.value;
+    _lastValue = current;
+
+    final appendedSnippet = current.text.length >= previous.text.length + 2;
+    final caretAtEnd =
+        current.selection.isCollapsed &&
+        current.selection.baseOffset == current.text.length;
+    if (!appendedSnippet || !caretAtEnd) return;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_scrollController.hasClients) return;
       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
@@ -58,7 +76,7 @@ class _GuidanceTextFieldState extends State<GuidanceTextField> {
 
   @override
   void dispose() {
-    widget.controller.removeListener(_scrollToEnd);
+    widget.controller.removeListener(_onControllerChanged);
     _scrollController.dispose();
     super.dispose();
   }
@@ -69,12 +87,15 @@ class _GuidanceTextFieldState extends State<GuidanceTextField> {
     if (text == null || text.isEmpty) return;
 
     // Preserve the existing Reply behavior: Paste replaces the current
-    // guidance, caps it to the shared limit, and leaves the cursor at the end.
-    widget.controller.text = text.length > widget.maxLength
+    // guidance, caps it to the shared limit, and leaves the cursor at the
+    // end. One atomic value update: no intermediate text-without-selection
+    // frame.
+    final next = text.length > widget.maxLength
         ? text.substring(0, widget.maxLength)
         : text;
-    widget.controller.selection = TextSelection.collapsed(
-      offset: widget.controller.text.length,
+    widget.controller.value = TextEditingValue(
+      text: next,
+      selection: TextSelection.collapsed(offset: next.length),
     );
   }
 

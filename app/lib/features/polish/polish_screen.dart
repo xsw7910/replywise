@@ -86,9 +86,12 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
 
   void _appendGuidanceText(String content) {
     final current = _guidanceController.text.trim();
-    _guidanceController.text = current.isEmpty ? content : '$current\n$content';
-    _guidanceController.selection = TextSelection.collapsed(
-      offset: _guidanceController.text.length,
+    final next = current.isEmpty ? content : '$current\n$content';
+    // Atomic value update: caret moves to the end ONLY on explicit Quick
+    // Guidance insertion — never during normal typing or rebuilds.
+    _guidanceController.value = TextEditingValue(
+      text: next,
+      selection: TextSelection.collapsed(offset: next.length),
     );
     if (!_guidanceExpanded) setState(() => _guidanceExpanded = true);
   }
@@ -115,8 +118,12 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   }
 
   void _setControllerText(TextEditingController controller, String text) {
-    controller.text = text;
-    controller.selection = TextSelection.collapsed(offset: text.length);
+    // Atomic replacement with the caret at the end — used only for explicit
+    // template insertions, never during normal typing.
+    controller.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
   }
 
   /// Applies a guidance template handed over from the standalone Guidance

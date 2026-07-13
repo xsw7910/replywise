@@ -88,9 +88,14 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
 
   void _appendGuidanceText(String text) {
     final current = _guidanceController.text.trim();
-    _guidanceController.text = current.isEmpty ? text : '$current\n$text';
-    _guidanceController.selection = TextSelection.collapsed(
-      offset: _guidanceController.text.length,
+    final next = current.isEmpty ? text : '$current\n$text';
+    // Atomic value update: text, caret at the end of the inserted guidance,
+    // and cleared composing region in one frame. The caret is moved to the
+    // end ONLY here (explicit Quick Guidance insertion) — never during normal
+    // typing or rebuilds.
+    _guidanceController.value = TextEditingValue(
+      text: next,
+      selection: TextSelection.collapsed(offset: next.length),
     );
     // Applying any guidance reveals the field so the user sees what was added.
     if (!_guidanceExpanded) setState(() => _guidanceExpanded = true);
@@ -118,8 +123,12 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   }
 
   void _setControllerText(TextEditingController controller, String text) {
-    controller.text = text;
-    controller.selection = TextSelection.collapsed(offset: text.length);
+    // Atomic replacement with the caret at the end — used only for explicit
+    // template insertions, never during normal typing.
+    controller.value = TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
   }
 
   /// Applies a guidance template handed over from the standalone Guidance
