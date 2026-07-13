@@ -356,29 +356,17 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       child: CustomScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         slivers: [
-          SliverAppBar(
-            key: const Key('reply-hero-header'),
-            pinned: true,
-            expandedHeight: 112,
-            toolbarHeight: kToolbarHeight,
-            automaticallyImplyLeading: false,
-            centerTitle: false,
-            titleSpacing: 16,
-            backgroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            title: FeatureHeaderTitle(
+          SliverToBoxAdapter(
+            child: FeatureHeroHeader(
+              key: const Key('reply-hero-header'),
               feature: _feature,
               title: context.l10n.reply,
               color: _kColor,
-            ),
-            actions: [
-              ReplyStatusBadge(
+              trailing: ReplyStatusBadge(
                 usage: usageState.usage,
                 onTap: () => context.push(AppRoutes.paywall),
               ),
-            ],
+            ),
           ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),

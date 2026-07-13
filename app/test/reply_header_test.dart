@@ -150,8 +150,7 @@ void main() {
         lessThan(tester.getTopLeft(title).dx),
       );
       final titleCenter = tester.getCenter(title).dx;
-      final appBarCenter = tester.getCenter(find.byType(AppBar)).dx;
-      expect(titleCenter, lessThan(appBarCenter - 80));
+      expect(titleCenter, lessThan(tester.view.physicalSize.width / 2 - 80));
 
       final cardTop = tester
           .getTopLeft(find.byKey(const Key('reply-message-card')))
@@ -161,10 +160,9 @@ void main() {
       expect(cardTop, closeTo(130, 1));
 
       expect(find.byKey(const Key('reply-hero-header')), findsOneWidget);
+      expect(find.byType(SliverAppBar), findsNothing);
       expect(
-        tester
-            .widget<SliverAppBar>(find.byKey(const Key('reply-hero-header')))
-            .expandedHeight,
+        tester.getSize(find.byKey(const Key('reply-hero-header'))).height,
         112,
       );
 

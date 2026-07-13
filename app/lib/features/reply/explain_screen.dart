@@ -199,174 +199,189 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
 
     return AppPage(
       title: context.l10n.explain,
-      titleWidget: FeatureHeaderTitle(
-        feature: _feature,
-        title: context.l10n.explain,
-        color: _kColor,
-      ),
       accentColor: _kColor,
       backgroundImagePath: _feature.pageBackgroundImage,
-      transparentAppBar: true,
-      centerTitle: false,
-      actions: [
-        ReplyStatusBadge(
-          usage: usage,
-          onTap: () => context.push(AppRoutes.paywall),
-        ),
-      ],
-      child: ListView(
+      showAppBar: false,
+      child: CustomScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
-        children: [
-          GlassCard(
-            feature: _feature,
-            showFeatureImage: false,
-            tintColor: _kCardTint,
-            tintStrength: _kCardTintStrength,
-            child: LabeledTextField(
-              key: const Key('explain-message-field'),
-              label: context.l10n.messageToUnderstand,
+        slivers: [
+          SliverToBoxAdapter(
+            child: FeatureHeroHeader(
+              key: const Key('explain-hero-header'),
               feature: _feature,
-              showCounter: false,
-              controller: _messageController,
-              hintText: context.l10n.pasteMessageReceived,
-              maxLines: 7,
-              maxLength: InputLimits.explainMessageMaxLength,
-              showClearButton: true,
-              fieldActions: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    tooltip: context.l10n.paste,
-                    visualDensity: VisualDensity.compact,
-                    color: _kColor,
-                    onPressed: state.isLoading ? null : _pasteMessage,
-                    icon: const Icon(Icons.content_paste_rounded, size: 20),
-                  ),
-                ],
+              title: context.l10n.explain,
+              color: _kColor,
+              height: kToolbarHeight,
+              trailing: ReplyStatusBadge(
+                usage: usage,
+                onTap: () => context.push(AppRoutes.paywall),
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            key: const Key('explain-submit-button'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _feature.primaryButtonColor,
-            ),
-            onPressed: state.isLoading ? null : _explain,
-            icon: state.isLoading
-                ? const SizedBox.square(
-                    dimension: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                GlassCard(
+                  feature: _feature,
+                  showFeatureImage: false,
+                  tintColor: _kCardTint,
+                  tintStrength: _kCardTintStrength,
+                  child: LabeledTextField(
+                    key: const Key('explain-message-field'),
+                    label: context.l10n.messageToUnderstand,
+                    feature: _feature,
+                    showCounter: false,
+                    controller: _messageController,
+                    hintText: context.l10n.pasteMessageReceived,
+                    maxLines: 7,
+                    maxLength: InputLimits.explainMessageMaxLength,
+                    showClearButton: true,
+                    fieldActions: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          tooltip: context.l10n.paste,
+                          visualDensity: VisualDensity.compact,
+                          color: _kColor,
+                          onPressed: state.isLoading ? null : _pasteMessage,
+                          icon: const Icon(
+                            Icons.content_paste_rounded,
+                            size: 20,
+                          ),
+                        ),
+                      ],
                     ),
-                  )
-                : const Icon(Icons.psychology_alt_rounded),
-            label: Text(
-              state.isLoading
-                  ? context.l10n.explaining
-                  : context.l10n.explainThisMessage,
-            ),
-          ),
-          if (state.error != null) ...[
-            const SizedBox(height: 12),
-            InlineError(
-              message: _friendlyError(state),
-              actionLabel: context.l10n.tryAgain,
-              onAction: state.isLoading ? null : _explain,
-            ),
-          ],
-          if (state.isLoading) ...[
-            const SizedBox(height: 14),
-            Text(
-              context.l10n.readingBetweenLines,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.helper,
-            ),
-          ],
-          if (_result == null && !state.isLoading && state.error == null) ...[
-            const SizedBox(height: 14),
-            Text(
-              context.l10n.explanationAppearsHere,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.helper,
-            ),
-          ],
-          if (_result != null) ...[
-            const SizedBox(height: 24),
-            _ResultSection(
-              icon: Icons.article_outlined,
-              title: context.l10n.meaning,
-              text: _result!.meaning,
-              color: _kColor,
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    key: const Key('explain-share-button'),
-                    tooltip: context.l10n.shareExplanation,
-                    style: IconButton.styleFrom(
-                      foregroundColor: _kColor,
-                      backgroundColor: _feature.iconBackgroundColor,
-                    ),
-                    onPressed: () => shareGeneratedText(
-                      context,
-                      ref,
-                      _composedExplanation(),
-                      feature: _feature,
-                    ),
-                    icon: const Icon(Icons.ios_share_outlined, size: 18),
                   ),
-                  const SizedBox(width: 4),
-                  IconButton(
-                    key: const Key('explain-copy-button'),
-                    tooltip: context.l10n.copyExplanation,
-                    style: IconButton.styleFrom(
-                      foregroundColor: _kColor,
-                      backgroundColor: _feature.iconBackgroundColor,
-                    ),
-                    onPressed: _copyExplanation,
-                    icon: const Icon(Icons.copy_rounded, size: 18),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            _ResultSection(
-              icon: Icons.record_voice_over_outlined,
-              title: context.l10n.tone,
-              text: _result!.tone,
-              color: _kColor,
-            ),
-            const SizedBox(height: 12),
-            _ResultSection(
-              icon: Icons.visibility_outlined,
-              title: context.l10n.hiddenMeaning,
-              text: _result!.hiddenMeaning.trim().isEmpty
-                  ? context.l10n.noHiddenMeaning
-                  : _result!.hiddenMeaning,
-              color: _kColor,
-            ),
-            const SizedBox(height: 18),
-            Text(
-              context.l10n.suggestedReplies,
-              style: AppTextStyles.sectionTitle,
-            ),
-            const SizedBox(height: 10),
-            if (_result!.suggestedReplies.isEmpty)
-              Text(context.l10n.noSuggestedReplies, style: AppTextStyles.helper)
-            else
-              for (final suggestion in _result!.suggestedReplies) ...[
-                _SuggestionCard(
-                  suggestion: suggestion,
-                  onCopy: () => _copySuggestion(suggestion),
                 ),
-                const SizedBox(height: 10),
-              ],
-            const SizedBox(height: 12),
-            _ContinueCard(onPressed: _continueToReply),
-          ],
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  key: const Key('explain-submit-button'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _feature.primaryButtonColor,
+                  ),
+                  onPressed: state.isLoading ? null : _explain,
+                  icon: state.isLoading
+                      ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.psychology_alt_rounded),
+                  label: Text(
+                    state.isLoading
+                        ? context.l10n.explaining
+                        : context.l10n.explainThisMessage,
+                  ),
+                ),
+                if (state.error != null) ...[
+                  const SizedBox(height: 12),
+                  InlineError(
+                    message: _friendlyError(state),
+                    actionLabel: context.l10n.tryAgain,
+                    onAction: state.isLoading ? null : _explain,
+                  ),
+                ],
+                if (state.isLoading) ...[
+                  const SizedBox(height: 14),
+                  Text(
+                    context.l10n.readingBetweenLines,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.helper,
+                  ),
+                ],
+                if (_result == null &&
+                    !state.isLoading &&
+                    state.error == null) ...[
+                  const SizedBox(height: 14),
+                  Text(
+                    context.l10n.explanationAppearsHere,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.helper,
+                  ),
+                ],
+                if (_result != null) ...[
+                  const SizedBox(height: 24),
+                  _ResultSection(
+                    icon: Icons.article_outlined,
+                    title: context.l10n.meaning,
+                    text: _result!.meaning,
+                    color: _kColor,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          key: const Key('explain-share-button'),
+                          tooltip: context.l10n.shareExplanation,
+                          style: IconButton.styleFrom(
+                            foregroundColor: _kColor,
+                            backgroundColor: _feature.iconBackgroundColor,
+                          ),
+                          onPressed: () => shareGeneratedText(
+                            context,
+                            ref,
+                            _composedExplanation(),
+                            feature: _feature,
+                          ),
+                          icon: const Icon(Icons.ios_share_outlined, size: 18),
+                        ),
+                        const SizedBox(width: 4),
+                        IconButton(
+                          key: const Key('explain-copy-button'),
+                          tooltip: context.l10n.copyExplanation,
+                          style: IconButton.styleFrom(
+                            foregroundColor: _kColor,
+                            backgroundColor: _feature.iconBackgroundColor,
+                          ),
+                          onPressed: _copyExplanation,
+                          icon: const Icon(Icons.copy_rounded, size: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _ResultSection(
+                    icon: Icons.record_voice_over_outlined,
+                    title: context.l10n.tone,
+                    text: _result!.tone,
+                    color: _kColor,
+                  ),
+                  const SizedBox(height: 12),
+                  _ResultSection(
+                    icon: Icons.visibility_outlined,
+                    title: context.l10n.hiddenMeaning,
+                    text: _result!.hiddenMeaning.trim().isEmpty
+                        ? context.l10n.noHiddenMeaning
+                        : _result!.hiddenMeaning,
+                    color: _kColor,
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    context.l10n.suggestedReplies,
+                    style: AppTextStyles.sectionTitle,
+                  ),
+                  const SizedBox(height: 10),
+                  if (_result!.suggestedReplies.isEmpty)
+                    Text(
+                      context.l10n.noSuggestedReplies,
+                      style: AppTextStyles.helper,
+                    )
+                  else
+                    for (final suggestion in _result!.suggestedReplies) ...[
+                      _SuggestionCard(
+                        suggestion: suggestion,
+                        onCopy: () => _copySuggestion(suggestion),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  const SizedBox(height: 12),
+                  _ContinueCard(onPressed: _continueToReply),
+                ],
+              ]),
+            ),
+          ),
         ],
       ),
     );

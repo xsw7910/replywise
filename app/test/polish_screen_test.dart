@@ -156,10 +156,11 @@ void main() {
     addTearDown(tester.view.reset);
     await _pumpPolish(tester);
 
-    final hero = tester.widget<SliverAppBar>(
-      find.byKey(const Key('polish-hero-header')),
+    expect(find.byType(SliverAppBar), findsNothing);
+    expect(
+      tester.getSize(find.byKey(const Key('polish-hero-header'))).height,
+      112,
     );
-    expect(hero.expandedHeight, 112);
     // Title now shows the Polish feature icon before the accent-colored title.
     expect(
       find.descendant(

@@ -53,6 +53,60 @@ class FeatureHeaderTitle extends StatelessWidget {
   }
 }
 
+/// Scroll-content feature header used on Reply, Explain, and Polish pages.
+///
+/// This is intentionally a normal box instead of a [SliverAppBar]. Keeping it
+/// in the same paint layer as the input cards lets later content cover the
+/// icon/title naturally when the page is pushed upward by scrolling or the
+/// keyboard.
+class FeatureHeroHeader extends StatelessWidget {
+  const FeatureHeroHeader({
+    super.key,
+    required this.feature,
+    required this.title,
+    required this.color,
+    this.trailing,
+    this.height = 112,
+  });
+
+  final AppFeature feature;
+  final String title;
+  final Color color;
+  final Widget? trailing;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            height: kToolbarHeight,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FeatureHeaderTitle(
+                      feature: feature,
+                      title: title,
+                      color: color,
+                    ),
+                  ),
+                ),
+                ?trailing,
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Large icon + colored title + subtitle shown at the top of a feature page's
 /// scroll content. Mirrors the style of the Home page feature tiles.
 class FeaturePageHeader extends StatelessWidget {
