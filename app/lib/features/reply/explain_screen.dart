@@ -207,7 +207,6 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
               feature: _feature,
               title: context.l10n.explain,
               color: _kColor,
-              height: kToolbarHeight,
               trailing: ReplyStatusBadge(
                 usage: usage,
                 onTap: () => context.push(AppRoutes.paywall),
@@ -219,6 +218,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 GlassCard(
+                  key: const Key('explain-message-card'),
                   feature: _feature,
                   showFeatureImage: false,
                   tintColor: _kCardTint,

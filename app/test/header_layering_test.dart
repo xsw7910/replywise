@@ -117,6 +117,11 @@ void main() {
       find.byKey(const Key('explain-hero-header')),
     );
     expect(headerRect.top, lessThanOrEqualTo(1));
+    expect(headerRect.height, 112);
+    expect(
+      tester.getTopLeft(find.byKey(const Key('explain-message-card'))).dy,
+      130,
+    );
     expect(find.text('Message to understand'), findsOneWidget);
   });
 }
