@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_feature_theme.dart';
 import '../../../core/localization/localization_extensions.dart';
+import '../../../core/text/paste_into_controller.dart';
 import '../../../core/widgets/labeled_text_field.dart';
 
 /// Shared guidance editor used by Reply and Polish.
@@ -82,21 +82,7 @@ class _GuidanceTextFieldState extends State<GuidanceTextField> {
   }
 
   Future<void> _paste() async {
-    final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text;
-    if (text == null || text.isEmpty) return;
-
-    // Preserve the existing Reply behavior: Paste replaces the current
-    // guidance, caps it to the shared limit, and leaves the cursor at the
-    // end. One atomic value update: no intermediate text-without-selection
-    // frame.
-    final next = text.length > widget.maxLength
-        ? text.substring(0, widget.maxLength)
-        : text;
-    widget.controller.value = TextEditingValue(
-      text: next,
-      selection: TextSelection.collapsed(offset: next.length),
-    );
+    await pasteIntoController(widget.controller, maxLength: widget.maxLength);
   }
 
   @override

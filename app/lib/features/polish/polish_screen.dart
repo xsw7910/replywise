@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,6 +6,7 @@ import '../../core/constants/input_limits.dart';
 import '../../core/localization/localization_extensions.dart';
 import '../../core/localization/locale_controller.dart';
 import '../../core/router/app_router.dart';
+import '../../core/text/paste_into_controller.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../app_status/presentation/app_status_dialogs.dart';
@@ -178,13 +178,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   }
 
   Future<void> _pasteDraft() async {
-    final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text;
-    if (text == null || text.isEmpty) return;
-    _draftController.text = text.length > 4000 ? text.substring(0, 4000) : text;
-    _draftController.selection = TextSelection.collapsed(
-      offset: _draftController.text.length,
-    );
+    await pasteIntoController(_draftController, maxLength: 4000);
   }
 
   String? _effectiveTone() {

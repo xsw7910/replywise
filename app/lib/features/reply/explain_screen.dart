@@ -8,6 +8,7 @@ import '../../core/localization/localization_extensions.dart';
 import '../../core/localization/locale_controller.dart';
 import '../../core/router/app_router.dart';
 import '../../core/share/share_helper.dart';
+import '../../core/text/paste_into_controller.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_feature_theme.dart';
 import '../app_status/presentation/app_status_dialogs.dart';
@@ -70,14 +71,9 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   }
 
   Future<void> _pasteMessage() async {
-    final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text;
-    if (text == null || text.isEmpty) return;
-    _messageController.text = text.length > InputLimits.explainMessageMaxLength
-        ? text.substring(0, InputLimits.explainMessageMaxLength)
-        : text;
-    _messageController.selection = TextSelection.collapsed(
-      offset: _messageController.text.length,
+    await pasteIntoController(
+      _messageController,
+      maxLength: InputLimits.explainMessageMaxLength,
     );
   }
 
