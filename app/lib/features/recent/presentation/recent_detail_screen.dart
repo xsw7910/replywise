@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/localization/localization_extensions.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_feature_theme.dart';
 import '../../../core/widgets/app_page.dart';
+import '../../../core/widgets/generated_result_card.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../application/recent_providers.dart';
 import '../domain/recent_item.dart';
@@ -35,8 +37,9 @@ class RecentDetailScreen extends ConsumerWidget {
       body = ref
           .watch(recentItemByIdProvider(id))
           .when(
-            data: (loaded) =>
-                loaded == null ? const _MissingBody() : _DetailBody(item: loaded),
+            data: (loaded) => loaded == null
+                ? const _MissingBody()
+                : _DetailBody(item: loaded),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (_, _) => const _MissingBody(),
           );
@@ -102,18 +105,33 @@ class _DetailBody extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 16),
-        _Section(
-          label: _resultLabel(context, item.type),
-          trailing: TextButton.icon(
-            onPressed: () => _copyResult(context),
-            icon: const Icon(Icons.copy_rounded, size: 18),
-            label: Text(context.l10n.copyResult),
+        if (item.type == RecentType.reply)
+          ...item.replyVersions.indexed.expand(
+            (entry) => [
+              if (entry.$1 > 0) const SizedBox(height: 12),
+              GeneratedResultCard(
+                key: Key('recent-reply-${entry.$2.label.toLowerCase()}'),
+                label: _replyVersionLabel(context, entry.$2.label),
+                text: entry.$2.text,
+                feature: AppFeature.reply,
+                shareTooltip: context.l10n.shareReply,
+                showFeatureImage: false,
+              ),
+            ],
+          )
+        else
+          _Section(
+            label: _resultLabel(context, item.type),
+            trailing: TextButton.icon(
+              onPressed: () => _copyResult(context),
+              icon: const Icon(Icons.copy_rounded, size: 18),
+              label: Text(context.l10n.copyResult),
+            ),
+            child: SelectableText(
+              item.outputText.isEmpty ? '—' : item.outputText,
+              style: AppTextStyles.body,
+            ),
           ),
-          child: SelectableText(
-            item.outputText.isEmpty ? '—' : item.outputText,
-            style: AppTextStyles.body,
-          ),
-        ),
         if (_metadata(context).isNotEmpty) ...[
           const SizedBox(height: 16),
           _Section(
@@ -168,6 +186,14 @@ class _DetailBody extends ConsumerWidget {
     ];
   }
 }
+
+String _replyVersionLabel(BuildContext context, String label) =>
+    switch (label) {
+      'Professional' => context.l10n.professional,
+      'Friendly' => context.l10n.friendly,
+      'Short' => context.l10n.short,
+      _ => label,
+    };
 
 String _typeLabel(BuildContext context, RecentType type) => switch (type) {
   RecentType.reply => context.l10n.reply,

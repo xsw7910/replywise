@@ -313,12 +313,27 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
         result != null &&
         result.versions.isNotEmpty) {
       final guidance = _guidanceController.text.trim();
+      String? versionText(String label) {
+        for (final version in result.versions) {
+          if (version.label.toLowerCase() == label.toLowerCase()) {
+            return version.text;
+          }
+        }
+        return null;
+      }
+
+      final professional = versionText('Professional');
+      final friendly = versionText('Friendly');
+      final short = versionText('Short');
       await saveRecentItem(
         ref,
         RecentItem.create(
           type: RecentType.reply,
           inputText: incoming,
-          outputText: result.versions.first.text,
+          outputText: professional ?? result.versions.first.text,
+          professionalText: professional,
+          friendlyText: friendly,
+          shortText: short,
           guidance: guidance.isEmpty ? null : guidance,
           tone: _tone == 'Auto' ? null : _tone,
           channel: _channel == 'Auto' ? null : _channel,

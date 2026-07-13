@@ -15,6 +15,8 @@ import 'package:replywise/features/guidance/data/guidance_library_repository.dar
 import 'package:replywise/features/reply/data/reply_repository.dart';
 import 'package:replywise/features/reply/domain/reply_models.dart';
 import 'package:replywise/features/reply/reply_screen.dart';
+import 'package:replywise/features/recent/data/recent_repository.dart';
+import 'package:replywise/features/recent/domain/recent_item.dart';
 
 class _Storage extends TokenStorage {
   _Storage() : super(const FlutterSecureStorage());
@@ -55,6 +57,17 @@ class _RecordingReplyRepository extends ReplyRepository {
       ],
       why: 'Test result',
     );
+  }
+}
+
+class _RecordingRecentRepository extends RecentRepository {
+  _RecordingRecentRepository(super.prefs);
+
+  RecentItem? savedItem;
+
+  @override
+  Future<void> add(RecentItem item) async {
+    savedItem = item;
   }
 }
 
@@ -182,6 +195,66 @@ void main() {
     await tester.pumpAndSettle();
     expect(copied, ['Professional reply']);
     expect(find.text('Copied'), findsOneWidget);
+  });
+
+  testWidgets('successful Reply saves all three versions in one history item', (
+    tester,
+  ) async {
+    _useTallView(tester);
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (_) async => null,
+    );
+    const secureStorageChannel = MethodChannel(
+      'plugins.it_nomads.com/flutter_secure_storage',
+    );
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      secureStorageChannel,
+      (_) async => null,
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        secureStorageChannel,
+        null,
+      ),
+    );
+    SharedPreferences.setMockInitialValues({});
+    final history = _RecordingRecentRepository(
+      await SharedPreferences.getInstance(),
+    );
+    await _pumpReply(
+      tester,
+      repository: _RecordingReplyRepository(),
+      overrides: [recentRepositoryProvider.overrideWithValue(history)],
+    );
+    await tester.enterText(
+      _editableIn(const Key('reply-incoming-field')),
+      'Can you send the report?',
+    );
+    await tester.tap(find.text('Generate Reply'));
+    await tester.pumpAndSettle();
+
+    await tester.runAsync(() async {
+      for (
+        var attempt = 0;
+        attempt < 20 && history.savedItem == null;
+        attempt++
+      ) {
+        await Future<void>.delayed(const Duration(milliseconds: 5));
+      }
+    });
+
+    final item = history.savedItem!;
+    expect(item.professionalText, 'Professional reply');
+    expect(item.friendlyText, 'Friendly reply');
+    expect(item.shortText, 'Short reply');
+    expect(item.outputText, 'Professional reply');
   });
 
   testWidgets(

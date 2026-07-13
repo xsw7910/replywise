@@ -26,6 +26,9 @@ RecentItem _item({
   String output = 'It ships today.',
   String? guidance,
   String? tone,
+  String? professionalText,
+  String? friendlyText,
+  String? shortText,
 }) => RecentItem(
   id: id,
   type: type,
@@ -35,6 +38,9 @@ RecentItem _item({
   createdAt: DateTime(2026, 7, 4, 14, 30),
   guidance: guidance,
   tone: tone,
+  professionalText: professionalText,
+  friendlyText: friendlyText,
+  shortText: shortText,
 );
 
 Widget _localized(Widget child) => MaterialApp(
@@ -94,15 +100,60 @@ void main() {
       ),
     );
 
-    await tester.pumpWidget(_localized(RecentDetailScreen(id: '1', initialItem: _item())));
+    await tester.pumpWidget(
+      _localized(RecentDetailScreen(id: '1', initialItem: _item())),
+    );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Copy result'));
+    await tester.tap(find.byKey(const Key('result-copy-button')));
     await tester.pumpAndSettle();
 
     expect(copied, hasLength(1));
     expect((copied.single.arguments as Map)['text'], 'It ships today.');
     expect(find.text('Copied'), findsOneWidget); // snackbar confirmation
+  });
+
+  testWidgets('Reply detail displays all three saved versions', (tester) async {
+    await tester.pumpWidget(
+      _localized(
+        RecentDetailScreen(
+          id: 'three',
+          initialItem: _item(
+            output: 'Professional reply',
+            professionalText: 'Professional reply',
+            friendlyText: 'Friendly reply',
+            shortText: 'Short reply',
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Professional reply'), findsOneWidget);
+    expect(find.text('Friendly reply'), findsOneWidget);
+    expect(find.text('Short reply'), findsOneWidget);
+    expect(find.byKey(const Key('result-copy-button')), findsNWidgets(3));
+    expect(find.byTooltip('Share reply'), findsNWidgets(3));
+  });
+
+  testWidgets('Polish and Explain details retain single-output layout', (
+    tester,
+  ) async {
+    for (final type in [RecentType.polish, RecentType.explain]) {
+      await tester.pumpWidget(
+        _localized(
+          RecentDetailScreen(
+            id: type.name,
+            initialItem: _item(type: type, output: '${type.name} output'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('${type.name} output'), findsOneWidget);
+      expect(find.text('Copy result'), findsOneWidget);
+      expect(find.byTooltip('Share reply'), findsNothing);
+    }
   });
 
   testWidgets('tapping a recent item opens its detail page', (tester) async {
@@ -160,55 +211,62 @@ void main() {
     expect(find.text('It ships today.'), findsOneWidget);
   });
 
-  group('Use again navigates to the feature page with the input handed off', () {
-    Future<void> pumpHandoff(WidgetTester tester, RecentItem item) async {
-      final router = GoRouter(
-        initialLocation: '${AppRoutes.recentDetail}/${item.id}',
-        routes: [
-          GoRoute(
-            path: '${AppRoutes.recentDetail}/:id',
-            builder: (context, state) =>
-                RecentDetailScreen(id: item.id, initialItem: item),
+  group(
+    'Use again navigates to the feature page with the input handed off',
+    () {
+      Future<void> pumpHandoff(WidgetTester tester, RecentItem item) async {
+        final router = GoRouter(
+          initialLocation: '${AppRoutes.recentDetail}/${item.id}',
+          routes: [
+            GoRoute(
+              path: '${AppRoutes.recentDetail}/:id',
+              builder: (context, state) =>
+                  RecentDetailScreen(id: item.id, initialItem: item),
+            ),
+            GoRoute(
+              path: AppRoutes.reply,
+              builder: (_, _) => _Echo(pendingReplyInputProvider),
+            ),
+            GoRoute(
+              path: AppRoutes.polish,
+              builder: (_, _) => _Echo(pendingPolishInputProvider),
+            ),
+            GoRoute(
+              path: AppRoutes.explain,
+              builder: (_, _) => _Echo(pendingExplainInputProvider),
+            ),
+          ],
+        );
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp.router(
+              routerConfig: router,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+            ),
           ),
-          GoRoute(
-            path: AppRoutes.reply,
-            builder: (_, _) => _Echo(pendingReplyInputProvider),
-          ),
-          GoRoute(
-            path: AppRoutes.polish,
-            builder: (_, _) => _Echo(pendingPolishInputProvider),
-          ),
-          GoRoute(
-            path: AppRoutes.explain,
-            builder: (_, _) => _Echo(pendingExplainInputProvider),
-          ),
-        ],
-      );
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp.router(
-            routerConfig: router,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-    }
-
-    for (final type in RecentType.values) {
-      testWidgets('for a ${type.name} item', (tester) async {
-        final item = _item(id: type.name, type: type, input: 'saved ${type.name} input');
-        await pumpHandoff(tester, item);
-
-        await tester.tap(find.byKey(const Key('recent-detail-use-again')));
+        );
         await tester.pumpAndSettle();
+      }
 
-        // Landed on the matching feature route with the input handed off.
-        expect(find.text('echo:saved ${type.name} input'), findsOneWidget);
-      });
-    }
-  });
+      for (final type in RecentType.values) {
+        testWidgets('for a ${type.name} item', (tester) async {
+          final item = _item(
+            id: type.name,
+            type: type,
+            input: 'saved ${type.name} input',
+          );
+          await pumpHandoff(tester, item);
+
+          await tester.tap(find.byKey(const Key('recent-detail-use-again')));
+          await tester.pumpAndSettle();
+
+          // Landed on the matching feature route with the input handed off.
+          expect(find.text('echo:saved ${type.name} input'), findsOneWidget);
+        });
+      }
+    },
+  );
 
   testWidgets('Polish screen prefills its draft from the pending input', (
     tester,

@@ -46,7 +46,10 @@ void main() {
         RecentType.reply,
         'Hi John, sorry I missed your call yesterday...',
       );
-      expect(title.startsWith('Reply to: Hi John, sorry I missed your'), isTrue);
+      expect(
+        title.startsWith('Reply to: Hi John, sorry I missed your'),
+        isTrue,
+      );
       expect(title.endsWith('...'), isTrue);
     });
   });
@@ -64,6 +67,9 @@ void main() {
         tone: 'Friendly',
         channel: 'Email',
         length: 'Short',
+        professionalText: 'Professional reply',
+        friendlyText: 'Friendly reply',
+        shortText: 'Short reply',
       );
       final decoded = RecentItem.fromJson(
         jsonDecode(jsonEncode(item.toJson())) as Map<String, dynamic>,
@@ -78,6 +84,24 @@ void main() {
       expect(decoded.tone, 'Friendly');
       expect(decoded.channel, 'Email');
       expect(decoded.length, 'Short');
+      expect(decoded.professionalText, 'Professional reply');
+      expect(decoded.friendlyText, 'Friendly reply');
+      expect(decoded.shortText, 'Short reply');
+    });
+
+    test('legacy single-output Reply falls back to Professional', () {
+      final legacy = RecentItem.fromJson({
+        'id': 'legacy',
+        'type': 'reply',
+        'title': 'Reply to: hello',
+        'inputText': 'hello',
+        'outputText': 'Legacy reply',
+        'createdAt': '2026-07-04T14:30:00.000Z',
+      });
+
+      expect(legacy.replyVersions, [
+        (label: 'Professional', text: 'Legacy reply'),
+      ]);
     });
 
     test('omits null optional fields from JSON', () {
@@ -112,63 +136,72 @@ void main() {
       expect((await repo.getAll()).map((e) => e.id).toList(), ['a', 'b']);
     });
 
-    test('deduplicates by type + input, updating output and moving to top',
-        () async {
-      final repo = await _repo();
-      await repo.add(
-        RecentItem(
-          id: 'a',
-          type: RecentType.reply,
-          title: 'Reply to: hi',
-          inputText: 'same input',
-          outputText: 'first',
-          createdAt: DateTime(2026, 7, 4, 10),
-        ),
-      );
-      await repo.add(_item('b')); // different input — stays
-      // Regenerate of the same input: new id and new output.
-      await repo.add(
-        RecentItem(
-          id: 'c',
-          type: RecentType.reply,
-          title: 'Reply to: hi',
-          inputText: 'same input',
-          outputText: 'second',
-          createdAt: DateTime(2026, 7, 4, 11),
-        ),
-      );
+    test(
+      'deduplicates by type + input, updating output and moving to top',
+      () async {
+        final repo = await _repo();
+        await repo.add(
+          RecentItem(
+            id: 'a',
+            type: RecentType.reply,
+            title: 'Reply to: hi',
+            inputText: 'same input',
+            outputText: 'first',
+            createdAt: DateTime(2026, 7, 4, 10),
+          ),
+        );
+        await repo.add(_item('b')); // different input — stays
+        // Regenerate of the same input: new id and new output.
+        await repo.add(
+          RecentItem(
+            id: 'c',
+            type: RecentType.reply,
+            title: 'Reply to: hi',
+            inputText: 'same input',
+            outputText: 'second',
+            createdAt: DateTime(2026, 7, 4, 11),
+          ),
+        );
 
-      final all = await repo.getAll();
-      expect(all.length, 2, reason: 'the regenerate must not add a duplicate');
-      expect(all.first.id, 'c');
-      expect(all.first.outputText, 'second');
-      expect(all.where((e) => e.inputText == 'same input').length, 1);
-    });
+        final all = await repo.getAll();
+        expect(
+          all.length,
+          2,
+          reason: 'the regenerate must not add a duplicate',
+        );
+        expect(all.first.id, 'c');
+        expect(all.first.outputText, 'second');
+        expect(all.where((e) => e.inputText == 'same input').length, 1);
+      },
+    );
 
-    test('does not deduplicate the same input across different types', () async {
-      final repo = await _repo();
-      await repo.add(
-        RecentItem(
-          id: 'a',
-          type: RecentType.reply,
-          title: 't',
-          inputText: 'shared',
-          outputText: 'o',
-          createdAt: DateTime(2026),
-        ),
-      );
-      await repo.add(
-        RecentItem(
-          id: 'b',
-          type: RecentType.polish,
-          title: 't',
-          inputText: 'shared',
-          outputText: 'o',
-          createdAt: DateTime(2026),
-        ),
-      );
-      expect((await repo.getAll()).length, 2);
-    });
+    test(
+      'does not deduplicate the same input across different types',
+      () async {
+        final repo = await _repo();
+        await repo.add(
+          RecentItem(
+            id: 'a',
+            type: RecentType.reply,
+            title: 't',
+            inputText: 'shared',
+            outputText: 'o',
+            createdAt: DateTime(2026),
+          ),
+        );
+        await repo.add(
+          RecentItem(
+            id: 'b',
+            type: RecentType.polish,
+            title: 't',
+            inputText: 'shared',
+            outputText: 'o',
+            createdAt: DateTime(2026),
+          ),
+        );
+        expect((await repo.getAll()).length, 2);
+      },
+    );
 
     test('skips a malformed record but keeps the valid ones', () async {
       final good = _item('a').toJson();
@@ -178,7 +211,9 @@ void main() {
         'title': 't',
         'createdAt': '2026-07-04T10:00:00.000',
       };
-      final repo = await _repo({_key: jsonEncode([bad, good])});
+      final repo = await _repo({
+        _key: jsonEncode([bad, good]),
+      });
       final all = await repo.getAll();
       expect(all.length, 1);
       expect(all.single.id, 'a');
@@ -189,10 +224,10 @@ void main() {
       for (final id in ['a', 'b', 'c']) {
         await repo.add(_item(id));
       }
-      expect(
-        (await repo.getLatest(limit: 2)).map((e) => e.id).toList(),
-        ['c', 'b'],
-      );
+      expect((await repo.getLatest(limit: 2)).map((e) => e.id).toList(), [
+        'c',
+        'b',
+      ]);
     });
 
     test('caps stored items at 50 (keeping the newest)', () async {
@@ -231,11 +266,14 @@ void main() {
       expect(await repo.getAll(), isEmpty);
     });
 
-    test('persisted data survives a new repository instance (restart)', () async {
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      await RecentRepository(prefs).add(_item('a'));
-      expect((await RecentRepository(prefs).getAll()).single.id, 'a');
-    });
+    test(
+      'persisted data survives a new repository instance (restart)',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        await RecentRepository(prefs).add(_item('a'));
+        expect((await RecentRepository(prefs).getAll()).single.id, 'a');
+      },
+    );
   });
 }

@@ -48,6 +48,9 @@ class RecentItem {
     this.tone,
     this.channel,
     this.length,
+    this.professionalText,
+    this.friendlyText,
+    this.shortText,
   });
 
   final String id;
@@ -63,6 +66,26 @@ class RecentItem {
   final String? tone;
   final String? channel;
   final String? length;
+  final String? professionalText;
+  final String? friendlyText;
+  final String? shortText;
+
+  /// Reply variants in their result-screen order. Legacy Reply records only
+  /// have [outputText], which remains available as the Professional fallback.
+  List<({String label, String text})> get replyVersions {
+    if (type != RecentType.reply) return const [];
+    final professional = professionalText?.trim().isNotEmpty == true
+        ? professionalText!
+        : outputText;
+    return [
+      if (professional.trim().isNotEmpty)
+        (label: 'Professional', text: professional),
+      if (friendlyText?.trim().isNotEmpty == true)
+        (label: 'Friendly', text: friendlyText!),
+      if (shortText?.trim().isNotEmpty == true)
+        (label: 'Short', text: shortText!),
+    ];
+  }
 
   /// Builds a new item with a fresh id, `createdAt = now`, and a locally
   /// generated [title]. Used by the generation screens on success.
@@ -74,6 +97,9 @@ class RecentItem {
     String? tone,
     String? channel,
     String? length,
+    String? professionalText,
+    String? friendlyText,
+    String? shortText,
   }) => RecentItem(
     id: const Uuid().v4(),
     type: type,
@@ -85,6 +111,9 @@ class RecentItem {
     tone: tone,
     channel: channel,
     length: length,
+    professionalText: professionalText,
+    friendlyText: friendlyText,
+    shortText: shortText,
   );
 
   Map<String, dynamic> toJson() => {
@@ -98,6 +127,9 @@ class RecentItem {
     if (tone != null) 'tone': tone,
     if (channel != null) 'channel': channel,
     if (length != null) 'length': length,
+    if (professionalText != null) 'professionalText': professionalText,
+    if (friendlyText != null) 'friendlyText': friendlyText,
+    if (shortText != null) 'shortText': shortText,
   };
 
   /// Throws if a required field is missing or a value is malformed. The
@@ -113,6 +145,9 @@ class RecentItem {
     tone: json['tone'] as String?,
     channel: json['channel'] as String?,
     length: json['length'] as String?,
+    professionalText: json['professionalText'] as String?,
+    friendlyText: json['friendlyText'] as String?,
+    shortText: json['shortText'] as String?,
   );
 }
 
