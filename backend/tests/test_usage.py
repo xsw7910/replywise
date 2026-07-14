@@ -51,6 +51,11 @@ def _polish(client: TestClient, auth: dict[str, str], key: str, draft: str = 'He
     }, headers={**auth, 'X-Idempotency-Key': key})
 
 
+def _explain(client: TestClient, auth: dict[str, str], key: str, text: str = 'Hello'):
+    return client.post('/v1/explain', json={'text': text},
+                       headers={**auth, 'X-Idempotency-Key': key})
+
+
 def _seed_successful_free_events(user_id: int, count: int) -> None:
     async def seed() -> None:
         async with AsyncSessionLocal() as db:
@@ -266,15 +271,140 @@ def test_model_failure_rolls_back_usage(client: TestClient) -> None:
     assert client.get('/v1/me', headers=auth).json()['freeUsesUsed'] == 0
 
 
-def test_explain_is_free_and_rate_limited(client: TestClient, monkeypatch) -> None:
+def test_explain_deducts_one_use_and_returns_balance(client: TestClient) -> None:
+    """A successful Explain consumes exactly one use from the shared pool and
+    returns the updated balance like Reply and Polish."""
+    auth, _ = _auth(client, 'explain-deduct')
+    response = _explain(client, auth, 'explain-deduct-1')
+    assert response.status_code == 200
+    usage = response.json()['usage']
+    assert usage['source'] == 'free'
+    assert usage['creditsUsed'] == 1
+    assert usage['freeUsesLeft'] == 2
+    assert client.get('/v1/me', headers=auth).json()['freeUsesUsed'] == 1
+
+
+def test_explain_daily_limit_still_applies_without_charging(
+    client: TestClient, monkeypatch
+) -> None:
     from app.config import settings
     monkeypatch.setattr(settings, 'explain_daily_limit', 1)
-    auth, _ = _auth(client, 'explain-free')
-    assert client.post('/v1/explain', json={'text': 'Hello'}, headers=auth).status_code == 200
-    limited = client.post('/v1/explain', json={'text': 'Again'}, headers=auth)
+    auth, _ = _auth(client, 'explain-daily')
+    assert _explain(client, auth, 'explain-daily-1').status_code == 200
+    limited = _explain(client, auth, 'explain-daily-2', text='Again')
     assert limited.status_code == 429
     assert limited.json()['error']['code'] == 'RATE_LIMITED'
+    # Only the successful call charged the pool.
+    assert client.get('/v1/me', headers=auth).json()['freeUsesUsed'] == 1
+
+
+def test_explain_failure_rolls_back_usage(client: TestClient) -> None:
+    auth, _ = _auth(client, 'explain-rollback')
+    app.dependency_overrides[get_ai_service] = lambda: AIService(_Unavailable())
+    try:
+        response = _explain(client, auth, 'explain-rollback-key')
+    finally:
+        app.dependency_overrides.pop(get_ai_service, None)
+    assert response.status_code == 503
     assert client.get('/v1/me', headers=auth).json()['freeUsesUsed'] == 0
+
+
+def test_explain_blocked_without_credits(client: TestClient) -> None:
+    auth, user_id = _auth(client, 'explain-paywall')
+
+    async def exhaust() -> None:
+        async with AsyncSessionLocal() as db:
+            user = await db.get(User, user_id)
+            device = await db.get(DeviceUsage, user.device_hash)
+            if device is None:
+                db.add(DeviceUsage(
+                    device_hash=user.device_hash,
+                    free_uses_limit=settings.free_lifetime_limit,
+                    free_uses_used=settings.free_lifetime_limit,
+                ))
+            else:
+                device.free_uses_used = device.free_uses_limit
+            await db.commit()
+    asyncio.run(exhaust())
+
+    blocked = _explain(client, auth, 'explain-paywall-key')
+    assert blocked.status_code == 402
+    assert blocked.json()['error']['code'] == 'PAYWALL_REQUIRED'
+
+
+def test_explain_premium_is_not_billed(client: TestClient) -> None:
+    auth, user_id = _auth(client, 'explain-premium')
+
+    async def make_premium() -> None:
+        async with AsyncSessionLocal() as db:
+            db.add(SubscriptionCache(
+                user_id=user_id,
+                entitlement_id='premium',
+                is_premium=True,
+                product_identifier='premium_yearly:yearly',
+            ))
+            await db.commit()
+    asyncio.run(make_premium())
+
+    response = _explain(client, auth, 'explain-premium-key')
+    assert response.status_code == 200
+    usage = response.json()['usage']
+    assert usage['isPremium'] is True
+    assert usage['source'] is None  # premium is not billed
+    assert usage['creditsUsed'] == 0
+    assert client.get('/v1/me', headers=auth).json()['freeUsesUsed'] == 0
+
+
+def test_explain_idempotent_replay_and_conflict(client: TestClient) -> None:
+    auth, _ = _auth(client, 'explain-idem')
+    first = _explain(client, auth, 'explain-same-key')
+    replay = _explain(client, auth, 'explain-same-key')
+    conflict = _explain(client, auth, 'explain-same-key', text='Different')
+    assert first.status_code == 200
+    assert replay.status_code == 200
+    assert replay.json() == first.json()
+    assert conflict.status_code == 409
+    assert conflict.json()['error']['code'] == 'IDEMPOTENCY_CONFLICT'
+    # The replay did not deduct a second use.
+    assert client.get('/v1/me', headers=auth).json()['freeUsesUsed'] == 1
+
+
+def test_explain_concurrent_duplicate_key_charges_once(client: TestClient) -> None:
+    """While a key is processing, a duplicate Explain request conflicts instead
+    of charging again (same begin_generation machinery as Reply/Polish)."""
+    auth, user_id = _auth(client, 'explain-concurrent')
+    assert _explain(client, auth, 'explain-warmup').status_code == 200
+
+    async def race() -> str:
+        async with AsyncSessionLocal() as db:
+            user = await db.get(User, user_id)
+            source, cached = await begin_generation(
+                db=db,
+                user_id=user_id,
+                device_hash=user.device_hash,
+                endpoint='explain',
+                key='explain-race-key',
+                request_hash='race-hash',
+            )
+            assert source == 'free' and cached is None
+        # Second request arrives while the first is still processing.
+        async with AsyncSessionLocal() as db:
+            try:
+                await begin_generation(
+                    db=db,
+                    user_id=user_id,
+                    device_hash=user.device_hash,
+                    endpoint='explain',
+                    key='explain-race-key',
+                    request_hash='race-hash',
+                )
+            except ApiException as error:
+                return error.code
+            return 'no-error'
+
+    assert asyncio.run(race()) == 'IDEMPOTENCY_CONFLICT'
+    # warmup (1) + the single processing reservation (1) = 2, not 3.
+    assert client.get('/v1/me', headers=auth).json()['freeUsesUsed'] == 2
 
 
 def test_generation_database_rate_limit(client: TestClient, monkeypatch) -> None:

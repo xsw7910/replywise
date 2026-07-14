@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/constants/input_limits.dart';
 import '../../../core/network/api_error.dart';
+import '../../entitlement/usage_controller.dart';
 import '../data/explain_repository.dart';
 import '../domain/reply_models.dart';
 
@@ -49,6 +52,11 @@ class ExplainController extends _$ExplainController {
             appLocale: appLocale,
           );
       state = const ExplainState();
+      // Explain now consumes a credit: kick off the balance refresh right
+      // away, exactly like Reply and Polish. Not awaited — the explanation
+      // result must reach the screen even while the balance fetch is still in
+      // flight, and UsageController.refresh() handles its own errors.
+      unawaited(ref.read(usageControllerProvider.notifier).refresh());
       return result;
     } on ApiError catch (error) {
       state = ExplainState(

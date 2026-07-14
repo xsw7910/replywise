@@ -61,7 +61,9 @@ ReplyWise helps non-native English speakers understand messages, express reply i
 ## Product decisions
 
 - Regenerate consumes one unit for non-premium users and must be disclosed before use.
-- Explain does not consume a usage unit but has its own backend rate limit.
+- Explain consumes one usage unit (free use or paid credit) per successful
+  generation, exactly like Reply and Polish, and additionally keeps its own
+  backend daily rate limit as an abuse guard.
 - Copy never auto-sends or automatically switches back to another app.
 - The first UI has one light-blue glass style; no theme selector or dark theme.
 - The paywall presents both a 3-day subscription trial and one-time credit packages.

@@ -190,8 +190,15 @@ async def explain(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: AIService = Depends(get_ai_service),
+    idempotency_key: str | None = Header(None, alias="X-Idempotency-Key"),
 ) -> ExplainResponse:
+    """Explain is billed like Reply and Polish: one free use or paid credit per
+    successful generation, with the same idempotency and rollback guarantees.
+    The pre-existing daily cap remains as an abuse guard and is checked before
+    anything is charged."""
     body.text = _required(body.text, "text", 4000)
+    if not idempotency_key:
+        raise ApiException("VALIDATION_ERROR", "X-Idempotency-Key is required", 400)
     day_start = datetime.combine(datetime.now(timezone.utc).date(), time.min, timezone.utc)
     count = await db.scalar(
         select(func.count(UsageEvent.id)).where(
@@ -207,12 +214,22 @@ async def explain(
             status_code=429,
         )
 
+    _, request_hash = canonicalize(body)
+    source, cached = await begin_generation(
+        db,
+        current_user.id,
+        current_user.device_hash,
+        "explain",
+        idempotency_key,
+        request_hash,
+        is_premium=await is_user_premium(db, current_user.id),
+    )
+    if cached is not None:
+        return ExplainResponse.model_validate(cached)
     try:
         result = await service.explain(body)
-        db.add(UsageEvent(user_id=current_user.id, endpoint="explain", credits_used=0, source="explain", prompt_version="explain_v1", success=True))
-        await db.commit()
-        return result
     except ApiException as error:
-        db.add(UsageEvent(user_id=current_user.id, endpoint="explain", credits_used=0, source="explain", prompt_version="explain_v1", success=False, error_code=error.code))
-        await db.commit()
+        await rollback_generation(db, current_user.id, current_user.device_hash, "explain", idempotency_key, source, error.code)
         raise
+    combined = await finish_generation(db, current_user.id, current_user.device_hash, "explain", idempotency_key, source, result.model_dump(mode="json", by_alias=True))
+    return ExplainResponse.model_validate(combined)

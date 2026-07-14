@@ -8,7 +8,9 @@ import 'package:replywise/core/network/api_error.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/entitlement/entitlement_state.dart';
 import 'package:replywise/features/entitlement/usage_repository.dart';
+import 'package:replywise/features/reply/application/explain_controller.dart';
 import 'package:replywise/features/reply/application/reply_controller.dart';
+import 'package:replywise/features/reply/data/explain_repository.dart';
 import 'package:replywise/features/reply/data/reply_repository.dart';
 import 'package:replywise/features/reply/domain/reply_models.dart';
 
@@ -56,6 +58,27 @@ class _QueuedReplyRepo extends ReplyRepository {
   }
 }
 
+class _FakeExplainRepo extends ExplainRepository {
+  _FakeExplainRepo({this.error}) : super(_dummyClient());
+
+  final ApiError? error;
+
+  @override
+  Future<ExplainResult> explain({
+    required String text,
+    required String explainLang,
+    String? appLocale,
+  }) async {
+    if (error != null) throw error!;
+    return const ExplainResult(
+      meaning: 'They agree.',
+      tone: 'Warm.',
+      hiddenMeaning: '',
+      suggestedReplies: ['Sounds good!'],
+    );
+  }
+}
+
 class _FakeUsageRepo extends UsageRepository {
   _FakeUsageRepo() : super(_dummyClient());
 
@@ -79,11 +102,14 @@ const _request = ReplyRequest(
 
 ProviderContainer _container({
   ReplyRepository? replyRepo,
+  ExplainRepository? explainRepo,
   _FakeUsageRepo? usageRepo,
 }) {
   final c = ProviderContainer(overrides: [
     if (replyRepo != null)
       replyRepositoryProvider.overrideWith((ref) => replyRepo),
+    if (explainRepo != null)
+      explainRepositoryProvider.overrideWith((ref) => explainRepo),
     if (usageRepo != null)
       usageRepositoryProvider.overrideWith((ref) => usageRepo),
   ]);
@@ -208,6 +234,69 @@ void main() {
       await c.read(replyControllerProvider.notifier).generate(_request);
 
       expect(usageRepo.fetchCount, 0);
+    });
+  });
+
+  group('ExplainController billing behavior', () {
+    Future<ExplainResult?> explain(ProviderContainer c) =>
+        c.read(explainControllerProvider.notifier).explain(
+              text: 'What does this mean?',
+              explainLang: 'en',
+            );
+
+    test('refreshes the credit balance after a successful explain', () async {
+      final usageRepo = _FakeUsageRepo();
+      final c = _container(
+        explainRepo: _FakeExplainRepo(),
+        usageRepo: usageRepo,
+      );
+
+      final result = await explain(c);
+
+      expect(result, isNotNull);
+      expect(usageRepo.fetchCount, greaterThan(0));
+    });
+
+    test('does NOT refresh the balance after a failed explain', () async {
+      final usageRepo = _FakeUsageRepo();
+      final c = _container(
+        explainRepo: _FakeExplainRepo(
+          error: const ApiError(
+            code: 'MODEL_UNAVAILABLE',
+            message: 'down',
+            statusCode: 503,
+          ),
+        ),
+        usageRepo: usageRepo,
+      );
+
+      final result = await explain(c);
+
+      expect(result, isNull);
+      expect(usageRepo.fetchCount, 0);
+    });
+
+    test('surfaces PAYWALL_REQUIRED like Reply and Polish', () async {
+      final c = _container(
+        explainRepo: _FakeExplainRepo(
+          error: const ApiError(
+            code: 'PAYWALL_REQUIRED',
+            message: 'No AI uses remaining.',
+            statusCode: 402,
+          ),
+        ),
+        usageRepo: _FakeUsageRepo(),
+      );
+
+      final result = await explain(c);
+
+      expect(result, isNull);
+      final state = c.read(explainControllerProvider);
+      expect(state.errorCode, 'PAYWALL_REQUIRED');
+      expect(
+        state.error,
+        'You have no generations left. Choose Premium or add credits to continue.',
+      );
     });
   });
 }

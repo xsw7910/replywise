@@ -77,3 +77,4 @@ class ExplainResponse(ApiModel):
     tone: str
     hidden_meaning: str
     suggested_replies: list[str] = Field(min_length=1, max_length=3)
+    usage: UsageResponse | None = None

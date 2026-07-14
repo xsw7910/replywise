@@ -222,7 +222,7 @@ async def begin_generation(
     rate_count = await db.scalar(
         select(func.count(IdempotencyKey.key)).where(
             IdempotencyKey.user_id == user_id,
-            IdempotencyKey.endpoint.in_(["reply", "polish"]),
+            IdempotencyKey.endpoint.in_(["reply", "polish", "explain"]),
             IdempotencyKey.created_at >= since,
         )
     )

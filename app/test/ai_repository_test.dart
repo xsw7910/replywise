@@ -180,6 +180,9 @@ void main() {
       expect(client.path, '/v1/explain');
       expect(client.payload['explainLang'], 'zh');
       expect(client.payload['appLocale'], 'zh');
+      // Explain is billed like Reply/Polish and must carry an idempotency key
+      // so retries can never charge twice.
+      expect(client.options?.headers?['X-Idempotency-Key'], isNotEmpty);
       expect(result.hiddenMeaning, 'Subtext');
       expect(result.suggestedReplies, hasLength(1));
     },
