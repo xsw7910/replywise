@@ -819,13 +819,12 @@ class _QuickGuidanceChips extends StatelessWidget {
       ),
     ]..sort((a, b) => a.$1.length.compareTo(b.$1.length));
 
-    // The templates picker stays pinned first.
+    // The templates picker stays pinned first. Use the self-contained
+    // useATemplate string rather than concatenating use + useATemplate: the
+    // latter duplicated the verb in languages where useATemplate is already a
+    // full "Use a template" phrase (e.g. zh "使用 使用模板").
     final items = <(String, IconData, VoidCallback)>[
-      (
-        '${l10n.use} ${l10n.useATemplate.toLowerCase()}',
-        Icons.menu_book_rounded,
-        onOpenTemplates,
-      ),
+      (l10n.useATemplate, Icons.menu_book_rounded, onOpenTemplates),
       ...guidance,
     ];
 

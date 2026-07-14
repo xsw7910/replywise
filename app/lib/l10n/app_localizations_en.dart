@@ -918,7 +918,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useAgain => 'Use again';
 
   @override
-  String get useATemplate => 'Template';
+  String get useATemplate => 'Use template';
 
   @override
   String get acceptPolitely => 'Accept';

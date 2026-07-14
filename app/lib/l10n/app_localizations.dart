@@ -1834,7 +1834,7 @@ abstract class AppLocalizations {
   /// No description provided for @useATemplate.
   ///
   /// In en, this message translates to:
-  /// **'Template'**
+  /// **'Use template'**
   String get useATemplate;
 
   /// No description provided for @acceptPolitely.

@@ -620,11 +620,10 @@ class _PolishQuickGuidanceChips extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final items = <(String, IconData, VoidCallback)>[
-      (
-        '${l10n.use} ${l10n.useATemplate.toLowerCase()}',
-        Icons.menu_book_rounded,
-        onOpenLibrary,
-      ),
+      // Self-contained "Use template" string; concatenating use + useATemplate
+      // duplicated the verb in languages where useATemplate is already a full
+      // phrase (e.g. zh "使用 使用模板").
+      (l10n.useATemplate, Icons.menu_book_rounded, onOpenLibrary),
       (
         l10n.improveGrammar,
         Icons.spellcheck_rounded,
