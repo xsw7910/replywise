@@ -51,7 +51,7 @@ ReplyWise helps non-native English speakers understand messages, express reply i
 
 - Backend state is authoritative for premium, free usage, and paid credits.
 - Access order is premium first; otherwise free uses first, then paid credits; otherwise paywall.
-- Free lifetime limit is 5. `free_uses_used` is factual and is never reset during premium.
+- Free lifetime limit is 3. `free_uses_used` is factual and is never reset during premium.
 - Premium users consume neither free uses nor paid credits; `freeUsesLeft` is `null` for premium.
 - A successful non-premium generation consumes one unit; `source` identifies `free` or `credit`.
 - Generation uses backend-computed request hashes, idempotency, atomic pre-deduction, and source-aware rollback.
