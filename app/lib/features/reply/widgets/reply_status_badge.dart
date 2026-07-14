@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/localization/localization_extensions.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/credits_status_icon.dart';
 import '../../entitlement/entitlement_state.dart';
 
 /// Compact status pill shown on the right of the Reply page header.
@@ -70,13 +71,7 @@ class ReplyStatusBadge extends StatelessWidget {
                             fit: BoxFit.contain,
                           )
                   else
-                    Image.asset(
-                      'assets/icons/credites.png',
-                      key: const Key('credits-status-icon'),
-                      width: 22,
-                      height: 22,
-                      fit: BoxFit.contain,
-                    ),
+                    const CreditsStatusIcon(key: Key('credits-status-icon')),
                   const SizedBox(width: 5),
                   Text(
                     label,

@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:replywise/app.dart';
 import 'package:replywise/core/theme/app_colors.dart';
+import 'package:replywise/core/theme/app_text_styles.dart';
+import 'package:replywise/core/widgets/credits_status_icon.dart';
 import 'package:replywise/features/auth/data/auth_repository.dart';
 import 'package:replywise/features/auth/data/token_storage.dart';
 import 'package:replywise/features/guidance/data/guidance_library_repository.dart';
@@ -368,9 +370,86 @@ void main() {
     );
     expect(find.byKey(const Key('settings-credits-card')), findsOneWidget);
     expect(find.byKey(const Key('settings-options-group')), findsOneWidget);
+    final headerIcon = find.byKey(const Key('settings-header-icon'));
+    final headerTitle = find.byKey(const Key('settings-header-title'));
+    expect(headerIcon, findsOneWidget);
+    expect(headerTitle, findsOneWidget);
+    expect(
+      tester.getTopLeft(headerIcon).dx,
+      lessThan(tester.getTopLeft(headerTitle).dx),
+    );
+    expect(
+      tester.widget<Text>(headerTitle).style!.fontSize,
+      lessThan(AppTextStyles.pageTitle.fontSize!),
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('settings-credits-card')),
+        matching: find.byType(CreditsStatusIcon),
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Current plan'), findsOneWidget);
     expect(find.text('App language'), findsOneWidget);
     expect(find.text('Support'), findsOneWidget);
+    expect(find.text('About'), findsOneWidget);
+    expect(find.byKey(const Key('settings-guidance-row')), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Settings rows keep their existing actions', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await pumpReplyWiseApp(tester);
+    await tester.tap(find.text('Settings').last);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('settings-current-plan-row')));
+    await tester.pumpAndSettle();
+    expect(find.byType(PaywallScreen), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.byKey(const Key('settings-language-row')));
+    await tester.tap(find.byKey(const Key('settings-language-row')));
+    await tester.pumpAndSettle();
+    expect(find.text('Choose app language'), findsOneWidget);
+    await tester.tap(find.text('System default').last);
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.byKey(const Key('settings-support-row')));
+    await tester.tap(find.byKey(const Key('settings-support-row')));
+    await tester.pump();
+    expect(find.byType(SnackBar), findsOneWidget);
+
+    await tester.ensureVisible(find.byKey(const Key('settings-about-row')));
+    await tester.tap(find.byKey(const Key('settings-about-row')));
+    await tester.pump();
+    expect(find.byType(SnackBar), findsOneWidget);
+  });
+
+  testWidgets('Settings remains responsive on a narrow scaled viewport', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 700);
+    tester.view.devicePixelRatio = 1.0;
+    tester.platformDispatcher.textScaleFactorTestValue = 1.4;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+    await pumpReplyWiseApp(tester);
+    await tester.tap(find.text('Settings').last);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings-about-row')),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
+
+    expect(find.byKey(const Key('settings-header-icon')), findsOneWidget);
+    expect(find.byKey(const Key('settings-about-row')), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
