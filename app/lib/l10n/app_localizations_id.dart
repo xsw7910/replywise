@@ -25,6 +25,23 @@ class AppLocalizationsId extends AppLocalizations {
   String get aboutCopyright => '© NovaAI Studio';
 
   @override
+  String get loadingSupportForm => 'Memuat formulir dukungan…';
+
+  @override
+  String get unableToLoadSupportForm => 'Tidak dapat memuat formulir dukungan';
+
+  @override
+  String get checkConnectionAndTryAgain =>
+      'Periksa koneksi internet Anda dan coba lagi.';
+
+  @override
+  String get openInBrowser => 'Buka di browser';
+
+  @override
+  String get supportSensitiveInfoNotice =>
+      'Jangan sertakan kata sandi, detail kartu pembayaran, atau informasi sensitif lainnya.';
+
+  @override
   String get couldNotOpenLink =>
       'Tidak dapat membuka tautan. Silakan coba lagi.';
 

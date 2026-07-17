@@ -25,6 +25,23 @@ class AppLocalizationsVi extends AppLocalizations {
   String get aboutCopyright => '© NovaAI Studio';
 
   @override
+  String get loadingSupportForm => 'Đang tải biểu mẫu hỗ trợ…';
+
+  @override
+  String get unableToLoadSupportForm => 'Không thể tải biểu mẫu hỗ trợ';
+
+  @override
+  String get checkConnectionAndTryAgain =>
+      'Vui lòng kiểm tra kết nối Internet của bạn và thử lại.';
+
+  @override
+  String get openInBrowser => 'Mở trong trình duyệt';
+
+  @override
+  String get supportSensitiveInfoNotice =>
+      'Vui lòng không bao gồm mật khẩu, thông tin thẻ thanh toán hoặc thông tin nhạy cảm khác.';
+
+  @override
   String get couldNotOpenLink => 'Không thể mở liên kết. Vui lòng thử lại.';
 
   @override

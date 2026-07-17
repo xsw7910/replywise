@@ -24,6 +24,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutCopyright => '© NovaAI Studio';
 
   @override
+  String get loadingSupportForm => '正在加载支持表单…';
+
+  @override
+  String get unableToLoadSupportForm => '无法加载支持表单';
+
+  @override
+  String get checkConnectionAndTryAgain => '请检查你的网络连接后重试。';
+
+  @override
+  String get openInBrowser => '在浏览器中打开';
+
+  @override
+  String get supportSensitiveInfoNotice => '请勿填写密码、银行卡信息或其他敏感信息。';
+
+  @override
   String get couldNotOpenLink => '无法打开链接，请重试。';
 
   @override
@@ -1036,6 +1051,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get aboutCopyright => '© NovaAI Studio';
+
+  @override
+  String get loadingSupportForm => '正在載入支援表單…';
+
+  @override
+  String get unableToLoadSupportForm => '無法載入支援表單';
+
+  @override
+  String get checkConnectionAndTryAgain => '請檢查你的網路連線後重試。';
+
+  @override
+  String get openInBrowser => '在瀏覽器中開啟';
+
+  @override
+  String get supportSensitiveInfoNotice => '請勿填寫密碼、銀行卡資訊或其他敏感資訊。';
 
   @override
   String get couldNotOpenLink => '無法開啟連結，請重試。';

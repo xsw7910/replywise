@@ -24,6 +24,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aboutCopyright => '© NovaAI Studio';
 
   @override
+  String get loadingSupportForm => '지원 양식을 불러오는 중…';
+
+  @override
+  String get unableToLoadSupportForm => '지원 양식을 불러올 수 없습니다';
+
+  @override
+  String get checkConnectionAndTryAgain => '인터넷 연결을 확인한 후 다시 시도해 주세요.';
+
+  @override
+  String get openInBrowser => '브라우저에서 열기';
+
+  @override
+  String get supportSensitiveInfoNotice => '비밀번호, 결제 카드 정보 등 민감한 정보는 입력하지 마세요.';
+
+  @override
   String get couldNotOpenLink => '링크를 열 수 없습니다. 다시 시도해 주세요.';
 
   @override

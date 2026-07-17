@@ -24,6 +24,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutCopyright => '© NovaAI Studio';
 
   @override
+  String get loadingSupportForm => 'جارٍ تحميل نموذج الدعم…';
+
+  @override
+  String get unableToLoadSupportForm => 'تعذّر تحميل نموذج الدعم';
+
+  @override
+  String get checkConnectionAndTryAgain =>
+      'يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.';
+
+  @override
+  String get openInBrowser => 'فتح في المتصفح';
+
+  @override
+  String get supportSensitiveInfoNotice =>
+      'يرجى عدم تضمين كلمات المرور أو بيانات بطاقات الدفع أو أي معلومات حساسة أخرى.';
+
+  @override
   String get couldNotOpenLink => 'تعذّر فتح الرابط. يرجى المحاولة مرة أخرى.';
 
   @override

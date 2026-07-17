@@ -11,6 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:replywise/app.dart';
 import 'package:replywise/core/theme/app_colors.dart';
 import 'package:replywise/features/about/about_screen.dart';
+import 'package:replywise/features/support/support_screen.dart';
+import 'package:replywise/features/support/support_web_view.dart';
 import 'package:replywise/core/theme/app_text_styles.dart';
 import 'package:replywise/core/widgets/credits_status_icon.dart';
 import 'package:replywise/features/auth/data/auth_repository.dart';
@@ -118,6 +120,22 @@ Future<List<Override>> _guidanceOverrides() async => [
 
 // ── Tests ──────────────────────────────────────────────────────────────────
 
+/// Fake Support WebView builder: returns a keyed placeholder and never touches
+/// a platform WebView, so the full-app harness can open the Support page.
+Widget _fakeSupportWebView(SupportWebViewRequest request) {
+  request.onReady(
+    SupportWebViewHandle(
+      reload: () async {},
+      canGoBack: () async => false,
+      goBack: () async {},
+    ),
+  );
+  // Report a finished load after the first frame so the loading spinner settles
+  // (an ever-spinning indicator would make pumpAndSettle time out).
+  WidgetsBinding.instance.addPostFrameCallback((_) => request.onPageFinished());
+  return const SizedBox(key: Key('fake-support-web'));
+}
+
 void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
@@ -135,6 +153,8 @@ void main() {
           subscriptionRepositoryProvider.overrideWithValue(
             _FakeSubscriptionRepo(),
           ),
+          // The Support page must never build a platform WebView in tests.
+          supportWebViewBuilderProvider.overrideWithValue(_fakeSupportWebView),
         ],
         child: const ReplyWiseApp(),
       ),
@@ -422,8 +442,10 @@ void main() {
 
     await tester.ensureVisible(find.byKey(const Key('settings-support-row')));
     await tester.tap(find.byKey(const Key('settings-support-row')));
-    await tester.pump();
-    expect(find.byType(SnackBar), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.byType(SupportScreen), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
 
     await tester.ensureVisible(find.byKey(const Key('settings-about-row')));
     await tester.tap(find.byKey(const Key('settings-about-row')));

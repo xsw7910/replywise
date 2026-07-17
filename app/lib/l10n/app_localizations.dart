@@ -163,6 +163,36 @@ abstract class AppLocalizations {
   /// **'© NovaAI Studio'**
   String get aboutCopyright;
 
+  /// Shown while the support form loads.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading support form…'**
+  String get loadingSupportForm;
+
+  /// Support form load error title.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load the support form'**
+  String get unableToLoadSupportForm;
+
+  /// Support form load error body.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection and try again.'**
+  String get checkConnectionAndTryAgain;
+
+  /// Opens the support form in an external browser.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Browser'**
+  String get openInBrowser;
+
+  /// Privacy reminder shown above the support form.
+  ///
+  /// In en, this message translates to:
+  /// **'Please do not include passwords, payment card details, or other sensitive information.'**
+  String get supportSensitiveInfoNotice;
+
   /// Shown when an external link fails to open.
   ///
   /// In en, this message translates to:

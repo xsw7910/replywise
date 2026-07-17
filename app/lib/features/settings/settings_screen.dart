@@ -23,14 +23,6 @@ import 'data/health_repository.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  void _showPreviewMessage(BuildContext context, String label) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text(context.l10n.staticPreview(label))),
-      );
-  }
-
   String _adRewardMessage(BuildContext context, AdRewardOutcome outcome) {
     final l10n = context.l10n;
     return switch (outcome) {
@@ -195,7 +187,7 @@ class SettingsScreen extends ConsumerWidget {
                 accentColor: Color(0xFFBCECD7),
                 title: context.l10n.support,
                 subtitle: context.l10n.supportDescription,
-                onTap: () => _showPreviewMessage(context, context.l10n.support),
+                onTap: () => context.push(AppRoutes.support),
               ),
               _SettingsMenuRow(
                 key: const Key('settings-about-row'),

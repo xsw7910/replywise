@@ -25,6 +25,23 @@ class AppLocalizationsRu extends AppLocalizations {
   String get aboutCopyright => '© NovaAI Studio';
 
   @override
+  String get loadingSupportForm => 'Загрузка формы поддержки…';
+
+  @override
+  String get unableToLoadSupportForm => 'Не удалось загрузить форму поддержки';
+
+  @override
+  String get checkConnectionAndTryAgain =>
+      'Проверьте подключение к интернету и попробуйте снова.';
+
+  @override
+  String get openInBrowser => 'Открыть в браузере';
+
+  @override
+  String get supportSensitiveInfoNotice =>
+      'Пожалуйста, не указывайте пароли, данные платёжных карт и другую конфиденциальную информацию.';
+
+  @override
   String get couldNotOpenLink =>
       'Не удалось открыть ссылку. Пожалуйста, попробуйте ещё раз.';
 

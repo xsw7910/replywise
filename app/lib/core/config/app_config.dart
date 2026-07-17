@@ -50,6 +50,11 @@ class AppConfig {
     defaultValue: 'http://10.0.2.2:8000',
   );
 
+  /// Hosted Tally form shown on the in-app Support page. Only non-sensitive
+  /// diagnostics (app, version, build, platform, language) are appended to it —
+  /// see `buildSupportFormUrl`.
+  static const String supportFormUrl = 'https://tally.so/r/eqlJEo';
+
   /// The running app's marketing version (e.g. "1.0.0"), used for force /
   /// optional update comparisons against `GET /v1/app-status`. Defaults here
   /// and is overridden at startup with the real value from package_info; a

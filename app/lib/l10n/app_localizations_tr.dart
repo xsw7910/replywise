@@ -25,6 +25,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get aboutCopyright => '© NovaAI Studio';
 
   @override
+  String get loadingSupportForm => 'Destek formu yükleniyor…';
+
+  @override
+  String get unableToLoadSupportForm => 'Destek formu yüklenemedi';
+
+  @override
+  String get checkConnectionAndTryAgain =>
+      'Lütfen internet bağlantınızı kontrol edip tekrar deneyin.';
+
+  @override
+  String get openInBrowser => 'Tarayıcıda aç';
+
+  @override
+  String get supportSensitiveInfoNotice =>
+      'Lütfen parola, ödeme kartı bilgileri veya diğer hassas bilgileri eklemeyin.';
+
+  @override
   String get couldNotOpenLink => 'Bağlantı açılamadı. Lütfen tekrar deneyin.';
 
   @override
