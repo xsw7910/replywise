@@ -12,6 +12,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get appTitle => 'ReplyWise';
 
   @override
+  String get privacyPolicy => 'Chính sách quyền riêng tư';
+
+  @override
+  String get termsOfService => 'Điều khoản dịch vụ';
+
+  @override
+  String get appDescription =>
+      'Trợ lý AI giúp bạn trả lời, trau chuốt câu chữ và hiểu sắc thái.';
+
+  @override
+  String get aboutCopyright => '© NovaAI Studio';
+
+  @override
+  String get couldNotOpenLink => 'Không thể mở liên kết. Vui lòng thử lại.';
+
+  @override
   String get systemDefault => 'Mặc định hệ thống';
 
   @override

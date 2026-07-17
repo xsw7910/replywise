@@ -12,6 +12,22 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appTitle => 'ReplyWise';
 
   @override
+  String get privacyPolicy => 'Informativa sulla privacy';
+
+  @override
+  String get termsOfService => 'Termini di servizio';
+
+  @override
+  String get appDescription =>
+      'Il tuo assistente IA per rispondere, perfezionare i testi e capire il tono.';
+
+  @override
+  String get aboutCopyright => '© NovaAI Studio';
+
+  @override
+  String get couldNotOpenLink => 'Impossibile aprire il link. Riprova.';
+
+  @override
   String get systemDefault => 'Predefinita di sistema';
 
   @override

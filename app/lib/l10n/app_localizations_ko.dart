@@ -12,6 +12,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appTitle => 'ReplyWise';
 
   @override
+  String get privacyPolicy => '개인정보 처리방침';
+
+  @override
+  String get termsOfService => '서비스 이용약관';
+
+  @override
+  String get appDescription => '답장 작성, 문장 다듬기, 뉘앙스 이해를 돕는 AI 어시스턴트입니다.';
+
+  @override
+  String get aboutCopyright => '© NovaAI Studio';
+
+  @override
+  String get couldNotOpenLink => '링크를 열 수 없습니다. 다시 시도해 주세요.';
+
+  @override
   String get systemDefault => '시스템 기본값';
 
   @override

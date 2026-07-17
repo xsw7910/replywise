@@ -1,5 +1,10 @@
 {
   "@@locale": "ar",
+  "privacyPolicy": "سياسة الخصوصية",
+  "termsOfService": "شروط الخدمة",
+  "appDescription": "مساعدك الذكي للردود وتحسين كتابتك وفهم النبرة.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "تعذّر فتح الرابط. يرجى المحاولة مرة أخرى.",
   "systemDefault": "إعداد النظام",
   "chooseLanguage": "اختر لغة التطبيق",
   "settings": "الإعدادات",

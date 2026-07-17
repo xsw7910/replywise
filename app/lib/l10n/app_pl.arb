@@ -1,5 +1,10 @@
 {
   "@@locale": "pl",
+  "privacyPolicy": "Polityka prywatności",
+  "termsOfService": "Warunki korzystania z usługi",
+  "appDescription": "Twój asystent AI do odpowiadania, dopracowywania tekstów i rozumienia tonu.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "Nie udało się otworzyć linku. Spróbuj ponownie.",
   "systemDefault": "Domyślny systemu",
   "chooseLanguage": "Wybierz język aplikacji",
   "settings": "Ustawienia",

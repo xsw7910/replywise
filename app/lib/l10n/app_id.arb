@@ -1,5 +1,10 @@
 {
   "@@locale": "id",
+  "privacyPolicy": "Kebijakan Privasi",
+  "termsOfService": "Ketentuan Layanan",
+  "appDescription": "Asisten AI Anda untuk membalas, menyempurnakan tulisan, dan memahami nada.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "Tidak dapat membuka tautan. Silakan coba lagi.",
   "systemDefault": "Default sistem",
   "chooseLanguage": "Pilih bahasa aplikasi",
   "settings": "Pengaturan",

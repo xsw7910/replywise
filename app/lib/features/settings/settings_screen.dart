@@ -206,7 +206,7 @@ class SettingsScreen extends ConsumerWidget {
                 title: context.l10n.about,
                 subtitle: context.l10n.aboutDescription,
                 showDivider: false,
-                onTap: () => _showPreviewMessage(context, context.l10n.about),
+                onTap: () => context.push(AppRoutes.about),
               ),
             ],
           ),

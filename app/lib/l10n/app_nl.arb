@@ -1,5 +1,10 @@
 {
   "@@locale": "nl",
+  "privacyPolicy": "Privacybeleid",
+  "termsOfService": "Servicevoorwaarden",
+  "appDescription": "Jouw AI-assistent voor antwoorden, verzorgde teksten en heldere uitleg.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "Kan de link niet openen. Probeer het opnieuw.",
   "systemDefault": "Systeemstandaard",
   "chooseLanguage": "App-taal kiezen",
   "settings": "Instellingen",

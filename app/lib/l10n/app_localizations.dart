@@ -139,6 +139,36 @@ abstract class AppLocalizations {
   /// **'ReplyWise'**
   String get appTitle;
 
+  /// About page row that opens the privacy policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// About page row that opens the terms of service.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
+  /// Short description of the app shown on the About page.
+  ///
+  /// In en, this message translates to:
+  /// **'Your AI assistant for replies, polished writing, and clear explanations.'**
+  String get appDescription;
+
+  /// Copyright line shown at the bottom of the About page.
+  ///
+  /// In en, this message translates to:
+  /// **'© NovaAI Studio'**
+  String get aboutCopyright;
+
+  /// Shown when an external link fails to open.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the link. Please try again.'**
+  String get couldNotOpenLink;
+
   /// No description provided for @systemDefault.
   ///
   /// In en, this message translates to:

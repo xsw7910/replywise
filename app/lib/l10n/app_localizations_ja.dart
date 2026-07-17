@@ -12,6 +12,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appTitle => 'ReplyWise';
 
   @override
+  String get privacyPolicy => 'プライバシーポリシー';
+
+  @override
+  String get termsOfService => '利用規約';
+
+  @override
+  String get appDescription => '返信・文章の推敲・ニュアンスの理解を助けるAIアシスタント。';
+
+  @override
+  String get aboutCopyright => '© NovaAI Studio';
+
+  @override
+  String get couldNotOpenLink => 'リンクを開けませんでした。もう一度お試しください。';
+
+  @override
   String get systemDefault => 'システムのデフォルト';
 
   @override

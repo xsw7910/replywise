@@ -1,5 +1,10 @@
 {
   "@@locale": "de",
+  "privacyPolicy": "Datenschutzrichtlinie",
+  "termsOfService": "Nutzungsbedingungen",
+  "appDescription": "Dein KI-Assistent für Antworten, geschliffene Texte und klare Erklärungen.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "Der Link konnte nicht geöffnet werden. Bitte versuche es erneut.",
   "systemDefault": "Systemstandard",
   "chooseLanguage": "App-Sprache auswählen",
   "settings": "Einstellungen",

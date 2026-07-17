@@ -1,5 +1,10 @@
 {
   "@@locale": "vi",
+  "privacyPolicy": "Chính sách quyền riêng tư",
+  "termsOfService": "Điều khoản dịch vụ",
+  "appDescription": "Trợ lý AI giúp bạn trả lời, trau chuốt câu chữ và hiểu sắc thái.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "Không thể mở liên kết. Vui lòng thử lại.",
   "systemDefault": "Mặc định hệ thống",
   "chooseLanguage": "Chọn ngôn ngữ ứng dụng",
   "settings": "Cài đặt",

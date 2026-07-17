@@ -1,5 +1,10 @@
 {
   "@@locale": "ru",
+  "privacyPolicy": "Политика конфиденциальности",
+  "termsOfService": "Условия использования",
+  "appDescription": "Ваш ИИ-помощник для ответов, улучшения текстов и понимания тона.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "Не удалось открыть ссылку. Пожалуйста, попробуйте ещё раз.",
   "systemDefault": "Как в системе",
   "chooseLanguage": "Выберите язык приложения",
   "settings": "Настройки",

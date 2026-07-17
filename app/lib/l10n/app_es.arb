@@ -1,5 +1,10 @@
 {
   "@@locale": "es",
+  "privacyPolicy": "Política de privacidad",
+  "termsOfService": "Términos del servicio",
+  "appDescription": "Tu asistente de IA para responder, pulir tu escritura y entender el tono.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "No se pudo abrir el enlace. Inténtalo de nuevo.",
   "systemDefault": "Predeterminado del sistema",
   "chooseLanguage": "Elegir idioma de la aplicación",
   "settings": "Ajustes",

@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../features/about/about_screen.dart';
 import '../../features/guidance/domain/guidance_template.dart';
 import '../../features/guidance/presentation/guidance_edit_screen.dart';
 import '../../features/guidance/presentation/guidance_library_screen.dart';
@@ -23,6 +24,7 @@ abstract final class AppRoutes {
   static const String explain = '/explain';
   static const String polish = '/polish';
   static const String settings = '/settings';
+  static const String about = '/about';
   static const String paywall = '/paywall';
   static const String history = '/history';
   static const String recentDetail = '/recent';
@@ -42,6 +44,10 @@ GoRouter appRouter(AppRouterRef ref) {
       GoRoute(
         path: AppRoutes.paywall,
         builder: (context, state) => const PaywallScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.about,
+        builder: (context, state) => const AboutScreen(),
       ),
       GoRoute(
         path: AppRoutes.history,

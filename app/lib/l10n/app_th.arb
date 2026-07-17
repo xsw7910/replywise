@@ -1,5 +1,10 @@
 {
   "@@locale": "th",
+  "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+  "termsOfService": "ข้อกำหนดในการให้บริการ",
+  "appDescription": "ผู้ช่วย AI สำหรับตอบกลับ ขัดเกลางานเขียน และเข้าใจน้ำเสียง",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "ไม่สามารถเปิดลิงก์ได้ โปรดลองอีกครั้ง",
   "systemDefault": "ค่าเริ่มต้นของระบบ",
   "chooseLanguage": "เลือกภาษาของแอป",
   "settings": "การตั้งค่า",

@@ -1,5 +1,10 @@
 {
   "@@locale": "hi",
+  "privacyPolicy": "गोपनीयता नीति",
+  "termsOfService": "सेवा की शर्तें",
+  "appDescription": "जवाब लिखने, लेखन को निखारने और भाव समझने में मदद करने वाला आपका AI सहायक।",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "लिंक नहीं खुल सका। कृपया फिर से प्रयास करें।",
   "systemDefault": "सिस्टम डिफ़ॉल्ट",
   "chooseLanguage": "ऐप की भाषा चुनें",
   "settings": "सेटिंग्स",

@@ -1,5 +1,10 @@
 {
   "@@locale": "ja",
+  "privacyPolicy": "プライバシーポリシー",
+  "termsOfService": "利用規約",
+  "appDescription": "返信・文章の推敲・ニュアンスの理解を助けるAIアシスタント。",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "リンクを開けませんでした。もう一度お試しください。",
   "systemDefault": "システムのデフォルト",
   "chooseLanguage": "アプリの言語を選択",
   "settings": "設定",

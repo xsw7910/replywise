@@ -1,5 +1,10 @@
 {
   "@@locale": "zh",
+  "privacyPolicy": "隐私政策",
+  "termsOfService": "服务条款",
+  "appDescription": "你的 AI 助手，帮你快速回复、润色文字并解读含义。",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "无法打开链接，请重试。",
   "systemDefault": "跟随系统",
   "chooseLanguage": "选择应用语言",
   "settings": "设置",

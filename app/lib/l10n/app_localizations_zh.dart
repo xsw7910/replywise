@@ -12,6 +12,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appTitle => 'ReplyWise';
 
   @override
+  String get privacyPolicy => '隐私政策';
+
+  @override
+  String get termsOfService => '服务条款';
+
+  @override
+  String get appDescription => '你的 AI 助手，帮你快速回复、润色文字并解读含义。';
+
+  @override
+  String get aboutCopyright => '© NovaAI Studio';
+
+  @override
+  String get couldNotOpenLink => '无法打开链接，请重试。';
+
+  @override
   String get systemDefault => '跟随系统';
 
   @override
@@ -1009,6 +1024,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get appTitle => 'ReplyWise';
+
+  @override
+  String get privacyPolicy => '隱私政策';
+
+  @override
+  String get termsOfService => '服務條款';
+
+  @override
+  String get appDescription => '你的 AI 助手，協助你快速回覆、潤飾文字並解讀含義。';
+
+  @override
+  String get aboutCopyright => '© NovaAI Studio';
+
+  @override
+  String get couldNotOpenLink => '無法開啟連結，請重試。';
 
   @override
   String get systemDefault => '跟隨系統';

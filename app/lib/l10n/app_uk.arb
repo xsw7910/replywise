@@ -1,5 +1,10 @@
 {
   "@@locale": "uk",
+  "privacyPolicy": "Політика конфіденційності",
+  "termsOfService": "Умови користування",
+  "appDescription": "Ваш ШІ-помічник для відповідей, удосконалення текстів і розуміння тону.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "Не вдалося відкрити посилання. Спробуйте ще раз.",
   "systemDefault": "Як у системі",
   "chooseLanguage": "Виберіть мову застосунку",
   "settings": "Налаштування",

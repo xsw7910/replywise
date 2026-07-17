@@ -1,5 +1,10 @@
 {
   "@@locale": "tr",
+  "privacyPolicy": "Gizlilik Politikası",
+  "termsOfService": "Hizmet Şartları",
+  "appDescription": "Yanıt vermeniz, metinlerinizi cilalamanız ve tonu anlamanız için yapay zekâ asistanınız.",
+  "aboutCopyright": "© NovaAI Studio",
+  "couldNotOpenLink": "Bağlantı açılamadı. Lütfen tekrar deneyin.",
   "systemDefault": "Sistem varsayılanı",
   "chooseLanguage": "Uygulama dilini seç",
   "settings": "Ayarlar",

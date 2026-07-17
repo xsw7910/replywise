@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:replywise/app.dart';
 import 'package:replywise/core/theme/app_colors.dart';
+import 'package:replywise/features/about/about_screen.dart';
 import 'package:replywise/core/theme/app_text_styles.dart';
 import 'package:replywise/core/widgets/credits_status_icon.dart';
 import 'package:replywise/features/auth/data/auth_repository.dart';
@@ -426,8 +427,8 @@ void main() {
 
     await tester.ensureVisible(find.byKey(const Key('settings-about-row')));
     await tester.tap(find.byKey(const Key('settings-about-row')));
-    await tester.pump();
-    expect(find.byType(SnackBar), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.byType(AboutScreen), findsOneWidget);
   });
 
   testWidgets('Settings remains responsive on a narrow scaled viewport', (

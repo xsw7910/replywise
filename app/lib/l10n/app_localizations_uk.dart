@@ -12,6 +12,23 @@ class AppLocalizationsUk extends AppLocalizations {
   String get appTitle => 'ReplyWise';
 
   @override
+  String get privacyPolicy => 'Політика конфіденційності';
+
+  @override
+  String get termsOfService => 'Умови користування';
+
+  @override
+  String get appDescription =>
+      'Ваш ШІ-помічник для відповідей, удосконалення текстів і розуміння тону.';
+
+  @override
+  String get aboutCopyright => '© NovaAI Studio';
+
+  @override
+  String get couldNotOpenLink =>
+      'Не вдалося відкрити посилання. Спробуйте ще раз.';
+
+  @override
   String get systemDefault => 'Як у системі';
 
   @override
