@@ -8,9 +8,9 @@ final recentItemsProvider = FutureProvider<List<RecentItem>>((ref) async {
   return ref.watch(recentRepositoryProvider).getAll();
 });
 
-/// The latest two recent items (shown on the Home page).
+/// The latest three recent items (shown on the Home page).
 final latestRecentItemsProvider = FutureProvider<List<RecentItem>>((ref) async {
-  return ref.watch(recentRepositoryProvider).getLatest(limit: 2);
+  return ref.watch(recentRepositoryProvider).getLatest(limit: 3);
 });
 
 /// A single stored recent item by id (used by the Recent Detail page when it is

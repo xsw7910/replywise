@@ -164,8 +164,8 @@ class _HomeNavBar extends StatelessWidget {
           // app_icon.png at the same slot size and can never be clipped.
           Image.asset(
             'assets/icons/app_icon_tight.png',
-            width: 56,
-            height: 56,
+            width: 48,
+            height: 48,
             fit: BoxFit.contain,
           ),
           const SizedBox(width: 12),
@@ -359,7 +359,7 @@ class _FeatureCard extends StatelessWidget {
   }
 }
 
-/// "Recent" activity section. Shows the latest two local recent items, or an
+/// "Recent" activity section. Shows the latest three local recent items, or an
 /// empty-state card with a first-run call to action when there are none.
 class _RecentSection extends ConsumerWidget {
   const _RecentSection();
