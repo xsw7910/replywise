@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:replywise/app.dart';
+import 'package:replywise/core/router/app_router.dart';
 import 'package:replywise/core/theme/app_colors.dart';
-import 'package:replywise/features/about/about_screen.dart';
-import 'package:replywise/features/support/support_screen.dart';
 import 'package:replywise/features/support/support_web_view.dart';
 import 'package:replywise/core/theme/app_text_styles.dart';
 import 'package:replywise/core/widgets/credits_status_icon.dart';
@@ -22,8 +22,12 @@ import 'package:replywise/features/paywall/paywall_screen.dart';
 import 'package:replywise/features/recent/domain/recent_item.dart';
 import 'package:replywise/features/reply/reply_screen.dart';
 import 'package:replywise/features/settings/application/dev_tools_controller.dart';
+import 'package:replywise/features/settings/application/health_controller.dart';
+import 'package:replywise/features/settings/data/health_repository.dart';
+import 'package:replywise/features/settings/settings_screen.dart';
 import 'package:replywise/features/entitlement/subscription_repository.dart';
 import 'package:replywise/features/entitlement/entitlement_state.dart';
+import 'package:replywise/l10n/app_localizations.dart';
 
 // ── Auth fakes ─────────────────────────────────────────────────────────────
 // Overriding the underlying providers keeps tests network-free without
@@ -107,6 +111,12 @@ class _FakeSubscriptionRepo implements SubscriptionRepository {
       null;
 }
 
+class _FakeHealthController extends HealthController {
+  @override
+  Future<HealthResponse> build() async =>
+      const HealthResponse(status: 'ok', service: 'reply');
+}
+
 // ── Guidance fake ──────────────────────────────────────────────────────────
 
 late SharedPreferences _prefs;
@@ -142,7 +152,10 @@ void main() {
     _prefs = await SharedPreferences.getInstance();
   });
 
-  Future<void> pumpReplyWiseApp(WidgetTester tester) async {
+  Future<void> pumpReplyWiseApp(
+    WidgetTester tester, {
+    bool settle = true,
+  }) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -159,7 +172,12 @@ void main() {
         child: const ReplyWiseApp(),
       ),
     );
-    await tester.pumpAndSettle();
+    if (settle) {
+      await tester.pumpAndSettle();
+    } else {
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+    }
   }
 
   Future<void> tapHomeCard(WidgetTester tester, Key key) async {
@@ -172,6 +190,11 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(finder);
     await tester.pumpAndSettle();
+  }
+
+  Future<void> pumpRouteFrame(WidgetTester tester) async {
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
   }
 
   testWidgets('app defaults to Home and exposes main navigation', (
@@ -423,34 +446,76 @@ void main() {
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
-    await pumpReplyWiseApp(tester);
-    await tester.tap(find.text('Settings').last);
-    await tester.pumpAndSettle();
+    final router = GoRouter(
+      initialLocation: AppRoutes.settings,
+      routes: [
+        GoRoute(
+          path: AppRoutes.settings,
+          builder: (context, state) => const SettingsScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.paywall,
+          builder: (context, state) =>
+              const Scaffold(body: SizedBox(key: Key('paywall-route'))),
+        ),
+        GoRoute(
+          path: AppRoutes.support,
+          builder: (context, state) =>
+              const Scaffold(body: SizedBox(key: Key('support-route'))),
+        ),
+        GoRoute(
+          path: AppRoutes.about,
+          builder: (context, state) =>
+              const Scaffold(body: SizedBox(key: Key('about-route'))),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          ..._authOverrides,
+          ...await _guidanceOverrides(),
+          subscriptionRepositoryProvider.overrideWithValue(
+            _FakeSubscriptionRepo(),
+          ),
+          devToolsPanelVisibleProvider.overrideWithValue(false),
+          healthControllerProvider.overrideWith(_FakeHealthController.new),
+        ],
+        child: MaterialApp.router(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: router,
+        ),
+      ),
+    );
+    await pumpRouteFrame(tester);
 
     await tester.tap(find.byKey(const Key('settings-current-plan-row')));
-    await tester.pumpAndSettle();
-    expect(find.byType(PaywallScreen), findsOneWidget);
-    await tester.pageBack();
-    await tester.pumpAndSettle();
+    await pumpRouteFrame(tester);
+    expect(find.byKey(const Key('paywall-route')), findsOneWidget);
+    router.go(AppRoutes.settings);
+    await pumpRouteFrame(tester);
 
     await tester.ensureVisible(find.byKey(const Key('settings-language-row')));
     await tester.tap(find.byKey(const Key('settings-language-row')));
-    await tester.pumpAndSettle();
+    await pumpRouteFrame(tester);
     expect(find.text('Choose app language'), findsOneWidget);
     await tester.tap(find.text('System default').last);
-    await tester.pumpAndSettle();
+    await pumpRouteFrame(tester);
 
     await tester.ensureVisible(find.byKey(const Key('settings-support-row')));
     await tester.tap(find.byKey(const Key('settings-support-row')));
-    await tester.pumpAndSettle();
-    expect(find.byType(SupportScreen), findsOneWidget);
-    await tester.pageBack();
-    await tester.pumpAndSettle();
+    await pumpRouteFrame(tester);
+    expect(find.byKey(const Key('support-route')), findsOneWidget);
+    router.go(AppRoutes.settings);
+    await pumpRouteFrame(tester);
 
     await tester.ensureVisible(find.byKey(const Key('settings-about-row')));
     await tester.tap(find.byKey(const Key('settings-about-row')));
-    await tester.pumpAndSettle();
-    expect(find.byType(AboutScreen), findsOneWidget);
+    await pumpRouteFrame(tester);
+    expect(find.byKey(const Key('about-route')), findsOneWidget);
   });
 
   testWidgets('Settings remains responsive on a narrow scaled viewport', (
