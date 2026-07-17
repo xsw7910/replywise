@@ -79,8 +79,7 @@ class AboutScreen extends ConsumerWidget {
                 iconColor: const Color(0xFF377CF6),
                 iconBackground: const Color(0xFFEAF2FF),
                 label: l10n.privacyPolicy,
-                onTap: () =>
-                    _openLink(context, ref, kReplyWisePrivacyPolicyUrl),
+                onTap: () => _openLink(context, ref, AppLinks.privacyPolicy),
               ),
               const _RowDivider(),
               _LinkRow(
@@ -89,8 +88,7 @@ class AboutScreen extends ConsumerWidget {
                 iconColor: const Color(0xFF12A966),
                 iconBackground: const Color(0xFFEAF9F1),
                 label: l10n.termsOfService,
-                onTap: () =>
-                    _openLink(context, ref, kReplyWiseTermsOfServiceUrl),
+                onTap: () => _openLink(context, ref, AppLinks.termsOfService),
               ),
             ],
           ),

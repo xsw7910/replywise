@@ -159,7 +159,7 @@ void main() {
     await tester.tap(find.byKey(const Key('about-privacy-row')));
     await tester.pumpAndSettle();
 
-    expect(launched, [Uri.parse(kReplyWisePrivacyPolicyUrl)]);
+    expect(launched, [Uri.parse(AppLinks.privacyPolicy)]);
   });
 
   testWidgets('tapping Terms of Service opens the terms URL', (tester) async {
@@ -169,7 +169,7 @@ void main() {
     await tester.tap(find.byKey(const Key('about-terms-row')));
     await tester.pumpAndSettle();
 
-    expect(launched, [Uri.parse(kReplyWiseTermsOfServiceUrl)]);
+    expect(launched, [Uri.parse(AppLinks.termsOfService)]);
   });
 
   testWidgets('shows the version name and build number from package info', (
@@ -196,8 +196,11 @@ void main() {
     await tester.tap(find.byKey(const Key('about-privacy-row')));
     await tester.pump(); // start the SnackBar animation
 
-    expect(launched, [Uri.parse(kReplyWisePrivacyPolicyUrl)]);
-    expect(find.text("Couldn't open the link. Please try again."), findsOneWidget);
+    expect(launched, [Uri.parse(AppLinks.privacyPolicy)]);
+    expect(
+      find.text("Couldn't open the link. Please try again."),
+      findsOneWidget,
+    );
   });
 
   testWidgets('tapping About in Settings opens the About page', (tester) async {

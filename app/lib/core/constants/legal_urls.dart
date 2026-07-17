@@ -1,15 +1,15 @@
-/// Public legal pages for ReplyWise, opened from the About page.
+/// Public legal pages for ReplyWise, opened from legal rows and purchase flows.
 ///
 /// Kept in one place so the Privacy Policy and Terms of Service URLs are never
-/// duplicated across the app. Hosted on the studio's domain, matching the
-/// backend (`api-reply.novaaistudio.ca`) and support address
-/// (`support@novaaistudio.ca`).
+/// duplicated across the app.
 library;
 
-/// Public Privacy Policy page.
-const String kReplyWisePrivacyPolicyUrl =
-    'https://novaaistudio.ca/replywise/privacy';
+abstract final class AppLinks {
+  /// Public ReplyWise Privacy Policy page.
+  static const String privacyPolicy =
+      'https://xsw7910.github.io/novaaistudio-site/replywise-privacy.html';
 
-/// Public Terms of Service page.
-const String kReplyWiseTermsOfServiceUrl =
-    'https://novaaistudio.ca/replywise/terms';
+  /// Public ReplyWise Terms of Service page.
+  static const String termsOfService =
+      'https://xsw7910.github.io/novaaistudio-site/replywise-terms.html';
+}
