@@ -27,6 +27,7 @@ import '../../core/widgets/labeled_text_field.dart';
 import 'widgets/reply_status_badge.dart';
 import 'application/pending_reply_input_provider.dart';
 import 'application/reply_controller.dart';
+import 'application/reply_page_controller.dart';
 import 'domain/reply_models.dart';
 import '../entitlement/usage_controller.dart';
 import '../entitlement/presentation/out_of_credits_dialog.dart';
@@ -47,17 +48,35 @@ class ReplyScreen extends ConsumerStatefulWidget {
 }
 
 class _ReplyScreenState extends ConsumerState<ReplyScreen> {
-  final _incomingController = TextEditingController();
-  final _guidanceController = TextEditingController();
-  final _customToneController = TextEditingController();
-  final _customAudienceController = TextEditingController();
+  // Controllers stay widget-local (they are lifecycle objects and must not
+  // live in a provider). Their text is mirrored into ReplyPageController so it
+  // survives navigation; on rebuild the text is restored from that provider.
+  late final TextEditingController _incomingController;
+  late final TextEditingController _guidanceController;
+  late final TextEditingController _customToneController;
+  late final TextEditingController _customAudienceController;
 
-  bool _guidanceExpanded = false;
-  String _tone = 'Auto';
-  String _audience = 'Auto';
-  String _length = 'Medium';
-  String _channel = 'Auto';
-  bool _moreOptionsExpanded = false;
+  ReplyPageController get _page =>
+      ref.read(replyPageControllerProvider.notifier);
+
+  @override
+  void initState() {
+    super.initState();
+    // Restore each field from the kept-alive page state, then wire a one-way
+    // controller→provider sync. We never write provider→controller outside of
+    // this initial restore, so normal typing keeps its cursor position.
+    final state = ref.read(replyPageControllerProvider);
+    _incomingController = TextEditingController(text: state.incoming)
+      ..addListener(() => _page.setIncoming(_incomingController.text));
+    _guidanceController = TextEditingController(text: state.guidance)
+      ..addListener(() => _page.setGuidance(_guidanceController.text));
+    _customToneController = TextEditingController(text: state.customTone)
+      ..addListener(() => _page.setCustomTone(_customToneController.text));
+    _customAudienceController =
+        TextEditingController(text: state.customAudience)..addListener(
+          () => _page.setCustomAudience(_customAudienceController.text),
+        );
+  }
 
   static const _tones = [
     'Auto',
@@ -98,7 +117,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       selection: TextSelection.collapsed(offset: next.length),
     );
     // Applying any guidance reveals the field so the user sees what was added.
-    if (!_guidanceExpanded) setState(() => _guidanceExpanded = true);
+    _page.setGuidanceExpanded(true);
   }
 
   void _appendGuidance(GuidanceTemplate template) =>
@@ -180,47 +199,49 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
     });
   }
 
-  ReplyRequest _request(String appLocale) {
+  ReplyRequest _request(String appLocale, ReplyPageState page) {
     final String mode;
     String? preset;
     String? custom;
-    if (_audience == 'Auto') {
+    if (page.audience == 'Auto') {
       mode = 'auto';
-    } else if (_audience == 'Custom') {
+    } else if (page.audience == 'Custom') {
       mode = 'custom';
       custom = _customAudienceController.text;
     } else {
       mode = 'preset';
-      preset = _audience.toLowerCase();
+      preset = page.audience.toLowerCase();
     }
 
     return ReplyRequest(
       incoming: _incomingController.text,
-      guidance: _composedGuidance(),
+      guidance: _composedGuidance(page),
       guidanceLang: appLocale,
       appLocale: appLocale,
-      tone: _effectiveTone(),
+      tone: _effectiveTone(page),
       audience: ReplyAudience(
         mode: mode,
         preset: preset,
         custom: custom?.trim(),
-        formality: _formalityForTone(_tone),
+        formality: _formalityForTone(page.tone),
       ),
     );
   }
 
-  String? _effectiveTone() {
-    final value = _tone == 'Custom' ? _customToneController.text.trim() : _tone;
+  String? _effectiveTone(ReplyPageState page) {
+    final value = page.tone == 'Custom'
+        ? _customToneController.text.trim()
+        : page.tone;
     return value == 'Auto' || value.isEmpty ? null : value;
   }
 
   /// Folds Length / Channel selections into the free-text guidance. Tone is a
   /// dedicated request field so custom and predefined values share one path.
-  String _composedGuidance() {
+  String _composedGuidance(ReplyPageState page) {
     final hints = <String>[];
-    final length = _lengthHint(_length);
+    final length = _lengthHint(page.length);
     if (length != null) hints.add(length);
-    final channel = _channelHint(_channel);
+    final channel = _channelHint(page.channel);
     if (channel != null) hints.add(channel);
 
     final base = _guidanceController.text.trim();
@@ -277,11 +298,12 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
       return;
     }
     if (!mounted) return;
-    // Capture the received message before the async gap.
+    // Capture the received message and option snapshot before the async gap.
     final incoming = _incomingController.text;
+    final page = ref.read(replyPageControllerProvider);
     await ref
         .read(replyControllerProvider.notifier)
-        .generate(_request(appLocale));
+        .generate(_request(appLocale, page));
     if (!mounted) return;
     final state = ref.read(replyControllerProvider);
     // A network/server failure re-checks status: maintenance or fallback UI.
@@ -335,9 +357,9 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
           casualText: casual,
           conciseText: concise,
           guidance: guidance.isEmpty ? null : guidance,
-          tone: _tone == 'Auto' ? null : _tone,
-          channel: _channel == 'Auto' ? null : _channel,
-          length: _length,
+          tone: page.tone == 'Auto' ? null : page.tone,
+          channel: page.channel == 'Auto' ? null : page.channel,
+          length: page.length,
         ),
       );
     }
@@ -351,6 +373,25 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
   Widget build(BuildContext context) {
     final replyState = ref.watch(replyControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
+    // Watch only the flag/enum fields so per-keystroke text updates (mirrored
+    // into the same provider) never rebuild this large page — the controllers
+    // drive the text fields directly.
+    final guidanceExpanded = ref.watch(
+      replyPageControllerProvider.select((s) => s.guidanceExpanded),
+    );
+    final moreOptionsExpanded = ref.watch(
+      replyPageControllerProvider.select((s) => s.moreOptionsExpanded),
+    );
+    final tone = ref.watch(replyPageControllerProvider.select((s) => s.tone));
+    final audience = ref.watch(
+      replyPageControllerProvider.select((s) => s.audience),
+    );
+    final length = ref.watch(
+      replyPageControllerProvider.select((s) => s.length),
+    );
+    final channel = ref.watch(
+      replyPageControllerProvider.select((s) => s.channel),
+    );
     _consumePendingGuidance();
     _consumePendingTargetedGuidance();
     _consumePendingReplyInput();
@@ -436,9 +477,7 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                     children: [
                       InkWell(
                         borderRadius: BorderRadius.circular(18),
-                        onTap: () => setState(
-                          () => _guidanceExpanded = !_guidanceExpanded,
-                        ),
+                        onTap: _page.toggleGuidanceExpanded,
                         child: Padding(
                           padding: const EdgeInsets.all(14),
                           child: Column(
@@ -473,14 +512,14 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-                                  _ExpandButton(expanded: _guidanceExpanded),
+                                  _ExpandButton(expanded: guidanceExpanded),
                                 ],
                               ),
                             ],
                           ),
                         ),
                       ),
-                      if (_guidanceExpanded) ...[
+                      if (guidanceExpanded) ...[
                         const Divider(height: 1, color: AppColors.cardBorder),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
@@ -511,25 +550,23 @@ class _ReplyScreenState extends ConsumerState<ReplyScreen> {
                 const SizedBox(height: 18),
                 _MoreOptionsSection(
                   key: const Key('reply-more-options-card'),
-                  expanded: _moreOptionsExpanded,
-                  onToggle: () => setState(
-                    () => _moreOptionsExpanded = !_moreOptionsExpanded,
-                  ),
+                  expanded: moreOptionsExpanded,
+                  onToggle: _page.toggleMoreOptionsExpanded,
                   tones: _tones,
-                  tone: _tone,
-                  onTone: (v) => setState(() => _tone = v),
+                  tone: tone,
+                  onTone: _page.setTone,
                   onOpenTemplatePage: _openTemplatePage,
                   customToneController: _customToneController,
                   audiences: _audiences,
-                  audience: _audience,
-                  onAudience: (v) => setState(() => _audience = v),
+                  audience: audience,
+                  onAudience: _page.setAudience,
                   customAudienceController: _customAudienceController,
                   lengths: _lengths,
-                  length: _length,
-                  onLength: (v) => setState(() => _length = v),
+                  length: length,
+                  onLength: _page.setLength,
                   channels: _channels,
-                  channel: _channel,
-                  onChannel: (v) => setState(() => _channel = v),
+                  channel: channel,
+                  onChannel: _page.setChannel,
                 ),
                 const SizedBox(height: 18),
                 ElevatedButton.icon(

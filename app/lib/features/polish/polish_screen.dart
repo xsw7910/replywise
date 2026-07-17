@@ -19,6 +19,7 @@ import '../../core/widgets/inline_error.dart';
 import '../../core/widgets/labeled_text_field.dart';
 import 'application/pending_polish_input_provider.dart';
 import 'application/polish_controller.dart';
+import 'application/polish_page_controller.dart';
 import 'domain/polish_models.dart';
 import '../entitlement/usage_controller.dart';
 import '../entitlement/presentation/out_of_credits_dialog.dart';
@@ -46,16 +47,39 @@ class PolishScreen extends ConsumerStatefulWidget {
 }
 
 class _PolishScreenState extends ConsumerState<PolishScreen> {
-  final _draftController = TextEditingController();
-  final _guidanceController = TextEditingController();
-  final _customToneController = TextEditingController();
-  final _customAudienceController = TextEditingController();
-  final _extraInstructionController = TextEditingController();
-  bool _guidanceExpanded = false;
-  bool _moreOptionsExpanded = false;
-  String _tone = 'Auto';
-  String _audience = 'Auto';
-  String _length = 'Same';
+  // Controllers stay widget-local; their text is mirrored into
+  // PolishPageController so it survives navigation and is restored on rebuild.
+  late final TextEditingController _draftController;
+  late final TextEditingController _guidanceController;
+  late final TextEditingController _customToneController;
+  late final TextEditingController _customAudienceController;
+  late final TextEditingController _extraInstructionController;
+
+  PolishPageController get _page =>
+      ref.read(polishPageControllerProvider.notifier);
+
+  @override
+  void initState() {
+    super.initState();
+    // Restore each field from the kept-alive page state, then wire a one-way
+    // controller→provider sync. Provider→controller is written only here, so
+    // normal typing keeps its cursor position.
+    final state = ref.read(polishPageControllerProvider);
+    _draftController = TextEditingController(text: state.draft)
+      ..addListener(() => _page.setDraft(_draftController.text));
+    _guidanceController = TextEditingController(text: state.guidance)
+      ..addListener(() => _page.setGuidance(_guidanceController.text));
+    _customToneController = TextEditingController(text: state.customTone)
+      ..addListener(() => _page.setCustomTone(_customToneController.text));
+    _customAudienceController =
+        TextEditingController(text: state.customAudience)..addListener(
+          () => _page.setCustomAudience(_customAudienceController.text),
+        );
+    _extraInstructionController =
+        TextEditingController(text: state.extraInstruction)..addListener(
+          () => _page.setExtraInstruction(_extraInstructionController.text),
+        );
+  }
 
   static const _tones = [
     'Auto',
@@ -93,7 +117,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
       text: next,
       selection: TextSelection.collapsed(offset: next.length),
     );
-    if (!_guidanceExpanded) setState(() => _guidanceExpanded = true);
+    _page.setGuidanceExpanded(true);
   }
 
   void _appendGuidance(GuidanceTemplate template) =>
@@ -181,15 +205,17 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
     await pasteIntoController(_draftController, maxLength: 4000);
   }
 
-  String? _effectiveTone() {
-    final value = _tone == 'Custom' ? _customToneController.text.trim() : _tone;
+  String? _effectiveTone(PolishPageState page) {
+    final value = page.tone == 'Custom'
+        ? _customToneController.text.trim()
+        : page.tone;
     return value == 'Auto' || value.isEmpty ? null : value;
   }
 
-  String? _effectiveAudience() {
-    final value = _audience == 'Custom'
+  String? _effectiveAudience(PolishPageState page) {
+    final value = page.audience == 'Custom'
         ? _customAudienceController.text.trim()
-        : _audience;
+        : page.audience;
     return value == 'Auto' || value.isEmpty ? null : value;
   }
 
@@ -225,8 +251,9 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
       return;
     }
     if (!mounted) return;
-    // Capture the draft before the async gap.
+    // Capture the draft and option snapshot before the async gap.
     final draft = _draftController.text;
+    final page = ref.read(polishPageControllerProvider);
     await ref
         .read(polishControllerProvider.notifier)
         .polish(
@@ -234,9 +261,9 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
             draft: draft,
             direction: 'natural',
             guidance: _optionalText(_guidanceController),
-            tone: _effectiveTone(),
-            audience: _effectiveAudience(),
-            length: _length == 'Same' ? null : _length,
+            tone: _effectiveTone(page),
+            audience: _effectiveAudience(page),
+            length: page.length == 'Same' ? null : page.length,
             extraInstruction: _optionalText(_extraInstructionController),
             guidanceLang: appLocale,
             appLocale: appLocale,
@@ -275,8 +302,8 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
           inputText: draft,
           outputText: result.polished,
           guidance: _optionalText(_guidanceController),
-          tone: _effectiveTone(),
-          length: _length == 'Same' ? null : _length,
+          tone: _effectiveTone(page),
+          length: page.length == 'Same' ? null : page.length,
         ),
       );
     }
@@ -286,6 +313,21 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
   Widget build(BuildContext context) {
     final polishState = ref.watch(polishControllerProvider);
     final usageState = ref.watch(usageControllerProvider);
+    // Watch only flag/enum fields so per-keystroke text updates (mirrored into
+    // the same provider) never rebuild this large page.
+    final guidanceExpanded = ref.watch(
+      polishPageControllerProvider.select((s) => s.guidanceExpanded),
+    );
+    final moreOptionsExpanded = ref.watch(
+      polishPageControllerProvider.select((s) => s.moreOptionsExpanded),
+    );
+    final tone = ref.watch(polishPageControllerProvider.select((s) => s.tone));
+    final audience = ref.watch(
+      polishPageControllerProvider.select((s) => s.audience),
+    );
+    final length = ref.watch(
+      polishPageControllerProvider.select((s) => s.length),
+    );
     _consumePendingGuidance();
     _consumePendingTargetedGuidance();
     _consumePendingInput();
@@ -362,9 +404,8 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                 const SizedBox(height: 14),
                 _PolishGuidanceCard(
                   key: const Key('polish-guidance-card'),
-                  expanded: _guidanceExpanded,
-                  onToggle: () =>
-                      setState(() => _guidanceExpanded = !_guidanceExpanded),
+                  expanded: guidanceExpanded,
+                  onToggle: _page.toggleGuidanceExpanded,
                   controller: _guidanceController,
                   onQuickGuidance: _appendGuidanceText,
                   onOpenLibrary: _openLibrary,
@@ -372,22 +413,20 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                 const SizedBox(height: 18),
                 _PolishMoreOptionsCard(
                   key: const Key('polish-more-options-card'),
-                  expanded: _moreOptionsExpanded,
-                  onToggle: () => setState(
-                    () => _moreOptionsExpanded = !_moreOptionsExpanded,
-                  ),
+                  expanded: moreOptionsExpanded,
+                  onToggle: _page.toggleMoreOptionsExpanded,
                   tones: _tones,
-                  tone: _tone,
-                  onTone: (value) => setState(() => _tone = value),
+                  tone: tone,
+                  onTone: _page.setTone,
                   onOpenTemplatePage: _openTemplatePage,
                   customToneController: _customToneController,
                   audiences: _audiences,
-                  audience: _audience,
-                  onAudience: (value) => setState(() => _audience = value),
+                  audience: audience,
+                  onAudience: _page.setAudience,
                   customAudienceController: _customAudienceController,
                   lengths: _lengths,
-                  length: _length,
-                  onLength: (value) => setState(() => _length = value),
+                  length: length,
+                  onLength: _page.setLength,
                   extraInstructionController: _extraInstructionController,
                 ),
                 const SizedBox(height: 18),
@@ -438,7 +477,7 @@ class _PolishScreenState extends ConsumerState<PolishScreen> {
                   ),
                   const SizedBox(height: 12),
                   GeneratedResultCard(
-                    label: _tone,
+                    label: tone,
                     text: polishState.result!.polished,
                     feature: _feature,
                     shareTooltip: context.l10n.sharePolishedText,

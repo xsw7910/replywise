@@ -22,7 +22,7 @@ class PolishState {
   final String? errorCode;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PolishController extends _$PolishController {
   @override
   PolishState build() => const PolishState();

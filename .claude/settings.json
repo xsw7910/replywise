@@ -17,7 +17,10 @@
       "PowerShell(flutter test test/support_url_test.dart test/support_screen_test.dart test/widget_test.dart test/about_screen_test.dart 2>&1)",
       "PowerShell(flutter test test/support_url_test.dart test/support_screen_test.dart test/widget_test.dart 2>&1)",
       "Bash(bash -lc 'f=\"C:/Users/xsw79/AppData/Local/Temp/claude/c--sandbox-replywise/fdfcb2ec-c18a-4d0a-8532-c6d219d71d69/tasks/b98q7qd30.output\"; for i in $\\(seq 1 300\\); do if grep -Eq \"All tests passed!|Some tests failed|Failed to load|Exception\" \"$f\" 2>/dev/null; then tail -n 25 \"$f\"; exit 0; fi; sleep 2; done; echo \"TIMEOUT still running\"; tail -n 20 \"$f\"')",
-      "PowerShell(flutter test test/support_screen_test.dart 2>&1)"
+      "PowerShell(flutter test test/support_screen_test.dart 2>&1)",
+      "PowerShell(dart run build_runner build --delete-conflicting-outputs 2>&1)",
+      "Bash(dart run *)",
+      "Bash(echo \"format exit: $?\")"
     ],
     "deny": [
       "Bash(git push)",

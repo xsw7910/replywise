@@ -22,7 +22,7 @@ class ReplyState {
   final String? errorCode;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ReplyController extends _$ReplyController {
   @override
   ReplyState build() => const ReplyState();

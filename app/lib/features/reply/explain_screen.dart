@@ -23,9 +23,9 @@ import '../entitlement/presentation/out_of_credits_dialog.dart';
 import '../recent/application/recent_providers.dart';
 import '../recent/domain/recent_item.dart';
 import 'application/explain_controller.dart';
+import 'application/explain_page_controller.dart';
 import 'application/pending_explain_input_provider.dart';
 import 'application/pending_reply_input_provider.dart';
-import 'domain/reply_models.dart';
 import 'widgets/reply_status_badge.dart';
 
 const _kColor = AppColors.explainColor;
@@ -43,8 +43,21 @@ class ExplainScreen extends ConsumerStatefulWidget {
 }
 
 class _ExplainScreenState extends ConsumerState<ExplainScreen> {
-  final _messageController = TextEditingController();
-  ExplainResult? _result;
+  // The controller stays widget-local; its text is mirrored into
+  // ExplainPageController so it survives navigation and is restored on rebuild.
+  late final TextEditingController _messageController;
+
+  @override
+  void initState() {
+    super.initState();
+    final state = ref.read(explainPageControllerProvider);
+    _messageController = TextEditingController(text: state.message)
+      ..addListener(
+        () => ref
+            .read(explainPageControllerProvider.notifier)
+            .setMessage(_messageController.text),
+      );
+  }
 
   @override
   void dispose() {
@@ -135,7 +148,8 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
       }
       return;
     }
-    setState(() => _result = result);
+    // The result now lives in ExplainController (kept alive across navigation);
+    // build() reads it from there. No local result field to set.
     await saveRecentItem(
       ref,
       RecentItem.create(
@@ -150,7 +164,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   /// sections with their visible titles.
   String _composedExplanation() {
     final l10n = context.l10n;
-    final result = _result!;
+    final result = ref.read(explainControllerProvider).result!;
     final hidden = result.hiddenMeaning.trim().isEmpty
         ? l10n.noHiddenMeaning
         : result.hiddenMeaning;
@@ -190,6 +204,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(explainControllerProvider);
+    final result = state.result;
     final usage = ref.watch(usageControllerProvider).usage;
     _consumePendingInput();
 
@@ -288,7 +303,7 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                     style: AppTextStyles.helper,
                   ),
                 ],
-                if (_result == null &&
+                if (result == null &&
                     !state.isLoading &&
                     state.error == null) ...[
                   const SizedBox(height: 14),
@@ -298,12 +313,12 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                     style: AppTextStyles.helper,
                   ),
                 ],
-                if (_result != null) ...[
+                if (result != null) ...[
                   const SizedBox(height: 24),
                   _ResultSection(
                     icon: Icons.article_outlined,
                     title: context.l10n.meaning,
-                    text: _result!.meaning,
+                    text: result.meaning,
                     color: _kColor,
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -341,16 +356,16 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                   _ResultSection(
                     icon: Icons.record_voice_over_outlined,
                     title: context.l10n.tone,
-                    text: _result!.tone,
+                    text: result.tone,
                     color: _kColor,
                   ),
                   const SizedBox(height: 12),
                   _ResultSection(
                     icon: Icons.visibility_outlined,
                     title: context.l10n.hiddenMeaning,
-                    text: _result!.hiddenMeaning.trim().isEmpty
+                    text: result.hiddenMeaning.trim().isEmpty
                         ? context.l10n.noHiddenMeaning
-                        : _result!.hiddenMeaning,
+                        : result.hiddenMeaning,
                     color: _kColor,
                   ),
                   const SizedBox(height: 18),
@@ -359,13 +374,13 @@ class _ExplainScreenState extends ConsumerState<ExplainScreen> {
                     style: AppTextStyles.sectionTitle,
                   ),
                   const SizedBox(height: 10),
-                  if (_result!.suggestedReplies.isEmpty)
+                  if (result.suggestedReplies.isEmpty)
                     Text(
                       context.l10n.noSuggestedReplies,
                       style: AppTextStyles.helper,
                     )
                   else
-                    for (final suggestion in _result!.suggestedReplies) ...[
+                    for (final suggestion in result.suggestedReplies) ...[
                       _SuggestionCard(
                         suggestion: suggestion,
                         onCopy: () => _copySuggestion(suggestion),

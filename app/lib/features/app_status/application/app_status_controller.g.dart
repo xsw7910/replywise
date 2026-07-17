@@ -7,7 +7,7 @@ part of 'app_status_controller.dart';
 // **************************************************************************
 
 String _$appStatusControllerHash() =>
-    r'fdc4efc43d1d84a5b52fc6211500bd1b437af277';
+    r'4136d4856738a829a9c8c984b00b6448d1eace77';
 
 /// Holds the cached app status and owns all fetch/gate logic.
 ///
