@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/launch/external_url_launcher.dart';
+import '../../core/router/app_router.dart';
 import '../../core/localization/localization_extensions.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -77,13 +79,25 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
 
   /// Android back / header back: step back through the form's history first,
   /// otherwise leave the page.
+  ///
+  /// The leave step uses a real [GoRouter] pop (not `maybePop`) so it is not
+  /// re-intercepted by this page's [PopScope] — a `maybePop` here would fire
+  /// [PopScope.onPopInvokedWithResult] again and trap the page instead of
+  /// popping it.
   Future<void> _handleBack() async {
     final handle = _handle;
     if (handle != null && await handle.canGoBack()) {
       await handle.goBack();
       return;
     }
-    if (mounted) Navigator.of(context).maybePop();
+    if (!mounted) return;
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      // No route to pop (unexpected): fall back to the Settings page rather
+      // than leaving the user stranded on the form.
+      context.go(AppRoutes.settings);
+    }
   }
 
   @override
@@ -96,6 +110,7 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
       child: AppPage(
         title: context.l10n.support,
         showBackButton: true,
+        onBack: _handleBack,
         child: Column(
           children: [
             const _SensitiveInfoNotice(),
@@ -104,7 +119,10 @@ class _SupportScreenState extends ConsumerState<SupportScreen> {
                 children: [
                   // Kept in the tree across states so the loaded form is not
                   // rebuilt when the loading overlay disappears.
-                  Offstage(offstage: _state == _LoadState.error, child: _webView),
+                  Offstage(
+                    offstage: _state == _LoadState.error,
+                    child: _webView,
+                  ),
                   if (_state == _LoadState.loading) const _LoadingOverlay(),
                   if (_state == _LoadState.error)
                     _ErrorView(
@@ -169,10 +187,7 @@ class _LoadingOverlay extends StatelessWidget {
           children: [
             const CircularProgressIndicator(),
             const SizedBox(height: 14),
-            Text(
-              context.l10n.loadingSupportForm,
-              style: AppTextStyles.helper,
-            ),
+            Text(context.l10n.loadingSupportForm, style: AppTextStyles.helper),
           ],
         ),
       ),

@@ -37,7 +37,7 @@ void main() {
       expect(
         uri.toString(),
         'https://tally.so/r/eqlJEo'
-            '?app=replywise&version=1.0.0&build=40&platform=android&language=en',
+        '?app=replywise&version=1.0.0&build=40&platform=android&language=en',
       );
     });
 

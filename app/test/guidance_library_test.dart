@@ -15,10 +15,12 @@ Future<ProviderContainer> _container({
   final sharedPrefs = await SharedPreferences.getInstance();
   final repo = GuidanceLibraryRepository(sharedPrefs);
 
-  final c = ProviderContainer(overrides: [
-    sharedPreferencesProvider.overrideWithValue(sharedPrefs),
-    guidanceLibraryRepositoryProvider.overrideWithValue(repo),
-  ]);
+  final c = ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+      guidanceLibraryRepositoryProvider.overrideWithValue(repo),
+    ],
+  );
   addTearDown(c.dispose);
   c.read(guidanceLibraryControllerProvider); // trigger initial load
   return c;
@@ -30,7 +32,9 @@ GuidanceLibraryController _notifier(ProviderContainer c) =>
 GuidanceLibraryState _state(ProviderContainer c) =>
     c.read(guidanceLibraryControllerProvider);
 
-Future<GuidanceLibraryRepository> _repo([Map<String, Object> prefs = const {}]) async {
+Future<GuidanceLibraryRepository> _repo([
+  Map<String, Object> prefs = const {},
+]) async {
   SharedPreferences.setMockInitialValues(prefs);
   return GuidanceLibraryRepository(await SharedPreferences.getInstance());
 }
@@ -49,14 +53,16 @@ void main() {
       );
     });
 
-    test('repository refuses to delete a built-in (not found in customs)',
-        () async {
-      final repo = await _repo();
-      expect(
-        () => repo.deleteTemplate('builtin_be_polite'),
-        throwsStateError,
-      );
-    });
+    test(
+      'repository refuses to delete a built-in (not found in customs)',
+      () async {
+        final repo = await _repo();
+        expect(
+          () => repo.deleteTemplate('builtin_be_polite'),
+          throwsStateError,
+        );
+      },
+    );
 
     test('repository refuses to edit a built-in', () async {
       final repo = await _repo();
@@ -67,19 +73,18 @@ void main() {
       );
     });
 
-    test('controller surfaces an error when editing a built-in fails',
-        () async {
-      final c = await _container();
-      final builtIn = _state(c).builtInTemplates.first;
-      final ok = await _notifier(c).update(builtIn.copyWith(title: 'Nope'));
-      expect(ok, isFalse);
-      expect(_state(c).error, isNotNull);
-      // Built-in title is unchanged.
-      expect(
-        _state(c).builtInTemplates.first.title,
-        builtIn.title,
-      );
-    });
+    test(
+      'controller surfaces an error when editing a built-in fails',
+      () async {
+        final c = await _container();
+        final builtIn = _state(c).builtInTemplates.first;
+        final ok = await _notifier(c).update(builtIn.copyWith(title: 'Nope'));
+        expect(ok, isFalse);
+        expect(_state(c).error, isNotNull);
+        // Built-in title is unchanged.
+        expect(_state(c).builtInTemplates.first.title, builtIn.title);
+      },
+    );
 
     test('can be favorited', () async {
       final c = await _container();
@@ -120,8 +125,9 @@ void main() {
 
     test('can be deleted', () async {
       final c = await _container();
-      await _notifier(c).add(
-          title: 'Gone', content: 'Soon.', category: GuidanceCategory.custom);
+      await _notifier(
+        c,
+      ).add(title: 'Gone', content: 'Soon.', category: GuidanceCategory.custom);
       final id = _state(c).customTemplates.first.id;
       final ok = await _notifier(c).delete(id);
       expect(ok, isTrue);
@@ -139,27 +145,26 @@ void main() {
       expect(_state(c).customTemplates.first.content.length, 1000);
     });
 
-    test('favorite state persists across a fresh repository (reload)',
-        () async {
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
+    test(
+      'favorite state persists across a fresh repository (reload)',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
 
-      final repo1 = GuidanceLibraryRepository(prefs);
-      final added = await repo1.addTemplate(
-        title: 'Persist me',
-        content: 'Some content.',
-        category: GuidanceCategory.custom,
-      );
-      await repo1.toggleFavorite(added.id);
+        final repo1 = GuidanceLibraryRepository(prefs);
+        final added = await repo1.addTemplate(
+          title: 'Persist me',
+          content: 'Some content.',
+          category: GuidanceCategory.custom,
+        );
+        await repo1.toggleFavorite(added.id);
 
-      // Fresh repo over the same store simulates an app restart.
-      final repo2 = GuidanceLibraryRepository(prefs);
-      final loaded = repo2.loadTemplates();
-      expect(
-        loaded.firstWhere((t) => t.id == added.id).isFavorite,
-        isTrue,
-      );
-    });
+        // Fresh repo over the same store simulates an app restart.
+        final repo2 = GuidanceLibraryRepository(prefs);
+        final loaded = repo2.loadTemplates();
+        expect(loaded.firstWhere((t) => t.id == added.id).isFavorite, isTrue);
+      },
+    );
 
     test('persists after app restart simulation', () async {
       SharedPreferences.setMockInitialValues({});
@@ -185,12 +190,17 @@ void main() {
     test('invalid custom JSON falls back to built-ins only', () async {
       final repo = await _repo({'guidance_library_custom_v1': 'not-json{['});
       final loaded = repo.loadTemplates();
-      expect(loaded.where((t) => t.isBuiltIn), hasLength(kBuiltInTemplates.length));
+      expect(
+        loaded.where((t) => t.isBuiltIn),
+        hasLength(kBuiltInTemplates.length),
+      );
       expect(loaded.where((t) => !t.isBuiltIn), isEmpty);
     });
 
     test('controller loads without error despite corrupted JSON', () async {
-      final c = await _container(prefs: {'guidance_library_custom_v1': '{{bad'});
+      final c = await _container(
+        prefs: {'guidance_library_custom_v1': '{{bad'},
+      );
       expect(_state(c).error, isNull);
       expect(_state(c).customTemplates, isEmpty);
       expect(_state(c).builtInTemplates, isNotEmpty);

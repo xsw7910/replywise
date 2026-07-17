@@ -21,10 +21,10 @@ class _DummyStorage extends TokenStorage {
 }
 
 ApiClient _dummyClient() => ApiClient(
-      rawDio: Dio(),
-      tokenStorage: _DummyStorage(),
-      recoverUnauthorized: () async => false,
-    );
+  rawDio: Dio(),
+  tokenStorage: _DummyStorage(),
+  recoverUnauthorized: () async => false,
+);
 
 // ── Fake repositories ────────────────────────────────────────────────────────
 
@@ -105,14 +105,16 @@ ProviderContainer _container({
   ExplainRepository? explainRepo,
   _FakeUsageRepo? usageRepo,
 }) {
-  final c = ProviderContainer(overrides: [
-    if (replyRepo != null)
-      replyRepositoryProvider.overrideWith((ref) => replyRepo),
-    if (explainRepo != null)
-      explainRepositoryProvider.overrideWith((ref) => explainRepo),
-    if (usageRepo != null)
-      usageRepositoryProvider.overrideWith((ref) => usageRepo),
-  ]);
+  final c = ProviderContainer(
+    overrides: [
+      if (replyRepo != null)
+        replyRepositoryProvider.overrideWith((ref) => replyRepo),
+      if (explainRepo != null)
+        explainRepositoryProvider.overrideWith((ref) => explainRepo),
+      if (usageRepo != null)
+        usageRepositoryProvider.overrideWith((ref) => usageRepo),
+    ],
+  );
   addTearDown(c.dispose);
   return c;
 }
@@ -212,10 +214,7 @@ void main() {
   group('UsageController refresh', () {
     test('is called after successful generation', () async {
       final usageRepo = _FakeUsageRepo();
-      final c = _container(
-        replyRepo: _FakeReplyRepo(),
-        usageRepo: usageRepo,
-      );
+      final c = _container(replyRepo: _FakeReplyRepo(), usageRepo: usageRepo);
 
       await c.read(replyControllerProvider.notifier).generate(_request);
 
@@ -226,7 +225,11 @@ void main() {
       final usageRepo = _FakeUsageRepo();
       final c = _container(
         replyRepo: _FakeReplyRepo(
-          error: const ApiError(code: 'PAYWALL_REQUIRED', message: 'No uses.', statusCode: 402),
+          error: const ApiError(
+            code: 'PAYWALL_REQUIRED',
+            message: 'No uses.',
+            statusCode: 402,
+          ),
         ),
         usageRepo: usageRepo,
       );
@@ -238,11 +241,9 @@ void main() {
   });
 
   group('ExplainController billing behavior', () {
-    Future<ExplainResult?> explain(ProviderContainer c) =>
-        c.read(explainControllerProvider.notifier).explain(
-              text: 'What does this mean?',
-              explainLang: 'en',
-            );
+    Future<ExplainResult?> explain(ProviderContainer c) => c
+        .read(explainControllerProvider.notifier)
+        .explain(text: 'What does this mean?', explainLang: 'en');
 
     test('refreshes the credit balance after a successful explain', () async {
       final usageRepo = _FakeUsageRepo();

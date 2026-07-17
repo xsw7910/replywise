@@ -27,24 +27,23 @@ class TokenStorage {
   Future<void> saveTokens({
     required String accessToken,
     required String refreshToken,
-  }) =>
-      Future.wait([
-        _storage.write(key: _keyAccessToken, value: accessToken),
-        _storage.write(key: _keyRefreshToken, value: refreshToken),
-      ]);
+  }) => Future.wait([
+    _storage.write(key: _keyAccessToken, value: accessToken),
+    _storage.write(key: _keyRefreshToken, value: refreshToken),
+  ]);
 
   Future<void> saveAccessToken(String token) =>
       _storage.write(key: _keyAccessToken, value: token);
 
   Future<void> clearTokens() => Future.wait([
-        _storage.delete(key: _keyAccessToken),
-        _storage.delete(key: _keyRefreshToken),
-      ]);
+    _storage.delete(key: _keyAccessToken),
+    _storage.delete(key: _keyRefreshToken),
+  ]);
 }
 
 @Riverpod(keepAlive: true)
 TokenStorage tokenStorage(TokenStorageRef ref) => TokenStorage(
-      const FlutterSecureStorage(
-        aOptions: AndroidOptions(encryptedSharedPreferences: true),
-      ),
-    );
+  const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  ),
+);

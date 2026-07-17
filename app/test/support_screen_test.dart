@@ -29,6 +29,11 @@ class _FakeWeb {
   SupportWebViewRequest? request;
   int reloadCount = 0;
 
+  /// Whether the fake form reports internal history. Drives the Support
+  /// page's "go back inside the form first" branch.
+  bool canGoBackValue = false;
+  int goBackCount = 0;
+
   Widget build(SupportWebViewRequest req) {
     request = req;
     req.onReady(
@@ -37,8 +42,8 @@ class _FakeWeb {
           reloadCount++;
           req.onPageStarted();
         },
-        canGoBack: () async => false,
-        goBack: () async {},
+        canGoBack: () async => canGoBackValue,
+        goBack: () async => goBackCount++,
       ),
     );
     return const SizedBox(key: Key('fake-web'));
@@ -147,25 +152,98 @@ class _FakeHealthController extends HealthController {
       const HealthResponse(status: 'ok', service: 'reply');
 }
 
-void main() {
-  testWidgets('shows the privacy notice and a loading indicator while loading', (
-    tester,
-  ) async {
-    final launched = <Uri>[];
-    await _pumpSupport(tester, launched: launched);
+/// Pumps a two-page router (Settings → Support) wired with fakes so tests can
+/// exercise real navigation (push/pop) between the two screens. Returns the
+/// live [GoRouter] and the [_FakeWeb] backing the Support form.
+Future<({GoRouter router, _FakeWeb fake})> _pumpSettingsRouter(
+  WidgetTester tester,
+) async {
+  tester.view.physicalSize = const Size(1200, 3600);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.reset);
 
-    expect(find.byKey(const Key('support-sensitive-notice')), findsOneWidget);
-    expect(
-      find.text(
-        'Please do not include passwords, payment card details, or other '
-        'sensitive information.',
+  SharedPreferences.setMockInitialValues({});
+  final prefs = await SharedPreferences.getInstance();
+  final fake = _FakeWeb();
+
+  final router = GoRouter(
+    initialLocation: AppRoutes.settings,
+    routes: [
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (context, state) => const SettingsScreen(),
       ),
-      findsOneWidget,
-    );
-    expect(find.byKey(const Key('support-loading')), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    expect(find.text('Loading support form…'), findsOneWidget);
-  });
+      GoRoute(
+        path: AppRoutes.support,
+        builder: (context, state) => const SupportScreen(),
+      ),
+    ],
+  );
+  addTearDown(router.dispose);
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        devToolsPanelVisibleProvider.overrideWithValue(false),
+        healthControllerProvider.overrideWith(_FakeHealthController.new),
+        tokenStorageProvider.overrideWith((ref) => _FakeStorage()),
+        authRepositoryProvider.overrideWith((ref) => _FakeAuthRepo()),
+        revenueCatGatewayProvider.overrideWithValue(const _FakeGateway()),
+        currentAppVersionProvider.overrideWithValue('1.0.0'),
+        currentAppBuildNumberProvider.overrideWithValue(40),
+        supportLanguageProvider.overrideWithValue('en'),
+        supportWebViewBuilderProvider.overrideWithValue(fake.build),
+      ],
+      child: MaterialApp.router(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: router,
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+  return (router: router, fake: fake);
+}
+
+/// Taps the Settings "Support" row and lets the Support page mount. Not
+/// `pumpAndSettle`: the fake form never finishes loading, so the spinner would
+/// never settle.
+Future<void> _openSupport(WidgetTester tester) async {
+  await tester.ensureVisible(find.byKey(const Key('settings-support-row')));
+  await tester.tap(find.byKey(const Key('settings-support-row')));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 400));
+}
+
+/// Taps the Support page's AppBar back arrow and drains the async
+/// `canGoBack()`/pop microtasks.
+Future<void> _tapBackArrow(WidgetTester tester) async {
+  await tester.tap(find.byIcon(Icons.arrow_back));
+  await tester.pump();
+  await tester.pump();
+}
+
+void main() {
+  testWidgets(
+    'shows the privacy notice and a loading indicator while loading',
+    (tester) async {
+      final launched = <Uri>[];
+      await _pumpSupport(tester, launched: launched);
+
+      expect(find.byKey(const Key('support-sensitive-notice')), findsOneWidget);
+      expect(
+        find.text(
+          'Please do not include passwords, payment card details, or other '
+          'sensitive information.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('support-loading')), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.text('Loading support form…'), findsOneWidget);
+    },
+  );
 
   testWidgets('hides the loading indicator once the form finishes loading', (
     tester,
@@ -240,70 +318,125 @@ void main() {
     expect(
       expected.toString(),
       'https://tally.so/r/eqlJEo'
-          '?app=replywise&version=1.0.0&build=40&platform=android&language=en',
+      '?app=replywise&version=1.0.0&build=40&platform=android&language=en',
     );
   });
 
-  testWidgets('Support row on Settings opens the Support page', (tester) async {
-    tester.view.physicalSize = const Size(1200, 3600);
-    tester.view.devicePixelRatio = 1.0;
-    addTearDown(tester.view.reset);
-
-    SharedPreferences.setMockInitialValues({});
-    final prefs = await SharedPreferences.getInstance();
-    final fake = _FakeWeb();
-
-    final router = GoRouter(
-      initialLocation: AppRoutes.settings,
-      routes: [
-        GoRoute(
-          path: AppRoutes.settings,
-          builder: (context, state) => const SettingsScreen(),
-        ),
-        GoRoute(
-          path: AppRoutes.support,
-          builder: (context, state) => const SupportScreen(),
-        ),
-      ],
-    );
-    addTearDown(router.dispose);
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-          devToolsPanelVisibleProvider.overrideWithValue(false),
-          healthControllerProvider.overrideWith(_FakeHealthController.new),
-          tokenStorageProvider.overrideWith((ref) => _FakeStorage()),
-          authRepositoryProvider.overrideWith((ref) => _FakeAuthRepo()),
-          revenueCatGatewayProvider.overrideWithValue(const _FakeGateway()),
-          currentAppVersionProvider.overrideWithValue('1.0.0'),
-          currentAppBuildNumberProvider.overrideWithValue(40),
-          supportLanguageProvider.overrideWithValue('en'),
-          supportWebViewBuilderProvider.overrideWithValue(fake.build),
-        ],
-        child: MaterialApp.router(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: router,
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
+  testWidgets('Support row on Settings pushes the Support page', (
+    tester,
+  ) async {
+    await _pumpSettingsRouter(tester);
 
     // The Support row is present on Settings, and the Support page is not shown.
     expect(find.byKey(const Key('settings-support-row')), findsOneWidget);
     expect(find.byKey(const Key('support-sensitive-notice')), findsNothing);
 
-    await tester.ensureVisible(find.byKey(const Key('settings-support-row')));
-    await tester.tap(find.byKey(const Key('settings-support-row')));
-    // Not pumpAndSettle: the form stays in the loading state (the fake never
-    // reports a finished load), so the spinner would never settle.
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    await _openSupport(tester);
 
     // The Support page (native header + form container) is now on screen.
     expect(find.byKey(const Key('support-sensitive-notice')), findsOneWidget);
     expect(find.byKey(const Key('fake-web')), findsOneWidget);
   });
+
+  testWidgets('AppBar back arrow returns to the same Settings page', (
+    tester,
+  ) async {
+    await _pumpSettingsRouter(tester);
+    await _openSupport(tester);
+    expect(find.byKey(const Key('support-sensitive-notice')), findsOneWidget);
+
+    await _tapBackArrow(tester);
+    await tester.pumpAndSettle();
+
+    // Back on Settings (single instance), Support fully gone.
+    expect(find.byKey(const Key('settings-support-row')), findsOneWidget);
+    expect(find.byKey(const Key('support-sensitive-notice')), findsNothing);
+  });
+
+  testWidgets('system back returns to Settings when the form has no history', (
+    tester,
+  ) async {
+    final res = await _pumpSettingsRouter(tester);
+    await _openSupport(tester);
+    res.fake.canGoBackValue = false;
+
+    // Simulate the Android system back button / back gesture.
+    await tester.binding.handlePopRoute();
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(res.fake.goBackCount, 0);
+    expect(find.byKey(const Key('settings-support-row')), findsOneWidget);
+    expect(find.byKey(const Key('support-sensitive-notice')), findsNothing);
+  });
+
+  testWidgets('back steps inside the form (goBack) and does not pop the route '
+      'when canGoBack is true', (tester) async {
+    final res = await _pumpSettingsRouter(tester);
+    await _openSupport(tester);
+    res.fake.canGoBackValue = true;
+
+    await _tapBackArrow(tester);
+
+    // Stepped back inside the form; the Support route was not popped, so the
+    // Support page (its unique notice) is still the visible top route.
+    expect(res.fake.goBackCount, 1);
+    expect(find.byKey(const Key('support-sensitive-notice')), findsOneWidget);
+  });
+
+  testWidgets('back pops the Support route when canGoBack is false', (
+    tester,
+  ) async {
+    final res = await _pumpSettingsRouter(tester);
+    await _openSupport(tester);
+    res.fake.canGoBackValue = false;
+
+    await _tapBackArrow(tester);
+    await tester.pumpAndSettle();
+
+    expect(res.fake.goBackCount, 0);
+    expect(find.byKey(const Key('support-sensitive-notice')), findsNothing);
+    expect(find.byKey(const Key('settings-support-row')), findsOneWidget);
+  });
+
+  testWidgets('loading overlay does not block the AppBar back button', (
+    tester,
+  ) async {
+    await _pumpSettingsRouter(tester);
+    await _openSupport(tester);
+
+    // The form is still in the loading state (the fake never finishes),
+    // so the loading overlay is on screen over the form body.
+    expect(find.byKey(const Key('support-loading')), findsOneWidget);
+
+    // The back arrow must still be tappable and pop the page.
+    await _tapBackArrow(tester);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('support-sensitive-notice')), findsNothing);
+    expect(find.byKey(const Key('settings-support-row')), findsOneWidget);
+  });
+
+  testWidgets(
+    'repeatedly opening and closing Support does not stack Settings routes',
+    (tester) async {
+      await _pumpSettingsRouter(tester);
+
+      for (var i = 0; i < 3; i++) {
+        await _openSupport(tester);
+        expect(
+          find.byKey(const Key('support-sensitive-notice')),
+          findsOneWidget,
+        );
+
+        await _tapBackArrow(tester);
+        await tester.pumpAndSettle();
+
+        // Exactly one Settings page — pop returned to the existing instance
+        // rather than pushing/replacing a new Settings route.
+        expect(find.byKey(const Key('settings-support-row')), findsOneWidget);
+        expect(find.byKey(const Key('support-sensitive-notice')), findsNothing);
+      }
+    },
+  );
 }

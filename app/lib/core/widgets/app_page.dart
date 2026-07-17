@@ -11,6 +11,7 @@ class AppPage extends StatelessWidget {
     this.titleWidget,
     this.actions,
     this.showBackButton = false,
+    this.onBack,
     this.showAppBar = true,
     this.useSafeArea = true,
     this.accentColor,
@@ -32,6 +33,13 @@ class AppPage extends StatelessWidget {
   final Widget? titleWidget;
   final List<Widget>? actions;
   final bool showBackButton;
+
+  /// Optional explicit handler for the AppBar back arrow. When provided (and
+  /// [showBackButton] is true) the leading button calls this instead of the
+  /// default `Navigator.maybePop`, so pages that gate popping with a
+  /// `PopScope` can route the arrow through their own back logic without the
+  /// arrow being swallowed by that same `PopScope`.
+  final VoidCallback? onBack;
   final bool showAppBar;
   final bool useSafeArea;
   final Color? accentColor;
@@ -85,6 +93,15 @@ class AppPage extends StatelessWidget {
                           color: accentColor ?? AppColors.primaryBlue,
                         )
                       : Text(title, style: titleStyle)),
+              leading: showBackButton && onBack != null
+                  ? IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      tooltip: MaterialLocalizations.of(
+                        context,
+                      ).backButtonTooltip,
+                      onPressed: onBack,
+                    )
+                  : null,
               actions: actions,
               automaticallyImplyLeading: showBackButton,
               backgroundColor: transparentAppBar

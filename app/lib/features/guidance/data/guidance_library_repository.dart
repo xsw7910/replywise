@@ -124,10 +124,12 @@ class GuidanceLibraryRepository {
   }
 }
 
-final guidanceLibraryRepositoryProvider =
-    Provider<GuidanceLibraryRepository>((ref) {
+final guidanceLibraryRepositoryProvider = Provider<GuidanceLibraryRepository>((
+  ref,
+) {
   throw UnimplementedError(
-      'Override guidanceLibraryRepositoryProvider with a SharedPreferences instance');
+    'Override guidanceLibraryRepositoryProvider with a SharedPreferences instance',
+  );
 });
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {

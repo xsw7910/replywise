@@ -39,10 +39,8 @@ void main() {
     return controller;
   }
 
-  Finder clearIn(Key key) => find.descendant(
-    of: find.byKey(key),
-    matching: find.byTooltip('Clear'),
-  );
+  Finder clearIn(Key key) =>
+      find.descendant(of: find.byKey(key), matching: find.byTooltip('Clear'));
 
   testWidgets('clear button is hidden while the field is empty', (
     tester,
@@ -81,9 +79,10 @@ void main() {
   testWidgets('clear button stays at the top with long multiline text and '
       'clears on tap', (tester) async {
     final controller = await pumpField(tester);
-    final longText = List.generate(12, (i) => 'Line $i of a long draft').join(
-      '\n',
-    );
+    final longText = List.generate(
+      12,
+      (i) => 'Line $i of a long draft',
+    ).join('\n');
     await tester.enterText(
       find.descendant(
         of: find.byKey(fieldKey),

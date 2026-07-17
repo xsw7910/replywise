@@ -152,8 +152,7 @@ class RecentItem {
         json['formalText'] as String? ?? json['professionalText'] as String?,
     casualText:
         json['casualText'] as String? ?? json['friendlyText'] as String?,
-    conciseText:
-        json['conciseText'] as String? ?? json['shortText'] as String?,
+    conciseText: json['conciseText'] as String? ?? json['shortText'] as String?,
   );
 }
 

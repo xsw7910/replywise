@@ -43,12 +43,12 @@ class _AppStatusBoundaryState extends ConsumerState<AppStatusBoundary> {
       return _ForceUpdateBlock(
         message: status.updateMessage,
         onUpdate: () => ref.read(storeLauncherProvider)(),
-        onRetry: () =>
-            ref.read(appStatusControllerProvider.notifier).refresh(),
+        onRetry: () => ref.read(appStatusControllerProvider.notifier).refresh(),
       );
     }
 
-    final dismissedKey = '${status?.latestVersion}+${status?.latestBuildNumber}';
+    final dismissedKey =
+        '${status?.latestVersion}+${status?.latestBuildNumber}';
     final showOptional =
         status != null &&
         status.hasOptionalUpdate(version, buildNumber) &&

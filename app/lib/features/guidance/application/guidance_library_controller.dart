@@ -49,7 +49,8 @@ class GuidanceLibraryController extends Notifier<GuidanceLibraryState> {
       return GuidanceLibraryState(templates: _repo.loadTemplates());
     } catch (_) {
       return const GuidanceLibraryState(
-          error: 'Failed to load guidance library.');
+        error: 'Failed to load guidance library.',
+      );
     }
   }
 
@@ -57,7 +58,9 @@ class GuidanceLibraryController extends Notifier<GuidanceLibraryState> {
   /// Returns true on success; on failure keeps current templates and sets
   /// [GuidanceLibraryState.error] without throwing.
   Future<bool> _mutate(
-      Future<void> Function() action, String errorMessage) async {
+    Future<void> Function() action,
+    String errorMessage,
+  ) async {
     try {
       await action();
       state = GuidanceLibraryState(templates: _repo.loadTemplates());
@@ -74,8 +77,8 @@ class GuidanceLibraryController extends Notifier<GuidanceLibraryState> {
     required GuidanceCategory category,
   }) {
     return _mutate(
-      () => _repo.addTemplate(
-          title: title, content: content, category: category),
+      () =>
+          _repo.addTemplate(title: title, content: content, category: category),
       'Could not save this guidance. Please try again.',
     );
   }
@@ -110,4 +113,5 @@ class GuidanceLibraryController extends Notifier<GuidanceLibraryState> {
 
 final guidanceLibraryControllerProvider =
     NotifierProvider<GuidanceLibraryController, GuidanceLibraryState>(
-        GuidanceLibraryController.new);
+      GuidanceLibraryController.new,
+    );
