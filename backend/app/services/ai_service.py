@@ -15,6 +15,16 @@ from app.schemas.ai import (
 )
 from app.services.ai_provider import AIProvider, AIProviderError
 
+# App/UI-locale fields removed from the model payload so the interface language
+# is never seen as an output-language instruction. The interface language is
+# re-added only as the clearly scoped ``explanation_language``.
+_APP_LANGUAGE_PAYLOAD_FIELDS = (
+    "output_lang",
+    "guidance_lang",
+    "app_locale",
+    "explain_lang",
+)
+
 
 class AIService:
     def __init__(self, provider: AIProvider):
@@ -23,10 +33,6 @@ class AIService:
     async def reply(self, request: ReplyRequest) -> ReplyResponse:
         payload = request.model_dump(mode="json")
         payload["task"] = "reply"
-        # The legacy client outputLang field must not steer the reply language:
-        # replies follow the incoming message's language (see prompt), and
-        # explanations follow output_language.
-        payload.pop("output_lang", None)
         prompt = self._localized_prompt(
             REPLY_SYSTEM_PROMPT,
             payload,
@@ -60,18 +66,25 @@ class AIService:
         payload: dict,
         app_locale: str | None,
     ) -> str:
-        locale_code, output_language = normalize_app_locale(app_locale)
-        payload["app_locale"] = locale_code
-        payload["output_language"] = output_language
+        _, explanation_language = normalize_app_locale(app_locale)
+        # Strip every app/UI-locale field from the model payload so the
+        # interface language can never be read as the requested output
+        # language. The UI language is re-introduced ONLY as the clearly named
+        # explanation_language, which the prompt scopes to explanation fields.
+        for field in _APP_LANGUAGE_PAYLOAD_FIELDS:
+            payload.pop(field, None)
+        payload["explanation_language"] = explanation_language
         return (
             f"{system_prompt}\n\n"
-            f"Write the section headings and explanations in: {output_language}.\n"
-            "output_language applies ONLY to explanation fields (why, changes, "
-            "meaning, tone, hiddenMeaning). "
+            f"explanation_language = {explanation_language}.\n"
+            "explanation_language is the app interface / UI language. It "
+            "governs ONLY the explanation fields (why, changes, meaning, tone, "
+            "hiddenMeaning) and their section headings — write those in "
+            "explanation_language. "
             "Do not translate JSON keys or fixed enum labels. "
-            "User-facing message content (reply versions, polished text, "
-            "suggested replies) must follow the language rules of the task — "
-            f"never translate it into {output_language} because of the app "
+            "The main user-facing content (reply versions, polished text) must "
+            "follow the source-text language rules of the task and must NEVER "
+            f"be translated into {explanation_language} because of the app "
             "language setting."
         )
 
