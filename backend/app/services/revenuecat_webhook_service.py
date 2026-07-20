@@ -5,17 +5,18 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.models.credit import CreditPurchase
 from app.models.revenuecat_event import RevenueCatEvent
 from app.models.subscription import SubscriptionCache
-from app.models.usage import UsageSummary
 from app.models.user import User
-from app.services.credit_service import credit_product_grants
+from app.services.credit_service import (
+    credit_product_grants,
+    grant_credit_purchase_once,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -76,17 +77,26 @@ def _expiration(event: dict[str, Any]) -> datetime | None:
     return None
 
 
-def _transaction_id(event: dict[str, Any], event_id: str) -> str:
+def _transaction_ids(event: dict[str, Any], event_id: str) -> tuple[str, tuple[str, ...]]:
+    seen: set[str] = set()
+    result: list[str] = []
     for key in (
-        "transaction_id",
         "store_transaction_id",
         "store_purchase_identifier",
+        "transaction_id",
         "original_transaction_id",
     ):
         value = _optional_string(event.get(key))
-        if value:
-            return value
-    return event_id
+        if value and value not in seen:
+            seen.add(value)
+            result.append(value)
+    if not result:
+        result.append(event_id)
+    return result[0], tuple(result[1:])
+
+
+def _transaction_id(event: dict[str, Any], event_id: str) -> str:
+    return _transaction_ids(event, event_id)[0]
 
 
 def _entitlement_id(event: dict[str, Any]) -> str:
@@ -138,45 +148,21 @@ async def _grant_credits(
         )
         return 0
 
-    transaction_id = _transaction_id(event, event_id)
-    try:
-        async with db.begin_nested():
-            db.add(
-                CreditPurchase(
-                    transaction_id=transaction_id,
-                    user_id=user_id,
-                    product_id=product_id,
-                    credits_granted=credits,
-                )
-            )
-            await db.flush()
-
-            summary = await db.get(UsageSummary, user_id)
-            if summary is None:
-                summary = UsageSummary(
-                    user_id=user_id,
-                    free_uses_limit=settings.free_lifetime_limit,
-                )
-                db.add(summary)
-                await db.flush()
-
-            result = await db.execute(
-                update(UsageSummary)
-                .where(UsageSummary.user_id == user_id)
-                .values(
-                    paid_credits=UsageSummary.paid_credits + credits,
-                    updated_at=datetime.now(timezone.utc),
-                )
-            )
-            if result.rowcount != 1:
-                raise RuntimeError("Failed to update credits for RevenueCat webhook")
-    except IntegrityError:
+    transaction_id, alternate_transaction_ids = _transaction_ids(event, event_id)
+    granted = await grant_credit_purchase_once(
+        db,
+        user_id,
+        transaction_id=transaction_id,
+        product_id=product_id,
+        credits=credits,
+        alternate_transaction_ids=alternate_transaction_ids,
+    )
+    if granted == 0:
         logger.info(
             "RevenueCat purchase transaction was already granted for event %s",
             event_id,
         )
-        return 0
-    return credits
+    return granted
 
 
 async def process_revenuecat_event(

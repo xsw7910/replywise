@@ -199,6 +199,77 @@ def test_default_store_ids_grant_expected_credits(
     assert resp.json()["grantedThisSync"] == expected
     assert resp.json()["paidCredits"] == expected
 
+    resp2 = _sync(client, auth, fake)
+    assert resp2.status_code == 200
+    assert resp2.json()["grantedThisSync"] == 0
+    assert resp2.json()["paidCredits"] == expected
+
+    async def purchase_count() -> int:
+        async with AsyncSessionLocal() as db:
+            return await db.scalar(
+                select(func.count(CreditPurchase.transaction_id)).where(
+                    CreditPurchase.transaction_id == f"txn-{store_id}"
+                )
+            ) or 0
+
+    assert asyncio.run(purchase_count()) == 1
+
+
+def test_sync_skips_transaction_recorded_under_revenuecat_purchase_id_alias(
+    client: TestClient,
+) -> None:
+    auth, user_id, _ = _auth(client, "legacy-alias")
+    store_transaction_id = "GPA.legacy-alias"
+    revenuecat_purchase_id = "purchase-legacy-alias"
+
+    async def seed_legacy_purchase() -> None:
+        async with AsyncSessionLocal() as db:
+            db.add(
+                CreditPurchase(
+                    transaction_id=revenuecat_purchase_id,
+                    user_id=user_id,
+                    product_id="credits_10",
+                    credits_granted=10,
+                )
+            )
+            summary = await db.get(UsageSummary, user_id)
+            if summary is None:
+                summary = UsageSummary(user_id=user_id)
+                db.add(summary)
+            summary.paid_credits = 10
+            await db.commit()
+
+    asyncio.run(seed_legacy_purchase())
+
+    fake = _FakeRevenueCat([
+        ConsumableTransaction(
+            store_transaction_id,
+            "credits_10",
+            (revenuecat_purchase_id,),
+        )
+    ])
+    resp = _sync(client, auth, fake)
+
+    assert resp.status_code == 200
+    assert resp.json()["grantedThisSync"] == 0
+    assert resp.json()["paidCredits"] == 10
+
+    async def rows() -> tuple[int, int]:
+        async with AsyncSessionLocal() as db:
+            store_count = await db.scalar(
+                select(func.count(CreditPurchase.transaction_id)).where(
+                    CreditPurchase.transaction_id == store_transaction_id
+                )
+            )
+            legacy_count = await db.scalar(
+                select(func.count(CreditPurchase.transaction_id)).where(
+                    CreditPurchase.transaction_id == revenuecat_purchase_id
+                )
+            )
+            return int(store_count or 0), int(legacy_count or 0)
+
+    assert asyncio.run(rows()) == (0, 1)
+
 
 def test_env_mapped_internal_product_ids_grant_credits(
     client: TestClient, monkeypatch

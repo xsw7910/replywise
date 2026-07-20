@@ -105,7 +105,7 @@ def _owned_purchase(txn_id: str, product_id: str) -> dict:
         "status": "owned",
         "ownership": "purchased",
         "store": "play_store",
-        "store_purchase_identifier": "GPA.0000-0000-0000-00000",
+        "store_purchase_identifier": f"GPA.{txn_id}",
     }
 
 
@@ -193,7 +193,9 @@ def test_fetch_internal_product_id_owned_purchase_is_returned() -> None:
 
     assert result == [
         ConsumableTransaction(
-            "otpGps4ee034de5613a329844dc1bd066ffa9f", "prod733d52bcdd"
+            "GPA.otpGps4ee034de5613a329844dc1bd066ffa9f",
+            "prod733d52bcdd",
+            ("otpGps4ee034de5613a329844dc1bd066ffa9f",),
         )
     ]
 
@@ -203,7 +205,7 @@ def test_fetch_credits_10_returns_one_transaction() -> None:
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
-    assert result == [ConsumableTransaction("txn-a", "credits_10")]
+    assert result == [ConsumableTransaction("GPA.txn-a", "credits_10", ("txn-a",))]
 
 
 def test_fetch_credits_50_and_credits_10_returns_both() -> None:
@@ -217,7 +219,7 @@ def test_fetch_credits_50_and_credits_10_returns_both() -> None:
     assert len(result) == 2
     txn_ids = {t.transaction_id for t in result}
     product_ids = {t.product_id for t in result}
-    assert txn_ids == {"txn-a", "txn-b"}
+    assert txn_ids == {"GPA.txn-a", "GPA.txn-b"}
     assert product_ids == {"credits_50", "credits_10"}
 
 
@@ -230,7 +232,7 @@ def test_fetch_non_owned_status_is_excluded() -> None:
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
     assert len(result) == 1
-    assert result[0].transaction_id == "txn-a"
+    assert result[0].transaction_id == "GPA.txn-a"
 
 
 def test_fetch_non_purchased_ownership_is_excluded() -> None:
@@ -250,7 +252,7 @@ def test_fetch_missing_ownership_is_accepted() -> None:
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
-    assert result == [ConsumableTransaction("txn-a", "credits_10")]
+    assert result == [ConsumableTransaction("GPA.txn-a", "credits_10", ("txn-a",))]
 
 
 def test_fetch_falls_back_to_store_purchase_identifier_when_id_missing() -> None:
@@ -276,7 +278,7 @@ def test_fetch_unknown_product_id_is_returned_raw() -> None:
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
-    assert result == [ConsumableTransaction("txn-x", "credits_999")]
+    assert result == [ConsumableTransaction("GPA.txn-x", "credits_999", ("txn-x",))]
 
 
 def test_fetch_follows_next_page_pagination() -> None:
@@ -288,7 +290,7 @@ def test_fetch_follows_next_page_pagination() -> None:
     with _patch_http(_rc_response(200, page1), _rc_response(200, page2)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
-    assert {t.transaction_id for t in result} == {"txn-a", "txn-b"}
+    assert {t.transaction_id for t in result} == {"GPA.txn-a", "GPA.txn-b"}
 
 
 def test_fetch_empty_purchases_returns_empty_list() -> None:

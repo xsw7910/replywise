@@ -26,6 +26,7 @@ class VerifiedEntitlement:
 class ConsumableTransaction:
     transaction_id: str
     product_id: str
+    alternate_transaction_ids: tuple[str, ...] = ()
 
 
 class RevenueCatService:
@@ -179,11 +180,11 @@ class RevenueCatService:
 
         Each item is accepted when it is an owned purchase: object='purchase',
         status='owned', and ownership missing or equal to 'purchased'. The
-        idempotent transaction_id is item['id'] (falling back to
-        item['store_purchase_identifier'] when id is absent). The product_id may
-        be a store identifier (e.g. 'credits_10') or a RevenueCat internal
-        product id (e.g. 'prod733d52bcdd'); mapping product ids to credit
-        grants — and ignoring non-credit products such as subscriptions — is the
+        idempotent transaction_id is item['store_purchase_identifier'] when
+        present, falling back to RevenueCat's purchase item['id']. The product_id
+        may be a store identifier (e.g. 'credits_10') or a RevenueCat internal
+        product id (e.g. 'prod733d52bcdd'); mapping product ids to credit grants
+        — and ignoring non-credit products such as subscriptions — is the
         caller's job.
         """
         key, project_id = self._require_config()
@@ -202,9 +203,12 @@ class RevenueCatService:
                     continue
                 if not self._is_owned_purchase(item):
                     continue
-                # Prefer the RevenueCat purchase id; fall back to the store
-                # purchase identifier when id is absent.
-                txn_id = item.get("id") or item.get("store_purchase_identifier")
+                # Use the store purchase identifier as the idempotency key when
+                # RevenueCat exposes it. Webhooks report store transaction
+                # identifiers, while the Purchases API also has a RevenueCat
+                # purchase id (`id`); using the store id keeps webhook and sync
+                # on the same key for the same Google Play purchase.
+                txn_id = item.get("store_purchase_identifier") or item.get("id")
                 product_id = item.get("product_id")
                 if (
                     txn_id
@@ -212,10 +216,18 @@ class RevenueCatService:
                     and product_id
                     and isinstance(product_id, str)
                 ):
+                    aliases = _unique_strings(
+                        item.get("id"),
+                        item.get("store_transaction_id"),
+                        item.get("transaction_id"),
+                        item.get("original_transaction_id"),
+                        exclude=txn_id,
+                    )
                     result.append(
                         ConsumableTransaction(
                             transaction_id=txn_id,
                             product_id=product_id,
+                            alternate_transaction_ids=aliases,
                         )
                     )
             url = payload.get("next_page") or None
@@ -238,3 +250,17 @@ def _parse_datetime(value: object) -> datetime | None:
         return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
 
     return None
+
+
+def _unique_strings(*values: object, exclude: str | None = None) -> tuple[str, ...]:
+    seen = {exclude} if exclude else set()
+    result: list[str] = []
+    for value in values:
+        if not isinstance(value, str):
+            continue
+        text = value.strip()
+        if not text or text in seen:
+            continue
+        seen.add(text)
+        result.append(text)
+    return tuple(result)

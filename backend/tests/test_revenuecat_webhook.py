@@ -20,8 +20,17 @@ WEBHOOK_SECRET = "test-revenuecat-webhook-secret"
 
 
 class _FakeRevenueCat(RevenueCatService):
-    def __init__(self, transaction_id: str, product_id: str) -> None:
-        self.transaction = ConsumableTransaction(transaction_id, product_id)
+    def __init__(
+        self,
+        transaction_id: str,
+        product_id: str,
+        alternate_transaction_ids: tuple[str, ...] = (),
+    ) -> None:
+        self.transaction = ConsumableTransaction(
+            transaction_id,
+            product_id,
+            alternate_transaction_ids,
+        )
 
     async def fetch_consumable_transactions(
         self,
@@ -206,6 +215,134 @@ def test_existing_credit_sync_does_not_regrant_webhook_transaction(
     assert sync_response.status_code == 200
     assert sync_response.json()["grantedThisSync"] == 0
     assert sync_response.json()["paidCredits"] == 10
+
+
+def test_webhook_store_transaction_does_not_double_grant_when_sync_uses_api_id_alias(
+    client: TestClient,
+) -> None:
+    suffix = uuid4().hex
+    app_user_id = f"webhook-store-sync-{suffix}"
+    auth_response = client.post(
+        "/v1/auth/anonymous",
+        json={
+            "appUserId": app_user_id,
+            "deviceId": f"device-store-sync-{suffix}",
+            "platform": "android",
+        },
+    )
+    user_id = auth_response.json()["me"]["userId"]
+    auth = {"Authorization": f"Bearer {auth_response.json()['accessToken']}"}
+    store_transaction_id = f"GPA.{uuid4().hex}"
+    revenuecat_purchase_id = f"purchase-{uuid4().hex}"
+    product_id = "credits_webhook_10"
+
+    webhook_response = _post(
+        client,
+        _event(
+            app_user_id,
+            "NON_RENEWING_PURCHASE",
+            product_id=product_id,
+            transaction_id=revenuecat_purchase_id,
+            store_transaction_id=store_transaction_id,
+        ),
+    )
+    assert webhook_response.json()["credits_granted"] == 10
+
+    app.dependency_overrides[get_revenuecat_service] = lambda: _FakeRevenueCat(
+        store_transaction_id,
+        product_id,
+        (revenuecat_purchase_id,),
+    )
+    try:
+        sync_response = client.post("/v1/credits/sync", headers=auth)
+    finally:
+        app.dependency_overrides.pop(get_revenuecat_service, None)
+
+    assert sync_response.status_code == 200
+    assert sync_response.json()["grantedThisSync"] == 0
+    assert sync_response.json()["paidCredits"] == 10
+
+    async def balance_and_rows() -> tuple[int, int, int]:
+        async with AsyncSessionLocal() as db:
+            summary = await db.get(UsageSummary, user_id)
+            store_count = await db.scalar(
+                select(func.count(CreditPurchase.transaction_id)).where(
+                    CreditPurchase.transaction_id == store_transaction_id
+                )
+            )
+            api_id_count = await db.scalar(
+                select(func.count(CreditPurchase.transaction_id)).where(
+                    CreditPurchase.transaction_id == revenuecat_purchase_id
+                )
+            )
+            return summary.paid_credits, int(store_count or 0), int(api_id_count or 0)
+
+    assert asyncio.run(balance_and_rows()) == (10, 1, 0)
+
+
+def test_sync_store_transaction_does_not_double_grant_when_webhook_uses_api_id_alias(
+    client: TestClient,
+) -> None:
+    suffix = uuid4().hex
+    app_user_id = f"sync-store-webhook-{suffix}"
+    auth_response = client.post(
+        "/v1/auth/anonymous",
+        json={
+            "appUserId": app_user_id,
+            "deviceId": f"device-sync-store-{suffix}",
+            "platform": "android",
+        },
+    )
+    user_id = auth_response.json()["me"]["userId"]
+    auth = {"Authorization": f"Bearer {auth_response.json()['accessToken']}"}
+    store_transaction_id = f"GPA.{uuid4().hex}"
+    revenuecat_purchase_id = f"purchase-{uuid4().hex}"
+    product_id = "credits_webhook_10"
+
+    app.dependency_overrides[get_revenuecat_service] = lambda: _FakeRevenueCat(
+        store_transaction_id,
+        product_id,
+        (revenuecat_purchase_id,),
+    )
+    try:
+        sync_response = client.post("/v1/credits/sync", headers=auth)
+    finally:
+        app.dependency_overrides.pop(get_revenuecat_service, None)
+    assert sync_response.status_code == 200
+    assert sync_response.json()["grantedThisSync"] == 10
+    assert sync_response.json()["paidCredits"] == 10
+
+    webhook_response = _post(
+        client,
+        _event(
+            app_user_id,
+            "NON_RENEWING_PURCHASE",
+            product_id=product_id,
+            transaction_id=revenuecat_purchase_id,
+            store_transaction_id=store_transaction_id,
+        ),
+    )
+    assert webhook_response.status_code == 200
+    assert webhook_response.json()["credits_granted"] == 0
+
+    async def balance_and_rows() -> tuple[int, int, int]:
+        async with AsyncSessionLocal() as db:
+            summary = await db.get(UsageSummary, user_id)
+            store_count = await db.scalar(
+                select(func.count(CreditPurchase.transaction_id)).where(
+                    CreditPurchase.transaction_id == store_transaction_id
+                )
+            )
+            total_count = await db.scalar(
+                select(func.count(CreditPurchase.transaction_id)).where(
+                    CreditPurchase.transaction_id.in_(
+                        [store_transaction_id, revenuecat_purchase_id]
+                    )
+                )
+            )
+            return summary.paid_credits, int(store_count or 0), int(total_count or 0)
+
+    assert asyncio.run(balance_and_rows()) == (10, 1, 1)
 
 
 def test_unknown_credit_product_does_not_grant_credits(
