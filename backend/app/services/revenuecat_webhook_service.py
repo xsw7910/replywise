@@ -156,6 +156,8 @@ async def _grant_credits(
         product_id=product_id,
         credits=credits,
         alternate_transaction_ids=alternate_transaction_ids,
+        store=_optional_string(event.get("store")),
+        source="webhook",
     )
     if granted == 0:
         logger.info(

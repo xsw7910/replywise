@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,6 +9,8 @@ from app.models.credit import CreditPurchase
 from app.models.usage import UsageSummary
 from app.services.revenuecat_service import RevenueCatService
 from app.services.usage_service import ensure_summary
+
+logger = logging.getLogger(__name__)
 
 # Safe in-code defaults keyed by Google Play store identifier. RevenueCat API
 # v2 purchases may instead report internal product ids (e.g. "prod733d52bcdd");
@@ -51,25 +55,56 @@ async def grant_credit_purchase_once(
     product_id: str,
     credits: int,
     alternate_transaction_ids: tuple[str, ...] = (),
+    revenuecat_purchase_id: str | None = None,
+    store: str | None = None,
+    source: str = "unknown",
 ) -> int:
     """Persist and grant one purchased-credit transaction exactly once.
 
-    The primary key is the canonical RevenueCat/store transaction id. Alternate
-    IDs are checked for backward compatibility with rows previously recorded
-    under RevenueCat's purchase id instead of the store purchase identifier.
+    ``transaction_id`` MUST be the canonical, store-level transaction id (the
+    Google Play order id on Android) so every delivery path — webhook and
+    ``/v1/credits/sync`` — keys the ledger on the same value. ``alternate``
+    ids and ``revenuecat_purchase_id`` are only checked for backward
+    compatibility with rows previously recorded under RevenueCat's purchase id.
+    Both idempotency guarantees are enforced by the database (PK on
+    ``transaction_id`` and the unique index on ``revenuecat_purchase_id``).
     """
-    keys = _purchase_keys(transaction_id, alternate_transaction_ids)
+    alternates = tuple(
+        value for value in (*alternate_transaction_ids, revenuecat_purchase_id or "") if value
+    )
+    keys = _purchase_keys(transaction_id, alternates)
     if not keys:
         return 0
 
-    await ensure_summary(db, user_id)
+    summary = await ensure_summary(db, user_id)
+    balance_before = summary.paid_credits
 
     existing = await db.scalar(
         select(CreditPurchase.transaction_id).where(
             CreditPurchase.transaction_id.in_(keys)
         )
     )
+    # A previously stored row that recorded this RevenueCat purchase id (but
+    # under a different canonical transaction id) is also a duplicate.
+    if existing is None and revenuecat_purchase_id:
+        existing = await db.scalar(
+            select(CreditPurchase.transaction_id).where(
+                CreditPurchase.revenuecat_purchase_id == revenuecat_purchase_id
+            )
+        )
     if existing is not None:
+        _trace(
+            "duplicate_ignored",
+            source=source,
+            canonical_transaction_id=keys[0],
+            revenuecat_purchase_id=revenuecat_purchase_id,
+            store=store,
+            product_id=product_id,
+            credits=credits,
+            balance_before=balance_before,
+            balance_after=balance_before,
+            applied=False,
+        )
         return 0
 
     try:
@@ -80,6 +115,9 @@ async def grant_credit_purchase_once(
                     user_id=user_id,
                     product_id=product_id,
                     credits_granted=credits,
+                    revenuecat_purchase_id=revenuecat_purchase_id,
+                    store=store,
+                    source=source,
                 )
             )
             await db.flush()  # surface IntegrityError before the UPDATE
@@ -89,8 +127,41 @@ async def grant_credit_purchase_once(
                 .values(paid_credits=UsageSummary.paid_credits + credits)
             )
     except IntegrityError:
+        # Lost a concurrency race (PK or revenuecat_purchase_id uniqueness):
+        # the savepoint rolled back, so no balance change happened.
+        _trace(
+            "duplicate_ignored",
+            source=source,
+            canonical_transaction_id=keys[0],
+            revenuecat_purchase_id=revenuecat_purchase_id,
+            store=store,
+            product_id=product_id,
+            credits=credits,
+            balance_before=balance_before,
+            balance_after=balance_before,
+            applied=False,
+        )
         return 0
+
+    _trace(
+        "purchase_row_inserted",
+        source=source,
+        canonical_transaction_id=keys[0],
+        revenuecat_purchase_id=revenuecat_purchase_id,
+        store=store,
+        product_id=product_id,
+        credits=credits,
+        balance_before=balance_before,
+        balance_after=balance_before + credits,
+        applied=True,
+    )
     return credits
+
+
+def _trace(stage: str, **fields: object) -> None:
+    """Structured, non-sensitive credit-grant trace for production forensics."""
+    parts = " ".join(f"{key}={value}" for key, value in fields.items())
+    logger.info("CREDIT_GRANT_TRACE stage=%s %s", stage, parts)
 
 
 async def sync_credits(
@@ -122,6 +193,9 @@ async def sync_credits(
             product_id=txn.product_id,
             credits=credits,
             alternate_transaction_ids=txn.alternate_transaction_ids,
+            revenuecat_purchase_id=txn.revenuecat_purchase_id,
+            store=txn.store,
+            source="sync",
         )
 
     await db.commit()

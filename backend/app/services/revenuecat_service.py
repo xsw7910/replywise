@@ -24,9 +24,13 @@ class VerifiedEntitlement:
 
 @dataclass(frozen=True)
 class ConsumableTransaction:
+    # Canonical, store-level transaction id (Google Play order id on Android).
     transaction_id: str
     product_id: str
     alternate_transaction_ids: tuple[str, ...] = ()
+    # RevenueCat V2 purchase resource id (e.g. "otpGps..."); metadata only.
+    revenuecat_purchase_id: str | None = None
+    store: str | None = None
 
 
 class RevenueCatService:
@@ -179,12 +183,22 @@ class RevenueCatService:
         and follows next_page pagination until exhausted.
 
         Each item is accepted when it is an owned purchase: object='purchase',
-        status='owned', and ownership missing or equal to 'purchased'. The
-        idempotent transaction_id is item['store_purchase_identifier'] when
-        present, falling back to RevenueCat's purchase item['id']. The product_id
-        may be a store identifier (e.g. 'credits_10') or a RevenueCat internal
-        product id (e.g. 'prod733d52bcdd'); mapping product ids to credit grants
-        — and ignoring non-credit products such as subscriptions — is the
+        status='owned', and ownership missing or equal to 'purchased'.
+
+        The canonical, idempotent ``transaction_id`` is the STORE transaction id
+        (``store_purchase_identifier`` — the Google Play order id on Android),
+        which is the SAME identifier the webhook reports. RevenueCat's own
+        purchase resource id (``id``, e.g. "otpGps...") is NEVER used as the
+        canonical key — the webhook does not carry it, so keying on it would
+        double-grant the same purchase (see the credit-doubling incident). It is
+        kept only as a metadata/alias (``revenuecat_purchase_id``) so rows
+        written before this fix still deduplicate.
+
+        A purchase whose store transaction id is not yet exposed by the API is
+        DEFERRED (skipped this round): the webhook grants it now, and a later
+        sync grants it once the store id is available. The product_id may be a
+        store identifier (e.g. 'credits_10') or a RevenueCat internal product id
+        (e.g. 'prod733d52bcdd'); mapping product ids to credit grants is the
         caller's job.
         """
         key, project_id = self._require_config()
@@ -203,33 +217,50 @@ class RevenueCatService:
                     continue
                 if not self._is_owned_purchase(item):
                     continue
-                # Use the store purchase identifier as the idempotency key when
-                # RevenueCat exposes it. Webhooks report store transaction
-                # identifiers, while the Purchases API also has a RevenueCat
-                # purchase id (`id`); using the store id keeps webhook and sync
-                # on the same key for the same Google Play purchase.
-                txn_id = item.get("store_purchase_identifier") or item.get("id")
+
                 product_id = item.get("product_id")
-                if (
-                    txn_id
-                    and isinstance(txn_id, str)
-                    and product_id
-                    and isinstance(product_id, str)
-                ):
-                    aliases = _unique_strings(
-                        item.get("id"),
-                        item.get("store_transaction_id"),
-                        item.get("transaction_id"),
-                        item.get("original_transaction_id"),
-                        exclude=txn_id,
+                if not (product_id and isinstance(product_id, str)):
+                    continue
+
+                revenuecat_purchase_id = _first_string(item.get("id"))
+                store = _first_string(item.get("store"))
+                # Canonical key: the store transaction id, in priority order.
+                # These are the identifiers the webhook also reports.
+                store_txn_id = _first_string(
+                    item.get("store_purchase_identifier"),
+                    item.get("store_transaction_id"),
+                    item.get("transaction_id"),
+                    item.get("original_transaction_id"),
+                )
+                if store_txn_id is None:
+                    # No store-level id yet → defer; the webhook grants it now.
+                    logger.info(
+                        "CREDIT_GRANT_TRACE stage=sync_deferred_no_store_id "
+                        "revenuecat_purchase_id=%s product_id=%s store=%s",
+                        revenuecat_purchase_id,
+                        product_id,
+                        store,
                     )
-                    result.append(
-                        ConsumableTransaction(
-                            transaction_id=txn_id,
-                            product_id=product_id,
-                            alternate_transaction_ids=aliases,
-                        )
+                    continue
+
+                # The RevenueCat purchase id remains a legacy alias so rows
+                # recorded under it before this fix still deduplicate.
+                aliases = _unique_strings(
+                    revenuecat_purchase_id,
+                    item.get("store_transaction_id"),
+                    item.get("transaction_id"),
+                    item.get("original_transaction_id"),
+                    exclude=store_txn_id,
+                )
+                result.append(
+                    ConsumableTransaction(
+                        transaction_id=store_txn_id,
+                        product_id=product_id,
+                        alternate_transaction_ids=aliases,
+                        revenuecat_purchase_id=revenuecat_purchase_id,
+                        store=store,
                     )
+                )
             url = payload.get("next_page") or None
 
         return result
@@ -249,6 +280,16 @@ def _parse_datetime(value: object) -> datetime | None:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
         return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
 
+    return None
+
+
+def _first_string(*values: object) -> str | None:
+    """First non-empty stripped string among *values*, else None."""
+    for value in values:
+        if isinstance(value, str):
+            text = value.strip()
+            if text:
+                return text
     return None
 
 

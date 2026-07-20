@@ -22,7 +22,13 @@
       "Bash(dart run *)",
       "Bash(echo \"format exit: $?\")",
       "Bash(./.venv/Scripts/python.exe -m pytest tests/test_ai.py -q)",
-      "Bash(./.venv/Scripts/python.exe -m pytest tests/test_ai.py::test_reply_prompt_pins_reply_text_to_incoming_language -q)"
+      "Bash(./.venv/Scripts/python.exe -m pytest tests/test_ai.py::test_reply_prompt_pins_reply_text_to_incoming_language -q)",
+      "WebFetch(domain:www.revenuecat.com)",
+      "WebSearch",
+      "Bash(./.venv/Scripts/python.exe -m pytest tests/test_credits.py tests/test_revenuecat_webhook.py -q -p no:cacheprovider)",
+      "Bash(./.venv/Scripts/python.exe -m pytest tests/test_credit_double_grant_fix.py -q -p no:cacheprovider)",
+      "Bash(grep -vE \"Warning|warn\\\\\\(|site-packages|::|Docs:|^$\")",
+      "Bash(grep -vE \"Warning|warn\\\\\\(|site-packages|::|Docs:|^$|timegm\")"
     ],
     "deny": [
       "Bash(git push)",

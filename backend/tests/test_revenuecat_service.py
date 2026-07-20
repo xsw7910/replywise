@@ -196,6 +196,8 @@ def test_fetch_internal_product_id_owned_purchase_is_returned() -> None:
             "GPA.otpGps4ee034de5613a329844dc1bd066ffa9f",
             "prod733d52bcdd",
             ("otpGps4ee034de5613a329844dc1bd066ffa9f",),
+            revenuecat_purchase_id="otpGps4ee034de5613a329844dc1bd066ffa9f",
+            store="play_store",
         )
     ]
 
@@ -205,7 +207,15 @@ def test_fetch_credits_10_returns_one_transaction() -> None:
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
-    assert result == [ConsumableTransaction("GPA.txn-a", "credits_10", ("txn-a",))]
+    assert result == [
+        ConsumableTransaction(
+            "GPA.txn-a",
+            "credits_10",
+            ("txn-a",),
+            revenuecat_purchase_id="txn-a",
+            store="play_store",
+        )
+    ]
 
 
 def test_fetch_credits_50_and_credits_10_returns_both() -> None:
@@ -252,7 +262,15 @@ def test_fetch_missing_ownership_is_accepted() -> None:
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
-    assert result == [ConsumableTransaction("GPA.txn-a", "credits_10", ("txn-a",))]
+    assert result == [
+        ConsumableTransaction(
+            "GPA.txn-a",
+            "credits_10",
+            ("txn-a",),
+            revenuecat_purchase_id="txn-a",
+            store="play_store",
+        )
+    ]
 
 
 def test_fetch_falls_back_to_store_purchase_identifier_when_id_missing() -> None:
@@ -278,7 +296,15 @@ def test_fetch_unknown_product_id_is_returned_raw() -> None:
     with _patch_http(_rc_response(200, payload)):
         result = asyncio.run(RevenueCatService().fetch_consumable_transactions("user-1"))
 
-    assert result == [ConsumableTransaction("GPA.txn-x", "credits_999", ("txn-x",))]
+    assert result == [
+        ConsumableTransaction(
+            "GPA.txn-x",
+            "credits_999",
+            ("txn-x",),
+            revenuecat_purchase_id="txn-x",
+            store="play_store",
+        )
+    ]
 
 
 def test_fetch_follows_next_page_pagination() -> None:

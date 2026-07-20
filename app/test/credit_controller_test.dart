@@ -10,6 +10,7 @@ import 'package:replywise/features/entitlement/credit_controller.dart';
 import 'package:replywise/features/entitlement/credit_repository.dart';
 import 'package:replywise/features/entitlement/entitlement_state.dart';
 import 'package:replywise/features/entitlement/subscription_repository.dart';
+import 'package:replywise/features/entitlement/usage_controller.dart';
 import 'package:replywise/features/entitlement/usage_repository.dart';
 
 // ── Infrastructure fakes ─────────────────────────────────────────────────────
@@ -47,18 +48,21 @@ class _FakeCreditRepo extends CreditRepository {
 }
 
 class _FakeUsageRepo extends UsageRepository {
-  _FakeUsageRepo() : super(_dummyClient());
+  _FakeUsageRepo({this.paidCredits = 10}) : super(_dummyClient());
   int fetchCount = 0;
+
+  /// The authoritative balance the backend reports on refresh.
+  final int paidCredits;
 
   @override
   Future<EntitlementState> fetch() async {
     fetchCount++;
-    return const EntitlementState(
+    return EntitlementState(
       isPremium: false,
       freeUsesLimit: 3,
       freeUsesUsed: 1,
       freeUsesLeft: 4,
-      paidCredits: 10,
+      paidCredits: paidCredits,
       upgradeRequired: false,
     );
   }
@@ -233,6 +237,34 @@ void main() {
       expect(usageRepo.fetchCount, 1);
       expect(c.read(creditControllerProvider).error, isNull);
     });
+
+    test(
+      'displays the authoritative backend balance, never a local add',
+      () async {
+        // The backend is the sole source of truth and reports an odd 205 after
+        // a 10-credit purchase. If the client computed `credits + purchasedAmount`
+        // (…210) or doubled it (…220), this would fail. It must display exactly
+        // what the backend returned.
+        final gateway = _FakeGateway(creditPackages: creditPackages);
+        final creditRepo = _FakeCreditRepo();
+        final usageRepo = _FakeUsageRepo(paidCredits: 205);
+        final c = _containerWithGateway(
+          gateway,
+          creditRepo: creditRepo,
+          usageRepo: usageRepo,
+        );
+        await c.read(creditControllerProvider.notifier).loadPackages('user-1');
+
+        await c
+            .read(creditControllerProvider.notifier)
+            .purchase('user-1', creditPackages.first);
+
+        // Exactly one granting endpoint (backend sync) was called once.
+        expect(creditRepo.callCount, 1);
+        // The displayed balance equals the backend's authoritative value.
+        expect(c.read(usageControllerProvider).usage.paidCredits, 205);
+      },
+    );
 
     test('cancelled purchase returns false and exposes no error', () async {
       final gateway = _FakeGateway(
